@@ -107,3 +107,14 @@
 - [ ] **Gerçek resmî bordro/net ücret/vergisel uygunluk iddiası yapılmıyor.**
 
 **Durum:** Kullanıcının tercihiyle native cihaz QA sonraya bırakıldı ([Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)). JS export, Share sheet/SQLite v7 cihaz davranışını doğrulamaz.
+
+## Issue #16 / PR #18 — Native ücret profili düzeltme kabulü (ertelendi)
+
+- [ ] Mevcut SQLite v7 verisini native cihazda v8'e yükselt, v1 profil/veri korunumu ve boş revision tablosunu doğrula.
+- [ ] Aynı ayın yeni profil v2/v3 düzeltmesi için gerekçe sorulması, eski oran ve UTC kayıt anının okunabilmesi.
+- [ ] Uygulama kapat/aç sonrası tüm sürümlerin korunması; bir başka ekrandaki eski açık formdan düzeltme yapıldığında stale-revision reddi.
+- [ ] Önceki sürümü seçerek hesaplama yapılması, güncel rapora dönme, CSV/JSON çıktısında doğru `profileId/revision`, geçmiş raporun birebir kopyası olmadığı uyarısı.
+- [ ] TR/EN, TalkBack/VoiceOver, büyük yazı ve offline ekran deneyimi.
+- [ ] İşveren onayı, net maaş/vergi/SGK/yasal katsayı iddiası olmadığının doğrulanması.
+
+**Durum:** Kullanıcı isteğiyle gerçek cihaz QA ertelendi ([Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)). JS export native migrasyon ve persistans kanıtı değildir.

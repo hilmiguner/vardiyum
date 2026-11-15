@@ -159,3 +159,20 @@
 - [ ] Native Android/iOS SQLite v7, sistem paylaşım ekranı, DST/ICU/erişilebilirlik testleri kullanıcı isteğiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.
 
 **Sıradaki:** [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) kapsamında tarihsel ücret profili düzeltme/revizyonlama, kontrollü içe alma ve şifreli yedek tasarımı. PR #17 kodu/CI main'de; Issue #16 **açık kalıyor**. Native QA [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.
+
+## Issue #16 / PR #18 — Ücret profili sürüm düzeltmeleri
+
+**Dal:** `feat/auditable-pay-profile-revisions-v8`  
+**PR:** [#18](https://github.com/hilmiguner/vardiyum/pull/18)  
+**Kod CI:** [Actions #43717238275](https://github.com/hilmiguner/vardiyum/actions/runs/43717238275) **SUCCESS** (format/lint/typecheck/Node testi/Android+iOS JavaScript export).
+
+- [x] Aynı efektif ay için orijinal v1 profil değişmeden, **v2+ tam snapshot** olarak gerekçeli düzeltmeler.
+- [x] SQLite v7→v8 additif; revision FK/PK/check, UPDATE/DELETE engeli; v1–v7 veri korunumu.
+- [x] Gerekçeli kullanıcı beyanı, UTC kayıt anı, optimistic revision ve transaction; eski sürümden fail-closed alan/kimlik kontrolü.
+- [x] Kazanç ekranında mevcut profil düzenleme ve eski sürüm geçmişini gösterme.
+- [x] Önceki sürümle **bugünkü** fiilî çalışma/ayarlama kayıtlarından yeniden hesaplama; eski tarihli dondurulmuş rapor iddiası yok.
+- [ ] PR #18 son belge commit'i, merge ve main CI onayı bu bölüm yazılırken beklemede.
+- [ ] [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık: kontrollü içe alma/şifreli yedek, özel maaş dönemi, gerçek dosyaya rapor aktarımı.
+- [ ] [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) açık: native Android/iOS SQLite v8 ve UI sürümleme testleri kullanıcı isteğiyle ertelendi.
+
+**Sıradaki:** PR #18 yeşil CI ile merge; gerçek main SHA/CI'ı kaydet. Ardından Issue #16 kapsamında güvenli içe alma ve şifreli yedek tasarımını ayrı PR ile ilerlet.

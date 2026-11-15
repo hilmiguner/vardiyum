@@ -116,3 +116,10 @@
 - `tests/earnings-period-migration.test.mjs`: SQLite v1–v6 veri korunumu; v7 mola dağılımı ve append-only revizyon, CHECK/UNIQUE/source kısıtları.
 - `earnings-export.ts`: yalnızca estimated rapor, deterministik JSON ve CSV, kullanıcı açıklamalarında CSV formula guard; blocked raporu paylaşmama.
 - **Kanıt:** [Actions #43713024596](https://github.com/hilmiguner/vardiyum/actions/runs/43713024596) SUCCESS, **98/98 Node testi**, Android&iOS JavaScript export. Native Share ve SQLite testleri yapılmadı.
+
+## Issue #16 / PR #18 — Ücret profili revizyon testleri
+
+- `tests/earnings-profile-revisions.test.mjs`: v1 ve v2/v3 tam snapshot, sıra/boşluk/duplicate, efektif tarih ve profil ID kilidi, kaynak/UTC/gerekçe doğrulaması, geçersiz para birimi ve katsayı, her ay ayrı son revizyonun seçimi, eski oranla güncel kayıttan tahmin ve export sürüm kimliği.
+- `tests/earnings-profile-migration.test.mjs`: SQLite v7→v8 eski vardiya/rutin/UTC çalışma/mola ve pay verisi korunumu; her sürüm tam snapshot, FK/PK/CHECK ve DELETE/UPDATE trigger immutability kanıtı.
+- Tarihsel `tests/earnings-period-migration.test.mjs` v7 düzeyinde kalır; `SCHEMA_VERSION=8` güncel migrasyon testindedir.
+- Kanıt: [Actions #43717238275](https://github.com/hilmiguner/vardiyum/actions/runs/43717238275) SUCCESS. Native SQLite v8/testler kullanıcı tarafından ertelendi.
