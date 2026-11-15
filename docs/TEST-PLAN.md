@@ -159,3 +159,9 @@
 - [x] [PR #24 CI #43729824011](https://github.com/hilmiguner/vardiyum/actions/runs/43729824011) SUCCESS, [main CI #43729927452](https://github.com/hilmiguner/vardiyum/actions/runs/43729927452) SUCCESS: **142 Node testi**; SQLite v1→v8 migration, app_settings normal/bozuk değer, 18 tablo korunumu, FK/integrity, TR/EN TS/UI paketleme, Android/iOS JS exports.
 - [ ] Native cihazda ayar kalıcılığı ve şifreli dosyadan gerçek restore/yeniden açılış: Issue #2/#20.
 - [ ] Özel dönem ücretli hesaplaması, mixed profile, yeni break audit ve CSV/JSON finansal rapor: Issue #22.
+
+## Issue #22 — Custom period break audit (feature CI bekliyor)
+
+- [ ] Node SQLite v1→v8 full migration; event+head commit, future 2–28 start day and 26→25 UTC partition, event/correction append-only, stale UI revision, no-op / invalid minutes/reason/recordedAt, day change isolation, rollback after injected failure, missing-head/missing-event/revision gap, changed UTC/source, underscore-containing work ID isolation, v8 18 tablo/foreign-key/integrity invariants.
+- [ ] Yeni TR/EN CustomPayBreakPanel TypeScript/ESLint/Android+iOS JS export. Mola beyanı kaydedilirken aylık kazanç/CSV/JSON unchanged.
+- [ ] Native iOS/Android SQLite custom audit, AES roundtrip, power loss/reopen: Issue #2/#20 (erteli).

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Action, Heading, Muted, Page, Panel } from '../../components/ui';
 import { EarningsBreakAllocationPanel } from '../../components/earnings-break-allocation';
+import { CustomPayBreakPanel } from '../../components/custom-pay-break-panel';
 import { createEarningsExport, type EarningsExportFormat } from '../../domain/earnings-export';
 import {
   loadEarningsReport,
@@ -499,6 +500,7 @@ export default function EarningsScreen() {
       {breakCandidates.length > 0 ? (
         <EarningsBreakAllocationPanel candidates={breakCandidates} onSaved={onSaved} />
       ) : null}
+      <CustomPayBreakPanel periodKey={month} />
       {profileHistory.length ? (
         <Panel>
           <Heading>{t('earnHistoryTitle')}</Heading>

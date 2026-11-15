@@ -113,3 +113,10 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 - [x] [PR #24](https://github.com/hilmiguner/vardiyum/pull/24) **merged `456415cd`**: kullanıcı 1–28 başlangıç günü v8 app_settings persist ve TR/EN Ayarlar önizlemesi. [main CI #43729927452](https://github.com/hilmiguner/vardiyum/actions/runs/43729927452) SUCCESS, **142/142 Node test** + 2 JS bundle.
 - [ ] Gerçek özel dönem kazanç motoru/UI, ayrı custom break audit, effective profile geçişi, sabit ücret ve adjustments, CSV/JSON. Tercih henüz aylık raporu değiştirmez; Issue #22 açık.
 - [ ] Android/iOS native kalıcılık, restore & DST kabulü Issue #2/#20 ertelendi.
+
+## 2026-11-15 — Özel dönem mola audit dilimi (PR incelemesi bekleniyor)
+
+- [x] PR #23 custom UTC/IANA sınır motoru, PR #24 v8 kalıcı 1–28 tercih main'de; [main CI #43730144090](https://github.com/hilmiguner/vardiyum/actions/runs/43730144090) SUCCESS.
+- [ ] `feat/pay-period-break-audit-v8`: eski 18 tablo/v8 AES yedeği değiştirmeden app_settings event/head ile özel dönem mola audit'i, exclusive transaction + rollback/stale/source testleri, bağımsız TR/EN Kazanç hazırlık paneli; PR CI / merge bekleniyor.
+- [ ] Mevcut aylık earnings engine'i varsayılan bırak; mid-period efektif profil geçişi, sabit ücret, adjustments, custom overtime/CSV/JSON güvenli ele alınana kadar özel dönem kazancı etkinleşmesin. Issue #22 açık.
+- [ ] Native Android/iOS QA ve restore Issue #2/#20 ertelendi.
