@@ -1,6 +1,6 @@
 # Configurable Pay Period — Issue #22
 
-Status: **domain foundation only** (non-native), not yet connected to Settings, SQLite or the user-facing earnings report.
+Status (2026-11-15): domain, persisted 1–28 preference and separate custom-break audit are in main; actual custom-period salary reports remain pending.
 
 ## First increment: explicit day-of-month boundaries
 
@@ -41,3 +41,9 @@ Settings shows a `1..28` numeric choice and civil-date preview in the stored sch
 A separate `earnings_custom_pay_break_v1:<day>:<workId>` app_settings namespace saves **one INSERT-only, numbered canonical-JSON event per correction** and a revision `head` in one exclusive transaction, preserving schema v8 and the 18-table AES backup/restore contract. First period minutes and the remainder are checked against real elapsed UTC segments and original source timestamps before any write. A stale screen revision, altered work, wrong start day, missing audit event, malformed reason or bad allocation stops the write/read (fail-closed). The key query uses `substr` rather than LIKE because work IDs may contain `_`.
 
 A separate TR/EN earnings panel enables explicit break declarations while keeping **calendar-month earnings and exports unchanged**. These custom records will not be consumed by salary math until effective profile transitions and fixed-pay/adjustments policies are safely implemented. The audit is application-level append-only, not a cryptographic protection against direct SQLite edits. Native device/backup roundtrip acceptance is pending.
+
+## 2026-11-15 — Implementation checkpoint (PR #23–#25 main)
+
+The domain UTC split and local start-day preference from PR #23/#24 are now in main; PR #25 added independently recorded custom-period break allocation event keys and head under SQLite v8 `app_settings`, atomically validated with source work and revision. [main Actions #43732513262](https://github.com/hilmiguner/vardiyum/actions/runs/43732513262) SUCCESS (150 tests, both platform JS exports). The existing v8 encrypted 18-table snapshot and clean-target restore contract are unchanged. This app-level append-only audit is **not a cryptographically tamper-proof SQLite journal**.
+
+**Still not wired:** custom-period earnings/CSV/JSON, profile changes effective mid-period, fixed-pay period assumptions and adjustments. Calendar-month reports remain as before. Native acceptance is deferred (Issues #2/#20). Issue #22 stays open.

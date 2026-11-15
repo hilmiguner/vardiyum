@@ -165,3 +165,9 @@
 - [ ] Node SQLite v1→v8 full migration; event+head commit, future 2–28 start day and 26→25 UTC partition, event/correction append-only, stale UI revision, no-op / invalid minutes/reason/recordedAt, day change isolation, rollback after injected failure, missing-head/missing-event/revision gap, changed UTC/source, underscore-containing work ID isolation, v8 18 tablo/foreign-key/integrity invariants.
 - [ ] Yeni TR/EN CustomPayBreakPanel TypeScript/ESLint/Android+iOS JS export. Mola beyanı kaydedilirken aylık kazanç/CSV/JSON unchanged.
 - [ ] Native iOS/Android SQLite custom audit, AES roundtrip, power loss/reopen: Issue #2/#20 (erteli).
+
+## 2026-11-15 — PR #25 test ve merge kanıtı
+
+- [x] [PR #25 CI #43732374247](https://github.com/hilmiguner/vardiyum/actions/runs/43732374247) SUCCESS, [main CI #43732513262](https://github.com/hilmiguner/vardiyum/actions/runs/43732513262) SUCCESS, **150/150 Node** (v1→v8 schema, custom pay break event/head versioning, optimistic stale, rollback injected disk fault, kayıp/değişmiş event/source, yanlış gün, kimlik wildcard ayrımı, saatlerin çift sayılmaması ve 18 tablo/FK/integrity korunması) + TS/lint/Expo/iki JS export.
+- [ ] Gerçek Android/iOS cihazda SQLite event persistansı, AES archive & clean-target restore roundtrip, process-kill/düşük disk ve TR/EN erişilebilirlik: Issue #2/#20 ertelendi.
+- [ ] Mixed month-effective pay rates, fixed salary assumptions, period-only adjustments/CSV/JSON and genuine custom earnings report; Issue #22 AÇIK.

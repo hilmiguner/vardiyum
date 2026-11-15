@@ -120,3 +120,9 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 - [ ] `feat/pay-period-break-audit-v8`: eski 18 tablo/v8 AES yedeği değiştirmeden app_settings event/head ile özel dönem mola audit'i, exclusive transaction + rollback/stale/source testleri, bağımsız TR/EN Kazanç hazırlık paneli; PR CI / merge bekleniyor.
 - [ ] Mevcut aylık earnings engine'i varsayılan bırak; mid-period efektif profil geçişi, sabit ücret, adjustments, custom overtime/CSV/JSON güvenli ele alınana kadar özel dönem kazancı etkinleşmesin. Issue #22 açık.
 - [ ] Native Android/iOS QA ve restore Issue #2/#20 ertelendi.
+
+## 2026-11-15 — PR #25 tamamlandı, sıradaki Faz 4 işi
+
+- [x] [PR #25](https://github.com/hilmiguner/vardiyum/pull/25) SQLite v8 mevcut app_settings içine custom period mola audit'i/ilk dönem payı; gerekçeli append-only sürüm başlıkları, exclusive transaction/rollback ve Kazanç'ta ayrı TR/EN hazırlık paneli. Merge `624eae81`, [main CI #43732513262](https://github.com/hilmiguner/vardiyum/actions/runs/43732513262) SUCCESS, **150/150 Node** + 2 JS export.
+- [ ] Özel maaş dönemi tahmini kazanç: profil ayın 1'inde değişiyorsa açık ve kaynağa bağlı segment kararı; BigInt/kuruş, bağımsız dönem mesai eşiği, sabit tam dönem tutarı ve manual adjustment attribution. Her belirsizlikte fail closed; CSV/JSON aktarımı ancak gerçek rapor hazırsa.
+- [ ] Özel dönemin native persistansı / AES round-trip / restore düşük disk/crash: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2), [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20). [Issue #22](https://github.com/hilmiguner/vardiyum/issues/22) ve üst [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık.
