@@ -19,8 +19,10 @@ const resources = {
       earnCustomHourlyTotals:
         'Kaydedilmiş net çalışma: {{minutes}} dakika · Döneme özel eşik üzeri: {{overtime}} dakika',
       earnCustomHourlyProfile: 'Ücret kaynağı: {{profile}} · revizyon {{revision}}',
-      earnCustomHourlyMixedRates: 'Bu özel dönemde {{count}} farklı saatlik ücret profili uygulandı. Dönemlik mesai eşiği tek kez işlendi.',
-      earnCustomHourlyLineProfile: 'Bu parçanın ücret kaynağı: {{profile}} · sürüm {{revision}}',
+      earnCustomHourlyMixedRates:
+        'Bu özel dönemde {{count}} farklı saatlik ücret profili uygulandı. Dönemlik mesai eşiği tek kez işlendi.',
+      earnCustomHourlyLineProfile:
+        'Bu parçanın ücret kaynağı: {{profile}} · sürüm {{revision}}',
       earnCustomHourlySources: 'Kaynaklara göre hesaplanan çalışma',
       earnCustomHourlyKind_regular: 'Normal saatlik çalışma',
       earnCustomHourlyKind_overtime: 'Dönemlik eşik üzeri saatlik çalışma',
@@ -442,8 +444,10 @@ const resources = {
       earnCustomHourlyTotals:
         'Net logged work: {{minutes}} minutes · Above custom-period threshold: {{overtime}} minutes',
       earnCustomHourlyProfile: 'Pay source: {{profile}} · revision {{revision}}',
-      earnCustomHourlyMixedRates: '{{count}} distinct hourly rate profiles apply in this period; one overtime threshold is shared.',
-      earnCustomHourlyLineProfile: 'Rate source for this portion: {{profile}} · revision {{revision}}',
+      earnCustomHourlyMixedRates:
+        '{{count}} distinct hourly rate profiles apply in this period; one overtime threshold is shared.',
+      earnCustomHourlyLineProfile:
+        'Rate source for this portion: {{profile}} · revision {{revision}}',
       earnCustomHourlySources: 'Calculated work by original source',
       earnCustomHourlyKind_regular: 'Regular hourly work',
       earnCustomHourlyKind_overtime: 'Hourly work above period threshold',
