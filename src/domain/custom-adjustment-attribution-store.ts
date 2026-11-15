@@ -239,3 +239,23 @@ export async function loadCustomAdjustmentReportFromStore(
     scope: 'ATTRIBUTED_CALENDAR_ADJUSTMENTS_ONLY_NOT_COMBINED',
   };
 }
+
+
+/**
+ * Existing work-only and fixed BASE-only estimates may resume when every
+ * overlapping calendar adjustment has a verified explicit attribution.
+ * A "0" return only lifts the old UNKNOWN-ATTRIBUTION blocker; it NEVER adds
+ * any adjustment value to the work/base/overtime money amount.
+ */
+export async function adjustmentAttributionGate(
+  store: Pick<CustomBreakSqlStore, 'getFirstAsync' | 'getAllAsync'>,
+  periodKey: string,
+  adjustmentCount: number,
+): Promise<number> {
+  if (!Number.isSafeInteger(adjustmentCount) || adjustmentCount < 0)
+    return -1;
+  if (adjustmentCount === 0) return 0;
+  const report = await loadCustomAdjustmentReportFromStore(store, periodKey);
+  return report.status === 'verified' && report.candidates.length === adjustmentCount
+    ? 0 : adjustmentCount;
+}
