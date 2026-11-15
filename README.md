@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Vardiya/rutinler, yerel hatırlatmalar ve gerçek UTC çalışmadan tahmini kazanç (PR #3/#5/#7/#9/#11/#13/#15/#17) main'de. **PR #18:** aynı efektif ay için gerekçeli, değiştirilemez ücret profili revizyonları, SQLite v8, önceki oranlarla açıklamalı yeniden hesaplama. [CI #43717238275](https://github.com/hilmiguner/vardiyum/actions/runs/43717238275) SUCCESS; merge sonrası main SHA/CI'yi [STATUS](docs/STATUS.md)'dan doğrula. Kontrollü içe alma ve şifreli yedek Issue #16'da açık, cihaz testleri Issue #2'de ertelendi. Net/resmî bordro hesabı yok.
+> **Durum (2026-11-15):** Offline vardiya/rutin/hatırlatma ve gerçek UTC çalışmadan tahmini kazanç PR #3/#5/#7/#9/#11/#13/#15/#17 ile, **gerekçeli ve silinmez ücret profili düzeltmesi SQLite v8/PR #18 ile main'de**. PR #18 merge `01f781ac9db442a163b14e6e9033839679a60ce5`; [merge sonrası main CI #43718105350](https://github.com/hilmiguner/vardiyum/actions/runs/43718105350) SUCCESS (Node testi, Android/iOS JS export). Kontrollü içe alma/şifreli yedek [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık; cihaz QA [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ertelendi. Resmî bordro/net/vergi hesabı yok.
 
 ## Geliştirme kurulumu
 

@@ -132,13 +132,13 @@ Yeni sohbet başlangıcı:
 
 ## 2026-11-15 — Issue #16 / PR #18 (son durum)
 
-- **PR:** [#18](https://github.com/hilmiguner/vardiyum/pull/18), dal `feat/auditable-pay-profile-revisions-v8`. GitHub'dan merge, main SHA ve CI durumunu doğrula.
+- **PR #18 merged:** [PR #18](https://github.com/hilmiguner/vardiyum/pull/18), merge SHA `01f781ac9db442a163b14e6e9033839679a60ce5`; main [Actions #43718105350](https://github.com/hilmiguner/vardiyum/actions/runs/43718105350) SUCCESS. Yeni konuşmada en güncel commit'i doğrula.
 - **Kod CI:** [Actions #43717238275](https://github.com/hilmiguner/vardiyum/actions/runs/43717238275) **SUCCESS**, Expo dependency, Prettier/ESLint/TS, Node domain+SQL testleri ve Android/iOS JS export.
 - **Kod:** `src/domain/earnings-profile-revisions.ts` saf ardışık versiyon doğrulama ve sürüm hazırlama; `src/data/schema.ts` SQLite v8 yeni immutable revision tablosu ve UPDATE/DELETE trigger'ları; `src/data/earnings-repository.ts` effective-month/latest/historical selection ve SQLite transaction ile `appendPayProfileCorrection`; `src/app/(tabs)/earnings.tsx` düzeltme, gerekçe, geçmiş listesi ve sürüm seçimi; TR/EN.
 - **Sınırlar:** v1 orijinal profil sabit, v2+ tam snapshot tarih/gerekçeyle append-only. Hesaplama varsayılan en yeni profili, istekte önceki sürümü seçebilir. *Önceki hesaplamanın dondurulmuş bordro snapshot'ı yok*; eski oranla bugünkü çalışma/ayarlama üzerinden yeniden hesap yapılır. Net/vergi/SGK/işveren onayı yok.
 - **Açık:** Kontrollü finansal içe alma, şifreli yedekleme, özel maaş dönemi ve gerçek dosya aktarımı [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16)'da. Gerçek cihaz SQLite v8 migrasyon/sürüm seçimi testi [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.
-- **Sonraki:** PR #18 belge commit'i CI başarıdan sonra merge/main CI teyidi ve STATUS/HANDOFF gerçek SHA güncellemesi; sonra Issue #16'da kontrollü içe alma + şifreli yedek güvenli tasarımına geç.
+- **Sonraki:** Issue #16 açık; kontrollü içe alma ve şifreli yedek için **hiçbir veriyi kullanıcı onayı olmadan dışarı göndermeyen**, kaynağın bütünlüğü/şema sürümü ve geri dönüş/iptal güvenliğini doğrulayan tasarım ayrı PR olmalı. Native QA Issue #2'de ertelendi.
 
 Yeni sohbet:
 
-> Vardiyum repo https://github.com/hilmiguner/vardiyum. Önce main SHA, PR/Issue, Actions ve docs/STATUS.md, docs/HANDOFF.md, docs/DECISIONS.md, docs/ROADMAP.md oku. Issue #16 ikinci dilim PR #18: immutable ücret profili v2+ düzeltme, gerekçe, SQLite v8, geçmiş sürümle bugünkü veriden yeniden hesap; geçmiş rapor anlık görüntüsü değil. Kontrollü içe alma/şifreli yedek Issue #16'da açık. Cihaz testleri Issue #2'de ertelendi. CI/merge doğrulayarak GitHub'a kaydet, devam et.
+> Vardiyum repo https://github.com/hilmiguner/vardiyum. Önce main SHA, PR/Issue, Actions ve docs/STATUS.md, docs/HANDOFF.md, docs/DECISIONS.md, docs/ROADMAP.md oku. Issue #16/PR #18 immutable ücret profili v2+ düzeltme, SQLite v8, geçmiş sürümle güncel çalışma verisinden yeniden hesap **main'de**; merge sonrası CI #43718105350 SUCCESS. Eski görüntülenmiş raporun anlık görüntüsü saklanmıyor. Kontrollü içe alma/şifreli yedek Issue #16'da açık. Cihaz testleri Issue #2'de ertelendi. CI/merge doğrulayarak GitHub'a kaydet, devam et.

@@ -162,8 +162,7 @@
 
 ## Issue #16 / PR #18 — Ücret profili sürüm düzeltmeleri
 
-**Dal:** `feat/auditable-pay-profile-revisions-v8`  
-**PR:** [#18](https://github.com/hilmiguner/vardiyum/pull/18)  
+**[PR #18](https://github.com/hilmiguner/vardiyum/pull/18):** main'e squash merge edildi (`01f781ac9db442a163b14e6e9033839679a60ce5`).  
 **Kod CI:** [Actions #43717238275](https://github.com/hilmiguner/vardiyum/actions/runs/43717238275) **SUCCESS** (format/lint/typecheck/Node testi/Android+iOS JavaScript export).
 
 - [x] Aynı efektif ay için orijinal v1 profil değişmeden, **v2+ tam snapshot** olarak gerekçeli düzeltmeler.
@@ -171,8 +170,9 @@
 - [x] Gerekçeli kullanıcı beyanı, UTC kayıt anı, optimistic revision ve transaction; eski sürümden fail-closed alan/kimlik kontrolü.
 - [x] Kazanç ekranında mevcut profil düzenleme ve eski sürüm geçmişini gösterme.
 - [x] Önceki sürümle **bugünkü** fiilî çalışma/ayarlama kayıtlarından yeniden hesaplama; eski tarihli dondurulmuş rapor iddiası yok.
-- [ ] PR #18 son belge commit'i, merge ve main CI onayı bu bölüm yazılırken beklemede.
+- [x] **PR #18 squash merge:** `01f781ac9db442a163b14e6e9033839679a60ce5`.
+- [x] **Merge sonrası main CI:** [Actions #43718105350](https://github.com/hilmiguner/vardiyum/actions/runs/43718105350) SUCCESS (Node testleri, Android/iOS JS export).
 - [ ] [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık: kontrollü içe alma/şifreli yedek, özel maaş dönemi, gerçek dosyaya rapor aktarımı.
 - [ ] [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) açık: native Android/iOS SQLite v8 ve UI sürümleme testleri kullanıcı isteğiyle ertelendi.
 
-**Sıradaki:** PR #18 yeşil CI ile merge; gerçek main SHA/CI'ı kaydet. Ardından Issue #16 kapsamında güvenli içe alma ve şifreli yedek tasarımını ayrı PR ile ilerlet.
+**Sıradaki:** [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık: kontrollü içe alma/şifreli yedekleme ve özel maaş dönemi tasarımı. Profil sürümü PR #18 main'de; native cihaz kanıtı [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) üzerinde ertelendi.
