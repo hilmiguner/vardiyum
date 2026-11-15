@@ -16,7 +16,9 @@ interface RuleRow {
   archived_at: string | null;
   revision: number;
 }
-interface CompletionRow { routine_id: string }
+interface CompletionRow {
+  routine_id: string;
+}
 interface EventRow {
   id: string;
   routine_id: string;
@@ -65,11 +67,13 @@ export async function loadRoutineSnapshot(date: string): Promise<RoutineSnapshot
   const [rows, completions, events] = await Promise.all([
     db.getAllAsync<RuleRow>('SELECT * FROM routine_rules ORDER BY title, id'),
     db.getAllAsync<CompletionRow>(
-      'SELECT routine_id FROM task_completions WHERE local_date = ?', date,
+      'SELECT routine_id FROM task_completions WHERE local_date = ?',
+      date,
     ),
     db.getAllAsync<EventRow>(
       `SELECT * FROM routine_completion_events WHERE local_date = ?
-       ORDER BY occurred_at DESC, id DESC`, date,
+       ORDER BY occurred_at DESC, id DESC`,
+      date,
     ),
   ]);
   return {
@@ -84,7 +88,8 @@ export async function archiveRoutine(id: string): Promise<void> {
   const db = await getDatabase();
   const result = await db.runAsync(
     `UPDATE routine_rules SET archived_at = CURRENT_TIMESTAMP, enabled = 0,
-       revision = revision + 1 WHERE id = ? AND archived_at IS NULL`, id,
+       revision = revision + 1 WHERE id = ? AND archived_at IS NULL`,
+    id,
   );
   if (result.changes !== 1) throw new Error('ROUTINE_NOT_FOUND');
 }
@@ -93,19 +98,22 @@ export async function restoreRoutine(id: string): Promise<void> {
   const db = await getDatabase();
   const result = await db.runAsync(
     `UPDATE routine_rules SET archived_at = NULL, enabled = 0,
-       revision = revision + 1 WHERE id = ? AND archived_at IS NOT NULL`, id,
+       revision = revision + 1 WHERE id = ? AND archived_at IS NOT NULL`,
+    id,
   );
   if (result.changes !== 1) throw new Error('ROUTINE_NOT_ARCHIVED');
 }
 
 export async function createRoutine(input: RoutineRule): Promise<void> {
   const rule = validateRoutine(input);
-  if (rule.archivedAt !== null || rule.revision !== 1)
-    throw new Error('INVALID_NEW_ROUTINE');
+  if (rule.archivedAt !== null || rule.revision !== 1) throw new Error('INVALID_NEW_ROUTINE');
   const db = await getDatabase();
   await db.runAsync(
     'INSERT INTO routine_rules(id,title,recurrence_json,enabled,revision) VALUES (?,?,?,?,1)',
-    rule.id, rule.title, JSON.stringify(rule.recurrence), rule.enabled ? 1 : 0,
+    rule.id,
+    rule.title,
+    JSON.stringify(rule.recurrence),
+    rule.enabled ? 1 : 0,
   );
 }
 
@@ -118,8 +126,11 @@ export async function updateRoutine(input: RoutineRule): Promise<void> {
     `UPDATE routine_rules SET title = ?, recurrence_json = ?, enabled = ?,
        revision = revision + 1
        WHERE id = ? AND revision = ? AND archived_at IS NULL`,
-    rule.title, JSON.stringify(rule.recurrence), rule.enabled ? 1 : 0,
-    rule.id, rule.revision,
+    rule.title,
+    JSON.stringify(rule.recurrence),
+    rule.enabled ? 1 : 0,
+    rule.id,
+    rule.revision,
   );
   if (result.changes !== 1) throw new Error('ROUTINE_MODIFIED_OR_ARCHIVED');
 }
@@ -138,7 +149,8 @@ export async function setRoutineCompletion(
   const db = await getDatabase();
   await db.withExclusiveTransactionAsync(async (tx) => {
     const row = await tx.getFirstAsync<RuleRow>(
-      'SELECT * FROM routine_rules WHERE id = ?', ruleId,
+      'SELECT * FROM routine_rules WHERE id = ?',
+      ruleId,
     );
     if (!row) throw new Error('ROUTINE_NOT_FOUND');
     const rule = fromRow(row);
@@ -146,19 +158,24 @@ export async function setRoutineCompletion(
       throw new Error('ROUTINE_NOT_SCHEDULED');
     const previous = await tx.getFirstAsync<CompletionRow>(
       'SELECT routine_id FROM task_completions WHERE routine_id = ? AND local_date = ?',
-      ruleId, localDate,
+      ruleId,
+      localDate,
     );
     if (Boolean(previous) === completed) return;
     const now = new Date().toISOString();
     if (completed) {
       await tx.runAsync(
         `INSERT INTO task_completions(routine_id,local_date,completed_at)
-         VALUES (?,?,?)`, ruleId, localDate, now,
+         VALUES (?,?,?)`,
+        ruleId,
+        localDate,
+        now,
       );
     } else {
       await tx.runAsync(
         'DELETE FROM task_completions WHERE routine_id = ? AND local_date = ?',
-        ruleId, localDate,
+        ruleId,
+        localDate,
       );
     }
     const eventId = `routine_evt_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 13)}`;
@@ -166,8 +183,13 @@ export async function setRoutineCompletion(
       `INSERT INTO routine_completion_events
        (id,routine_id,local_date,action,title_snapshot,recurrence_snapshot,occurred_at)
        VALUES (?,?,?,?,?,?,?)`,
-      eventId, ruleId, localDate, completed ? 'completed' : 'uncompleted',
-      rule.title, JSON.stringify(rule.recurrence), now,
+      eventId,
+      ruleId,
+      localDate,
+      completed ? 'completed' : 'uncompleted',
+      rule.title,
+      JSON.stringify(rule.recurrence),
+      now,
     );
   });
 }

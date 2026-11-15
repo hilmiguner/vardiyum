@@ -66,18 +66,18 @@ export function validateRecurrence(input: unknown): RoutineRecurrence {
     typeof record.restOnly !== 'boolean' ||
     !Array.isArray(record.shiftIds) ||
     record.shiftIds.length > 100
-  ) throw new Error('INVALID_RECURRENCE');
+  )
+    throw new Error('INVALID_RECURRENCE');
   if (!record.shiftIds.every((id) => typeof id === 'string' && SHIFT_ID.test(id)))
     throw new Error('INVALID_SHIFT_FILTER');
   const shiftIds = [...new Set(record.shiftIds as string[])].sort();
   return {
     version: 1,
     shiftIds,
-    weekdays: uniqueIntegers(record.weekdays, 7, 'WEEKDAY')
-      .map((n) => {
-        if (n === 0) throw new Error('INVALID_WEEKDAY');
-        return n;
-      }),
+    weekdays: uniqueIntegers(record.weekdays, 7, 'WEEKDAY').map((n) => {
+      if (n === 0) throw new Error('INVALID_WEEKDAY');
+      return n;
+    }),
     cycleDays: uniqueIntegers(record.cycleDays, 365, 'CYCLE_DAY'),
     restOnly: record.restOnly,
   };
@@ -88,9 +88,11 @@ export function validateRoutine(input: RoutineRule): RoutineRule {
   const title = input.title.trim();
   if (!title || title.length > 80) throw new Error('INVALID_ROUTINE_TITLE');
   if (typeof input.enabled !== 'boolean') throw new Error('INVALID_ROUTINE_ENABLED');
-  if (input.archivedAt !== null && (
-    typeof input.archivedAt !== 'string' || !Number.isFinite(Date.parse(input.archivedAt))
-  )) throw new Error('INVALID_ROUTINE_ARCHIVED');
+  if (
+    input.archivedAt !== null &&
+    (typeof input.archivedAt !== 'string' || !Number.isFinite(Date.parse(input.archivedAt)))
+  )
+    throw new Error('INVALID_ROUTINE_ARCHIVED');
   if (!Number.isSafeInteger(input.revision) || input.revision < 1)
     throw new Error('INVALID_ROUTINE_REVISION');
   return { ...input, title, recurrence: validateRecurrence(input.recurrence) };
@@ -116,8 +118,7 @@ export function routineMatchesDate(
   const weekday = ((new Date(calendarOrdinal(localDate) * 86_400_000).getUTCDay() + 6) % 7) + 1;
   if (recurrence.weekdays.length && !recurrence.weekdays.includes(weekday)) return false;
   const position = cycleIndex(localDate, schedule.pattern);
-  if (recurrence.cycleDays.length && !recurrence.cycleDays.includes(position))
-    return false;
+  if (recurrence.cycleDays.length && !recurrence.cycleDays.includes(position)) return false;
   return true;
 }
 

@@ -2,7 +2,11 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { DatabaseSync } from 'node:sqlite';
 import {
-  INITIAL_SCHEMA, MIGRATION_2_SQL, MIGRATION_3_SQL, MIGRATION_4_SQL, SCHEMA_VERSION,
+  INITIAL_SCHEMA,
+  MIGRATION_2_SQL,
+  MIGRATION_3_SQL,
+  MIGRATION_4_SQL,
+  SCHEMA_VERSION,
 } from '../src/data/schema.ts';
 
 function dbAtV3() {
@@ -14,16 +18,22 @@ function dbAtV3() {
   return db;
 }
 const selector = JSON.stringify({
-  version: 1, shiftIds: [], weekdays: [], cycleDays: [], restOnly: false,
+  version: 1,
+  shiftIds: [],
+  weekdays: [],
+  cycleDays: [],
+  restOnly: false,
 });
 
 test('v1-v3 data and legacy routine completions survive migration to v4', () => {
   const db = dbAtV3();
   try {
-    db.prepare('INSERT INTO routine_rules(id,title,recurrence_json,enabled) VALUES (?,?,?,1)')
-      .run('legacy_routine', 'Original title', selector);
-    db.prepare('INSERT INTO task_completions(routine_id,local_date,completed_at) VALUES (?,?,?)')
-      .run('legacy_routine', '2026-11-15', '2026-11-15T09:30:00.000Z');
+    db.prepare(
+      'INSERT INTO routine_rules(id,title,recurrence_json,enabled) VALUES (?,?,?,1)',
+    ).run('legacy_routine', 'Original title', selector);
+    db.prepare(
+      'INSERT INTO task_completions(routine_id,local_date,completed_at) VALUES (?,?,?)',
+    ).run('legacy_routine', '2026-11-15', '2026-11-15T09:30:00.000Z');
     db.exec(`
       INSERT INTO shift_patterns(id,anchor_date,timezone_id)
         VALUES('primary','2026-11-15','Europe/Istanbul');
@@ -51,60 +61,97 @@ test('v1-v3 data and legacy routine completions survive migration to v4', () => 
     const migrated = db.prepare("SELECT * FROM routine_rules WHERE id='legacy_routine'").get();
     assert.equal(migrated.archived_at, null);
     assert.equal(migrated.revision, 1);
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('archiving keeps old completed status and immutable audit snapshots', () => {
   const db = dbAtV3();
   try {
     db.exec(`BEGIN IMMEDIATE; ${MIGRATION_4_SQL} COMMIT;`);
-    db.prepare('INSERT INTO routine_rules(id,title,recurrence_json,enabled) VALUES (?,?,?,1)')
-      .run('task_a', 'First title', selector);
-    db.prepare('INSERT INTO task_completions(routine_id,local_date,completed_at) VALUES (?,?,?)')
-      .run('task_a', '2026-11-15', '2026-11-15T09:00:00.000Z');
-    db.prepare(`INSERT INTO routine_completion_events
+    db.prepare(
+      'INSERT INTO routine_rules(id,title,recurrence_json,enabled) VALUES (?,?,?,1)',
+    ).run('task_a', 'First title', selector);
+    db.prepare(
+      'INSERT INTO task_completions(routine_id,local_date,completed_at) VALUES (?,?,?)',
+    ).run('task_a', '2026-11-15', '2026-11-15T09:00:00.000Z');
+    db.prepare(
+      `INSERT INTO routine_completion_events
       (id,routine_id,local_date,action,title_snapshot,recurrence_snapshot,occurred_at)
-      VALUES (?,?,?,?,?,?,?)`).run(
-      'evt_1','task_a','2026-11-15','completed','First title',selector,'2026-11-15T09:00:00.000Z',
+      VALUES (?,?,?,?,?,?,?)`,
+    ).run(
+      'evt_1',
+      'task_a',
+      '2026-11-15',
+      'completed',
+      'First title',
+      selector,
+      '2026-11-15T09:00:00.000Z',
     );
-    db.prepare("UPDATE routine_rules SET title=?,revision=revision+1 WHERE id='task_a'")
-      .run('New title');
-    db.prepare(`UPDATE routine_rules SET archived_at=CURRENT_TIMESTAMP,enabled=0 WHERE id='task_a'`)
-      .run();
+    db.prepare("UPDATE routine_rules SET title=?,revision=revision+1 WHERE id='task_a'").run(
+      'New title',
+    );
+    db.prepare(
+      `UPDATE routine_rules SET archived_at=CURRENT_TIMESTAMP,enabled=0 WHERE id='task_a'`,
+    ).run();
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM task_completions').get().n, 1);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM routine_completion_events').get().n, 1);
     assert.equal(
-      db.prepare("SELECT title_snapshot FROM routine_completion_events WHERE id='evt_1'").get().title_snapshot,
+      db.prepare("SELECT title_snapshot FROM routine_completion_events WHERE id='evt_1'").get()
+        .title_snapshot,
       'First title',
     );
     assert.equal(
       db.prepare("SELECT title FROM routine_rules WHERE id='task_a'").get().title,
       'New title',
     );
-    db.prepare("DELETE FROM task_completions WHERE routine_id='task_a' AND local_date='2026-11-15'").run();
-    db.prepare(`INSERT INTO routine_completion_events
+    db.prepare(
+      "DELETE FROM task_completions WHERE routine_id='task_a' AND local_date='2026-11-15'",
+    ).run();
+    db.prepare(
+      `INSERT INTO routine_completion_events
       (id,routine_id,local_date,action,title_snapshot,recurrence_snapshot,occurred_at)
-      VALUES (?,?,?,?,?,?,?)`).run(
-      'evt_2','task_a','2026-11-15','uncompleted','New title',selector,'2026-11-15T10:00:00.000Z',
+      VALUES (?,?,?,?,?,?,?)`,
+    ).run(
+      'evt_2',
+      'task_a',
+      '2026-11-15',
+      'uncompleted',
+      'New title',
+      selector,
+      '2026-11-15T10:00:00.000Z',
     );
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM task_completions').get().n, 0);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM routine_completion_events').get().n, 2);
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('two completion actions on different days are independently recorded', () => {
   const db = dbAtV3();
   try {
     db.exec(`BEGIN IMMEDIATE; ${MIGRATION_4_SQL} COMMIT;`);
-    db.prepare('INSERT INTO routine_rules(id,title,recurrence_json,enabled) VALUES (?,?,?,1)')
-      .run('routine_a','Daily',selector);
-    for (const day of ['2026-11-15','2026-11-16']) {
-      db.prepare('INSERT INTO task_completions(routine_id,local_date,completed_at) VALUES (?,?,?)')
-        .run('routine_a',day,'2026-11-16T01:00:00.000Z');
+    db.prepare(
+      'INSERT INTO routine_rules(id,title,recurrence_json,enabled) VALUES (?,?,?,1)',
+    ).run('routine_a', 'Daily', selector);
+    for (const day of ['2026-11-15', '2026-11-16']) {
+      db.prepare(
+        'INSERT INTO task_completions(routine_id,local_date,completed_at) VALUES (?,?,?)',
+      ).run('routine_a', day, '2026-11-16T01:00:00.000Z');
     }
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM task_completions').get().n, 2);
-    assert.throws(() => db.prepare(
-      'INSERT INTO task_completions(routine_id,local_date,completed_at) VALUES (?,?,?)',
-    ).run('routine_a','2026-11-15','2026-11-16T03:00:00.000Z'), /UNIQUE constraint failed/);
-  } finally { db.close(); }
+    assert.throws(
+      () =>
+        db
+          .prepare(
+            'INSERT INTO task_completions(routine_id,local_date,completed_at) VALUES (?,?,?)',
+          )
+          .run('routine_a', '2026-11-15', '2026-11-16T03:00:00.000Z'),
+      /UNIQUE constraint failed/,
+    );
+  } finally {
+    db.close();
+  }
 });

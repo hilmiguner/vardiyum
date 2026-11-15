@@ -2,11 +2,13 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
-  EVERY_DAY, routineMatchesDate, tasksForDate, validateRecurrence, validateRoutine,
+  EVERY_DAY,
+  routineMatchesDate,
+  tasksForDate,
+  validateRecurrence,
+  validateRoutine,
 } from '../src/domain/routine-engine.ts';
-import {
-  cycleIndex, DEFAULT_TEMPLATES,
-} from '../src/domain/shift-engine.ts';
+import { cycleIndex, DEFAULT_TEMPLATES } from '../src/domain/shift-engine.ts';
 
 // Sunday anchor; arbitrary-length 8-day cycle (not a seven-day workweek).
 const pattern = {
@@ -21,9 +23,12 @@ const schedule = {
 };
 function rule(id, recurrence = EVERY_DAY, extras = {}) {
   return {
-    id, title: 'Rule ' + id,
+    id,
+    title: 'Rule ' + id,
     recurrence: { ...recurrence },
-    enabled: true, archivedAt: null, revision: 1,
+    enabled: true,
+    archivedAt: null,
+    revision: 1,
     ...extras,
   };
 }
@@ -39,7 +44,8 @@ test('shift filters match resolved planned shift, not preceding or following mid
   assert.equal(routineMatchesDate(nightOnly, '2026-11-16', schedule), true);
   assert.equal(routineMatchesDate(nightOnly, '2026-11-17', schedule), false);
   const changed = {
-    ...schedule, overrides: {
+    ...schedule,
+    overrides: {
       '2026-11-16': { date: '2026-11-16', shiftId: 'off', note: 'changed' },
     },
   };
@@ -79,7 +85,8 @@ test('AND across dimensions, OR within one dimension, including off-day', () => 
   assert.equal(routineMatchesDate(combined, '2026-11-17', schedule), true);
   assert.equal(routineMatchesDate(combined, '2026-11-18', schedule), false);
   const offOnly = rule('offMonday', {
-    ...combined.recurrence, restOnly: true,
+    ...combined.recurrence,
+    restOnly: true,
   });
   assert.equal(routineMatchesDate(offOnly, '2026-11-16', schedule), false);
   assert.equal(routineMatchesDate(offOnly, '2026-11-17', schedule), true);
@@ -90,7 +97,10 @@ test('disabled or archived rules never show, but history can be stored separatel
   const archived = rule('archived', EVERY_DAY, { archivedAt: '2026-11-15T12:00:00Z' });
   assert.equal(routineMatchesDate(disabled, '2026-11-15', schedule), false);
   assert.equal(routineMatchesDate(archived, '2026-11-15', schedule), false);
-  assert.equal(routineMatchesDate(rule('daily'), '2026-11-15', { ...schedule, pattern: null }), false);
+  assert.equal(
+    routineMatchesDate(rule('daily'), '2026-11-15', { ...schedule, pattern: null }),
+    false,
+  );
 });
 
 test('completed checkboxes are keyed to immutable rule IDs, sorted by title', () => {
@@ -100,25 +110,49 @@ test('completed checkboxes are keyed to immutable rule IDs, sorted by title', ()
     rule('arch', EVERY_DAY, { archivedAt: '2026-11-15T00:00:00Z' }),
   ];
   const items = tasksForDate(rules, '2026-11-15', schedule, new Set(['z']));
-  assert.deepEqual(items.map((x) => [x.rule.id, x.completed]), [['a', false], ['z', true]]);
+  assert.deepEqual(
+    items.map((x) => [x.rule.id, x.completed]),
+    [
+      ['a', false],
+      ['z', true],
+    ],
+  );
 });
 
 test('rules and selectors fail closed on invalid inputs', () => {
   assert.throws(() => validateRoutine(rule('bad id!')), /INVALID_ROUTINE_ID/);
-  assert.throws(() => validateRoutine(rule('ok', EVERY_DAY, { title: '  ' })), /INVALID_ROUTINE_TITLE/);
-  assert.throws(() => validateRoutine(rule('ok', EVERY_DAY, { revision: 0 })), /INVALID_ROUTINE_REVISION/);
+  assert.throws(
+    () => validateRoutine(rule('ok', EVERY_DAY, { title: '  ' })),
+    /INVALID_ROUTINE_TITLE/,
+  );
+  assert.throws(
+    () => validateRoutine(rule('ok', EVERY_DAY, { revision: 0 })),
+    /INVALID_ROUTINE_REVISION/,
+  );
   assert.throws(() => validateRecurrence({ ...EVERY_DAY, version: 2 }), /INVALID_RECURRENCE/);
-  assert.throws(() => validateRecurrence({ ...EVERY_DAY, shiftIds: ['bad shift'] }), /INVALID_SHIFT_FILTER/);
+  assert.throws(
+    () => validateRecurrence({ ...EVERY_DAY, shiftIds: ['bad shift'] }),
+    /INVALID_SHIFT_FILTER/,
+  );
   assert.throws(() => validateRecurrence({ ...EVERY_DAY, weekdays: [0] }), /INVALID_WEEKDAY/);
   assert.throws(() => validateRecurrence({ ...EVERY_DAY, weekdays: [8] }), /INVALID_WEEKDAY/);
-  assert.throws(() => validateRecurrence({ ...EVERY_DAY, cycleDays: [-1] }), /INVALID_CYCLE_DAY/);
-  assert.throws(() => validateRecurrence({ ...EVERY_DAY, restOnly: 'yes' }), /INVALID_RECURRENCE/);
+  assert.throws(
+    () => validateRecurrence({ ...EVERY_DAY, cycleDays: [-1] }),
+    /INVALID_CYCLE_DAY/,
+  );
+  assert.throws(
+    () => validateRecurrence({ ...EVERY_DAY, restOnly: 'yes' }),
+    /INVALID_RECURRENCE/,
+  );
 });
 
 test('duplicate and unordered filter items canonicalize deterministically', () => {
   const recurrence = validateRecurrence({
-    version: 1, shiftIds: ['night', 'morning', 'night'],
-    weekdays: [7, 1, 7], cycleDays: [7, 1, 7], restOnly: false,
+    version: 1,
+    shiftIds: ['night', 'morning', 'night'],
+    weekdays: [7, 1, 7],
+    cycleDays: [7, 1, 7],
+    restOnly: false,
   });
   assert.deepEqual(recurrence.shiftIds, ['morning', 'night']);
   assert.deepEqual(recurrence.weekdays, [1, 7]);

@@ -1,6 +1,12 @@
 import * as SQLite from 'expo-sqlite';
 
-import { INITIAL_SCHEMA, MIGRATION_2_SQL, MIGRATION_3_SQL, MIGRATION_4_SQL, SCHEMA_VERSION } from './schema';
+import {
+  INITIAL_SCHEMA,
+  MIGRATION_2_SQL,
+  MIGRATION_3_SQL,
+  MIGRATION_4_SQL,
+  SCHEMA_VERSION,
+} from './schema';
 
 let databasePromise: Promise<SQLite.SQLiteDatabase> | null = null;
 
