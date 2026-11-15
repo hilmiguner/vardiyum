@@ -32,7 +32,9 @@ export interface RateBreakSave {
   recordedAt: string;
 }
 
-function effectiveBoundary(plan: Awaited<ReturnType<typeof loadCustomPayProfilePreviewFromStore>>): string {
+function effectiveBoundary(
+  plan: Awaited<ReturnType<typeof loadCustomPayProfilePreviewFromStore>>,
+): string {
   if (plan.status !== 'profile_transition_review_required' || plan.segments.length !== 2)
     throw new Error('RATE_BREAK_REQUIRES_TWO_PROFILES');
   const before = plan.segments[0].profile;
@@ -42,7 +44,8 @@ function effectiveBoundary(plan: Awaited<ReturnType<typeof loadCustomPayProfileP
     after.model !== 'hourly' ||
     before.currency !== after.currency ||
     before.overtimeAfterMinutes !== after.overtimeAfterMinutes
-  ) throw new Error('RATE_BREAK_PROFILES_UNSUPPORTED');
+  )
+    throw new Error('RATE_BREAK_PROFILES_UNSUPPORTED');
   return plan.segments[1].startDate;
 }
 
@@ -56,7 +59,8 @@ export async function readRateBreakHistory(
   const prefix = rateBreakPrefix(work.id, startDay, periodKey);
   const rows = await store.getAllAsync<{ key: string; value: string }>(
     'SELECT key,value FROM app_settings WHERE substr(key,1,?) = ? ORDER BY key',
-    prefix.length, prefix,
+    prefix.length,
+    prefix,
   );
   return decodeRateBreakHistory(work, startDay, periodKey, effectiveDate, rows);
 }
@@ -75,36 +79,50 @@ export async function appendRateBreakRevision(
     !Number.isSafeInteger(input.expectedRevision) ||
     input.expectedRevision < 0 ||
     input.expectedRevision >= 64
-  ) throw new Error('INVALID_RATE_BREAK_EXPECTED_REVISION');
+  )
+    throw new Error('INVALID_RATE_BREAK_EXPECTED_REVISION');
 
   const plan = await loadCustomPayProfilePreviewFromStore(
-    store, input.periodKey, input.scheduleTimeZone,
+    store,
+    input.periodKey,
+    input.scheduleTimeZone,
   );
   if (plan.startDay !== input.startDay) throw new Error('RATE_BREAK_SETTING_CHANGED');
   if (effectiveBoundary(plan) !== input.effectiveDate)
     throw new Error('RATE_BREAK_EFFECTIVE_DATE_CHANGED');
   const row = await store.getFirstAsync<CustomBreakWorkRow>(
-    CUSTOM_BREAK_WORK_SQL + ' WHERE id = ?', input.workId,
+    CUSTOM_BREAK_WORK_SQL + ' WHERE id = ?',
+    input.workId,
   );
   if (!row) throw new Error('RATE_BREAK_WORK_NOT_FOUND');
   const work = validateEarningsWork(workFromCustomBreakRow(row));
   rateBreakSource(work, input.startDay, input.periodKey, input.effectiveDate);
 
   const history = await readRateBreakHistory(
-    store, work, input.startDay, input.periodKey, input.effectiveDate,
+    store,
+    work,
+    input.startDay,
+    input.periodKey,
+    input.effectiveDate,
   );
-  if (history.length !== input.expectedRevision)
-    throw new Error('STALE_RATE_BREAK_REVISION');
+  if (history.length !== input.expectedRevision) throw new Error('STALE_RATE_BREAK_REVISION');
   if (
     history.length &&
     history[history.length - 1].beforeRateBreakMinutes === input.beforeRateBreakMinutes
-  ) throw new Error('UNCHANGED_RATE_BREAK_ALLOCATION');
+  )
+    throw new Error('UNCHANGED_RATE_BREAK_ALLOCATION');
   if (history.length && input.recordedAt < history[history.length - 1].recordedAt)
     throw new Error('INVALID_RATE_BREAK_REVISION');
 
   const event = createRateBreakEvent(
-    work, input.startDay, input.periodKey, input.effectiveDate,
-    input.beforeRateBreakMinutes, history.length + 1, input.reason, input.recordedAt,
+    work,
+    input.startDay,
+    input.periodKey,
+    input.effectiveDate,
+    input.beforeRateBreakMinutes,
+    history.length + 1,
+    input.reason,
+    input.recordedAt,
   );
   await store.runAsync(
     'INSERT INTO app_settings(key,value) VALUES (?,?)',
@@ -117,17 +135,24 @@ export async function appendRateBreakRevision(
   } else {
     const updated = await store.runAsync(
       'UPDATE app_settings SET value=? WHERE key=? AND value=?',
-      String(event.revision), head, String(history.length),
+      String(event.revision),
+      head,
+      String(history.length),
     );
     if (updated.changes !== 1) throw new Error('STALE_RATE_BREAK_REVISION');
   }
   const latest = await readRateBreakHistory(
-    store, work, input.startDay, input.periodKey, input.effectiveDate,
+    store,
+    work,
+    input.startDay,
+    input.periodKey,
+    input.effectiveDate,
   );
   if (
     latest.length !== event.revision ||
     JSON.stringify(latest[latest.length - 1]) !== JSON.stringify(event)
-  ) throw new Error('RATE_BREAK_READBACK_MISMATCH');
+  )
+    throw new Error('RATE_BREAK_READBACK_MISMATCH');
   return event;
 }
 
@@ -159,9 +184,7 @@ export async function loadRateBreakCandidatesFromStore(
   periodKey: string,
   scheduleTimeZone: string,
 ): Promise<RateBreakCandidateResult> {
-  const plan = await loadCustomPayProfilePreviewFromStore(
-    store, periodKey, scheduleTimeZone,
-  );
+  const plan = await loadCustomPayProfilePreviewFromStore(store, periodKey, scheduleTimeZone);
   if (plan.startDay === 1)
     return { startDay: 1, candidates: [], unsupportedCrossPeriodCount: 0 };
   const bounds = customPayPeriodBounds(periodKey, plan.startDay);
@@ -174,7 +197,8 @@ export async function loadRateBreakCandidatesFromStore(
   const rows = await store.getAllAsync<CustomBreakWorkRow>(
     CUSTOM_BREAK_WORK_SQL +
       ' WHERE local_date <= ? AND end_date >= ? ORDER BY start_instant_utc,id',
-    bounds.endDateInclusive, bounds.startDate,
+    bounds.endDateInclusive,
+    bounds.startDate,
   );
   const candidates: RateBreakCandidate[] = [];
   let unsupportedCrossPeriodCount = 0;
@@ -183,7 +207,11 @@ export async function loadRateBreakCandidatesFromStore(
     try {
       const resolved = rateBreakSource(work, plan.startDay, periodKey, boundary);
       const history = await readRateBreakHistory(
-        store, work, plan.startDay, periodKey, boundary,
+        store,
+        work,
+        plan.startDay,
+        periodKey,
+        boundary,
       );
       const latest = history[history.length - 1];
       candidates.push({
@@ -202,12 +230,20 @@ export async function loadRateBreakCandidatesFromStore(
         revision: latest?.revision ?? 0,
       });
     } catch (error) {
-      if (error instanceof Error && error.message === 'RATE_BREAK_REQUIRES_SINGLE_PAY_PERIOD_WORK')
+      if (
+        error instanceof Error &&
+        error.message === 'RATE_BREAK_REQUIRES_SINGLE_PAY_PERIOD_WORK'
+      )
         unsupportedCrossPeriodCount++;
       else if (
         !(error instanceof Error) ||
-        !['RATE_BREAK_REQUIRES_POSITIVE_BREAK','WORK_NOT_CROSS_RATE_BOUNDARY','PAY_PERIOD_BREAK_ALLOCATION_REQUIRED'].includes(error.message)
-      ) throw error;
+        ![
+          'RATE_BREAK_REQUIRES_POSITIVE_BREAK',
+          'WORK_NOT_CROSS_RATE_BOUNDARY',
+          'PAY_PERIOD_BREAK_ALLOCATION_REQUIRED',
+        ].includes(error.message)
+      )
+        throw error;
     }
   }
   if ((await readPayPeriodStartDay(store)) !== plan.startDay)

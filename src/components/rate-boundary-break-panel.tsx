@@ -26,7 +26,9 @@ export function RateBoundaryBreakPanel({
 }) {
   const { t } = useTranslation();
   const palette = usePalette();
-  const [result, setResult] = useState<Awaited<ReturnType<typeof loadRateBoundaryBreakCandidates>> | null>(null);
+  const [result, setResult] = useState<Awaited<
+    ReturnType<typeof loadRateBoundaryBreakCandidates>
+  > | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [reasons, setReasons] = useState<Record<string, string>>({});
@@ -199,9 +201,7 @@ export function RateBoundaryBreakPanel({
                     padding: 12,
                   }}
                 />
-                <Muted>
-                  {t('earnRateBreakRevision', { revision: candidate.revision })}
-                </Muted>
+                <Muted>{t('earnRateBreakRevision', { revision: candidate.revision })}</Muted>
                 <Action
                   label={t('earnRateBreakSave')}
                   disabled={busyId !== null}

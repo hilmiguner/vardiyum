@@ -88,7 +88,11 @@ export async function loadCustomHourlyEstimateFromStore(
       try {
         rateBreakSource(work, plan.startDay, periodKey, rateDate);
         const history = await readRateBreakHistory(
-          store, work, plan.startDay, periodKey, rateDate,
+          store,
+          work,
+          plan.startDay,
+          periodKey,
+          rateDate,
         );
         sources[sources.length - 1].rateBreakAudit = history[history.length - 1];
       } catch (error) {
@@ -99,7 +103,8 @@ export async function loadCustomHourlyEstimateFromStore(
             'PAY_PERIOD_BREAK_ALLOCATION_REQUIRED',
             'WORK_NOT_CROSS_RATE_BOUNDARY',
           ].includes(error.message)
-        ) throw error;
+        )
+          throw error;
       }
     }
   }

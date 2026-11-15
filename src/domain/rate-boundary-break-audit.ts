@@ -53,7 +53,9 @@ export function rateBreakEventKey(
 ): string {
   if (!Number.isSafeInteger(revision) || revision < 1 || revision > RATE_BREAK_MAX_REVISIONS)
     throw new Error('RATE_BREAK_REVISION_LIMIT');
-  return rateBreakPrefix(workId, startDay, periodKey) + 'event:' + String(revision).padStart(3, '0');
+  return (
+    rateBreakPrefix(workId, startDay, periodKey) + 'event:' + String(revision).padStart(3, '0')
+  );
 }
 
 /**
@@ -66,7 +68,12 @@ export function rateBreakSource(
   startDay: number,
   periodKey: string,
   effectiveDate: string,
-): { portion: PayPeriodWorkPortion; boundaryUtc: string; beforeSeconds: number; afterSeconds: number } {
+): {
+  portion: PayPeriodWorkPortion;
+  boundaryUtc: string;
+  beforeSeconds: number;
+  afterSeconds: number;
+} {
   rateBreakPrefix(work.id, startDay, periodKey);
   validateEarningsWork(work);
   if (!/^[0-9]{4}-(0[1-9]|1[0-2])-01$/.test(effectiveDate) || effectiveDate.startsWith('0000'))
@@ -108,7 +115,8 @@ export function createRateBreakEvent(
     beforeRateBreakMinutes > source.portion.breakMinutes ||
     beforeRateBreakMinutes * 60 > source.beforeSeconds ||
     (source.portion.breakMinutes - beforeRateBreakMinutes) * 60 > source.afterSeconds
-  ) throw new Error('RATE_BREAK_EXCEEDS_SEGMENT');
+  )
+    throw new Error('RATE_BREAK_EXCEEDS_SEGMENT');
   if (typeof reason !== 'string' || reason.trim().length < 3 || reason.trim().length > 160)
     throw new Error('INVALID_RATE_BREAK_REASON');
   if (typeof recordedAt !== 'string' || !UTC.test(recordedAt))
@@ -160,7 +168,8 @@ export function decodeRateBreakHistory(
     !/^[1-9][0-9]*$/.test(head[0].value) ||
     Number(head[0].value) !== events.length ||
     !events.length
-  ) throw new Error('INVALID_RATE_BREAK_HEAD');
+  )
+    throw new Error('INVALID_RATE_BREAK_HEAD');
 
   const history: RateBoundaryBreakEvent[] = [];
   for (let index = 0; index < events.length; index++) {
@@ -180,8 +189,14 @@ export function decodeRateBreakHistory(
     let canonical: RateBoundaryBreakEvent;
     try {
       canonical = createRateBreakEvent(
-        work, startDay, periodKey, effectiveDate,
-        parsed.beforeRateBreakMinutes, revision, parsed.reason, parsed.recordedAt,
+        work,
+        startDay,
+        periodKey,
+        effectiveDate,
+        parsed.beforeRateBreakMinutes,
+        revision,
+        parsed.reason,
+        parsed.recordedAt,
       );
     } catch {
       throw new Error('INVALID_RATE_BREAK_EVENT');
@@ -192,7 +207,8 @@ export function decodeRateBreakHistory(
       history.length &&
       (canonical.recordedAt < history[history.length - 1].recordedAt ||
         canonical.beforeRateBreakMinutes === history[history.length - 1].beforeRateBreakMinutes)
-    ) throw new Error('INVALID_RATE_BREAK_REVISION');
+    )
+      throw new Error('INVALID_RATE_BREAK_REVISION');
     history.push(canonical);
   }
   return history;

@@ -14,7 +14,10 @@ import {
   type PayPeriodWorkPortion,
 } from './pay-period.ts';
 import { resolveLocalBoundary } from './zoned-shift-time.ts';
-import { createRateBreakEvent, type RateBoundaryBreakEvent } from './rate-boundary-break-audit.ts';
+import {
+  createRateBreakEvent,
+  type RateBoundaryBreakEvent,
+} from './rate-boundary-break-audit.ts';
 import type {
   CustomHourlyEstimate,
   CustomHourlyLine,
