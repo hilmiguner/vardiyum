@@ -3,7 +3,10 @@ import {
   resolvePayProfileRevisions,
   type PayProfileRevision,
 } from './earnings-profile-revisions.ts';
-import { planCustomPayProfiles, type CustomPayProfilePlan } from './custom-pay-profile-policy.ts';
+import {
+  planCustomPayProfiles,
+  type CustomPayProfilePlan,
+} from './custom-pay-profile-policy.ts';
 import { readPayPeriodStartDay } from './pay-period-settings.ts';
 
 /** Read-only adapter for Expo SQLite and node:sqlite regression tests. */

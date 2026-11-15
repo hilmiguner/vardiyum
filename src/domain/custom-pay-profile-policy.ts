@@ -1,7 +1,4 @@
-import {
-  validateEarningsProfile,
-  type EarningsProfile,
-} from './earnings-engine.ts';
+import { validateEarningsProfile, type EarningsProfile } from './earnings-engine.ts';
 import { customPayPeriodBounds, zonedPayPeriodBounds } from './pay-period.ts';
 import { validatePayPeriodStartDay } from './pay-period-settings.ts';
 import { resolveLocalBoundary } from './zoned-shift-time.ts';
@@ -82,9 +79,9 @@ export function planCustomPayProfiles(
 
   // Validate the full source set, not just the records needed for this month:
   // corrupt historical entries should not be hidden by filtering.
-  const profiles = resolvedProfiles.map(validateEarningsProfile).sort((a, b) =>
-    a.effectiveFrom.localeCompare(b.effectiveFrom),
-  );
+  const profiles = resolvedProfiles
+    .map(validateEarningsProfile)
+    .sort((a, b) => a.effectiveFrom.localeCompare(b.effectiveFrom));
   for (let i = 1; i < profiles.length; i++) {
     if (profiles[i].effectiveFrom === profiles[i - 1].effectiveFrom)
       throw new Error('DUPLICATE_EFFECTIVE_MONTH');
@@ -109,7 +106,11 @@ export function planCustomPayProfiles(
       profile.effectiveFrom > period.startDate &&
       profile.effectiveFrom < period.endExclusiveDate,
   );
-  const boundaries = [period.startDate, ...changes.map((entry) => entry.effectiveFrom), period.endExclusiveDate];
+  const boundaries = [
+    period.startDate,
+    ...changes.map((entry) => entry.effectiveFrom),
+    period.endExclusiveDate,
+  ];
   const rates = [active, ...changes];
 
   // Resolve every boundary, including the rate transition, independently.
@@ -117,8 +118,7 @@ export function planCustomPayProfiles(
   const stamps = boundaries.map((date) => utcMidnight(date, timeZone));
   const segments: CustomPayProfileSegment[] = [];
   for (let i = 0; i < rates.length; i++) {
-    if (!(stamps[i] < stamps[i + 1]))
-      throw new Error('INVALID_CUSTOM_PAY_PROFILE_SEGMENT');
+    if (!(stamps[i] < stamps[i + 1])) throw new Error('INVALID_CUSTOM_PAY_PROFILE_SEGMENT');
     segments.push({
       startDate: boundaries[i],
       endExclusiveDate: boundaries[i + 1],

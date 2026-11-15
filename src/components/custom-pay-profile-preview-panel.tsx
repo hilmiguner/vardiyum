@@ -68,8 +68,7 @@ export function CustomPayProfilePreviewPanel({
           </Muted>
           <Text
             style={{
-              color:
-                plan.status === 'single_hourly_profile' ? palette.text : palette.danger,
+              color: plan.status === 'single_hourly_profile' ? palette.text : palette.danger,
               fontWeight: '700',
             }}
           >

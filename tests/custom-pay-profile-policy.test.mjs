@@ -16,11 +16,7 @@ import { planCustomPayProfiles } from '../src/domain/custom-pay-profile-policy.t
 import { loadCustomPayProfilePreviewFromStore } from '../src/domain/custom-pay-profile-preview-store.ts';
 import { writePayPeriodStartDay } from '../src/domain/pay-period-settings.ts';
 
-function profile(
-  id,
-  effectiveFrom,
-  overrides = {},
-) {
+function profile(id, effectiveFrom, overrides = {}) {
   return {
     id,
     effectiveFrom,
@@ -172,14 +168,20 @@ test('a new profile on the end-exclusive 26th must not enter the previous period
     profile('new', '2026-11-01'),
     profile('later', '2026-12-01'),
   ]);
-  assert.deepEqual(p.segments.map((s) => s.profile.id), ['old', 'new']);
+  assert.deepEqual(
+    p.segments.map((s) => s.profile.id),
+    ['old', 'new'],
+  );
   const dayOne = planCustomPayProfiles('2026-11', 1, 'Europe/Istanbul', [
     profile('old', '2026-10-01'),
     profile('new', '2026-11-01'),
     profile('later', '2026-12-01'),
   ]);
   assert.equal(dayOne.status, 'single_hourly_profile');
-  assert.deepEqual(dayOne.segments.map((s) => s.profile.id), ['new']);
+  assert.deepEqual(
+    dayOne.segments.map((s) => s.profile.id),
+    ['new'],
+  );
 });
 
 test('missing opening profile blocks the plan despite a future effective profile', () => {
@@ -211,8 +213,14 @@ test('mixed-currency or mixed-model changes are shown, never auto-converted or p
     }),
   ]);
   assert.equal(p.status, 'profile_transition_review_required');
-  assert.deepEqual(p.segments.map((s) => s.profile.currency), ['TRY', 'USD']);
-  assert.deepEqual(p.segments.map((s) => s.profile.model), ['hourly', 'monthly_fixed']);
+  assert.deepEqual(
+    p.segments.map((s) => s.profile.currency),
+    ['TRY', 'USD'],
+  );
+  assert.deepEqual(
+    p.segments.map((s) => s.profile.model),
+    ['hourly', 'monthly_fixed'],
+  );
 });
 
 test('February leap/nonleap and year rollover produce non-overlapping civil segments', () => {
@@ -220,10 +228,13 @@ test('February leap/nonleap and year rollover produce non-overlapping civil segm
     profile('feb', '2028-02-01'),
     profile('march', '2028-03-01'),
   ]);
-  assert.deepEqual(leap.segments.map((s) => [s.startDate, s.endDateInclusive]), [
-    ['2028-02-26', '2028-02-29'],
-    ['2028-03-01', '2028-03-25'],
-  ]);
+  assert.deepEqual(
+    leap.segments.map((s) => [s.startDate, s.endDateInclusive]),
+    [
+      ['2028-02-26', '2028-02-29'],
+      ['2028-03-01', '2028-03-25'],
+    ],
+  );
   const plain = planCustomPayProfiles('2027-02', 26, 'UTC', [
     profile('feb', '2027-02-01'),
     profile('march', '2027-03-01'),
@@ -251,18 +262,29 @@ test('New York DST changes UTC elapsed span and still makes profile boundary con
 test('invalid, ambiguous and impossible period/timezone boundaries fail closed', () => {
   const p = profile('oct', '2026-10-01');
   assert.throws(() => planCustomPayProfiles('2026-13', 26, 'UTC', [p]));
-  assert.throws(() => planCustomPayProfiles('2026-10', 31, 'UTC', [p]), /INVALID_PAY_PERIOD_START_DAY/);
+  assert.throws(
+    () => planCustomPayProfiles('2026-10', 31, 'UTC', [p]),
+    /INVALID_PAY_PERIOD_START_DAY/,
+  );
   assert.throws(() => planCustomPayProfiles('2026-10', 26, 'Mars\/Nowhere', [p]));
   assert.throws(() => planCustomPayProfiles('2026-10', 26, '', [p]));
-  assert.throws(() => planCustomPayProfiles('2026-10', 26, 'UTC', [
-    profile('wrong', '2026-10-20'),
-  ]), /PROFILE_MUST_START_FIRST_OF_MONTH/);
-  assert.throws(() => planCustomPayProfiles('2026-10', 26, 'UTC', [
-    profile('a', '2026-10-01'), profile('b', '2026-10-01'),
-  ]), /DUPLICATE_EFFECTIVE_MONTH/);
-  assert.throws(() => planCustomPayProfiles('2018-11', 4, 'America/Sao_Paulo', [
-    profile('old', '2018-10-01'),
-  ]), /UNRESOLVED_PAY_PERIOD_BOUNDARY|AMBIGUOUS_PAY_PROFILE_MIDNIGHT/);
+  assert.throws(
+    () => planCustomPayProfiles('2026-10', 26, 'UTC', [profile('wrong', '2026-10-20')]),
+    /PROFILE_MUST_START_FIRST_OF_MONTH/,
+  );
+  assert.throws(
+    () =>
+      planCustomPayProfiles('2026-10', 26, 'UTC', [
+        profile('a', '2026-10-01'),
+        profile('b', '2026-10-01'),
+      ]),
+    /DUPLICATE_EFFECTIVE_MONTH/,
+  );
+  assert.throws(
+    () =>
+      planCustomPayProfiles('2018-11', 4, 'America/Sao_Paulo', [profile('old', '2018-10-01')]),
+    /UNRESOLVED_PAY_PERIOD_BOUNDARY|AMBIGUOUS_PAY_PROFILE_MIDNIGHT/,
+  );
 });
 
 test('read-only SQLite v1→v8 adapter resolves latest immutable corrected snapshots', async () => {
@@ -275,20 +297,35 @@ test('read-only SQLite v1→v8 adapter resolves latest immutable corrected snaps
     insertProfile(db, oct);
     insertProfile(db, nov);
     addRevision(db, oct, 2, { baseMinorUnits: 18000 });
-    const allSettingsBefore = db.prepare('SELECT key,value FROM app_settings ORDER BY key').all()
+    const allSettingsBefore = db
+      .prepare('SELECT key,value FROM app_settings ORDER BY key')
+      .all()
       .map((row) => ({ ...row }));
     const p = await loadCustomPayProfilePreviewFromStore(read, '2026-10', 'Europe/Istanbul');
     assert.equal(p.status, 'profile_transition_review_required');
-    assert.deepEqual(p.segments.map((s) => [
-      s.profile.id, s.profile.revision, s.profile.baseMinorUnits,
-    ]), [
-      ['oct', 2, 18000],
-      ['nov', 1, 23000],
-    ]);
+    assert.deepEqual(
+      p.segments.map((s) => [s.profile.id, s.profile.revision, s.profile.baseMinorUnits]),
+      [
+        ['oct', 2, 18000],
+        ['nov', 1, 23000],
+      ],
+    );
     assert.equal(db.prepare('PRAGMA user_version').get().user_version, 8);
-    assert.equal(db.prepare("SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").get().n, 18);
-    assert.deepEqual(db.prepare('SELECT key,value FROM app_settings ORDER BY key').all()
-      .map((row) => ({ ...row })), allSettingsBefore);
+    assert.equal(
+      db
+        .prepare(
+          "SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+        )
+        .get().n,
+      18,
+    );
+    assert.deepEqual(
+      db
+        .prepare('SELECT key,value FROM app_settings ORDER BY key')
+        .all()
+        .map((row) => ({ ...row })),
+      allSettingsBefore,
+    );
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM earnings_profiles').get().n, 2);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM earnings_profile_revisions').get().n, 1);
     assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(), []);
@@ -324,8 +361,7 @@ test('read-only adapter refuses a changed user preference across its two reads',
     const changing = {
       ...read,
       async getAllAsync(sql, ...params) {
-        if (sql.includes('earnings_profile_revisions'))
-          await writePayPeriodStartDay(read, 27);
+        if (sql.includes('earnings_profile_revisions')) await writePayPeriodStartDay(read, 27);
         return read.getAllAsync(sql, ...params);
       },
     };
