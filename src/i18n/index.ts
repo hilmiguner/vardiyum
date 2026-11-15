@@ -75,6 +75,20 @@ const resources = {
       overrideHint: 'Yalnızca bu gün değişir; tekrar eden düzen etkilenmez.',
       dayNote: 'İsteğe bağlı açıklama',
       restoreCycle: 'Normal döngüye döndür',
+      hoursAndMinutes: '{{hours}} sa {{minutes}} dk{{seconds}}',
+      wallClockDuration: 'Planlanan saat aralığı: {{duration}}',
+      actualElapsedTime: 'Saat dilimine göre geçen süre: {{duration}}',
+      unpaidBreakNotDeducted: 'Planlanan mola: {{breakMinutes}} dk (süreden düşülmedi)',
+      scheduledTimeZone: 'Vardiyanın saat dilimi: {{timeZone}}',
+      nonexistentStart: 'Başlangıç saati bu tarihte mevcut değil. Otomatik hesap yapılmadı.',
+      nonexistentEnd: 'Bitiş saati bu tarihte mevcut değil. Otomatik hesap yapılmadı.',
+      ambiguousStart:
+        'Başlangıç saati iki farklı ana denk geliyor. Seçim yapılmadan hesaplanmaz.',
+      ambiguousEnd: 'Bitiş saati iki farklı ana denk geliyor. Seçim yapılmadan hesaplanmaz.',
+      invalidElapsedInterval: 'Bitiş, başlangıçtan sonra değil. Süre doğrulanamadı.',
+      invalidScheduleTimeZone: 'Saat dilimi veya vardiya saati geçersiz; süre hesaplanamadı.',
+      notActualWorkRecord:
+        'Bu yalnızca planlanan zamanın karşılığıdır; fiilî çalışma/bordro kaydı değildir.',
     },
   },
   en: {
@@ -146,6 +160,20 @@ const resources = {
       overrideHint: 'Only this day changes; the repeating cycle stays the same.',
       dayNote: 'Optional note',
       restoreCycle: 'Restore repeating cycle',
+      hoursAndMinutes: '{{hours}}h {{minutes}}m{{seconds}}',
+      wallClockDuration: 'Scheduled wall-clock duration: {{duration}}',
+      actualElapsedTime: 'Elapsed time by time zone: {{duration}}',
+      unpaidBreakNotDeducted: 'Planned break: {{breakMinutes}} min (not deducted)',
+      scheduledTimeZone: 'Schedule time zone: {{timeZone}}',
+      nonexistentStart: 'Start time does not exist on this date. No duration was inferred.',
+      nonexistentEnd: 'End time does not exist on this date. No duration was inferred.',
+      ambiguousStart: 'Start time occurs twice. Choose an instant before calculating.',
+      ambiguousEnd: 'End time occurs twice. Choose an instant before calculating.',
+      invalidElapsedInterval: 'End is not after start. Duration cannot be confirmed.',
+      invalidScheduleTimeZone:
+        'Invalid time zone or shift time; duration cannot be calculated.',
+      notActualWorkRecord:
+        'Scheduled time only, not an actual work record or a payroll result.',
     },
   },
 };

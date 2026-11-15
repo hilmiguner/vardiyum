@@ -122,3 +122,18 @@ Bu tablo isimleri öneridir; gerçek SQLite migrasyonu ile kesinleşecek. Foreig
 - `resolveShift` normal döngü veya istisna kaynağını ayırt eder. Aylık görünüm, bu birleşik sonucu gösterir.
 - `plannedWallMinutes`, saatin kadrandaki aralığıdır; **DST durumunda gerçek geçen çalışma dakikası değildir**. Ücret hesabında gerçek dakika kullanılacaksa saat dilimi geçişi ve birden fazla yerel saat eşleşmesi (fold/gap) ayrıca çözülmelidir.
 - Node `node:sqlite` testleri mevcut v1 kayıtlarının korunmasını ve v2 tohumlamasını sınar; **Expo'nun cihaz SQLite sürücüsü üzerinde gerçek mobil test henüz yapılmadı**.
+
+## UTC zaman aralığı ve DST çözümlemesi — Issue #6 / PR #7 (2026-11-15)
+
+**Amaç:** Bir vardiyanın yerel takvim günü, IANA saat dilimi, başlangıç/bitiş saati ve `endDayOffset` bilgilerini kesin UTC anlarına dönüştürmek. `plannedWallMinutes` ile bu süreyi birbirine karıştırmamak.
+
+- Saf ve platformdan ayrılmış `src/domain/zoned-shift-time.ts` modülü kullanılır. `possibleUtcInstants(date, HH:mm, timeZone)` yerel saatin tüm eşleşen UTC anlarını döndürür; `resolveLocalBoundary(..., choice)` bu sonuçları tekilleştirir.
+- **Gap:** Yerel saatin var olmadığı anlarda hiçbir otomatik ileri alma veya saat düzeltmesi yapılmaz; `nonexistent` / `NONEXISTENT_START|END` döner.
+- **Fold:** Yerel saat iki ana karşılık geliyorsa varsayılan `reject` seçimiyle `ambiguous` / `AMBIGUOUS_START|END` döner. Ayrı başlangıç/bitiş politikalarına bilinçli `earlier` veya `later` verilerek çözüm üretilebilir. Bu seçimler henüz cihazda kullanıcı tercihi olarak kalıcı saklanmıyor; belirsiz saatler otomatik kazanç hesabına **dahil edilmez**.
+- **Kesin çözüm:** `resolveShiftInterval` yalnızca iki sınır net ve bitiş başlangıçtan büyükse `startInstantUtc`, `endInstantUtc`, `elapsedSeconds`, `wallMinutes` ve `breakMinutesPlanned` döndürür. `elapsedSeconds` **brüt planlı aralığın geçen saniyesidir**, fiilî çalışılan veya ücretlendirilebilir süre değildir. Mola otomatik düşülmez.
+- **Saat dilimi sabitliği:** Vardiya programı oluşturulduğunda kaydedilmiş `shift_patterns.timezone_id` esas alınır. Kullanıcının telefonu farklı bölgeye taşınsa bile hesabın referansı **bu kaydedilmiş zaman dilimidir**; seyahatte program bölgesini elle değiştirme UX'i ayrıca tasarlanacaktır. Kaydetme sırasında mevcut kayıtların `timezone_id` alanı üzerine yazılmaz.
+- **Çözümleme yöntemi:** `Intl.DateTimeFormat.formatToParts` ve seçili IANA zone üzerinde yerel/UTC round-trip. Yerel nominal UTC saatinin ±36 saat çevresinde saatlik örneklenen ofsetlerden aday anlar çıkarılır; her aday tam yerel tarih/saat/saniye bileşenleriyle kontrol edilir. Kesin eşleşmeyen hiçbir aday kullanılmaz. Tipik modern DST geçişleri ve yarım saatlik ofset değişimleri desteklenir.
+- **Sınırlar:** Saatten daha kısa süreli ender tarihsel ofset değişimleri, farklı platformların ICU/IANA tzdb sürümleri veya Hermes `Intl` uygulaması farklılıkları için cihaz üzerinde kabul testi gereklidir. Node/Linux testlerinin geçmesi mobil tzdb eşdeğerliği garantisi değildir.
+- **UI:** Bugün ve Takvim seçilen vardiya detaylarında planlanan duvar saati aralığı ile saat dilimine göre geçen süre ayrıdır. Çift anlamlı/var olmayan saatlerde uyarı görünür; hesaplama sessizce tahmin edilmez.
+- **Veri tabanı:** Bu değişiklik yeni SQLite migrasyonu gerektirmez; mevcut v2 kayıtları aynen kullanılır.
+- **Ücret sınırı:** İleride bordroya aktarım için gerçekleşen başlangıç/bitiş zamanları, mola fiiliyatı, fold kararı ve iş sözleşmesi kuralları ayrıca doğrulanmalı. `elapsedSeconds` tek başına ücret hesaplama için kanıt değildir.
