@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-import { INITIAL_SCHEMA, MIGRATION_2_SQL, MIGRATION_3_SQL, SCHEMA_VERSION } from './schema';
+import { INITIAL_SCHEMA, MIGRATION_2_SQL, MIGRATION_3_SQL, MIGRATION_4_SQL, SCHEMA_VERSION } from './schema';
 
 let databasePromise: Promise<SQLite.SQLiteDatabase> | null = null;
 
@@ -22,6 +22,7 @@ async function openAndMigrate(): Promise<SQLite.SQLiteDatabase> {
   if (version === 0) await apply(INITIAL_SCHEMA);
   if (version < 2) await apply(MIGRATION_2_SQL);
   if (version < 3) await apply(MIGRATION_3_SQL);
+  if (version < 4) await apply(MIGRATION_4_SQL);
   return db;
 }
 
