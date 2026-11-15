@@ -155,3 +155,17 @@ Yeni sohbet:
 Yeni sohbet prompt'u:
 
 > Vardiyum https://github.com/hilmiguner/vardiyum. Önce main SHA/CI, açık PR/Issue ve docs/STATUS.md, docs/HANDOFF.md, docs/DECISIONS.md, docs/ROADMAP.md kontrol et. Issue #16/PR #19 AES-GCM şifreli SQLite v8 18 tablo export ve salt-okunur import preview **main'de** (CI #43722072994 SUCCESS, 119/119 Node). Geri yükleme hâlâ yok; Issue #20 atomik restore, Issue #2 cihaz QA. Gerçek restore/import-yazma henüz yok; key dosyadan ayrı ve kaybolursa kurtarılmaz. Native cihaz testleri Issue #2'de ertelendi. CI/merge kanıtıyla GitHub üzerinden ilerle, verileri silmeden transactional restore tasarımına geç.
+
+## 2026-11-15 — Issue #20 / PR #21 (en yeni devir)
+
+- **PR:** [#21](https://github.com/hilmiguner/vardiyum/pull/21), dal `feat/clean-target-atomic-backup-restore`. Son main/merge CI SHA'sını doğrula.
+- **Kod CI:** [#43724855020](https://github.com/hilmiguner/vardiyum/actions/runs/43724855020) SUCCESS, **127/127 Node** + Android/iOS JS export, Expo/format/lint/TS.
+- **Kod:** `src/domain/backup-restore.ts` temiz hedef/fail-closed tek transaction ve row-by-row audit; `src/data/backup-restore-repository.ts` Expo SQLite exclusive tx adaptörü, FK check/integrity check; `src/services/encrypted-backup.ts` decrypt+validated snapshot; `src/components/encrypted-backup-panel.tsx` TR/EN typed RESTORE + confirmation, clear sensitive state and reload.
+- **Koruma:** Kaynak AES-GCM/AAD+SHA256 ile doğrulanmış 18 tablo SQLite v8 olmalı; hedef yalnız dokunulmamış **dört seed template** ve diğer tablolar tamamen boş olmalı. Dolu/özelleştirilmiş DB'ye **asla overwrite/merge yok**. İşlemin hepsi atomik transaction'da; readback + FK postcheck (Expo ayrı bağlantıda PRAGMA FK miras alınmayabilir) + integrity öncesi COMMIT yasak. Başarısızlıkta rollback.
+- **Bilinçli dönüşüm:** Bildirim opt-in 0 reset; restore marker ekle ve repeat import reddet. Orijinal gerçek UTC çalışma, rutin event, profil sürümü/mola audit korunur.
+- **KRİTİK QA:** Node SQLite restore rehearsal başarılı olsa da native iOS/Android cihazda şifreleme, FS/Share, SQLite restore, persistence, force-kill/low-disk, ikinci cihaz **henüz yapılmadı**. Ürün/cihaz kurtarma güvencesi verilmez; [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ertelendi; [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) açık tutulur. Dolu DB merge veya özel maaş dönemi [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık.
+- **Sıradaki:** PR #21 merge ve main CI kanıtını STATUS/HANDOFF'a kaydet. Sonra native test izni varsa clean-target restore kabulü; yoksa kalan non-native MVP işine ayrı Issue ile geç.
+
+Yeni sohbet prompt:
+
+> Vardiyum https://github.com/hilmiguner/vardiyum. Önce main SHA, PR/Issue/Actions ve docs/STATUS.md, HANDOFF.md, ROADMAP.md, DECISIONS.md oku. Issue #20 PR #21: AES-GCM/SHA256 validated backup, yalnızca pristine 4 template + diğer 17 tablosu boş SQLite v8 hedefe typed RESTORE + ikinci onay ile atomik import; readback, FK postcheck, integrity_check, rollback ve reminder consent reset. 127 Node test/Android+iOS JS CI başarılı; **native cihaz testleri yapılmadı (Issue #2)**, Issue #20 açık kalsın. Issue #16 dolu DB merge/özel maaş dönemi açık. PR merge/main CI doğrulayıp GitHub'da yol haritasını güncelle, geliştirmeye devam et.
