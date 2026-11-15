@@ -159,3 +159,10 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 - [ ] `feat/custom-mixed-hourly-rates`: 26→25 içinde ayın 1'inde yeni hourly rate = **orijinal work IANA 00:00 UTC split**; aynı currency/period threshold, her profil özgün OT multiplier ve kaynak ID/revision. Rate-midnight >0 mola, mixed currency/threshold/fixed, missing audit, calendar adjustments fail closed. TR/EN UI ve Node DST/money/v8 regresyonu; PR CI/merge bekliyor.
 - [ ] Rate-boundary break allocation için ayrı açık kullanıcı beyanı ve snapshot provenance tasarımı, fixed salary full/partial, custom period prim/kesinti atfı, gerçek özel dönem kaynaklı CSV/JSON. Issue #22/#16.
 - [ ] Gerçek iOS/Android native + AES clean restore/low disk/process-kill Issue #2/#20 erteli.
+
+## 2026-11-15 — PR #28 karma hourly rate tamamlandı
+
+- [x] [PR #28](https://github.com/hilmiguner/vardiyum/pull/28) MERGED main code `dfc6664f10eb963ad20713f79fe5e37b27442807`, [main CI #43751705225](https://github.com/hilmiguner/vardiyum/actions/runs/43751705225) SUCCESS **192/192 Node**, Android+iOS JS. Özel pay period içinde iki user-entered hourly profil, kendi kayıtlı IANA UTC rate midnight, aynı currency/period OT threshold, efektif profil bazlı rate/multiplier ve kaynak satırları, 0-break midnight split, BigInt kümülatif kuruş. Eski tek-hourly ve aylık rapor korunur.
+- [ ] Ayrı **ücret değişimi sınırındaki mola** kullanıcının pozitif dakika beyanı ve append-only kaynağa bağlı audit; PR #25 period audit'i bu ayrımı içermez. Mixed currency/threshold/fixed otomatik hesaplanmaz.
+- [ ] Full/partial fixed monthly custom pay assumption + period-keyed manual bonus/deduction/correction attribution + source-linked custom CSV/JSON. Issue #22/#16 açık.
+- [ ] Native iOS/Android SQLite/AES/restore/process kill/low disk QA #2/#20 erteli.

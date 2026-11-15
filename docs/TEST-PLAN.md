@@ -207,3 +207,10 @@
 - [ ] Aynı currency/same threshold zorunlu, differing multiplier ilgili rate'ye uygulanır, mixed fixed/FX/threshold ve takvim ayı adjustments blocked, duplicate/overlap/planned/malformed work fail-closed, year/month boundary, micro-second cumulative BigInt cent rounding.
 - [ ] Node SQLite v1→v8: gerçek iki source profile ve immutable latest revision, read-only exact source work, 18 tables/foreign key/integrity, eski month adjustments ve period audit unaffected.
 - [ ] PR Actions Prettier/lint/TS/Expo/Node ve Android/iOS JS, sonra exact-head squash merge + main CI. Native iOS/Android SQLite/AES restore/DST Issue #2/#20 erteli.
+
+## 2026-11-15 — PR #28 CI doğrulandı
+
+- [x] [PR CI #43751530540](https://github.com/hilmiguner/vardiyum/actions/runs/43751530540) SUCCESS + [main merge CI #43751705225](https://github.com/hilmiguner/vardiyum/actions/runs/43751705225) SUCCESS: **192/192 Node tests**, Prettier/ESLint/TS/Expo, Android+iOS JS export.
+- [x] +15 `tests/custom-mixed-hourly-work.test.mjs`: Ekim 2h 10000 minor/h, Kasım 3h 20000 minor/h, OT threshold 3h bir kez ve multiplier; 31 Ekim→1 Kasım 0-break split, pozitif break fail closed; Kathmandu saved work-zone UTC+5:45 farklı schedule-zone, New York DST; mixed currency, threshold, fixed, identical numeric rate distinct revisions, different explicit OT multipliers, adjustment block, duplicate/overlap/invalid UTC/fake preview, cumulative 1-cent tiny work. Node SQLite real v1→v8 migrated DB + latest immutable revision, read-only 18-table/FK/integrity.
+- [ ] Rate boundary break allocation/manual audited revision feature, fixed/period adjustment/custom CSV+JSON policies and tests (Issue #22).
+- [ ] Native iOS/Android SQLite/AES clean restore, DST and device low disk/crash acceptance (Issue #2/#20 deferred).
