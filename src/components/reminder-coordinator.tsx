@@ -28,20 +28,25 @@ export function syncLocalRoutineReminders(
   const job = async () => {
     try {
       const optedIn = await getReminderOptIn();
-      const allowed = optedIn && await hasNotificationPermission();
+      const allowed = optedIn && (await hasNotificationPermission());
       if (!allowed) {
         await reconcileReminderRequests(notificationPort, []);
         return;
       }
       await prepareReminderChannel();
       const now = new Date();
-      const { rules, completedKeys } =
-        await loadReminderData(schedule, now, REMINDER_HORIZON_DAYS);
+      const { rules, completedKeys } = await loadReminderData(
+        schedule,
+        now,
+        REMINDER_HORIZON_DAYS,
+      );
       const plan = planRoutineReminders(schedule, rules, completedKeys, now);
       const result = await reconcileReminderRequests(notificationPort, plan.items);
       if (
-        plan.skippedAmbiguous || plan.skippedNonexistent ||
-        plan.skippedOverLimit || plan.skippedStaleTimeZone
+        plan.skippedAmbiguous ||
+        plan.skippedNonexistent ||
+        plan.skippedOverLimit ||
+        plan.skippedStaleTimeZone
       ) {
         console.info('ROUTINE_REMINDER_SYNC_SKIPS', {
           ambiguous: plan.skippedAmbiguous,
@@ -74,8 +79,7 @@ export function ReminderCoordinator() {
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (state) => {
-      if (state === 'active' && !loading && !error)
-        void syncLocalRoutineReminders(schedule);
+      if (state === 'active' && !loading && !error) void syncLocalRoutineReminders(schedule);
     });
     return () => subscription.remove();
   }, [schedule, loading, error]);

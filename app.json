@@ -14,12 +14,7 @@
     "android": {
       "package": "com.hilmiguner.vardiyum"
     },
-    "plugins": [
-      "expo-router",
-      "expo-sqlite",
-      "expo-localization",
-      "expo-notifications"
-    ],
+    "plugins": ["expo-router", "expo-sqlite", "expo-localization", "expo-notifications"],
     "experiments": {
       "typedRoutes": true
     }

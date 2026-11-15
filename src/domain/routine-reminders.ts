@@ -113,9 +113,8 @@ export function planRoutineReminders(
     }
   }
   // Earliest first is fair to users with long daily rules and finite OS slots.
-  all.sort((a, b) =>
-    a.whenUtc.localeCompare(b.whenUtc) ||
-    a.routineId.localeCompare(b.routineId),
+  all.sort(
+    (a, b) => a.whenUtc.localeCompare(b.whenUtc) || a.routineId.localeCompare(b.routineId),
   );
   const seen = new Set<string>();
   const dayCounts = new Map<string, number>();

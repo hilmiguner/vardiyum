@@ -23,10 +23,9 @@ export const notificationPort: ReminderSchedulerPort = {
     const pending = await Notifications.getAllScheduledNotificationsAsync();
     return pending.map((entry) => ({
       identifier: entry.identifier,
-      owner: typeof entry.content.data?.owner === 'string'
-        ? entry.content.data.owner : undefined,
-      key: typeof entry.content.data?.key === 'string'
-        ? entry.content.data.key : undefined,
+      owner:
+        typeof entry.content.data?.owner === 'string' ? entry.content.data.owner : undefined,
+      key: typeof entry.content.data?.key === 'string' ? entry.content.data.key : undefined,
     }));
   },
   async schedule(item: ReminderPlanItem) {
@@ -75,9 +74,11 @@ function isUsablePermission(status: Notifications.NotificationPermissionsStatus)
   if (status.granted) return true;
   if (Platform.OS !== 'ios') return false;
   const ios = status.ios?.status;
-  return ios === Notifications.IosAuthorizationStatus.AUTHORIZED ||
+  return (
+    ios === Notifications.IosAuthorizationStatus.AUTHORIZED ||
     ios === Notifications.IosAuthorizationStatus.PROVISIONAL ||
-    ios === Notifications.IosAuthorizationStatus.EPHEMERAL;
+    ios === Notifications.IosAuthorizationStatus.EPHEMERAL
+  );
 }
 
 /**

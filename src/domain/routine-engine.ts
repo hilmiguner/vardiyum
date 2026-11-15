@@ -104,8 +104,7 @@ export function validateRoutine(input: RoutineRule): RoutineRule {
     throw new Error('INVALID_REMINDER_CLOCK');
   if (clock !== null && (!zone || typeof zone !== 'string'))
     throw new Error('INVALID_REMINDER_TIME_ZONE');
-  if (zone !== null && typeof zone !== 'string')
-    throw new Error('INVALID_REMINDER_TIME_ZONE');
+  if (zone !== null && typeof zone !== 'string') throw new Error('INVALID_REMINDER_TIME_ZONE');
   if (zone !== null) {
     try {
       new Intl.DateTimeFormat('en-US', { timeZone: zone }).format(new Date());
@@ -114,8 +113,11 @@ export function validateRoutine(input: RoutineRule): RoutineRule {
     }
   }
   return {
-    ...input, title, recurrence: validateRecurrence(input.recurrence),
-    reminderClock: clock, reminderTimeZone: clock ? zone : null,
+    ...input,
+    title,
+    recurrence: validateRecurrence(input.recurrence),
+    reminderClock: clock,
+    reminderTimeZone: clock ? zone : null,
   };
 }
 

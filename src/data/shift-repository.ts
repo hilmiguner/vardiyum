@@ -179,7 +179,8 @@ export async function changeScheduleTimeZone(nextTimeZone: string): Promise<void
   await db.withExclusiveTransactionAsync(async (tx) => {
     const result = await tx.runAsync(
       'UPDATE shift_patterns SET timezone_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-      nextTimeZone, PRIMARY_ID,
+      nextTimeZone,
+      PRIMARY_ID,
     );
     if (result.changes !== 1) throw new Error('SCHEDULE_NOT_CONFIGURED');
     // Keep each configured reminder bound to the schedule zone after the user's
