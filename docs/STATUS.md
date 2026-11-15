@@ -196,7 +196,7 @@
 
 ## Issue #20 / PR #21 — Temiz kurulumda atomik restore (kodlandı, native cihaz doğrulanmadı)
 
-**PR:** [#21](https://github.com/hilmiguner/vardiyum/pull/21) · `feat/clean-target-atomic-backup-restore`  
+**[PR #21](https://github.com/hilmiguner/vardiyum/pull/21):** squash-merge main `de110794d9f71c8bfa81e978b0141ead74fb3e35`.  
 **Kod CI:** [#43724855020](https://github.com/hilmiguner/vardiyum/actions/runs/43724855020) SUCCESS (**127/127 Node testi**, Prettier/ESLint/TS, Expo paket check, Android/iOS **JS** export).
 
 - [x] Kaynak şifreli dosya **AES-GCM/AAD, SHA-256, SQLite v8 18 tablo trusted schema** ile doğrulanmadan geri yükleme adayı değil.
@@ -205,8 +205,9 @@
 - [x] Transaction: statik v8 tablo/kolon INSERT, readback exact, `PRAGMA foreign_key_check` + `PRAGMA integrity_check`, hata durumunda rollback.
 - [x] Sistem bildirim opt-in'i restore sırasında **0** olarak resetlenir; ikinci restore'u önlemek için marker; source user data geri kalan birebir.
 - [x] SQLite v8 Node regresyonu: dolu hedef reddi, seed özelleştirme reddi, mükerrer restore, fault injection/UNIQUE rollback, FK OFF bağlantısında FK postcheck rollback, schema mismatch.
-- [ ] PR #21 belge commit sonrası merge ve main CI doğrulanacak.
+- [x] **PR #21 merged:** `de110794d9f71c8bfa81e978b0141ead74fb3e35`.
+- [x] **Merge sonrası main CI:** [Actions #43725429338](https://github.com/hilmiguner/vardiyum/actions/runs/43725429338) SUCCESS (127/127 Node test, Android/iOS JS export).
 - [ ] **Gerçek native Android/iOS cihaz testleri yapılmadı:** kayıt kalıcılığı, AES interoperability, düşük disk, crash/relaunch, SQLite exclusive tx, Share/Picker ve OS bildirimleri [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelenmiş. [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) bu kabul olmadan **kapatılmayacak**.
 - [ ] Mevcut dolu DB ile merge/overwrite veya özel maaş dönemi yok; [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık.
 
-**Sıradaki:** PR #21 merge/main CI; gerçek cihaz kabulü için Issue #2/#20 ve sonraki MVP seçenekleri. Restore tam cihaz kanıtı olmadığından 'cihaz kurtarma doğrulandı' denmeyecek.
+**Sıradaki:** PR #21 main ve CI başarılı. [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) native restore kalıcılık/crash/low-disk kabulü için **açık**; [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) kullanıcı isteğiyle ertelendi. Dolu DB merge yok, cihaz kurtarma doğrulandı iddiası yok. [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16)'da özel maaş dönemi kaldı.

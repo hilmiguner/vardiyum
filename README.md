@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Offline vardiya, rutin, tahmini kazanç ve şifreli SQLite v8 yedek oluşturma/önizlemesi PR #3/#5/#7/#9/#11/#13/#15/#17/#18/#19 main'de. **PR #21** temiz kurulumda kullanıcının iki ayrı onayıyla atomik geri yükleme kodunu getirdi; [CI #43724855020](https://github.com/hilmiguner/vardiyum/actions/runs/43724855020) SUCCESS (**127/127 Node test**, Android/iOS JS export). **Native telefon testi YAPILMADI**, dolu SQLite üzerine import/merge YOK; [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) açık. [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) cihaz kabulü ertelendi, resmî bordro/net/vergi hesabı yok.
+> **Durum (2026-11-15):** Offline vardiya/rutin/gerçek UTC çalışma, açıklanabilir tahmini kazanç ve şifreli yedek (PR #3/#5/#7/#9/#11/#13/#15/#17/#18/#19) ile **temiz kurulumda atomik geri yükleme PR #21** main'de. PR #21 merge `de110794d9f71c8bfa81e978b0141ead74fb3e35`, [main CI #43725429338](https://github.com/hilmiguner/vardiyum/actions/runs/43725429338) **SUCCESS** (**127 Node testi**, Android/iOS JS export). **Gerçek cihaz kabulü YAPILMADI**: [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) açık; [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ertelendi. Dolu DB merge/overwrite veya resmî bordro/net/vergi hesabı yok.
 
 ## Geliştirme kurulumu
 

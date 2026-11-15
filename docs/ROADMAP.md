@@ -9,7 +9,7 @@
 | 2 | Esnek vardiya motoru, istisnalar ve takvim | PR #5/#7/#9 main'de; cihaz testleri/sürümleme açık |
 | 3 | Rutinler, görev geçmişi, bildirimler | PR #11/#13 main'de; native bildirim teslimi/QA açık |
 | 4 | Mesai ve tahmini kazanç | PR #15/#17/#18 main'de; kontrollü içe alma/şifreli yedek Issue #16 açık |
-| 5 | Yedekleme, gerçek cihazlar, beta | PR #19 main, PR #21 temiz kurulum atomik restore kodu; native kabul Issue #20/#2 açık |
+| 5 | Yedekleme, gerçek cihazlar, beta | PR #19/#21 main'de; clean restore Node kanıtlı, native QA Issue #20/#2 açık |
 | 6 | App Store ve Google Play yayını | Planlandı |
 
 ## Faz 1 — [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)
@@ -70,7 +70,7 @@
 - [x] UTC/IANA ay sınırında gece vardiyası bölünmesi, açık mola dağılımı/revizyon izi ve kullanıcı onaylı CSV/JSON metin paylaşımı: [PR #17](https://github.com/hilmiguner/vardiyum/pull/17) main merge `07deee63`; [main CI #43713571844](https://github.com/hilmiguner/vardiyum/actions/runs/43713571844) SUCCESS.
 - [x] Aynı efektif ay için gerekçeli, silinmeyen ücret profil sürümleri ve eski sürümle yeniden hesaplama: [PR #18](https://github.com/hilmiguner/vardiyum/pull/18), SQLite v8; merge `01f781ac`, [main CI #43718105350](https://github.com/hilmiguner/vardiyum/actions/runs/43718105350) SUCCESS.
 - [x] AES-256-GCM **şifreli dışa aktarma** ve dosya/key doğrulamalı **salt-okunur** preview: [PR #19](https://github.com/hilmiguner/vardiyum/pull/19) main merge `1686a844`; [CI #43722072994](https://github.com/hilmiguner/vardiyum/actions/runs/43722072994) SUCCESS.
-- [x] **Yalnız temiz kurulum için** transactional restore kodu ve Node rollback/invalid-FK testleri: [PR #21](https://github.com/hilmiguner/vardiyum/pull/21), CI 127 test PASS.
+- [x] **Yalnız temiz kurulum için** atomic restore ve Node rollback/invalid-FK testleri: [PR #21](https://github.com/hilmiguner/vardiyum/pull/21) merge `de110794`; [main CI #43725429338](https://github.com/hilmiguner/vardiyum/actions/runs/43725429338) SUCCESS, 127/127 Node test.
 - [ ] Native Android/iOS gerçek kurtarma, düşük disk/crash ve persistans kabulü: [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) / [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2). Dolu DB merge ve özel maaş dönemi tamamlanmadı.
 - [ ] Native Android/iOS SQLite v7, kazanç paylaşım ekranı ve çevrimdışı kalıcılık: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) (kullanıcı isteğiyle ertelendi).
 
