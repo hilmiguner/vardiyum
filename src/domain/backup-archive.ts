@@ -11,12 +11,23 @@ export const BACKUP_MAX_PLAINTEXT_CHARS = 4_000_000;
 export const BACKUP_MAX_ENVELOPE_CHARS = 8_000_000;
 
 export const BACKUP_TABLES = [
-  'shift_templates', 'shift_patterns', 'pattern_days', 'day_overrides',
-  'routine_rules', 'task_completions', 'work_entries',
-  'compensation_profiles', 'pay_adjustments', 'app_settings',
-  'shift_boundary_choices', 'actual_work_sessions',
-  'routine_completion_events', 'earnings_profiles', 'earnings_adjustments',
-  'earnings_month_break_allocations', 'earnings_month_break_allocation_events',
+  'shift_templates',
+  'shift_patterns',
+  'pattern_days',
+  'day_overrides',
+  'routine_rules',
+  'task_completions',
+  'work_entries',
+  'compensation_profiles',
+  'pay_adjustments',
+  'app_settings',
+  'shift_boundary_choices',
+  'actual_work_sessions',
+  'routine_completion_events',
+  'earnings_profiles',
+  'earnings_adjustments',
+  'earnings_month_break_allocations',
+  'earnings_month_break_allocation_events',
   'earnings_profile_revisions',
 ] as const;
 
@@ -53,7 +64,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 function exactFields(value: Record<string, unknown>, names: readonly string[], code: string) {
   const actual = Object.keys(value);
-  if (actual.length !== names.length || names.some(key => !Object.hasOwn(value,key)))
+  if (actual.length !== names.length || names.some((key) => !Object.hasOwn(value, key)))
     throw new Error(code);
 }
 function dateStamp(value: unknown): value is string {
@@ -63,29 +74,39 @@ function dateStamp(value: unknown): value is string {
 }
 
 export function validateBackupSnapshot(
-  input: unknown, expectedColumns: ExpectedColumns,
+  input: unknown,
+  expectedColumns: ExpectedColumns,
 ): BackupSnapshot {
   if (!isRecord(input)) throw new Error('BACKUP_INVALID_SNAPSHOT');
-  exactFields(input,['format','schemaVersion','createdAt','tables'],'BACKUP_INVALID_SNAPSHOT');
+  exactFields(
+    input,
+    ['format', 'schemaVersion', 'createdAt', 'tables'],
+    'BACKUP_INVALID_SNAPSHOT',
+  );
   if (input.format !== BACKUP_SNAPSHOT_FORMAT || input.schemaVersion !== BACKUP_SCHEMA_VERSION)
     throw new Error('BACKUP_UNSUPPORTED_SCHEMA');
   if (!dateStamp(input.createdAt)) throw new Error('BACKUP_INVALID_TIMESTAMP');
   if (!Array.isArray(input.tables) || input.tables.length !== BACKUP_TABLES.length)
     throw new Error('BACKUP_INCOMPLETE_TABLES');
   let totalRows = 0;
-  for (let index=0;index<BACKUP_TABLES.length;index++) {
+  for (let index = 0; index < BACKUP_TABLES.length; index++) {
     const entry: unknown = input.tables[index];
     if (!isRecord(entry)) throw new Error('BACKUP_INVALID_TABLE');
-    exactFields(entry,['name','columns','rows'],'BACKUP_INVALID_TABLE');
+    exactFields(entry, ['name', 'columns', 'rows'], 'BACKUP_INVALID_TABLE');
     if (entry.name !== BACKUP_TABLES[index]) throw new Error('BACKUP_INVALID_TABLE_ORDER');
     const expected = expectedColumns.get(BACKUP_TABLES[index]);
-    if (!expected || expected.length < 1 ||
-        expected.some(name => !ID_COLUMN.test(name)) ||
-        new Set(expected).size !== expected.length)
+    if (
+      !expected ||
+      expected.length < 1 ||
+      expected.some((name) => !ID_COLUMN.test(name)) ||
+      new Set(expected).size !== expected.length
+    )
       throw new Error('BACKUP_LOCAL_SCHEMA_UNAVAILABLE');
-    if (!Array.isArray(entry.columns) ||
-        entry.columns.length !== expected.length ||
-        entry.columns.some((value, i) => value !== expected[i]))
+    if (
+      !Array.isArray(entry.columns) ||
+      entry.columns.length !== expected.length ||
+      entry.columns.some((value, i) => value !== expected[i])
+    )
       throw new Error('BACKUP_COLUMN_SCHEMA_MISMATCH');
     if (!Array.isArray(entry.rows)) throw new Error('BACKUP_INVALID_ROWS');
     totalRows += entry.rows.length;
@@ -94,8 +115,11 @@ export function validateBackupSnapshot(
       if (!Array.isArray(row) || row.length !== expected.length)
         throw new Error('BACKUP_INVALID_ROW_SHAPE');
       for (const value of row) {
-        if (value !== null && typeof value !== 'string' &&
-            !(typeof value === 'number' && Number.isSafeInteger(value)))
+        if (
+          value !== null &&
+          typeof value !== 'string' &&
+          !(typeof value === 'number' && Number.isSafeInteger(value))
+        )
           throw new Error('BACKUP_UNSUPPORTED_SQL_VALUE');
         if (typeof value === 'string' && value.length > 300_000)
           throw new Error('BACKUP_ROW_VALUE_TOO_LARGE');
@@ -106,12 +130,16 @@ export function validateBackupSnapshot(
 }
 
 export function previewBackup(snapshot: BackupSnapshot): BackupPreview {
-  const tableCounts = snapshot.tables.map(entry => ({
-    table: entry.name, count: entry.rows.length,
+  const tableCounts = snapshot.tables.map((entry) => ({
+    table: entry.name,
+    count: entry.rows.length,
   }));
   return {
-    schemaVersion:snapshot.schemaVersion, createdAt:snapshot.createdAt,
-    totalRows:tableCounts.reduce((n,x)=>n+x.count,0), tableCounts, canRestore:false,
+    schemaVersion: snapshot.schemaVersion,
+    createdAt: snapshot.createdAt,
+    totalRows: tableCounts.reduce((n, x) => n + x.count, 0),
+    tableCounts,
+    canRestore: false,
   };
 }
 
@@ -119,10 +147,10 @@ export function previewBackup(snapshot: BackupSnapshot): BackupPreview {
 export function utf8Bytes(value: string): Uint8Array {
   const encoded = encodeURIComponent(value);
   const result: number[] = [];
-  for (let i=0;i<encoded.length;i++){
+  for (let i = 0; i < encoded.length; i++) {
     if (encoded[i] === '%') {
-      result.push(Number.parseInt(encoded.slice(i+1,i+3),16));
-      i+=2;
+      result.push(Number.parseInt(encoded.slice(i + 1, i + 3), 16));
+      i += 2;
     } else {
       result.push(encoded.charCodeAt(i));
     }
@@ -130,67 +158,88 @@ export function utf8Bytes(value: string): Uint8Array {
   return new Uint8Array(result);
 }
 export function utf8String(bytes: Uint8Array): string {
-  const parts: string[]=[];
-  for (const byte of bytes) parts.push('%' + byte.toString(16).padStart(2,'0'));
-  try { return decodeURIComponent(parts.join('')); }
-  catch { throw new Error('BACKUP_INVALID_UTF8'); }
+  const parts: string[] = [];
+  for (const byte of bytes) parts.push('%' + byte.toString(16).padStart(2, '0'));
+  try {
+    return decodeURIComponent(parts.join(''));
+  } catch {
+    throw new Error('BACKUP_INVALID_UTF8');
+  }
 }
 
 /** SHA-256 is supplemental to the AES-GCM authentication tag. */
 export async function buildAuthenticatedPayload(
   snapshot: BackupSnapshot,
-  sha256: (data: string)=>Promise<string>,
+  sha256: (data: string) => Promise<string>,
 ): Promise<string> {
   const serialized = JSON.stringify(snapshot);
-  if (serialized.length > BACKUP_MAX_PLAINTEXT_CHARS)
-    throw new Error('BACKUP_TOO_LARGE');
-  const digest=await sha256(serialized);
+  if (serialized.length > BACKUP_MAX_PLAINTEXT_CHARS) throw new Error('BACKUP_TOO_LARGE');
+  const digest = await sha256(serialized);
   if (!SHA256.test(digest)) throw new Error('BACKUP_INVALID_DIGEST');
   return JSON.stringify({ format: BACKUP_PAYLOAD_FORMAT, sha256: digest, snapshot });
 }
 
 export async function readAuthenticatedPayload(
-  plaintext: string, expectedColumns: ExpectedColumns,
-  sha256:(data:string)=>Promise<string>,
-): Promise<{snapshot:BackupSnapshot;preview:BackupPreview}> {
-  if (plaintext.length > BACKUP_MAX_PLAINTEXT_CHARS + 512)
-    throw new Error('BACKUP_TOO_LARGE');
+  plaintext: string,
+  expectedColumns: ExpectedColumns,
+  sha256: (data: string) => Promise<string>,
+): Promise<{ snapshot: BackupSnapshot; preview: BackupPreview }> {
+  if (plaintext.length > BACKUP_MAX_PLAINTEXT_CHARS + 512) throw new Error('BACKUP_TOO_LARGE');
   let parsed: unknown;
-  try { parsed=JSON.parse(plaintext); }
-  catch { throw new Error('BACKUP_INVALID_PAYLOAD'); }
-  if (!isRecord(parsed)) throw new Error('BACKUP_INVALID_PAYLOAD');
-  exactFields(parsed,['format','sha256','snapshot'],'BACKUP_INVALID_PAYLOAD');
-  if (parsed.format !== BACKUP_PAYLOAD_FORMAT ||
-      typeof parsed.sha256 !== 'string' || !SHA256.test(parsed.sha256))
+  try {
+    parsed = JSON.parse(plaintext);
+  } catch {
     throw new Error('BACKUP_INVALID_PAYLOAD');
-  const snapshot=validateBackupSnapshot(parsed.snapshot, expectedColumns);
-  const serialized=JSON.stringify(snapshot);
+  }
+  if (!isRecord(parsed)) throw new Error('BACKUP_INVALID_PAYLOAD');
+  exactFields(parsed, ['format', 'sha256', 'snapshot'], 'BACKUP_INVALID_PAYLOAD');
+  if (
+    parsed.format !== BACKUP_PAYLOAD_FORMAT ||
+    typeof parsed.sha256 !== 'string' ||
+    !SHA256.test(parsed.sha256)
+  )
+    throw new Error('BACKUP_INVALID_PAYLOAD');
+  const snapshot = validateBackupSnapshot(parsed.snapshot, expectedColumns);
+  const serialized = JSON.stringify(snapshot);
   if (serialized.length > BACKUP_MAX_PLAINTEXT_CHARS) throw new Error('BACKUP_TOO_LARGE');
-  if (await sha256(serialized) !== parsed.sha256) throw new Error('BACKUP_DIGEST_MISMATCH');
-  return { snapshot, preview:previewBackup(snapshot) };
+  if ((await sha256(serialized)) !== parsed.sha256) throw new Error('BACKUP_DIGEST_MISMATCH');
+  return { snapshot, preview: previewBackup(snapshot) };
 }
 
-export function encodeEncryptedEnvelope(ciphertextBase64:string):string {
-  if (ciphertextBase64.length < 40 || !BASE64.test(ciphertextBase64) ||
-      ciphertextBase64.length > BACKUP_MAX_ENVELOPE_CHARS - 128)
+export function encodeEncryptedEnvelope(ciphertextBase64: string): string {
+  if (
+    ciphertextBase64.length < 40 ||
+    !BASE64.test(ciphertextBase64) ||
+    ciphertextBase64.length > BACKUP_MAX_ENVELOPE_CHARS - 128
+  )
     throw new Error('BACKUP_INVALID_CIPHERTEXT');
-  return JSON.stringify({format: BACKUP_FORMAT, ciphertextBase64});
+  return JSON.stringify({ format: BACKUP_FORMAT, ciphertextBase64 });
 }
-export function decodeEncryptedEnvelope(text:string):string {
+export function decodeEncryptedEnvelope(text: string): string {
   if (text.length > BACKUP_MAX_ENVELOPE_CHARS) throw new Error('BACKUP_TOO_LARGE');
-  let parsed:unknown;
-  try {parsed=JSON.parse(text);} catch {throw new Error('BACKUP_INVALID_ENVELOPE');}
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error('BACKUP_INVALID_ENVELOPE');
+  }
   if (!isRecord(parsed)) throw new Error('BACKUP_INVALID_ENVELOPE');
-  exactFields(parsed,['format','ciphertextBase64'],'BACKUP_INVALID_ENVELOPE');
-  if (parsed.format!==BACKUP_FORMAT || typeof parsed.ciphertextBase64!=='string' ||
-      parsed.ciphertextBase64.length<40 ||
-      parsed.ciphertextBase64.length>BACKUP_MAX_ENVELOPE_CHARS-128 ||
-      !BASE64.test(parsed.ciphertextBase64))
+  exactFields(parsed, ['format', 'ciphertextBase64'], 'BACKUP_INVALID_ENVELOPE');
+  if (
+    parsed.format !== BACKUP_FORMAT ||
+    typeof parsed.ciphertextBase64 !== 'string' ||
+    parsed.ciphertextBase64.length < 40 ||
+    parsed.ciphertextBase64.length > BACKUP_MAX_ENVELOPE_CHARS - 128 ||
+    !BASE64.test(parsed.ciphertextBase64)
+  )
     throw new Error('BACKUP_INVALID_ENVELOPE');
   return parsed.ciphertextBase64;
 }
-export function normalizeRecoveryKey(value:string):string {
-  const normalized = value.trim().replace(/[\s-]+/g,'').toLowerCase();
+export function normalizeRecoveryKey(value: string): string {
+  const normalized = value
+    .trim()
+    .replace(/[\s-]+/g, '')
+    .toLowerCase();
   if (!/^[0-9a-f]{64}$/.test(normalized)) throw new Error('BACKUP_INVALID_RECOVERY_KEY');
   return normalized;
 }
