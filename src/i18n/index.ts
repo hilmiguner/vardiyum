@@ -12,6 +12,20 @@ const resources = {
       routines: 'Rutinler',
       earnings: 'Kazanç',
       settings: 'Ayarlar',
+      payPeriodPreferenceTitle: 'Maaş dönemi başlangıcı (hazırlık)',
+      payPeriodPreferenceExplanation:
+        'Maaş dönemin ayın 1’i dışında başlayabilir. Başlangıç gününü yerel olarak kaydedebilirsin; bu tercih henüz Kazanç raporlarının hesaplama dönemini değiştirmez.',
+      payPeriodPreferenceStartDay: 'Dönem başlangıç günü (1–28)',
+      payPeriodPreferenceHint:
+        'Örneğin 26 seçilirse dönem ayın 26’sında başlar ve sonraki ayın 25’inde biter. 29–31 Şubat ayı nedeniyle bu sürümde desteklenmiyor.',
+      payPeriodPreferenceInvalid: '1–28 arasında bir tam gün seç.',
+      payPeriodPreviewDates: 'Örnek mevcut dönem: {{start}} – {{end}} ({{zone}})',
+      payPeriodPreviewUnavailable: 'Bu saat diliminde dönem önizlemesi oluşturulamadı.',
+      payPeriodPreferenceSave: 'Maaş dönemi tercihini kaydet',
+      payPeriodPreferenceSaved: 'Maaş dönemi başlangıç tercihi cihazda kaydedildi.',
+      payPeriodPreferenceError: 'Maaş dönemi tercihi okunamadı veya kaydedilemedi',
+      payPeriodPreferenceNotEnabled:
+        'Önemli: Kazanç sekmesi hâlâ takvim ayına göre tahmin yapar. Özel dönem maaş/mesai hesabı, molalar ve ücret profili geçişleri güvenle bağlandıktan sonra etkinleşecek.',
       greeting: 'Bugünkü planın',
       nextShift: 'Sonraki gün',
       shiftToday: 'Bugünkü vardiya',
@@ -361,6 +375,20 @@ const resources = {
       routines: 'Routines',
       earnings: 'Earnings',
       settings: 'Settings',
+      payPeriodPreferenceTitle: 'Pay period start (preparation)',
+      payPeriodPreferenceExplanation:
+        'Your pay period may start on a day other than the 1st. You can save your preferred start day locally; this preference does not yet change the Earnings report period.',
+      payPeriodPreferenceStartDay: 'Period start day (1–28)',
+      payPeriodPreferenceHint:
+        'For example, 26 means the period starts on the 26th and closes on the 25th of the following month. Days 29–31 are not supported yet because of February.',
+      payPeriodPreferenceInvalid: 'Choose a whole-number day from 1 to 28.',
+      payPeriodPreviewDates: 'Sample current period: {{start}} – {{end}} ({{zone}})',
+      payPeriodPreviewUnavailable: 'Cannot preview the period in this time zone.',
+      payPeriodPreferenceSave: 'Save pay period preference',
+      payPeriodPreferenceSaved: 'Your pay period start preference was saved on this device.',
+      payPeriodPreferenceError: 'Could not read or save pay period preference',
+      payPeriodPreferenceNotEnabled:
+        'Important: Earnings estimates still use calendar months. Custom-period pay and overtime calculations will be enabled only after break allocation and pay-profile changes are handled safely.',
       greeting: 'Your plan today',
       nextShift: 'Next day',
       shiftToday: "Today's shift",
