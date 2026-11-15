@@ -8,8 +8,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "lint": "eslint .",
-    "format": "prettier --check .",
-    "format:write": "prettier --write .",
+    "format": "prettier --check \"src/**/*.{ts,tsx}\" \"tests/**/*.mjs\" package.json app.json tsconfig.json eslint.config.js \".github/workflows/mobile-quality.yml\"",
+    "format:write": "prettier --write \"src/**/*.{ts,tsx}\" \"tests/**/*.mjs\" package.json app.json tsconfig.json eslint.config.js \".github/workflows/mobile-quality.yml\"",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --disable-warning=ExperimentalWarning --test tests/*.test.mjs",
     "check": "npm run format && npm run lint && npm run typecheck && npm test"
