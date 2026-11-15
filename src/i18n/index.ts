@@ -106,7 +106,8 @@ const resources = {
       scheduleTimeZoneTitle: 'Programın saat dilimi',
       currentTimeZone: 'Kayıtlı saat dilimi: {{zone}}',
       timeZoneIdentifier: 'IANA saat dilimi',
-      zoneChangeWarning: 'Saat dilimini değiştirmek planlanan saatlerin UTC karşılığını değiştirir. Gerçek mesai kayıtları değişmez.',
+      zoneChangeWarning:
+        'Saat dilimini değiştirmek planlanan saatlerin UTC karşılığını değiştirir. Gerçek mesai kayıtları değişmez.',
       changeTimeZone: 'Saat dilimini değiştir',
       confirmTimeZone: 'Program saat dilimi değişikliği',
       fromZoneToZone: '{{from}} → {{to}}',
@@ -114,12 +115,16 @@ const resources = {
       zonePreviewDate: 'Örnek program günü: {{date}}',
       zonePreviewFromUtc: 'Önceki UTC başlangıç: {{start}}',
       zonePreviewToUtc: 'Yeni UTC başlangıç: {{start}}',
-      zoneActualRecordsUnchanged: 'Geçmiş gerçek giriş-çıkış kayıtlarının UTC anları değişmeyecek.',
+      zoneActualRecordsUnchanged:
+        'Geçmiş gerçek giriş-çıkış kayıtlarının UTC anları değişmeyecek.',
       invalidTimeZone: 'Geçerli bir IANA saat dilimi gir.',
       zoneSaved: 'Programın saat dilimi güncellendi.',
-      cancel: 'İptal', confirm: 'Onayla', delete: 'Sil',
+      cancel: 'İptal',
+      confirm: 'Onayla',
+      delete: 'Sil',
       actualWorkTitle: 'Gerçek çalışma kaydı',
-      actualSelfReportedWarning: 'Bu kayıt kendi beyanındır; işveren onaylı puantaj veya bordro değildir.',
+      actualSelfReportedWarning:
+        'Bu kayıt kendi beyanındır; işveren onaylı puantaj veya bordro değildir.',
       actualRecordingZone: 'Giriş ve çıkış saat dilimi: {{timeZone}}',
       actualStartClock: 'Gerçek giriş (SS:DD)',
       actualEndClock: 'Gerçek çıkış (SS:DD)',
@@ -138,15 +143,18 @@ const resources = {
       actualDeleteWarning: 'Bu çalışma kaydı silinecek.',
       noActualEntries: 'Bu gün için gerçek çalışma kaydı bulunmuyor.',
       notPaySlip: 'Bunlar kullanıcı kayıtlarıdır, otomatik bordro veya ücret hesabı yapılmaz.',
-      actualError_INVALID_ACTUAL_DATE: 'Çıkış tarihi giriş gününden önce veya üç günden fazla sonra olamaz.',
+      actualError_INVALID_ACTUAL_DATE:
+        'Çıkış tarihi giriş gününden önce veya üç günden fazla sonra olamaz.',
       actualError_INVALID_ACTUAL_BREAK: 'Mola süresi geçersiz.',
       actualError_INVALID_ACTUAL_NOTE: 'Not çok uzun.',
-      actualError_AMBIGUOUS_ACTUAL_START: 'Gerçek giriş saati iki farklı ana denk geliyor. Seçim yap.',
-      actualError_AMBIGUOUS_ACTUAL_END: 'Gerçek çıkış saati iki farklı ana denk geliyor. Seçim yap.',
+      actualError_AMBIGUOUS_ACTUAL_START:
+        'Gerçek giriş saati iki farklı ana denk geliyor. Seçim yap.',
+      actualError_AMBIGUOUS_ACTUAL_END:
+        'Gerçek çıkış saati iki farklı ana denk geliyor. Seçim yap.',
       actualError_NONEXISTENT_ACTUAL_START: 'Gerçek giriş saati bu tarihte mevcut değil.',
       actualError_NONEXISTENT_ACTUAL_END: 'Gerçek çıkış saati bu tarihte mevcut değil.',
-      actualError_INVALID_ACTUAL_INTERVAL: 'Çıkış girişten sonra olmalı, mola aralıktan kısa olmalı ve süre 72 saati aşmamalı.',
-
+      actualError_INVALID_ACTUAL_INTERVAL:
+        'Çıkış girişten sonra olmalı, mola aralıktan kısa olmalı ve süre 72 saati aşmamalı.',
     },
   },
   en: {
@@ -233,7 +241,8 @@ const resources = {
       notActualWorkRecord:
         'Scheduled time only, not an actual work record or a payroll result.',
       chooseRepeatedHour: 'Choose repeated clock time',
-      boundaryDayOnly: 'The choice applies only to this date and the current shift-hour configuration.',
+      boundaryDayOnly:
+        'The choice applies only to this date and the current shift-hour configuration.',
       shiftStartBoundary: 'Scheduled start boundary',
       shiftEndBoundary: 'Scheduled end boundary',
       foldChoice_reject: 'Not chosen',
@@ -249,20 +258,26 @@ const resources = {
       scheduleTimeZoneTitle: 'Schedule time zone',
       currentTimeZone: 'Stored schedule zone: {{zone}}',
       timeZoneIdentifier: 'IANA time zone',
-      zoneChangeWarning: 'Changing the schedule zone changes planned UTC times. Past actual work records are unchanged.',
+      zoneChangeWarning:
+        'Changing the schedule zone changes planned UTC times. Past actual work records are unchanged.',
       changeTimeZone: 'Change schedule time zone',
       confirmTimeZone: 'Confirm schedule time zone change',
       fromZoneToZone: '{{from}} → {{to}}',
-      timeZoneCyclePreserved: 'The local dates and clock hours in the cycle will stay the same.',
+      timeZoneCyclePreserved:
+        'The local dates and clock hours in the cycle will stay the same.',
       zonePreviewDate: 'Sample schedule date: {{date}}',
       zonePreviewFromUtc: 'Previous UTC start: {{start}}',
       zonePreviewToUtc: 'New UTC start: {{start}}',
-      zoneActualRecordsUnchanged: 'Past self-reported actual UTC check-ins and check-outs will not change.',
+      zoneActualRecordsUnchanged:
+        'Past self-reported actual UTC check-ins and check-outs will not change.',
       invalidTimeZone: 'Enter a valid IANA time zone.',
       zoneSaved: 'Schedule time zone was updated.',
-      cancel: 'Cancel', confirm: 'Confirm', delete: 'Delete',
+      cancel: 'Cancel',
+      confirm: 'Confirm',
+      delete: 'Delete',
       actualWorkTitle: 'Actual work log',
-      actualSelfReportedWarning: 'This is your own report, not employer-verified timesheets or a payslip.',
+      actualSelfReportedWarning:
+        'This is your own report, not employer-verified timesheets or a payslip.',
       actualRecordingZone: 'Check-in and check-out time zone: {{timeZone}}',
       actualStartClock: 'Actual start (HH:mm)',
       actualEndClock: 'Actual end (HH:mm)',
@@ -288,8 +303,8 @@ const resources = {
       actualError_AMBIGUOUS_ACTUAL_END: 'Actual end occurs twice. Choose an occurrence.',
       actualError_NONEXISTENT_ACTUAL_START: 'Actual start does not exist on this date.',
       actualError_NONEXISTENT_ACTUAL_END: 'Actual end does not exist on this date.',
-      actualError_INVALID_ACTUAL_INTERVAL: 'End must follow start, break must be shorter, and the interval cannot exceed 72 hours.',
-
+      actualError_INVALID_ACTUAL_INTERVAL:
+        'End must follow start, break must be shorter, and the interval cannot exceed 72 hours.',
     },
   },
 };

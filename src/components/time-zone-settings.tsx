@@ -24,15 +24,19 @@ export function TimeZoneSettings() {
   const nextZone = (typed ?? schedule.timeZone).trim();
   const previewDate = schedule.pattern.anchorDate;
   const sample = resolveShift(previewDate, schedule);
-  const currentSample = sample && !sample.template.isRestDay
-    ? resolveShiftInterval(previewDate, sample.template, schedule.timeZone) : null;
+  const currentSample =
+    sample && !sample.template.isRestDay
+      ? resolveShiftInterval(previewDate, sample.template, schedule.timeZone)
+      : null;
 
   const confirmChange = () => {
     if (nextZone === schedule.timeZone) return;
     try {
       calendarDateInZone(nextZone);
-      const changedSample = sample && !sample.template.isRestDay
-        ? resolveShiftInterval(previewDate, sample.template, nextZone) : null;
+      const changedSample =
+        sample && !sample.template.isRestDay
+          ? resolveShiftInterval(previewDate, sample.template, nextZone)
+          : null;
       const description = [
         t('fromZoneToZone', { from: schedule.timeZone, to: nextZone }),
         t('timeZoneCyclePreserved'),
@@ -52,9 +56,13 @@ export function TimeZoneSettings() {
           onPress: () => {
             setSaving(true);
             void changeTimeZone(nextZone)
-              .then(() => { setTyped(null); Alert.alert(t('zoneSaved')); })
-              .catch((e: unknown) => Alert.alert(t('databaseError'),
-                e instanceof Error ? e.message : ''))
+              .then(() => {
+                setTyped(null);
+                Alert.alert(t('zoneSaved'));
+              })
+              .catch((e: unknown) =>
+                Alert.alert(t('databaseError'), e instanceof Error ? e.message : ''),
+              )
               .finally(() => setSaving(false));
           },
         },
@@ -69,15 +77,29 @@ export function TimeZoneSettings() {
       <Heading>{t('scheduleTimeZoneTitle')}</Heading>
       <Muted>{t('currentTimeZone', { zone: schedule.timeZone })}</Muted>
       <Text style={{ color: c.muted }}>{t('timeZoneIdentifier')}</Text>
-      <TextInput value={typed ?? schedule.timeZone} autoCapitalize="none"
-        autoCorrect={false} onChangeText={setTyped} accessibilityLabel={t('timeZoneIdentifier')}
-        placeholder="Europe/Istanbul" placeholderTextColor={c.muted}
-        style={{ color: c.text, borderWidth: 1, borderColor: c.border,
-          padding: 12, borderRadius: 12 }} />
+      <TextInput
+        value={typed ?? schedule.timeZone}
+        autoCapitalize="none"
+        autoCorrect={false}
+        onChangeText={setTyped}
+        accessibilityLabel={t('timeZoneIdentifier')}
+        placeholder="Europe/Istanbul"
+        placeholderTextColor={c.muted}
+        style={{
+          color: c.text,
+          borderWidth: 1,
+          borderColor: c.border,
+          padding: 12,
+          borderRadius: 12,
+        }}
+      />
       <Muted>{t('zoneChangeWarning')}</Muted>
       <View>
-        <Action label={t('changeTimeZone')} onPress={confirmChange}
-          disabled={saving || !nextZone || nextZone === schedule.timeZone} />
+        <Action
+          label={t('changeTimeZone')}
+          onPress={confirmChange}
+          disabled={saving || !nextZone || nextZone === schedule.timeZone}
+        />
       </View>
     </Panel>
   );

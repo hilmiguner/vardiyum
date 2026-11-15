@@ -233,10 +233,18 @@ export default function CalendarScreen() {
           </Panel>
           {chosen && (
             <>
-              <BoundaryChoiceEditor key={selectedDate + ':' + chosen.template.id}
-                date={selectedDate} template={chosen.template} timeZone={schedule.timeZone} />
-              <ActualWorkEditor key={selectedDate}
-                date={selectedDate} template={chosen.template} timeZone={schedule.timeZone} />
+              <BoundaryChoiceEditor
+                key={selectedDate + ':' + chosen.template.id}
+                date={selectedDate}
+                template={chosen.template}
+                timeZone={schedule.timeZone}
+              />
+              <ActualWorkEditor
+                key={selectedDate}
+                date={selectedDate}
+                template={chosen.template}
+                timeZone={schedule.timeZone}
+              />
             </>
           )}
         </>

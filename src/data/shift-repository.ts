@@ -177,8 +177,9 @@ export async function changeScheduleTimeZone(nextTimeZone: string): Promise<void
   }
   const db = await getDatabase();
   const result = await db.runAsync(
-    "UPDATE shift_patterns SET timezone_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-    nextTimeZone, PRIMARY_ID,
+    'UPDATE shift_patterns SET timezone_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+    nextTimeZone,
+    PRIMARY_ID,
   );
   if (result.changes !== 1) throw new Error('SCHEDULE_NOT_CONFIGURED');
 }

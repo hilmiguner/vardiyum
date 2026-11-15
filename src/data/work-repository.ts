@@ -85,7 +85,8 @@ function decodeWork(row: WorkRow): ActualWorkSession {
     !Number.isSafeInteger(elapsedSeconds) ||
     !Number.isSafeInteger(netLoggedSeconds) ||
     netLoggedSeconds <= 0
-  ) throw new Error('CORRUPT_ACTUAL_WORK_SESSION');
+  )
+    throw new Error('CORRUPT_ACTUAL_WORK_SESSION');
   return {
     id: row.id,
     localDate: row.local_date,

@@ -34,12 +34,18 @@ export function ActualWorkEditor({ date, template, timeZone }: Props) {
   useEffect(() => {
     let alive = true;
     void loadActualWork(date)
-      .then((value) => { if (alive) setSessions(value); })
+      .then((value) => {
+        if (alive) setSessions(value);
+      })
       .catch((error: unknown) => {
         if (alive) Alert.alert(t('databaseError'), error instanceof Error ? error.message : '');
       })
-      .finally(() => { if (alive) setLoading(false); });
-    return () => { alive = false; };
+      .finally(() => {
+        if (alive) setLoading(false);
+      });
+    return () => {
+      alive = false;
+    };
   }, [date, t]);
 
   const renderClockChoice = (
@@ -50,21 +56,33 @@ export function ActualWorkEditor({ date, template, timeZone }: Props) {
     onChange: (next: FoldChoice) => void,
   ) => {
     let instants: readonly string[] = [];
-    try { instants = possibleUtcInstants(localDate, clock, timeZone); } catch { return null; }
+    try {
+      instants = possibleUtcInstants(localDate, clock, timeZone);
+    } catch {
+      return null;
+    }
     if (instants.length <= 1) return null;
     return (
       <View style={{ gap: 6 }}>
         <Muted>{t('actualRepeatedTime', { boundary: label })}</Muted>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {CHOICES.map((choice) => (
-            <Pressable key={choice} accessibilityRole="button"
+            <Pressable
+              key={choice}
+              accessibilityRole="button"
               accessibilityState={{ selected: value === choice }}
               accessibilityLabel={t('boundaryChoiceAccessible', {
-                boundary: label, choice: t('foldChoice_' + choice),
+                boundary: label,
+                choice: t('foldChoice_' + choice),
               })}
               onPress={() => onChange(choice)}
-              style={{ borderWidth: 2, borderColor: value === choice ? c.accent : c.border,
-                padding: 9, borderRadius: 9 }}>
+              style={{
+                borderWidth: 2,
+                borderColor: value === choice ? c.accent : c.border,
+                padding: 9,
+                borderRadius: 9,
+              }}
+            >
               <Text style={{ color: c.text }}>{t('foldChoice_' + choice)}</Text>
             </Pressable>
           ))}
@@ -81,8 +99,15 @@ export function ActualWorkEditor({ date, template, timeZone }: Props) {
     }
     try {
       const draft = {
-        localDate: date, startClock, endDate, endClock, timeZone,
-        startChoice, endChoice, breakMinutes: Number(breakText), note,
+        localDate: date,
+        startClock,
+        endDate,
+        endClock,
+        timeZone,
+        startChoice,
+        endChoice,
+        breakMinutes: Number(breakText),
+        note,
       };
       const result = prepareActualWork(draft);
       if (result.status !== 'valid') {
@@ -104,12 +129,14 @@ export function ActualWorkEditor({ date, template, timeZone }: Props) {
     Alert.alert(t('confirmDeleteActual'), t('actualDeleteWarning'), [
       { text: t('cancel'), style: 'cancel' },
       {
-        text: t('delete'), style: 'destructive',
+        text: t('delete'),
+        style: 'destructive',
         onPress: () => {
           void removeActualWork(id)
             .then(async () => setSessions(await loadActualWork(date)))
-            .catch((e: unknown) => Alert.alert(t('databaseError'),
-              e instanceof Error ? e.message : ''));
+            .catch((e: unknown) =>
+              Alert.alert(t('databaseError'), e instanceof Error ? e.message : ''),
+            );
         },
       },
     ]);
@@ -122,11 +149,22 @@ export function ActualWorkEditor({ date, template, timeZone }: Props) {
   ) => (
     <View style={{ gap: 5, flex: 1 }}>
       <Muted>{label}</Muted>
-      <TextInput value={value} onChangeText={setter} maxLength={length}
-        accessibilityLabel={label} autoCorrect={false} autoCapitalize="none"
+      <TextInput
+        value={value}
+        onChangeText={setter}
+        maxLength={length}
+        accessibilityLabel={label}
+        autoCorrect={false}
+        autoCapitalize="none"
         placeholderTextColor={c.muted}
-        style={{ color: c.text, borderWidth: 1, borderColor: c.border,
-          borderRadius: 10, padding: 10 }} />
+        style={{
+          color: c.text,
+          borderWidth: 1,
+          borderColor: c.border,
+          borderRadius: 10,
+          padding: 10,
+        }}
+      />
     </View>
   );
 
@@ -147,28 +185,39 @@ export function ActualWorkEditor({ date, template, timeZone }: Props) {
       {renderClockChoice(t('actualEndClock'), endDate, endClock, endChoice, setEndChoice)}
       {field(t('actualNote'), note, setNote, 200)}
       <Action label={t('saveActualEntry')} disabled={saving} onPress={() => void save()} />
-      {loading ? <Muted>{t('loading')}</Muted> : sessions.length ? (
+      {loading ? (
+        <Muted>{t('loading')}</Muted>
+      ) : sessions.length ? (
         <View style={{ gap: 12 }}>
           <Heading>{t('recordedActualWork')}</Heading>
           {sessions.map((session) => (
-            <View key={session.id} style={{ borderTopWidth: 1, borderColor: c.border,
-              paddingTop: 10, gap: 4 }}>
+            <View
+              key={session.id}
+              style={{ borderTopWidth: 1, borderColor: c.border, paddingTop: 10, gap: 4 }}
+            >
               <Text style={{ color: c.text }}>
                 {session.localDate} {session.startClock} – {session.endDate} {session.endClock}
               </Text>
-              <Muted>{t('actualNetDuration', {
-                minutes: Math.floor(session.netLoggedSeconds / 60),
-              })}</Muted>
+              <Muted>
+                {t('actualNetDuration', {
+                  minutes: Math.floor(session.netLoggedSeconds / 60),
+                })}
+              </Muted>
               <Muted>{t('actualSessionZone', { zone: session.timeZone })}</Muted>
               {session.note ? <Muted>{session.note}</Muted> : null}
-              <Pressable accessibilityRole="button" accessibilityLabel={t('delete')}
-                onPress={() => remove(session.id)}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('delete')}
+                onPress={() => remove(session.id)}
+              >
                 <Text style={{ color: c.danger, fontWeight: '700' }}>{t('delete')}</Text>
               </Pressable>
             </View>
           ))}
         </View>
-      ) : <Muted>{t('noActualEntries')}</Muted>}
+      ) : (
+        <Muted>{t('noActualEntries')}</Muted>
+      )}
       <Muted>{t('notPaySlip')}</Muted>
     </Panel>
   );

@@ -61,10 +61,7 @@ function isFoldChoice(value: unknown): value is FoldChoice {
   return value === 'reject' || value === 'earlier' || value === 'later';
 }
 
-export function scheduleBoundarySignature(
-  template: ShiftTemplate,
-  timeZone: string,
-): string {
+export function scheduleBoundarySignature(template: ShiftTemplate, timeZone: string): string {
   const valid = validateTemplate(template);
   return JSON.stringify([
     'v1',
@@ -110,7 +107,9 @@ export function prepareBoundaryChoice(
     throw new Error('INVALID_FOLD_POLICY');
   const interval = resolveShiftInterval(localDate, template, timeZone, policy);
   if (interval.status !== 'resolved')
-    throw new Error(interval.status === 'rest' ? 'REST_SHIFT_HAS_NO_BOUNDARIES' : interval.reason);
+    throw new Error(
+      interval.status === 'rest' ? 'REST_SHIFT_HAS_NO_BOUNDARIES' : interval.reason,
+    );
   return {
     localDate,
     signature: scheduleBoundarySignature(template, timeZone),
@@ -155,9 +154,8 @@ export function prepareActualWork(draft: ActualWorkDraft): ActualWorkValidation 
   if (start.status !== 'resolved') {
     return {
       status: 'invalid',
-      reason: start.status === 'ambiguous'
-        ? 'AMBIGUOUS_ACTUAL_START'
-        : 'NONEXISTENT_ACTUAL_START',
+      reason:
+        start.status === 'ambiguous' ? 'AMBIGUOUS_ACTUAL_START' : 'NONEXISTENT_ACTUAL_START',
     };
   }
   const end = resolveLocalBoundary(
@@ -169,13 +167,10 @@ export function prepareActualWork(draft: ActualWorkDraft): ActualWorkValidation 
   if (end.status !== 'resolved') {
     return {
       status: 'invalid',
-      reason: end.status === 'ambiguous'
-        ? 'AMBIGUOUS_ACTUAL_END'
-        : 'NONEXISTENT_ACTUAL_END',
+      reason: end.status === 'ambiguous' ? 'AMBIGUOUS_ACTUAL_END' : 'NONEXISTENT_ACTUAL_END',
     };
   }
-  const elapsedSeconds =
-    (Date.parse(end.instantUtc) - Date.parse(start.instantUtc)) / 1000;
+  const elapsedSeconds = (Date.parse(end.instantUtc) - Date.parse(start.instantUtc)) / 1000;
   if (
     !Number.isSafeInteger(elapsedSeconds) ||
     elapsedSeconds <= 0 ||

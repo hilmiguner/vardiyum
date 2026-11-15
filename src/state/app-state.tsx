@@ -8,7 +8,10 @@ import {
   type ShiftTemplate,
 } from '../domain/shift-engine';
 import {
-  loadSchedule, saveDayOverride, saveScheduleConfig, changeScheduleTimeZone,
+  loadSchedule,
+  saveDayOverride,
+  saveScheduleConfig,
+  changeScheduleTimeZone,
 } from '../data/shift-repository';
 import { loadBoundaryChoices, storeBoundaryChoice } from '../data/work-repository';
 import type { StoredBoundaryChoice } from '../domain/work-records';
@@ -39,7 +42,9 @@ function emptySchedule(): ShiftSchedule {
 
 export function AppStateProvider({ children }: PropsWithChildren) {
   const [schedule, setSchedule] = useState<ShiftSchedule>(emptySchedule);
-  const [boundaryChoices, setBoundaryChoices] = useState<Record<string, StoredBoundaryChoice>>({});
+  const [boundaryChoices, setBoundaryChoices] = useState<Record<string, StoredBoundaryChoice>>(
+    {},
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,7 +52,10 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     setLoading(true);
     setError(null);
     try {
-      const [nextSchedule, choices] = await Promise.all([loadSchedule(), loadBoundaryChoices()]);
+      const [nextSchedule, choices] = await Promise.all([
+        loadSchedule(),
+        loadBoundaryChoices(),
+      ]);
       setSchedule(nextSchedule);
       setBoundaryChoices(choices);
     } catch (reason) {
@@ -107,7 +115,10 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       const selected = resolveShift(date, schedule);
       if (!selected) throw new Error('SCHEDULE_NOT_CONFIGURED');
       const stored = await storeBoundaryChoice(
-        date, selected.template, schedule.timeZone, policy,
+        date,
+        selected.template,
+        schedule.timeZone,
+        policy,
       );
       setBoundaryChoices((before) => {
         const next = { ...before };
@@ -128,10 +139,27 @@ export function AppStateProvider({ children }: PropsWithChildren) {
 
   const value = useMemo(
     () => ({
-      schedule, boundaryChoices, loading, error, saveConfig, changeDay,
-      saveBoundaryChoice, changeTimeZone, reload,
+      schedule,
+      boundaryChoices,
+      loading,
+      error,
+      saveConfig,
+      changeDay,
+      saveBoundaryChoice,
+      changeTimeZone,
+      reload,
     }),
-    [schedule, boundaryChoices, loading, error, saveConfig, changeDay, saveBoundaryChoice, changeTimeZone, reload],
+    [
+      schedule,
+      boundaryChoices,
+      loading,
+      error,
+      saveConfig,
+      changeDay,
+      saveBoundaryChoice,
+      changeTimeZone,
+      reload,
+    ],
   );
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
