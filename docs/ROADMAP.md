@@ -173,3 +173,10 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 - [ ] Aynı kaynak vardiya hem custom **pay period** sınırı hem **effective rate** midnight aşıyorsa iki farklı mola atfı arasındaki bağıntı/uzlaştırma tasarımı ve fail-closed testleri.
 - [ ] `monthly_fixed` special period full/partial user assumption ve overtime koşulları; `earnings_adjustments` için ayrı custom-period atıf ve kaynaklı CSV/JSON. Issue #22 ve üst #16 açık.
 - [ ] Native iOS/Android gerçek SQLite/backup/clean restore/low disk/process crash/DST QA Issue #2/#20 erteli; JS export native QA sayılmaz.
+
+## 2026-11-15 — PR #30 iki sınır mola uzlaştırması main'de
+
+- [x] [PR #30](https://github.com/hilmiguner/vardiyum/pull/30) merged code SHA `fb8ed3b7a48bd0d103f4e9c520e335ad5613e064`; [main CI #43757686602](https://github.com/hilmiguner/vardiyum/actions/runs/43757686602) **SUCCESS 217/217 Node** + Android/iOS JS. Aynı work, özel pay-period + ayın 1'i efektif rate midnight'ını aşınca explicit 2 adımlı toplam mola atfı, eski pay-audit revision'a bağlı ikinci immutable event, düzeltmede stale fail-closed, kaynak UTC/IANA ve per period+rate net seconds conservation, TR/EN UI ve kaynak audit line version; SQLite v8 18 tables AES archive unchanged.
+- [ ] **Sıradaki:** `monthly_fixed` custom full/partial salary modelinin kullanıcı onaylı, explicit ödeme/prorate varsayımı + saatlik ek mesai ilişkisi ve kaynak revizyonu (sessiz oranlama YOK); karma hourly/fixed model geçişi ayrıca politika gerektirir.
+- [ ] Eski `earnings_adjustments` ay bazlı olduğundan custom period'larda bonus/deduction/correction için yeni **period-keyed, source-bound** atıf ve v8 uyumlu kayıt/revision. Özel dönem kaynaklı CSV+JSON bunlardan sonra açılabilir.
+- [ ] Native Android/iOS SQLite/AES restore/DST/low disk/process-kill gerçek cihaz Issue #2/#20 erteli; Issue #22/#16 açık. Pre-tax work-only ≠ full payroll.
