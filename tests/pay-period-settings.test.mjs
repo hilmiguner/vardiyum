@@ -80,7 +80,8 @@ test('user-selected start day survives reopening and is included in existing v8 
     assert.equal(await readPayPeriodStartDay(store), 26);
     const backedUpSettings = db
       .prepare('SELECT key,value FROM app_settings ORDER BY key')
-      .all();
+      .all()
+      .map((row) => ({ ...row }));
     assert.deepEqual(
       backedUpSettings,
       [
