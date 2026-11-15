@@ -129,3 +129,7 @@ Kararlar 2026-11-15 itibarıyla konuşulan hedefleri belgeler. Geliştirme sıra
 
 - **D-069 (feature branch, CI/merge bekliyor):** Başlangıç günü seçimi ilk sürümde **yalnızca `app_settings` içindeki tek `earnings_pay_period_start_day_v1` anahtarı** ile saklanır. Kayıt yoksa takvim ayı `1`; kanonik olmayan `0,29,026,1.0,boşluk` gibi değerler sessizce düzeltilmez, okuma reddedilir. SQL parametreli UPSERT; kullanıcı çalışma kaydı/profil/tablo göçü yok.
 - **D-070 (feature branch, CI/merge bekliyor):** Ayarlar TR/EN 1–28 seçimi + tarih önizlemesi sunar; **henüz Kazanç raporu/CSV/JSON'un hesaplama dönemi değiştirilmez**. Etkinleştirme için özel dönem mola audit, efektif tarihte profil değişimi, sabit model ve düzeltmelerin politikası ayrı zorunludur. SQLite v8 ve şifreli yedekteki 18 tablo imzası bozulmaz; eski v8 dosya restore sözleşmesi aynı kalır.
+
+## 2026-11-15 — PR #24 merge kanıtı ve geçerli durum
+
+- **D-069/D-070 artık main'de uygulandı (tercih katmanı):** [PR #24](https://github.com/hilmiguner/vardiyum/pull/24) merge `456415cdcf5a7ce6ef8d6487a0678d01818b8106`; [main CI #43729927452](https://github.com/hilmiguner/vardiyum/actions/runs/43729927452) SUCCESS, 142 test + Android/iOS JS. Yalnız mevcut `app_settings` anahtarı/1–28 UI önizleme eklendi, SQLite v8/şifreli arşiv değişmedi. **Custom salary report hesaplama kararı hâlâ açık**; seçimin kaydı finansal raporun etkinleştiği anlamına gelmez. Native QA Issue #2/#20 bekliyor.
