@@ -14,7 +14,7 @@ import {
 } from '../src/data/schema.ts';
 import { planCustomPayProfiles } from '../src/domain/custom-pay-profile-policy.ts';
 import { estimateCustomHourlyWork } from '../src/domain/custom-hourly-work-estimate.ts';
-import { loadCustomHourlyEstimateFromStore } from '../src/data/custom-hourly-work-repository.ts';
+import { loadCustomHourlyEstimateFromStore } from '../src/domain/custom-hourly-work-store.ts';
 import { appendCustomPayBreakRevision } from '../src/domain/custom-pay-break-store.ts';
 import { writePayPeriodStartDay } from '../src/domain/pay-period-settings.ts';
 
