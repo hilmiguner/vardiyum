@@ -183,3 +183,14 @@ Yeni sohbet prompt:
 Yeni sohbet prompt'u:
 
 > Vardiyum https://github.com/hilmiguner/vardiyum. Önce main SHA, PR/Issue/Actions ve docs/STATUS.md, docs/HANDOFF.md, docs/ROADMAP.md, docs/DECISIONS.md oku. Issue #22 için `feat/configurable-pay-period-domain` başlangıç adımı: 1–28 başlangıç günüyle 26→25 döneminde UTC/IANA süre bölme ve kaynak doğrulamalı manuel mola; henüz SQLite/UI/rapora bağlı değil. Son CI/PR durumunu kontrol et. v8 şifreli backup/restore'u bozma, native Issue #2/#20 açık, resmi bordro/SGK/net yok. Sonraki güvenli entegrasyona devam et.
+
+## 2026-11-15 — PR #23 birleşimi ve özel maaş dönemi tercihi geliştirmesi
+
+- **PR #23 merged:** main SHA `d85f63f0c468f15692aef0f78f13d0a2e695d4c3`; [main Actions #43728968056](https://github.com/hilmiguner/vardiyum/actions/runs/43728968056) **SUCCESS** (137 Node test, Android+iOS JS export). `src/domain/pay-period.ts` saf 26→25 UTC/IANA dönem bölme main'de.
+- **Geliştirme (feature, merge edilmedi):** `feat/pay-period-persisted-setting`. `src/domain/pay-period-settings.ts` SQLite v8 app_settings key üzerinden default 1, strict 1–28 ve fail-closed okuma/yazma; `src/data/pay-period-repository.ts`; `src/components/pay-period-settings-panel.tsx` ve Settings TR/EN seçim + preview; `tests/pay-period-settings.test.mjs`.
+- **ÇOK ÖNEMLİ:** Tercih **hazırlık** olarak saklanıyor; mevcut kazanç raporu/CSV/JSON halen takvim ayına bağlı. V8 şema (18 tablo), AES export/clean restore ve tarihsel data yapısı aynen kaldı. V8 backup, app_settings satırını otomatik içerir, fakat yeni setting'in native round-trip'i henüz cihazda denenmedi.
+- **Devam:** Önce feature PR CI testleri; yeşil olursa inceleme/merge ve merge CI. Sonra özel kazanç hesap motoru ve cross-boundary profil/fixed-model/adjustment politikası için yeni ayrı PR. Dolu database restore veya sessiz veri aktarımı yok. Native QA Issue #2/#20 erteli açık.
+
+Yeni sohbet komutu:
+
+> Vardiyum https://github.com/hilmiguner/vardiyum. main/PR/Issue/Actions ve STATUS/HANDOFF/ROADMAP/DECISIONS kontrol et. PR #23 main SHA d85f63f0, CI #43728968056 başarılı; custom 26→25 domain var. Sonraki branch feat/pay-period-persisted-setting: v8 app_settings tek anahtar strict 1–28, Settings TR/EN seçim/önizleme, eski v8 encrypted backup formatı değişmiyor. Bu henüz gerçek özel dönem kazanç raporu DEĞİL. CI/merge kontrolünden sonra mixed effective-date rates, dönem mola audit, manuel adjustments, fixed salary ve CSV/JSON entegrasyonuna geç. Issue #22/#16 açık, native #2/#20 erteli.
