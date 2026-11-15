@@ -89,10 +89,11 @@ test('v7 -> v8 migrates without modifying old schedules, work, pay or break hist
       db.prepare('SELECT base_minor_units FROM earnings_profiles').get().base_minor_units,
       15000,
     );
-    assert.throws(() => db.exec("UPDATE earnings_profiles SET base_minor_units=9000"),
-      /IMMUTABLE_BASE_PROFILE/);
-    assert.throws(() => db.exec("DELETE FROM earnings_profiles"),
-      /IMMUTABLE_BASE_PROFILE/);
+    assert.throws(
+      () => db.exec('UPDATE earnings_profiles SET base_minor_units=9000'),
+      /IMMUTABLE_BASE_PROFILE/,
+    );
+    assert.throws(() => db.exec('DELETE FROM earnings_profiles'), /IMMUTABLE_BASE_PROFILE/);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM earnings_profile_revisions').get().n, 0);
   } finally {
     db.close();

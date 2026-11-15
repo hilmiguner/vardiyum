@@ -432,9 +432,16 @@ export async function appendPayProfileCorrection(
     if (latest.revision !== expected.revision) throw new Error('STALE_PROFILE_REVISION');
     // Do not accept silently editing another profile using a stale UI snapshot.
     const fields: (keyof EarningsProfile)[] = [
-      'id','effectiveFrom','model','currency','baseMinorUnits',
-      'overtimeHourlyMinorUnits','overtimeAfterMinutes',
-      'overtimeMultiplierNumerator','overtimeMultiplierDenominator','revision',
+      'id',
+      'effectiveFrom',
+      'model',
+      'currency',
+      'baseMinorUnits',
+      'overtimeHourlyMinorUnits',
+      'overtimeAfterMinutes',
+      'overtimeMultiplierNumerator',
+      'overtimeMultiplierDenominator',
+      'revision',
     ];
     if (fields.some((field) => latest[field] !== expected[field]))
       throw new Error('STALE_PROFILE_REVISION');

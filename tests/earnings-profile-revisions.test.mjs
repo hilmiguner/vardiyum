@@ -244,9 +244,9 @@ test('same-month profile collisions remain impossible when base versions differ'
   );
 });
 
-test('revision form converts integer cents to editable money without floating error',()=>{
-  assert.equal(minorUnitsToInput(12345),'123.45');
-  assert.equal(minorUnitsToInput(1000000000000),'10000000000.00');
-  assert.equal(minorUnitsToInput(-105),'-1.05');
-  assert.equal(parseMoneyMinor(minorUnitsToInput(12345)),12345);
+test('revision form converts integer cents to editable money without floating error', () => {
+  assert.equal(minorUnitsToInput(12345), '123.45');
+  assert.equal(minorUnitsToInput(1000000000000), '10000000000.00');
+  assert.equal(minorUnitsToInput(-105), '-1.05');
+  assert.equal(parseMoneyMinor(minorUnitsToInput(12345)), 12345);
 });
