@@ -229,3 +229,12 @@
 - [ ] Ayarlar'da TR/EN başlangıç günü seçimi ve 26→25 dönem tarih önizlemesi; **halen Kazanç sekmesinde takvim ayı hesaplaması** uygulanır. Kaydedilen tercih finansal rapora otomatik yansımaz.
 - [ ] Node v8 tam migration/preference/persistence/fail-closed/korunan SQLite schema/FK/integrity testleri eklendi; yeni PR CI sonucu doğrulanacak.
 - **Kalan Issue #22:** Kullanıcıya gerçek özel dönem kazanç hesaplama, otomatik karışık aylık ücret profilini güvenli çözümleme, özel dönem mola audit, period-keyed adjustments, sabit ücret kararı ve CSV/JSON. Native cihaz [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2), restore cihaz QA [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) açık.
+
+## 2026-11-15 — Issue #22 / PR #24 MERGED: maaş dönemi tercihi (en güncel kod kanıtı)
+
+- [x] [PR #23](https://github.com/hilmiguner/vardiyum/pull/23) saf 26→25 domain main'e merge: `d85f63f0c468f15692aef0f78f13d0a2e695d4c3`, [main CI #43728968056](https://github.com/hilmiguner/vardiyum/actions/runs/43728968056) SUCCESS (137 Node testi, Android+iOS JS).
+- [x] [PR #24](https://github.com/hilmiguner/vardiyum/pull/24) özel dönem 1–28 gün tercihi ve TR/EN Ayarlar önizlemesi main'e squash merge: `456415cdcf5a7ce6ef8d6487a0678d01818b8106`.
+- [x] [PR CI #43729824011](https://github.com/hilmiguner/vardiyum/actions/runs/43729824011) SUCCESS, **142/142 Node testi** ve format/lint/TS/Expo/iki JS export. [Merge sonrası main CI #43729927452](https://github.com/hilmiguner/vardiyum/actions/runs/43729927452) **SUCCESS** aynı kalite aşamaları.
+- [x] SQLite v8 `app_settings` kanonik `earnings_pay_period_start_day_v1` anahtarıyla eski 18 tablo/AES backup/clean-target restore formatını değiştirmeden kalıcı tercih. Eksik anahtar = 1; bozuk değer reddedilir. 142 test şema/FK/integrity ve eski ayar korumasını içerir.
+- [ ] **Kazanç motoru hâlen takvim ayına göre hesaplar.** Kullanıcının yeni tercihi yalnız Ayarlar'da tutulur/önizlenir. Mixed effective-month ücret profili, yeni dönem mola audit, sabit tutar varsayımı, manuel adjustments, CSV/JSON özel dönem raporu **henüz yok**. [Issue #22](https://github.com/hilmiguner/vardiyum/issues/22) ve üst [#16](https://github.com/hilmiguner/vardiyum/issues/16) açık.
+- [ ] Native Android/iOS ayar kalıcılığı/AES restore/DST, düşük disk/crash: kullanıcı isteğiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ve [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) üzerinde **ertelendi**. JS export native cihaz kanıtı değildir.
