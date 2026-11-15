@@ -14,7 +14,8 @@ const resources = {
       settings: 'Ayarlar',
       earnCustomHourlyTitle: 'Özel dönem: kaydedilmiş gerçek çalışma kazancı',
       earnRateBreakTitle: 'Ücret değişimi sınırındaki mola beyanı',
-      earnDualBreakLineAudit: 'Maaş dönemi + ücret sınırı mola beyanı: revizyon {{revision}}',
+      earnDualBreakLineAudit:
+        'Maaş dönemi + ücret sınırı mola beyanı: revizyon {{revision}}',
       earnRateBreakLineAudit: 'Ücret değişimi mola beyanı: revizyon {{revision}}',
       earnDualBreakTitle: 'İki sınırı aşan vardiyada mola dağılımı',
       earnDualBreakExplanation:
@@ -485,7 +486,8 @@ const resources = {
       settings: 'Settings',
       earnCustomHourlyTitle: 'Custom period: logged actual-work earnings',
       earnRateBreakTitle: 'Break allocation at an hourly rate change',
-      earnDualBreakLineAudit: 'Pay-period + rate-boundary break statement revision {{revision}}',
+      earnDualBreakLineAudit:
+        'Pay-period + rate-boundary break statement revision {{revision}}',
       earnRateBreakLineAudit: 'Rate-change break statement revision {{revision}}',
       earnDualBreakTitle: 'Break allocation when one shift crosses two boundaries',
       earnDualBreakExplanation:
