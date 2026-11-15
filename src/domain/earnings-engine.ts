@@ -81,8 +81,12 @@ const ZULU = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z$
 const MAX_MONEY = 1_000_000_000_000; // 10 billion major currency units
 
 function money(value: unknown, allowNegative: boolean): number {
-  if (!Number.isSafeInteger(value) || Math.abs(value as number) > MAX_MONEY ||
-      (!allowNegative && (value as number) < 0)) throw new Error('INVALID_MONEY_AMOUNT');
+  if (
+    !Number.isSafeInteger(value) ||
+    Math.abs(value as number) > MAX_MONEY ||
+    (!allowNegative && (value as number) < 0)
+  )
+    throw new Error('INVALID_MONEY_AMOUNT');
   return value as number;
 }
 
@@ -101,8 +105,8 @@ export function periodBounds(key: string): { first: string; last: string } {
   const nextYear = month === 12 ? year + 1 : year;
   const nextMonth = month === 12 ? 1 : month + 1;
   if (nextYear > 9999) throw new Error('INVALID_EARNINGS_PERIOD');
-  const next = String(nextYear).padStart(4, '0') + '-' +
-    String(nextMonth).padStart(2, '0') + '-01';
+  const next =
+    String(nextYear).padStart(4, '0') + '-' + String(nextMonth).padStart(2, '0') + '-01';
   return { first, last: addCalendarDays(next, -1) };
 }
 
@@ -146,8 +150,11 @@ export function validateAdjustment(row: EarningsAdjustment): EarningsAdjustment 
   if (!note || note.length > 160) throw new Error('INVALID_ADJUSTMENT_NOTE');
   if (row.source !== 'user_entered') throw new Error('UNVERIFIED_ADJUSTMENT_SOURCE');
   const stamp = Date.parse(row.createdAt);
-  if (!ZULU.test(row.createdAt) || !Number.isFinite(stamp) ||
-      new Date(stamp).toISOString() !== row.createdAt)
+  if (
+    !ZULU.test(row.createdAt) ||
+    !Number.isFinite(stamp) ||
+    new Date(stamp).toISOString() !== row.createdAt
+  )
     throw new Error('INVALID_ADJUSTMENT_TIMESTAMP');
   return { ...row, note };
 }
@@ -161,12 +168,16 @@ function utcStamp(value: string): number {
 }
 
 /** No inferred DST fold, no planned-vs-actual conversion, no trusted payslip. */
-export function validateEarningsWork(work: EarningsWork): EarningsWork & { netSeconds: number } {
+export function validateEarningsWork(
+  work: EarningsWork,
+): EarningsWork & { netSeconds: number } {
   if (!IDENTIFIER.test(work.id)) throw new Error('INVALID_WORK_ID');
   calendarOrdinal(work.localDate);
   calendarOrdinal(work.endDate);
-  if (work.endDate < work.localDate ||
-      calendarOrdinal(work.endDate) - calendarOrdinal(work.localDate) > 3)
+  if (
+    work.endDate < work.localDate ||
+    calendarOrdinal(work.endDate) - calendarOrdinal(work.localDate) > 3
+  )
     throw new Error('INVALID_WORK_CIVIL_DATES');
   if (work.source !== 'user_entered') throw new Error('UNVERIFIED_WORK_SOURCE');
   if (typeof work.timeZone !== 'string' || !work.timeZone)
@@ -222,15 +233,16 @@ export function estimateEarnings(
       ids.add(session.id);
       // Period attribution uses the manually recorded START civil date, with
       // no silent overnight split, especially when a month changes.
-      if (session.localDate < first || session.localDate > last ||
-          session.endDate > last) throw new Error('WORK_CROSSES_REPORT_PERIOD');
+      if (session.localDate < first || session.localDate > last || session.endDate > last)
+        throw new Error('WORK_CROSSES_REPORT_PERIOD');
       sessions.push(session);
     } catch (error) {
       reasons.push((error instanceof Error ? error.message : 'INVALID_WORK') + ':' + work.id);
     }
   }
-  sessions.sort((a, b) => a.startInstantUtc.localeCompare(b.startInstantUtc) ||
-    a.id.localeCompare(b.id));
+  sessions.sort(
+    (a, b) => a.startInstantUtc.localeCompare(b.startInstantUtc) || a.id.localeCompare(b.id),
+  );
   for (let i = 1; i < sessions.length; i++) {
     if (sessions[i].startInstantUtc < sessions[i - 1].endInstantUtc)
       reasons.push('OVERLAPPING_WORK_SESSIONS:' + sessions[i].id);
@@ -240,70 +252,118 @@ export function estimateEarnings(
     try {
       const checked = validateAdjustment(row);
       if (checked.periodKey !== periodKey) throw new Error('ADJUSTMENT_OTHER_PERIOD');
-      if (checked.currency !== profile.currency) throw new Error('ADJUSTMENT_CURRENCY_MISMATCH');
+      if (checked.currency !== profile.currency)
+        throw new Error('ADJUSTMENT_CURRENCY_MISMATCH');
       adjustments.push(checked);
     } catch (error) {
-      reasons.push((error instanceof Error ? error.message : 'INVALID_ADJUSTMENT') + ':' + row.id);
+      reasons.push(
+        (error instanceof Error ? error.message : 'INVALID_ADJUSTMENT') + ':' + row.id,
+      );
     }
   }
   if (reasons.length) return { status: 'blocked', periodKey, reasons };
   const lines: EarningsLine[] = [];
-  const addLine = (kind: EarningsLineKind, sourceId: string, secs: number,
-    amount: number, description: string) => {
+  const addLine = (
+    kind: EarningsLineKind,
+    sourceId: string,
+    secs: number,
+    amount: number,
+    description: string,
+  ) => {
     lines.push({
-      kind, sourceId, seconds: secs, amountMinorUnits: amount,
-      profileId: profile.id, profileRevision: profile.revision, description,
+      kind,
+      sourceId,
+      seconds: secs,
+      amountMinorUnits: amount,
+      profileId: profile.id,
+      profileRevision: profile.revision,
+      description,
     });
   };
   if (profile.model === 'monthly_fixed') {
-    addLine('monthly_base', profile.id, 0, profile.baseMinorUnits,
-      'Full calendar-month base only; not prorated for missing sessions');
+    addLine(
+      'monthly_base',
+      profile.id,
+      0,
+      profile.baseMinorUnits,
+      'Full calendar-month base only; not prorated for missing sessions',
+    );
   }
   let totalLogged = 0;
   let regularSeconds = 0;
   let overtimeSeconds = 0;
-  const threshold = profile.overtimeAfterMinutes === null
-    ? null : profile.overtimeAfterMinutes * 60;
+  const threshold =
+    profile.overtimeAfterMinutes === null ? null : profile.overtimeAfterMinutes * 60;
   for (const row of sessions) {
     const priorSeconds = totalLogged;
     totalLogged += row.netSeconds;
-    const regular = threshold === null ? row.netSeconds :
-      Math.max(0, Math.min(row.netSeconds, threshold - priorSeconds));
+    const regular =
+      threshold === null
+        ? row.netSeconds
+        : Math.max(0, Math.min(row.netSeconds, threshold - priorSeconds));
     const overtime = row.netSeconds - regular;
     regularSeconds += regular;
     overtimeSeconds += overtime;
     if (profile.model === 'hourly') {
-      if (regular) addLine('hourly_regular', row.id, regular,
-        roundRational(BigInt(profile.baseMinorUnits) * BigInt(regular), 3600n),
-        'User-reported working seconds at explicit hourly rate');
-      if (overtime) addLine('hourly_overtime', row.id, overtime,
-        roundRational(
-          BigInt(profile.baseMinorUnits) * BigInt(overtime) *
-            BigInt(profile.overtimeMultiplierNumerator),
-          3600n * BigInt(profile.overtimeMultiplierDenominator),
-        ),
-        'User-chosen period threshold and overtime multiplier');
+      if (regular)
+        addLine(
+          'hourly_regular',
+          row.id,
+          regular,
+          roundRational(BigInt(profile.baseMinorUnits) * BigInt(regular), 3600n),
+          'User-reported working seconds at explicit hourly rate',
+        );
+      if (overtime)
+        addLine(
+          'hourly_overtime',
+          row.id,
+          overtime,
+          roundRational(
+            BigInt(profile.baseMinorUnits) *
+              BigInt(overtime) *
+              BigInt(profile.overtimeMultiplierNumerator),
+            3600n * BigInt(profile.overtimeMultiplierDenominator),
+          ),
+          'User-chosen period threshold and overtime multiplier',
+        );
     } else {
-      addLine('logged_work', row.id, row.netSeconds, 0,
-        'Informational self-reported hours only; monthly base not prorated');
-      if (overtime) addLine('monthly_overtime', row.id, overtime,
-        roundRational(
-          BigInt(profile.overtimeHourlyMinorUnits) * BigInt(overtime) *
-            BigInt(profile.overtimeMultiplierNumerator),
-          3600n * BigInt(profile.overtimeMultiplierDenominator),
-        ),
-        'Additional overtime above user-chosen monthly threshold');
+      addLine(
+        'logged_work',
+        row.id,
+        row.netSeconds,
+        0,
+        'Informational self-reported hours only; monthly base not prorated',
+      );
+      if (overtime)
+        addLine(
+          'monthly_overtime',
+          row.id,
+          overtime,
+          roundRational(
+            BigInt(profile.overtimeHourlyMinorUnits) *
+              BigInt(overtime) *
+              BigInt(profile.overtimeMultiplierNumerator),
+            3600n * BigInt(profile.overtimeMultiplierDenominator),
+          ),
+          'Additional overtime above user-chosen monthly threshold',
+        );
     }
   }
-  for (const row of adjustments.sort((a, b) =>
-    a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id))) {
+  for (const row of adjustments.sort(
+    (a, b) => a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id),
+  )) {
     addLine('adjustment', row.id, 0, row.amountMinorUnits, row.kind + ': ' + row.note);
   }
   const total = lines.reduce((sum, item) => sum + BigInt(item.amountMinorUnits), 0n);
   return {
-    status: 'estimated', periodKey, profile,
-    totalMinorUnits: asNumber(total), loggedSeconds: totalLogged,
-    regularSeconds, overtimeSeconds, lines,
+    status: 'estimated',
+    periodKey,
+    profile,
+    totalMinorUnits: asNumber(total),
+    loggedSeconds: totalLogged,
+    regularSeconds,
+    overtimeSeconds,
+    lines,
     disclaimer: 'USER_REPORTED_PRE_TAX_ESTIMATE',
   };
 }

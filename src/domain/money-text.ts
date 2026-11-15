@@ -16,7 +16,9 @@ export function parseMoneyMinor(input: string): number {
 }
 
 export function formatMoneyMinor(
-  cents: number, currency: string, locale: 'tr' | 'en' = 'tr',
+  cents: number,
+  currency: string,
+  locale: 'tr' | 'en' = 'tr',
 ): string {
   if (!Number.isSafeInteger(cents)) throw new Error('INVALID_MONEY_AMOUNT');
   const sign = cents < 0 ? '-' : '';

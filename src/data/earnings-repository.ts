@@ -60,7 +60,8 @@ export async function loadEarningsReport(periodKey: string): Promise<EarningsRep
        FROM actual_work_sessions
        WHERE local_date <= ? AND end_date >= ?
        ORDER BY start_instant_utc,id`,
-      last, first,
+      last,
+      first,
     ),
     db.getAllAsync<AdjustmentRow>(
       'SELECT * FROM earnings_adjustments WHERE period_key = ? ORDER BY created_at,id',
@@ -82,14 +83,22 @@ export async function loadEarningsReport(periodKey: string): Promise<EarningsRep
       revision: row.revision,
     })),
     work.map((row) => ({
-      id: row.id, localDate: row.local_date, endDate: row.end_date,
-      timeZone: row.timezone_id, startInstantUtc: row.start_instant_utc,
-      endInstantUtc: row.end_instant_utc, breakMinutes: row.break_minutes,
+      id: row.id,
+      localDate: row.local_date,
+      endDate: row.end_date,
+      timeZone: row.timezone_id,
+      startInstantUtc: row.start_instant_utc,
+      endInstantUtc: row.end_instant_utc,
+      breakMinutes: row.break_minutes,
       source: row.source as EarningsWork['source'],
     })),
     adjustments.map((row) => ({
-      id: row.id, periodKey: row.period_key, kind: row.kind, currency: row.currency,
-      amountMinorUnits: row.amount_minor_units, note: row.note,
+      id: row.id,
+      periodKey: row.period_key,
+      kind: row.kind,
+      currency: row.currency,
+      amountMinorUnits: row.amount_minor_units,
+      note: row.note,
       source: row.source as EarningsAdjustment['source'],
       createdAt: row.created_at,
     })),
