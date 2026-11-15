@@ -12,6 +12,23 @@ const resources = {
       routines: 'Rutinler',
       earnings: 'Kazanç',
       settings: 'Ayarlar',
+      earnCustomBreakTitle: 'Özel dönem mola dağılımı (hazırlık)',
+      earnCustomBreakExplanation:
+        '26–25 gibi seçtiğin dönemin sınırını aşan, mola içeren gerçek çalışma kayıtlarını ayrı beyan edebilirsin. Bu kayıtlar mevcut aylık kazanç hesabına otomatik eklenmez.',
+      earnCustomBreakSelectedPeriod:
+        'Özel dönem: başlangıç günü {{day}} · başlangıç ayı {{period}}',
+      earnCustomBreakNone: 'Bu özel dönem için sınırı aşan molalı çalışma bulunamadı.',
+      earnCustomBreakTotal: 'Kaydedilmiş toplam mola: {{minutes}} dakika',
+      earnCustomBreakFirst: '{{period}} özel döneminin ilk parçasına düşen mola dakikası',
+      earnCustomBreakReason: 'Beyan veya düzeltme nedeni (3–160 karakter)',
+      earnCustomBreakReasonPlaceholder: 'Örneğin: mola süresini düzelttim',
+      earnCustomBreakRevision: 'Kayıtlı sürüm: {{revision}} (0: henüz beyan yok)',
+      earnCustomBreakSave: 'Özel dönem mola dağılımını kaydet',
+      earnCustomBreakSaved:
+        'Mola dağılımı sürümlü olarak kaydedildi. Önceki düzeltmeler korunuyor.',
+      earnCustomBreakInvalid: 'Özel dönem mola kaydı geçersiz veya güncel değil',
+      earnCustomBreakNotEnabled:
+        'Henüz Kazanç raporu, ücret profilleri veya CSV/JSON bu özel dönem beyanını kullanmaz. Hesaplama ve eski aylık mola geçmişi değişmez.',
       payPeriodPreferenceTitle: 'Maaş dönemi başlangıcı (hazırlık)',
       payPeriodPreferenceExplanation:
         'Maaş dönemin ayın 1’i dışında başlayabilir. Başlangıç gününü yerel olarak kaydedebilirsin; bu tercih henüz Kazanç raporlarının hesaplama dönemini değiştirmez.',
@@ -375,6 +392,21 @@ const resources = {
       routines: 'Routines',
       earnings: 'Earnings',
       settings: 'Settings',
+      earnCustomBreakTitle: 'Custom-period break split (preparation)',
+      earnCustomBreakExplanation:
+        'For a period such as 26–25, you can declare how a break in actual work crossing the period boundary is split. These declarations do not automatically change existing monthly earnings.',
+      earnCustomBreakSelectedPeriod: 'Custom period: start day {{day}} · starting month {{period}}',
+      earnCustomBreakNone: 'No break-bearing work crosses this custom period boundary.',
+      earnCustomBreakTotal: 'Original reported break: {{minutes}} minutes',
+      earnCustomBreakFirst: 'Break minutes assigned to the first part of {{period}}',
+      earnCustomBreakReason: 'Declaration or correction reason (3–160 characters)',
+      earnCustomBreakReasonPlaceholder: 'Example: corrected the break duration',
+      earnCustomBreakRevision: 'Saved revision: {{revision}} (0: not yet declared)',
+      earnCustomBreakSave: 'Save custom-period break allocation',
+      earnCustomBreakSaved: 'Versioned break allocation saved. Prior corrections remain recorded.',
+      earnCustomBreakInvalid: 'Invalid or stale custom-period break allocation',
+      earnCustomBreakNotEnabled:
+        'Earnings reports, pay profiles and CSV/JSON exports do not yet use this custom-period declaration. Calendar-month reports and existing break history are unchanged.',
       payPeriodPreferenceTitle: 'Pay period start (preparation)',
       payPeriodPreferenceExplanation:
         'Your pay period may start on a day other than the 1st. You can save your preferred start day locally; this preference does not yet change the Earnings report period.',
