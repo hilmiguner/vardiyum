@@ -14,12 +14,37 @@ const resources = {
       settings: 'Ayarlar',
       earnCustomHourlyTitle: 'Özel dönem: kaydedilmiş gerçek çalışma kazancı',
       earnRateBreakTitle: 'Ücret değişimi sınırındaki mola beyanı',
+      earnDualBreakLineAudit: 'Maaş dönemi + ücret sınırı mola beyanı: revizyon {{revision}}',
+      earnRateBreakLineAudit: 'Ücret değişimi mola beyanı: revizyon {{revision}}',
+      earnDualBreakTitle: 'İki sınırı aşan vardiyada mola dağılımı',
+      earnDualBreakExplanation:
+        'Önce özel maaş dönemi sınırına düşen mola dakikalarını yukarıdaki bölümde beyan et. Bu bölümde yalnız aynı vardiyanın ücret değişimi anını da aşan parçasındaki molanın eski/yeni ücret tarafına dağılımını ayrıca gir. Her beyan ilk mola kaydının belirli sürümüne bağlıdır.',
+      earnDualBreakNeedsFirst:
+        '{{count}} vardiya için önce yukarıdaki özel dönem mola dağılımı kaydedilmeli. Bu yapılmadan ücret hesaplanmaz.',
+      earnDualBreakNone:
+        'Bu dönemde iki sınırı aşan, ayrıca mola beyanı gerektiren vardiya bulunamadı.',
+      earnDualBreakContext:
+        'Maaş dönemi: {{period}} · ücret değişimi: {{rate}} (UTC {{utc}}) · ilk beyan sürümü: {{audit}}',
+      earnDualBreakAmounts:
+        'Orijinal toplam mola: {{original}} dk · bu dönemdeki mola: {{portion}} dk · eski ücret tarafı en fazla {{before}} dk · yeni taraf en fazla {{after}} dk',
+      earnDualBreakStale:
+        'İlk mola beyanı değişti. Eski ikinci beyan geçersiz; yeni dağılımı tekrar kaydet.',
+      earnDualBreakBefore: 'Bu maaş döneminde, ücret değişmeden önce kullanılan mola dakikası',
+      earnDualBreakReason: 'Beyan veya düzeltme nedeni (3–160 karakter)',
+      earnDualBreakReasonPlaceholder: 'Örneğin: iki sınır arasındaki mola konumunu doğruladım',
+      earnDualBreakRevision: 'İkinci mola beyanı sürümü: {{revision}}',
+      earnDualBreakSave: 'İki sınır mola beyanını sürümlü kaydet',
+      earnDualBreakSaved: 'İki sınır beyanı kaydedildi; özel dönem kazanç tahmini yenilendi.',
+      earnDualBreakInvalid: 'İki sınır beyanı geçersiz, çelişkili veya sürümü eski',
+      earnDualBreakNotPayslip:
+        'Mola dağılımı otomatik varsayılmaz. İki sınırı aşan vardiyalar ayrı sürümlü beyanla değerlendirilebilir. Her çalışma kendi UTC ve IANA saat dilimiyle fiyatlandırılır; bu resmi bordro değildir.',
+
       earnRateBreakExplanation:
         'Ayın 1’inde saatlik ücret değişirken iki ücret aralığını aşan gerçek çalışmanın molasını eski ve yeni orana açıkça dağıtabilirsin. Bu ayrı, kaynaklı ve sürümlü beyan yalnız özel dönem saatlik tahmininde kullanılır.',
       earnRateBreakNone:
         'Bu özel dönemde ayrı beyan gerektiren, ücret değişimini aşan molalı çalışma yok.',
       earnRateBreakCrossPeriodUnavailable:
-        '{{count}} çalışma aynı anda hem özel dönem hem ücret değişim sınırını aşıyor. Bu karma senaryo henüz desteklenmiyor; tutar hesaplanmaz.',
+        '{{count}} çalışma her iki sınırı da aşıyor. Bu vardiyalar için önce maaş dönemi, ardından yukarıdaki iki sınır mola beyanını tamamla; eksik beyanla ücret hesaplanmaz.',
       earnRateBreakMidnight: 'Ücret değişimi: {{date}} · UTC sınırı: {{utc}}',
       earnRateBreakTotal: 'Orijinal toplam mola: {{minutes}} dakika',
       earnRateBreakLimits:
@@ -460,12 +485,39 @@ const resources = {
       settings: 'Settings',
       earnCustomHourlyTitle: 'Custom period: logged actual-work earnings',
       earnRateBreakTitle: 'Break allocation at an hourly rate change',
+      earnDualBreakLineAudit:
+        'Pay-period + rate-boundary break statement revision {{revision}}',
+      earnRateBreakLineAudit: 'Rate-change break statement revision {{revision}}',
+      earnDualBreakTitle: 'Break allocation when one shift crosses two boundaries',
+      earnDualBreakExplanation:
+        'First record the break split across custom pay periods above. Here, separately assign the break within the rate-changing part of the same shift to the old and new hourly rates. Each statement is tied to the specific revision of the pay-period break declaration.',
+      earnDualBreakNeedsFirst:
+        '{{count}} shifts require a pay-period break statement above before a rate-boundary declaration can be saved or earnings calculated.',
+      earnDualBreakNone:
+        'No recorded shift in this period requires a second break attribution.',
+      earnDualBreakContext:
+        'Pay period: {{period}} · rate changes: {{rate}} (UTC {{utc}}) · first statement revision: {{audit}}',
+      earnDualBreakAmounts:
+        'Original break: {{original}} min · break within this period: {{portion}} min · old-rate capacity {{before}} min · new-rate capacity {{after}} min',
+      earnDualBreakStale:
+        'The first break statement changed. The prior second statement is stale; record a fresh rate allocation.',
+      earnDualBreakBefore: 'Break minutes before the new hourly rate in this pay period',
+      earnDualBreakReason: 'Statement or correction reason (3–160 characters)',
+      earnDualBreakReasonPlaceholder:
+        'Example: verified the break position across both boundaries',
+      earnDualBreakRevision: 'Second statement revision: {{revision}}',
+      earnDualBreakSave: 'Save versioned two-boundary break allocation',
+      earnDualBreakSaved: 'Statement saved; custom hourly estimate refreshed.',
+      earnDualBreakInvalid: 'Invalid, inconsistent or stale two-boundary break statement',
+      earnDualBreakNotPayslip:
+        'Break timing is never assumed. Dual-boundary shifts need a separate versioned statement. Every segment uses its original UTC and IANA zone; this is not an official payslip.',
+
       earnRateBreakExplanation:
         'When hourly pay changes on the 1st, you can declare how a break spanning both rates is allocated to the old and new rate intervals. This is a separate source-linked, versioned statement used only for custom-period work-only estimates.',
       earnRateBreakNone:
         'No work with a break crossing an hourly rate-change midnight needs attribution in this period.',
       earnRateBreakCrossPeriodUnavailable:
-        '{{count}} sessions also cross a custom pay-period boundary. This combined scenario is not yet supported and cannot be priced.',
+        '{{count}} sessions cross both boundaries. Complete the pay-period break declaration and then the separate two-boundary declaration above; missing attribution blocks estimation.',
       earnRateBreakMidnight: 'Rate change: {{date}} · UTC boundary: {{utc}}',
       earnRateBreakTotal: 'Original reported break: {{minutes}} minutes',
       earnRateBreakLimits:

@@ -1,4 +1,9 @@
-import { customBreakSourcePeriods } from './custom-pay-break-audit.ts';
+import {
+  customBreakSourcePeriods,
+  type CustomPayBreakEvent,
+} from './custom-pay-break-audit.ts';
+import { dualBoundarySource } from './dual-boundary-break-audit.ts';
+import { readDualBoundaryHistory } from './dual-boundary-break-store.ts';
 import {
   CUSTOM_BREAK_WORK_SQL,
   readCustomPayBreakHistory,
@@ -55,6 +60,7 @@ export async function loadCustomHourlyEstimateFromStore(
   const sources: CustomHourlySource[] = [];
   for (const raw of workRows) {
     const work = validateEarningsWork(workFromCustomBreakRow(raw));
+    let latestPeriodBreak: CustomPayBreakEvent | undefined;
     const firstDate = calendarDateInZone(work.timeZone, new Date(work.startInstantUtc));
     const lastDate = calendarDateInZone(
       work.timeZone,
@@ -68,6 +74,7 @@ export async function loadCustomHourlyEstimateFromStore(
       customBreakSourcePeriods(work, plan.startDay);
       const history = await readCustomPayBreakHistory(store, work, plan.startDay);
       const latest = history[history.length - 1];
+      latestPeriodBreak = latest;
       sources.push({
         work,
         allocation: latest,
@@ -105,6 +112,29 @@ export async function loadCustomHourlyEstimateFromStore(
           ].includes(error.message)
         )
           throw error;
+      }
+
+      if (latestPeriodBreak) {
+        try {
+          dualBoundarySource(work, plan.startDay, periodKey, rateDate, latestPeriodBreak);
+          const history = await readDualBoundaryHistory(
+            store,
+            work,
+            plan.startDay,
+            periodKey,
+            rateDate,
+          );
+          sources[sources.length - 1].dualBreakAudit = history[history.length - 1];
+        } catch (error) {
+          if (
+            !(error instanceof Error) ||
+            ![
+              'DUAL_BREAK_RATE_NOT_IN_PAY_PORTION',
+              'DUAL_BREAK_REQUIRES_BREAK_IN_RATE_PORTION',
+            ].includes(error.message)
+          )
+            throw error;
+        }
       }
     }
   }
