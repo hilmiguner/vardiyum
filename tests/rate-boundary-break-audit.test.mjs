@@ -356,7 +356,7 @@ test('malformed audit, missing head, changed original source are rejected on rea
     const key = rateBreakEventKey(WORK_ID, 26, PERIOD, 1);
     const original = db.prepare('SELECT value FROM app_settings WHERE key=?').get(key).value;
     db.prepare('UPDATE app_settings SET value=? WHERE key=?').run(
-      original.replace('"beforeRateBreakMinutes":10', '"beforeRateBreakMinutes":11'),
+      original.replace('"originalBreakMinutes":30', '"originalBreakMinutes":31'),
       key,
     );
     await assert.rejects(
