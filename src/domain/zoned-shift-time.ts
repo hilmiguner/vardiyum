@@ -4,7 +4,7 @@ import {
   plannedWallMinutes,
   type ShiftTemplate,
   validateTemplate,
-} from './shift-engine';
+} from './shift-engine.ts';
 
 /**
  * A local clock value may map to zero instants (DST gap), one instant, or two
