@@ -82,3 +82,9 @@
 - Aynı UTC aralığında iki kaydın örtüşmesi SQL sorgusuyla tespit edilir; DB check constraints korunur.
 
 **Kanıt:** [Actions #43704251648](https://github.com/hilmiguner/vardiyum/actions/runs/43704251648) **SUCCESS**, toplam 39 Node test / 0 başarısız. Expo/Android/iOS JavaScript bundle PASS; native cihaz doğrulaması **yapılmadı**.
+
+## Faz 3 / Issue #10 — rutin otomatik testleri
+
+- `tests/routine-engine.test.mjs`: 8 günlük döngü, anchor öncesi pozitif modulo, DST gece vardiyası başlangıç günü, günlük override, ISO hafta günü, aynı grupta OR/gruplar arasında AND, boş filtre, izin, etkin/pasif/arşiv.
+- `tests/routine-migration.test.mjs`: v1→v2→v3→v4 ve legacy rutin/checkbox/work/pattern koruma; eski tamamlamanın olay günlüğüne aktarımı; arşiv ve değişiklik sonrası olay başlığı snapshot'ı, geri alınınca geçmişin korunması; tarih/rutin kimliği benzersizliği.
+- **CI:** [#43706375916](https://github.com/hilmiguner/vardiyum/actions/runs/43706375916) SUCCESS, 51/51 Node testi. Android/iOS **JS paketleme** PASS; native test ileride.

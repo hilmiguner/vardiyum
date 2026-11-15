@@ -58,3 +58,14 @@
 - [ ] Hermes/ICU/tzdb sürümünden kaynaklanan DST farkları kaydedilir; ücret motoruna otomatik aktarılmaz.
 
 **Durum:** Henüz gerçek cihaz testi yapılmadı. Bunlar planlanan, tamamlanmamış maddelerdir.
+
+## Faz 3 / Issue #10 (planlandı, henüz yapılmadı)
+
+- [ ] Android/iOS SQLite v3→v4 migrasyonu, rutin/checkbox ve eski work/shift/override verileri korunuyor.
+- [ ] Rutin oluştur, vardiya/hafta/döngü/izin filtreleri ve gece vardiyası başlangıç günü doğru.
+- [ ] Günlük istisna değiştiğinde günlük checklist değişiyor.
+- [ ] Tamamlandı/geri al, kapat/aç kalıcılığı; arşiv/geri alma ve geçmiş snapshot korunuyor.
+- [ ] Türkçe/İngilizce, TalkBack/VoiceOver, erişilebilir checklist ve büyük yazılar.
+- [ ] Bildirimler henüz uygulanmadı; bu testin kapsamı değil.
+
+**Kullanıcı cihaz testlerini erteledi; native PASS kanıtı yok.**

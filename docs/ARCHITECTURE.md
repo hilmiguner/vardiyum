@@ -160,3 +160,11 @@ Bu tablo isimleri öneridir; gerçek SQLite migrasyonu ile kesinleşecek. Foreig
 - Kayda girilen **başlangıç yerel tarihi seçilen takvim günüdür**; çıkış 0–3 takvim günü ileride olabilir, UTC süresi en fazla 72 saat. Girişin önceki takvim gününde olması veya farklı saat diliminde çıkış yapma gelişmiş UX'i henüz yoktur.
 - SQLite sürücüsü, iOS/Android gerçek cihazdaki `Intl`/ICU/tzdb eşlemesi, uçak modunda kalıcılık ve migrasyon henüz test edilmedi; kullanıcı bu testleri erteledi ([Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)).
 - **Sürümleme açık:** Şablon geçmişi ve işveren onayı henüz uygulanmadı; kullanıcı beyanına dayalı kayıtlar ücret motoruna otomatik aktarılmamalıdır.
+
+## Faz 3 — Rutin motoru ve SQLite v4 (PR #11, 2026-11-15)
+
+- `src/domain/routine-engine.ts`: JSON v1 filtreleri (`shiftIds`, ISO `weekdays` 1–7, sıfır tabanlı `cycleDays` 0–365, `restOnly`). Filtre grupları AND, grup içi seçimler OR; boş gruplar kısıtlama yapmaz. `resolveShift` günlük istisnayı dahil eder, sivil tarih döngü indeksini kullanır. Gece vardiyası başlangıç gününe bağlıdır.
+- `src/data/routine-repository.ts`: `routine_rules` fiziksel silinmez; arşivlenir. `revision` üzerinden eski editör ekranı diğer düzenlemeyi ezemez. Aktif tamamlama durumu v1 `task_completions` tablosunda saklanır; tamamla ve geri al işlemleri transaction ile `routine_completion_events` günlüğüne snapshot yazar.
+- SQLite v4: `routine_rules.archived_at`, `routine_rules.revision` ve bağımsız append-only `routine_completion_events` (id, routine_id, local_date, completed/uncompleted, title_snapshot, recurrence_snapshot, occurred_at). Önceki v1 rutin tamamlamaları tek seferlik `legacy:` event kimliğiyle geri doldurulur. Arşivleme geçmişi ve `task_completions` verisini silmez.
+- Rutinler sekmesi tarih seçimi, kural oluşturma/düzenleme, haftanın günü/vardiya/döngü/izin filtreleri, arşiv yönetimi ve hareket geçmişini; Bugün sekmesi günlük görev listesini sunar.
+- Gerçek cihaz/native SQLite v4 doğrulaması [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) üzerinde ertelendi. Yerel hatırlatıcı/bildirim planlama bu PR kapsamı dışındadır; iOS/Android bildirim izni semantiği ayrı test edilecek.

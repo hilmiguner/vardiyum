@@ -37,7 +37,8 @@
 - [x] Yaz saati değişimi üzerinden planlanan vardiyanın UTC gerçek geçen süre dönüşümü PR #7 ile doğrulandı.
 - [ ] Bu planlı süre, **gerçek çalışılmış/ücretlendirilebilir süre** olarak otomatik aktarılmıyor; resmi bordro politikası henüz yok.
 - [ ] Tam serbest şablon silme ve geçmiş sürümleme, çakışma davranışı; veri kaybı testi.
-- [ ] Rutinler, bildirimler, maaş/mesai, dışa aktarma/geri alma ve mağazalar.
+- [x] Rutin/checklist/geçmiş kodu PR #11; son CI #43706375916 SUCCESS.
+- [ ] Yerel bildirimler, maaş/mesai, dışa aktarma/geri alma ve mağazalar henüz tamamlanmadı.
 
 ## Açık işler ve sıradaki adım
 
@@ -90,3 +91,18 @@
 - [ ] Tarihsel vardiya şablonu sürümleme ve işveren doğrulaması sonraki işler.
 
 **Sıradaki kod hedefi:** [Issue #10 — Faz 3 vardiyaya bağlı rutin motoru](https://github.com/hilmiguner/vardiyum/issues/10). Paralelde Faz 2 şablon geçmiş sürümlemesi [Issue #4](https://github.com/hilmiguner/vardiyum/issues/4) açık. Cihaz testleri [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ertelendi.
+
+## Issue #10 — Faz 3 rutin motoru / PR #11
+
+**Dal:** `feat/shift-aware-routines-v4`; [PR #11](https://github.com/hilmiguner/vardiyum/pull/11)  
+**Kanıt:** [Actions #43706375916](https://github.com/hilmiguner/vardiyum/actions/runs/43706375916) **SUCCESS** — npm ci, Expo check, Prettier, ESLint, TypeScript, **51/51 Node testi**, Android ve iOS JavaScript export.
+
+- [x] Günlük vardiya override'ını dikkate alan vardiya/hafta/döngü/izin filtreli saf rutin motoru.
+- [x] Bugün/Rutinler görevleri; tamamlandı/geri al, geçmiş tarih, rutin oluşturma/düzenleme/etkinleştirme/arşivleme/geri alma.
+- [x] SQLite v3→v4 eklemeli migrasyon; eski `routine_rules`, `task_completions`, shift/work verileri korunur; legacy checkbox olaylarına backfill yapılır.
+- [x] Tamamlanma geçmişinde olay zamanı başlık/filtre snapshot'ı; kullanıcı checkbox geri alsa veya rutini arşivlese de geçmiş kaybolmaz.
+- [ ] Son doküman commit'i için CI ve PR merge/main CI ayrıca kontrol edilecek.
+- [ ] Yerel bildirimler ayrı Faz 3 işi.
+- [ ] Gerçek Android/iOS cihaz, SQLite v4 ve offline standalone kontrolü kullanıcı isteğiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'ye ertelendi.
+
+**Sıradaki iş:** PR #11 kontrolü/merge ve main SHA+CI doğrulaması; Faz 3 yerel bildirimleri için yeni Issue/PR.

@@ -62,3 +62,11 @@ Kararlar 2026-11-15 itibarıyla konuşulan hedefleri belgeler. Geliştirme sıra
 - **D-028 (uygulandı):** V2 `work_entries` satırları v3 ile silinmez veya otomatik “doğrulanmış” çalışma sayılmaz. Yeni gerçek kayıtlar `actual_work_sessions` tablosunda açık kullanıcı girdisidir; ücret motoruna otomatik bağlanmaz.
 - **D-029 (açık):** Birden fazla iş/işverenin aynı saatte çalışılması, geçmiş vardiya şablonlarının zaman sürümü, işveren puantaj doğrulaması ve ülkeye özgü ücret hesaplama politikası ayrı tasarlanacak. Çakışan fiilî saatler bu MVP'de reddedilir.
 - **D-030 (ertelendi):** iOS/Android gerçek cihazda SQLite v3 migrasyonu, arayüz ve tzdb testi kullanıcı tercihiyle ertelendi; Issue #2 açık.
+
+## 2026-11-15 — Faz 3 / Issue #10 (PR #11)
+
+- **D-031 (uygulandı):** Rutinin gün eşleşmesi, kayıtlı programın sivil tarihi, **override uygulanmış vardiya türü**, ISO hafta günü, döngü günü ve izin bayrağına bağlıdır. Gece vardiyası görevi bitiş değil **başlangıç gününe** aittir.
+- **D-032 (uygulandı):** Her filtre grubunda OR, gruplar arasında AND; boş grup herhangi biri demektir. Rutin tekrar JSON v1 doğrulanır, belirsiz/bozuk veri sessizce göreve çevrilmez.
+- **D-033 (uygulandı):** Rutin silme yerine soft archive. Tamamlandı/geri al olayları, o anki rutin başlığını ve filtre kopyasını bağımsız olay tablosuna ekler; checkbox geri alınsa bile geçmiş silinmez. Eski tamamlanmalar SQLite v4 yükseltmesinde korunur.
+- **D-034 (uygulandı):** Rutin düzenleme ve etkinleştirme için `revision` kontrolü; arşivlenmiş/devre dışı/ilgili güne ait olmayan kural için checkbox hareketi reddedilir.
+- **D-035 (açık):** Yerel bildirim izni, hatırlatıcı zamanlaması, izin reddi ve kural değiştiğinde yeniden planlama ayrı Faz 3 işidir. Native cihaz testleri kullanıcı tercihiyle ertelendi.
