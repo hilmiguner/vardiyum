@@ -171,3 +171,10 @@
 - [x] [PR #25 CI #43732374247](https://github.com/hilmiguner/vardiyum/actions/runs/43732374247) SUCCESS, [main CI #43732513262](https://github.com/hilmiguner/vardiyum/actions/runs/43732513262) SUCCESS, **150/150 Node** (v1→v8 schema, custom pay break event/head versioning, optimistic stale, rollback injected disk fault, kayıp/değişmiş event/source, yanlış gün, kimlik wildcard ayrımı, saatlerin çift sayılmaması ve 18 tablo/FK/integrity korunması) + TS/lint/Expo/iki JS export.
 - [ ] Gerçek Android/iOS cihazda SQLite event persistansı, AES archive & clean-target restore roundtrip, process-kill/düşük disk ve TR/EN erişilebilirlik: Issue #2/#20 ertelendi.
 - [ ] Mixed month-effective pay rates, fixed salary assumptions, period-only adjustments/CSV/JSON and genuine custom earnings report; Issue #22 AÇIK.
+
+## 2026-11-15 — Issue #22 effective pay profile review Node regresyonu (CI bekleniyor)
+
+- [ ] Yeni `tests/custom-pay-profile-policy.test.mjs`: 26 Ekim–25 Kasım iki profile ayrı ID/oran/sürüm segmenti, 1 Kasım UTC IANA boundary, tek hourly/single monthly_fixed, model/para birimi değişimi, aynı oranla bile yeni source ID review; 28/29 Şubat, yıl geçişi, 45dk Kathmandu, New York DST; missing opening profile, duplicate/invalid effective dates, bad timezone/DST gap fail-closed.
+- [ ] Node SQLite **v1→v8** migration + gerçek DB `earnings_profiles` ve `earnings_profile_revisions` üzerinde latest immutable revision selection, eksik revision chain fail-closed ve startDay concurrent change, 18 tablo/foreign key/integrity/data unchanged.
+- [ ] Prettier, ESLint, TS, Expo dependencies, Android/iOS JS export — GitHub PR CI kanıtı bekleniyor.
+- [ ] Real device pay panel/timezones/restore/persistence Issue #2/#20 ertelendi. Actual earnings adjustment/CSV/JSON and fixed model assumption not yet tested because not implemented.
