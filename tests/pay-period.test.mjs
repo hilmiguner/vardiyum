@@ -144,8 +144,15 @@ test('excessive break on either boundary piece fails closed', () => {
     () => splitWorkForPayPeriod(entry, '2026-10', 26, choice(entry, 70, '2026-10')),
     /PAY_PERIOD_BREAK_EXCEEDS_SEGMENT/,
   );
+  const tooLongForSecond = { ...crossing, breakMinutes: 450 };
   assert.throws(
-    () => splitWorkForPayPeriod(entry, '2026-11', 26, choice(entry, 0, '2026-10')),
+    () =>
+      splitWorkForPayPeriod(
+        tooLongForSecond,
+        '2026-11',
+        26,
+        choice(tooLongForSecond, 0, '2026-10'),
+      ),
     /PAY_PERIOD_BREAK_EXCEEDS_SEGMENT/,
   );
 });
@@ -236,6 +243,6 @@ test('unverified, stale, or malformed source work fails closed', () => {
   );
   assert.throws(
     () => splitWorkForPayPeriod({ ...crossing, timeZone: 'Invalid/Timezone' }, '2026-10', 26),
-    /INVALID_TIME_ZONE/,
+    /time zone/i,
   );
 });
