@@ -55,7 +55,14 @@ test('missing custom-period preference preserves exact calendar-month day 1', as
     assert.equal(db.prepare('PRAGMA user_version').get().user_version, 8);
     assert.equal(await readPayPeriodStartDay(asyncStore(db)), 1);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM app_settings').get().n, 0);
-    assert.equal(db.prepare("SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").get().n, 18);
+    assert.equal(
+      db
+        .prepare(
+          "SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+        )
+        .get().n,
+      18,
+    );
   } finally {
     db.close();
   }
@@ -65,20 +72,38 @@ test('user-selected start day survives reopening and is included in existing v8 
   const db = openV8();
   try {
     const store = asyncStore(db);
-    db.prepare('INSERT INTO app_settings (key,value) VALUES (?,?)').run('keep_existing', 'unchanged');
+    db.prepare('INSERT INTO app_settings (key,value) VALUES (?,?)').run(
+      'keep_existing',
+      'unchanged',
+    );
     await writePayPeriodStartDay(store, 26);
     assert.equal(await readPayPeriodStartDay(store), 26);
-    const backedUpSettings = db.prepare('SELECT key,value FROM app_settings ORDER BY key').all();
-    assert.deepEqual(backedUpSettings, [
-      { key: PAY_PERIOD_START_DAY_KEY, value: '26' },
-      { key: 'keep_existing', value: 'unchanged' },
-    ].sort((a,b)=>a.key.localeCompare(b.key)));
+    const backedUpSettings = db
+      .prepare('SELECT key,value FROM app_settings ORDER BY key')
+      .all();
+    assert.deepEqual(
+      backedUpSettings,
+      [
+        { key: PAY_PERIOD_START_DAY_KEY, value: '26' },
+        { key: 'keep_existing', value: 'unchanged' },
+      ].sort((a, b) => a.key.localeCompare(b.key)),
+    );
     await writePayPeriodStartDay(store, 1);
     assert.equal(await readPayPeriodStartDay(store), 1);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM app_settings').get().n, 2);
-    assert.equal(db.prepare('SELECT value FROM app_settings WHERE key=?').get('keep_existing').value, 'unchanged');
+    assert.equal(
+      db.prepare('SELECT value FROM app_settings WHERE key=?').get('keep_existing').value,
+      'unchanged',
+    );
     assert.equal(db.prepare('PRAGMA user_version').get().user_version, 8);
-    assert.equal(db.prepare("SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").get().n, 18);
+    assert.equal(
+      db
+        .prepare(
+          "SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+        )
+        .get().n,
+      18,
+    );
   } finally {
     db.close();
   }
@@ -106,13 +131,32 @@ test('corrupt/stale preference is never silently parsed, reset or overwritten', 
   const db = openV8();
   try {
     const store = asyncStore(db);
-    for (const value of ['0', '29', '31', ' 26', '26 ', '026', '1.0', '1e1', 'NaN', '{}', '', 'null']) {
-      db.prepare('INSERT INTO app_settings (key, value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run(PAY_PERIOD_START_DAY_KEY, value);
+    for (const value of [
+      '0',
+      '29',
+      '31',
+      ' 26',
+      '26 ',
+      '026',
+      '1.0',
+      '1e1',
+      'NaN',
+      '{}',
+      '',
+      'null',
+    ]) {
+      db.prepare(
+        'INSERT INTO app_settings (key, value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value',
+      ).run(PAY_PERIOD_START_DAY_KEY, value);
       await assert.rejects(
         () => readPayPeriodStartDay(store),
         /INVALID_STORED_PAY_PERIOD_START_DAY/,
       );
-      assert.equal(db.prepare('SELECT value FROM app_settings WHERE key=?').get(PAY_PERIOD_START_DAY_KEY).value, value);
+      assert.equal(
+        db.prepare('SELECT value FROM app_settings WHERE key=?').get(PAY_PERIOD_START_DAY_KEY)
+          .value,
+        value,
+      );
     }
     assert.throws(
       () => decodePayPeriodStartDay({ value: null }),
@@ -129,11 +173,22 @@ test('preserve v8 source data and foreign keys when changing the preference', as
     const store = asyncStore(db);
     const countBefore = db.prepare('SELECT COUNT(*) AS n FROM shift_templates').get().n;
     const versionBefore = db.prepare('PRAGMA user_version').get().user_version;
-    const masterBefore = db.prepare("SELECT name,sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name").all();
+    const masterBefore = db
+      .prepare(
+        "SELECT name,sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name",
+      )
+      .all();
     await writePayPeriodStartDay(store, 28);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM shift_templates').get().n, countBefore);
     assert.equal(db.prepare('PRAGMA user_version').get().user_version, versionBefore);
-    assert.deepEqual(db.prepare("SELECT name,sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name").all(), masterBefore);
+    assert.deepEqual(
+      db
+        .prepare(
+          "SELECT name,sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name",
+        )
+        .all(),
+      masterBefore,
+    );
     assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(), []);
     assert.equal(db.prepare('PRAGMA integrity_check').get().integrity_check, 'ok');
   } finally {
