@@ -2,7 +2,7 @@
  * Versioned SQLite schema. Static SQL only: never interpolate user-controlled data.
  * Schema versions are tracked by PRAGMA user_version.
  */
-export const SCHEMA_VERSION = 5;
+export const SCHEMA_VERSION = 6;
 
 export const INITIAL_SCHEMA = `
 CREATE TABLE IF NOT EXISTS shift_templates (
@@ -172,4 +172,49 @@ ALTER TABLE routine_rules ADD COLUMN reminder_timezone_id TEXT;
 CREATE INDEX IF NOT EXISTS idx_routine_reminder_clock
   ON routine_rules(reminder_clock, archived_at, enabled);
 PRAGMA user_version = 5;
+`;
+/**
+ * V6 introduces independent, immutable effective-month pay profiles and
+ * append-only user-entered adjustments. Legacy compensation_profiles,
+ * pay_adjustments and work_entries are never promoted into trusted payroll.
+ */
+export const MIGRATION_6_SQL = `
+CREATE TABLE IF NOT EXISTS earnings_profiles (
+  id TEXT PRIMARY KEY NOT NULL,
+  effective_from TEXT NOT NULL UNIQUE,
+  model TEXT NOT NULL CHECK(model IN ('hourly','monthly_fixed')),
+  currency TEXT NOT NULL CHECK(currency IN ('TRY','USD','EUR','GBP')),
+  base_minor_units INTEGER NOT NULL CHECK(base_minor_units > 0),
+  overtime_hourly_minor_units INTEGER NOT NULL DEFAULT 0
+    CHECK(overtime_hourly_minor_units >= 0),
+  overtime_after_minutes INTEGER,
+  overtime_multiplier_numerator INTEGER NOT NULL DEFAULT 1,
+  overtime_multiplier_denominator INTEGER NOT NULL DEFAULT 1,
+  revision INTEGER NOT NULL DEFAULT 1 CHECK(revision > 0),
+  source TEXT NOT NULL DEFAULT 'user_entered' CHECK(source = 'user_entered'),
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CHECK(overtime_after_minutes IS NULL OR
+    (overtime_after_minutes >= 0 AND overtime_after_minutes <= 44640)),
+  CHECK(overtime_multiplier_numerator >= overtime_multiplier_denominator
+    AND overtime_multiplier_denominator > 0),
+  CHECK(overtime_after_minutes IS NULL OR model != 'monthly_fixed' OR
+    overtime_hourly_minor_units > 0)
+);
+CREATE TABLE IF NOT EXISTS earnings_adjustments (
+  id TEXT PRIMARY KEY NOT NULL,
+  period_key TEXT NOT NULL,
+  kind TEXT NOT NULL CHECK(kind IN ('bonus','deduction','correction')),
+  currency TEXT NOT NULL CHECK(currency IN ('TRY','USD','EUR','GBP')),
+  amount_minor_units INTEGER NOT NULL CHECK(amount_minor_units != 0),
+  note TEXT NOT NULL,
+  source TEXT NOT NULL DEFAULT 'user_entered' CHECK(source = 'user_entered'),
+  created_at TEXT NOT NULL,
+  CHECK(kind != 'bonus' OR amount_minor_units > 0),
+  CHECK(kind != 'deduction' OR amount_minor_units < 0)
+);
+CREATE INDEX IF NOT EXISTS idx_earnings_profiles_effective
+  ON earnings_profiles(effective_from);
+CREATE INDEX IF NOT EXISTS idx_earnings_adjustments_period
+  ON earnings_adjustments(period_key, created_at, id);
+PRAGMA user_version = 6;
 `;

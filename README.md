@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Expo/vardiya/DST/fiilî çalışma (PR #3/#5/#7/#9), offline rutinler (PR #11) ve **yerel rutin hatırlatmaları PR #13 main'de**. [Merge sonrası CI #43708986995](https://github.com/hilmiguner/vardiyum/actions/runs/43708986995) SUCCESS: 67/67 Node testi ve Android/iOS JS export. Native cihaz ve bildirim teslimi testleri kullanıcı isteğiyle ertelendi. [docs/STATUS.md](docs/STATUS.md).
+> **Durum (2026-11-15):** Offline vardiya, rutinler ve yerel hatırlatmalar (PR #3/#5/#7/#9/#11/#13) main'de. Şeffaf **tahmini kazanç** ve fazla mesai motoru, manuel düzeltmeler ve SQLite v6 [PR #15](https://github.com/hilmiguner/vardiyum/pull/15) kapsamında geliştirildi. [CI #43710412387](https://github.com/hilmiguner/vardiyum/actions/runs/43710412387) SUCCESS: 84 Node test ve Android/iOS JS export. Native cihaz doğrulaması kullanıcı isteğiyle ertelendi; resmî bordro/net maaş iddiası yok. [docs/STATUS.md](docs/STATUS.md).
 
 ## Geliştirme kurulumu
 
@@ -89,3 +89,14 @@ Lisans henüz seçilmedi. **Vardiyum** çalışma adıdır; marka, alan adı ve 
 - DST geçişinde **iki farklı UTC ana karşılık gelen veya var olmayan saatler atlanır**; otomatik tahmin yapılmaz. Planlayıcı yalnızca Vardiyum'a ait bildirimleri iptal/yeniler.
 - Android'de **kesin alarm izni istenmez**; zamanlama best-effort'tur. İzin, teslim süresi ve yeniden başlatma sonrası teslim **gerçek cihazda doğrulanmadı**.
 - SQLite v5 önceki tüm rutin, çalışma ve vardiya verilerini koruyan eklemeli migrasyondur. Bildirim izni kullanıcı eylemi olmadan varsayılan kapalıdır.
+
+## Faz 4 — Tahmini kazanç / PR #15
+
+- **Saatlik veya sabit aylık** kullanıcı ücret profili, her profil için ilk gününden başlayan ayrı geçerlilik ayı; önceki profili sessizce güncellemek yerine yeni geçerlilik tarihiyle yeni kayıt açılır.
+- Dönemdeki **kullanıcı beyanı** gerçek UTC giriş/çıkış ve mola kayıtlarından hesaplama. Planlanan vardiya otomatik "çalışıldı" sayılmaz.
+- Fazla mesai eşiği (dakika) ve oranı kullanıcı tarafından **pay/payda** şeklinde açık tanımlanır; otomatik yasal katsayı atanmaz. Eşik yoksa saatlik tüm çalışmalar normal sayılır; sabit aylık tutar kendiliğinden azaltılmaz.
+- Para aritmetiğinde **kuruş/cent tam sayısı** ve **BigInt kesirli çarpma / yuvarlama** kullanılır. İlk sürümde yalnızca **TRY, USD, EUR, GBP** (iki ondalık basamak); döviz çevrimi veya vergi/SGK hesaplama yok.
+- Manuel **prim, kesinti ve düzeltme** kayıtları kaynak id, zaman ve açıklamayla korunur; hata varsa yeni ters işaretli düzeltme girilir.
+- **Açıklanabilir rapor:** hangi ücret profili/sürümü, hangi çalışma kaydı, hangi tutar ve tahmin kalemi. Bir aya sarkan gece vardiyası veya çakışan/bozuk kayıt varsa **hesap bloklanır**: sessizce ayırma ya da uydurma yok.
+- **SQLite v6:** eski vardiya/rutin/gerçek çalışma ve eski finansal taslak tabloları korunur. Önceki `compensation_profiles`/`pay_adjustments` otomatik onaylı bordro veya yeni kazanç kabul edilmez.
+- **Eksik kalan:** saatleri rapor aylarına paylaştırma, işveren doğrulaması, ülke/sözleşme vergi kuralları, cihaz testleri ve PDF/CSV dışa aktarma.

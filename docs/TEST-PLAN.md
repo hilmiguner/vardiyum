@@ -99,3 +99,11 @@
 - SQLite v4→v5 migrasyon: eski rutin, tamamlamalar ve olay günlüğü korunur; geçersiz clock DB CHECK engellenir; timezone değişimi revision günceller.
 
 **PR test kanıtı:** [Actions #43708621922](https://github.com/hilmiguner/vardiyum/actions/runs/43708621922) SUCCESS, 67/67 Node test, Android/iOS JS export. Native OS teslimi bu testlerin kapsamında değildir.
+
+## Issue #14 — Kazanç motoru testleri
+
+- `tests/earnings-engine.test.mjs`: kuruş/cent giriş-çıkış ve negatif para, BigInt rasyonel half-away-from-zero yuvarlama, saatlik 3 saat normal + 1 saat kullanıcı fazla mesai eşiği, sabit aylık tam ay (otomatik kesinti yok), iki gerçek vardiya kaydında kronolojik eşiği aşma.
+- Kullanıcı tarafından girilen vergi öncesi düzeltmeler; prim pozitif/kesinti negatif; currency ve source doğrulaması; aylık profil geçerlilik tarihi, ayrı profil kimliği/REV, dönem kontrolü.
+- DST gerçek UTC aralığı, mola sonrası net bildirilen süre; planlı vardiya üzerinden ücret üretmeme; ters/nested örtüşme, ay sonunu kesen veya önceki aydan gelen çalışma için **blocked**.
+- `tests/earnings-migration.test.mjs`: v1→v6 eski vardiya/rutin/notification/actual-work ve legacy finansal tabloların silinmemesi; yeni profil/adjustment CHECK/UNIQUE/source kısıtları.
+- Toplam test kanıtı [Actions #43710412387](https://github.com/hilmiguner/vardiyum/actions/runs/43710412387) **84/84 Node PASS**, Expo/lint/TS, Android&iOS JS export PASS. Native cihaz testi bunun kapsamında değil.

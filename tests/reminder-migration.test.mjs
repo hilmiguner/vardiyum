@@ -7,7 +7,6 @@ import {
   MIGRATION_3_SQL,
   MIGRATION_4_SQL,
   MIGRATION_5_SQL,
-  SCHEMA_VERSION,
 } from '../src/data/schema.ts';
 
 function fromV4() {
@@ -34,7 +33,7 @@ test('v4 legacy routine and completions survive v5 without requesting permission
       'INSERT INTO task_completions(routine_id,local_date,completed_at) VALUES (?,?,?)',
     ).run('legacy', '2026-11-15', '2026-11-15T06:00:00Z');
     db.exec(`BEGIN IMMEDIATE; ${MIGRATION_5_SQL} COMMIT;`);
-    assert.equal(db.prepare('PRAGMA user_version').get().user_version, SCHEMA_VERSION);
+    assert.equal(db.prepare('PRAGMA user_version').get().user_version, 5);
     const row = db.prepare("SELECT * FROM routine_rules WHERE id='legacy'").get();
     assert.equal(row.title, 'Old title');
     assert.equal(row.reminder_clock, null);
