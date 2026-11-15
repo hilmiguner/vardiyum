@@ -271,7 +271,13 @@ test('export is deterministic, blocked reports cannot be shared, CSV formulas es
   assert.equal(json.mimeType, 'application/json');
   assert.equal(csv.mimeType, 'text/csv');
   assert.equal(JSON.parse(json.content).totalMinorUnits, report.totalMinorUnits);
-  assert.ok(csv.content.includes("'\u003dHYPERLINK"));
+  const injected = {
+    ...report,
+    lines: report.lines.map((line) => ({
+      ...line, description: '=HYPERLINK("http://example.test")',
+    })),
+  };
+  assert.ok(createEarningsExport(injected, 'csv').content.includes("'=HYPERLINK"));
   assert.equal(createEarningsExport(report, 'csv').content, csv.content);
   const blocked = estimateEarnings(
     '2026-11',
