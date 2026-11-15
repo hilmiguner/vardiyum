@@ -14,6 +14,28 @@ const resources = {
       settings: 'Ayarlar',
       earnCustomHourlyTitle: 'Özel dönem: kaydedilmiş gerçek çalışma kazancı',
       earnRateBreakTitle: 'Ücret değişimi sınırındaki mola beyanı',
+      earnDualBreakTitle: 'İki sınırı aşan vardiyada mola dağılımı',
+      earnDualBreakExplanation:
+        'Önce özel maaş dönemi sınırına düşen mola dakikalarını yukarıdaki bölümde beyan et. Bu bölümde yalnız aynı vardiyanın ücret değişimi anını da aşan parçasındaki molanın eski/yeni ücret tarafına dağılımını ayrıca gir. Her beyan ilk mola kaydının belirli sürümüne bağlıdır.',
+      earnDualBreakNeedsFirst:
+        '{{count}} vardiya için önce yukarıdaki özel dönem mola dağılımı kaydedilmeli. Bu yapılmadan ücret hesaplanmaz.',
+      earnDualBreakNone: 'Bu dönemde iki sınırı aşan, ayrıca mola beyanı gerektiren vardiya bulunamadı.',
+      earnDualBreakContext:
+        'Maaş dönemi: {{period}} · ücret değişimi: {{rate}} (UTC {{utc}}) · ilk beyan sürümü: {{audit}}',
+      earnDualBreakAmounts:
+        'Orijinal toplam mola: {{original}} dk · bu dönemdeki mola: {{portion}} dk · eski ücret tarafı en fazla {{before}} dk · yeni taraf en fazla {{after}} dk',
+      earnDualBreakStale:
+        'İlk mola beyanı değişti. Eski ikinci beyan geçersiz; yeni dağılımı tekrar kaydet.',
+      earnDualBreakBefore: 'Bu maaş döneminde, ücret değişmeden önce kullanılan mola dakikası',
+      earnDualBreakReason: 'Beyan veya düzeltme nedeni (3–160 karakter)',
+      earnDualBreakReasonPlaceholder: 'Örneğin: iki sınır arasındaki mola konumunu doğruladım',
+      earnDualBreakRevision: 'İkinci mola beyanı sürümü: {{revision}}',
+      earnDualBreakSave: 'İki sınır mola beyanını sürümlü kaydet',
+      earnDualBreakSaved: 'İki sınır beyanı kaydedildi; özel dönem kazanç tahmini yenilendi.',
+      earnDualBreakInvalid: 'İki sınır beyanı geçersiz, çelişkili veya sürümü eski',
+      earnDualBreakNotPayslip:
+        'Mola dağılımı otomatik varsayılmaz. Her çalışma yalnız kendi kayıtlı UTC ve saat dilimiyle fiyatlandırılır. Bu bir vergi öncesi çalışma tahminidir, resmi bordro değildir.',
+
       earnRateBreakExplanation:
         'Ayın 1’inde saatlik ücret değişirken iki ücret aralığını aşan gerçek çalışmanın molasını eski ve yeni orana açıkça dağıtabilirsin. Bu ayrı, kaynaklı ve sürümlü beyan yalnız özel dönem saatlik tahmininde kullanılır.',
       earnRateBreakNone:
@@ -460,6 +482,28 @@ const resources = {
       settings: 'Settings',
       earnCustomHourlyTitle: 'Custom period: logged actual-work earnings',
       earnRateBreakTitle: 'Break allocation at an hourly rate change',
+      earnDualBreakTitle: 'Break allocation when one shift crosses two boundaries',
+      earnDualBreakExplanation:
+        'First record the break split across custom pay periods above. Here, separately assign the break within the rate-changing part of the same shift to the old and new hourly rates. Each statement is tied to the specific revision of the pay-period break declaration.',
+      earnDualBreakNeedsFirst:
+        '{{count}} shifts require a pay-period break statement above before a rate-boundary declaration can be saved or earnings calculated.',
+      earnDualBreakNone: 'No recorded shift in this period requires a second break attribution.',
+      earnDualBreakContext:
+        'Pay period: {{period}} · rate changes: {{rate}} (UTC {{utc}}) · first statement revision: {{audit}}',
+      earnDualBreakAmounts:
+        'Original break: {{original}} min · break within this period: {{portion}} min · old-rate capacity {{before}} min · new-rate capacity {{after}} min',
+      earnDualBreakStale:
+        'The first break statement changed. The prior second statement is stale; record a fresh rate allocation.',
+      earnDualBreakBefore: 'Break minutes before the new hourly rate in this pay period',
+      earnDualBreakReason: 'Statement or correction reason (3–160 characters)',
+      earnDualBreakReasonPlaceholder: 'Example: verified the break position across both boundaries',
+      earnDualBreakRevision: 'Second statement revision: {{revision}}',
+      earnDualBreakSave: 'Save versioned two-boundary break allocation',
+      earnDualBreakSaved: 'Statement saved; custom hourly estimate refreshed.',
+      earnDualBreakInvalid: 'Invalid, inconsistent or stale two-boundary break statement',
+      earnDualBreakNotPayslip:
+        'Break timing is never assumed. Every work segment uses its original UTC and IANA zone. This is a user-reported pre-tax work-only estimate, not an official payslip.',
+
       earnRateBreakExplanation:
         'When hourly pay changes on the 1st, you can declare how a break spanning both rates is allocated to the old and new rate intervals. This is a separate source-linked, versioned statement used only for custom-period work-only estimates.',
       earnRateBreakNone:
