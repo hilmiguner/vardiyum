@@ -192,3 +192,10 @@
 - [ ] SQLite v1→v8 all migrations, immutable pay profile latest correction, monthly-only break audit NOT substituted, calendar adjustments in either month MUST block, full 18-table/FK/integrity/source data unchanged; DST New York, UTC+5:45 Kathmandu.
 - [ ] GitHub PR CI Prettier/ESLint/TypeScript/Expo/Node + Android/iOS JS export; confirm exact PR sha then merge and rerun main.
 - [ ] Actual native SQLite and encrypted restore on device, low disk/crash and time zone acceptance Issue #2/#20 DEFERRED; mixed profile/fixed/period adjustment/custom CSV-JSON remain pending.
+
+## 2026-11-15 — PR #27 doğrudan gerçek custom saatlik tutar doğrulandı
+
+- [x] [PR #27 CI #43749326253](https://github.com/hilmiguner/vardiyum/actions/runs/43749326253) SUCCESS, [merge sonrası main CI #43749478876](https://github.com/hilmiguner/vardiyum/actions/runs/43749478876) SUCCESS, **177/177 Node**, format/lint/TypeScript/Expo ve Android+iOS **JS bundle**.
+- [x] 14 yeni `tests/custom-hourly-work-estimate.test.mjs`: tek hourly gerçek çalışma 26→25, 30 dk sınır mola audit 10+20 dağılımı ve 2 custom dönemde tam net saniye/kuruş korunması; audit düzeltme rev2, 2 ayrı OT threshold reset ve 1.5x multiplier, BigInt 1 kuruş tiny seconds cumulative rounding, monthly adjustments block, missing custom audit/monthly audit substitute forbidden, mixed effective-month profile/fixed/opening missing, duplicate/overlap/planned/source-local-date mismatch, end exclusive, zero/null OT, Kathmandu 45-min UTC ve New York DST, immutable profil revizyonu + SQLite v1→v8 18 tablo/FK/integrity invariants.
+- [ ] Native iOS/Android custom report ve AES backup/clean-target restore, process kill/düşük disk, gerçek tzdb/DST testleri Issue #2/#20 ertelendi.
+- [ ] Mixed-rate & fixed salary / explicit period adjustment attribution / custom CSV+JSON ve yeni politika kararı testleri Issue #22 açık.

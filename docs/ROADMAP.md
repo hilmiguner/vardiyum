@@ -146,3 +146,9 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 - [ ] [PR #27](https://github.com/hilmiguner/vardiyum/pull/27) tek ve değişmeyen saatlik profil altında 26→25 dönemi için **ilk kaynak-bağlı brüt çalışma ücreti tahmini**, gerçek UTC çalışma ve ayrı mola audit, dönemlik OT eşik reset, BigInt kuruş, duplicate/overlap fail-closed, TR/EN ayrı panel. Aylık adjustments varsa hesap tamamen bloke. PR CI/merge ve main kanıtı bekleniyor.
 - [ ] Mixed pay profile profile-boundary mola split/review policy; fixed full/partial dönem ödeme varsayımı; custom period adjustment attribution ve CSV/JSON contract. Çalışma ücreti tahmini net/tam maaş değildir. Issue #22/#16 açık.
 - [ ] Native iOS/Android SQLite/restore/düşük disk/DST kabulü Issue #2/#20 erteli.
+
+## 2026-11-15 — PR #27 GERÇEK custom hourly tutar (sınırlı kapsam) main'de
+
+- [x] [PR #27](https://github.com/hilmiguner/vardiyum/pull/27) **merged** code main `9965a9b904250bc5fbcfb113f07a9ce09cd4c26e`; [main CI #43749478876](https://github.com/hilmiguner/vardiyum/actions/runs/43749478876) **SUCCESS 177/177 Node** ve Android/iOS JS. Sadece dönem genelinde **tek değişmeyen hourly** profil ve gerçek çalışma varsa kaynak bazlı USD/TRY/EUR/GBP cent+rational net saat/fazla mesai tahmini. Sınır mola allocation PR #25 ayrı audit, 26→25 double count yok; TR/EN ayrı Kazanç paneli.
+- [ ] Mixed monthly-effective pay profile değişimi olan dönemde kaynak UTC/IANA segmentleri, özel sınır molası kullanıcı beyanı ve oran/eşik ilişkisi açık politika; `monthly_fixed` tam/partial ödeme varsayımı kullanıcıdan; custom calendar adjustments explicit attribution ve kapsamlı custom CSV/JSON.
+- [ ] Native device/integrity/backup-restore/DST/low disk/process-kill issue #2/#20 erteli. Issue #22 ve parent #16 açık; custom work-only ücret resmi/eksiksiz maaş değildir.
