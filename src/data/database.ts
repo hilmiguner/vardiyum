@@ -6,6 +6,7 @@ import {
   MIGRATION_3_SQL,
   MIGRATION_4_SQL,
   MIGRATION_5_SQL,
+  MIGRATION_6_SQL,
   SCHEMA_VERSION,
 } from './schema';
 
@@ -31,6 +32,7 @@ async function openAndMigrate(): Promise<SQLite.SQLiteDatabase> {
   if (version < 3) await apply(MIGRATION_3_SQL);
   if (version < 4) await apply(MIGRATION_4_SQL);
   if (version < 5) await apply(MIGRATION_5_SQL);
+  if (version < 6) await apply(MIGRATION_6_SQL);
   return db;
 }
 
