@@ -153,3 +153,9 @@
 - [ ] `tests/pay-period-settings.test.mjs`: gerçek Node SQLite v1→v8 tüm göçler, anahtar yoksa day=1 ve DB mutasyonu yok, 26 seçimi/reload/1 reset, diğer app_settings satırları korunur, 0/29/31/float/noncanonical JSON/bozuk değer reddi, şema 18 tablo/user_version 8 değişmez, FK ve integrity `ok`. Yeni feature CI ile teyit edilecek.
 - [ ] Settings TR/EN 1–28 UI, schedule IANA önizlemesi ve restore sonrası gerçek cihazda saved app_settings round-trip: native [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2).
 - [ ] Custom earnings calculation, break audit, etkili profil dönemi, sabit ücret, manuel adjustments, CSV/JSON **henüz tamamlanmadı**.
+
+## 2026-11-15 — PR #24 persisted setting kalite kanıtı
+
+- [x] [PR #24 CI #43729824011](https://github.com/hilmiguner/vardiyum/actions/runs/43729824011) SUCCESS, [main CI #43729927452](https://github.com/hilmiguner/vardiyum/actions/runs/43729927452) SUCCESS: **142 Node testi**; SQLite v1→v8 migration, app_settings normal/bozuk değer, 18 tablo korunumu, FK/integrity, TR/EN TS/UI paketleme, Android/iOS JS exports.
+- [ ] Native cihazda ayar kalıcılığı ve şifreli dosyadan gerçek restore/yeniden açılış: Issue #2/#20.
+- [ ] Özel dönem ücretli hesaplaması, mixed profile, yeni break audit ve CSV/JSON finansal rapor: Issue #22.
