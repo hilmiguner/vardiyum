@@ -12,6 +12,33 @@ const resources = {
       routines: 'Rutinler',
       earnings: 'Kazanç',
       settings: 'Ayarlar',
+      earnFixedTitle: 'Özel maaş dönemi: sabit ücret ana tutarı',
+      earnFixedExplanation:
+        'Bu bölüm yalnız sabit aylık ücretin özel dönem için kullanıcı tarafından açıkça seçilen ana tutarını gösterir. Takvim günleri veya kaydedilen çalışma süresi kullanılarak otomatik oranlama yapılmaz. İki ayrı maaş profili varsa tahmin durur.',
+      earnFixedPeriod: 'Özel maaş dönemi: {{start}} – {{end}}',
+      earnFixedProfile:
+        'Ücret profili {{profile}} · sürüm {{revision}} · tam aylık kaynak {{amount}}',
+      earnFixedSavedScope: 'Kullanıcının seçtiği, yalnız sabit ücret ANA TUTAR tahmini:',
+      earnFixedSavedChoice: '{{mode}} · beyan revizyonu {{revision}}',
+      earnFixedStale:
+        'Ücret profili veya saat dilimi değişmiş. Önceki beyan bu kaynağa artık uymuyor; yeniden açık seçim yap.',
+      earnFixedNeedsChoice:
+        'Bu özel maaş dönemi için henüz bir ücret ana tutarı beyan edilmedi.',
+      earnFixedSelection: 'Özel dönem için açık ücret ana tutarı kararı',
+      earnFixedFull: 'Tam sabit ana tutar',
+      earnFixedPartial: 'Eksik dönem: kendim tutar gireceğim',
+      earnFixedAmount: 'Özel dönem için beyan ettiğin ana tutar ({{currency}})',
+      earnFixedAmountHint:
+        'En fazla mevcut tam kaynak ücretten küçük, sıfır veya pozitif kesin bir tutar gir. Otomatik gün/saat oranlaması yapılmaz.',
+      earnFixedReason: 'Bu seçimi veya düzeltmeyi neden yaptın? (3–160 karakter)',
+      earnFixedReasonPlaceholder: 'Örneğin: eksik dönem tutarımı bordrodan kontrol ettim',
+      earnFixedRevision: 'Kayıtlı beyan revizyonu: {{revision}}',
+      earnFixedSave: 'Sabit ücret ana tutarı beyanını kaydet',
+      earnFixedSaved: 'Sabit ücret ana tutarı beyanı sürümlü olarak kaydedildi.',
+      earnFixedInvalid: 'Sabit ücret seçimi geçersiz veya eskimiş',
+      earnFixedBlocked: 'Özel dönem sabit ücret ana tutarı şu an hesaplanamaz.',
+      earnFixedNotPayslip:
+        'Bu yalnız kullanıcı beyanına dayalı VERGİ ÖNCESİ SABİT ÜCRET ANA TUTARIDIR. Fazla mesai, prim, kesinti, düzeltme, SGK, vergi ve net maaş dahil değildir; tam bordro veya ödeme taahhüdü değildir. Aylık düzeltmeler veya profil geçişi varsa tutar bloke edilir.',
       earnCustomHourlyTitle: 'Özel dönem: kaydedilmiş gerçek çalışma kazancı',
       earnRateBreakTitle: 'Ücret değişimi sınırındaki mola beyanı',
       earnDualBreakLineAudit: 'Maaş dönemi + ücret sınırı mola beyanı: revizyon {{revision}}',
@@ -483,6 +510,33 @@ const resources = {
       routines: 'Routines',
       earnings: 'Earnings',
       settings: 'Settings',
+      earnFixedTitle: 'Custom pay period: fixed salary base only',
+      earnFixedExplanation:
+        'This section shows only the fixed-salary base amount that you explicitly choose for a custom period. No automatic daily or hourly prorating is inferred from calendar dates or logged work. A period with two effective profiles stays blocked.',
+      earnFixedPeriod: 'Custom pay period: {{start}} – {{end}}',
+      earnFixedProfile:
+        'Pay profile {{profile}} · revision {{revision}} · full monthly source {{amount}}',
+      earnFixedSavedScope: 'Your explicitly chosen fixed salary BASE-ONLY estimate:',
+      earnFixedSavedChoice: '{{mode}} · statement revision {{revision}}',
+      earnFixedStale:
+        'Your pay profile or time zone changed. The previous statement no longer matches; make a fresh explicit choice.',
+      earnFixedNeedsChoice:
+        'No fixed salary base assumption has been declared for this custom period.',
+      earnFixedSelection: 'Choose the fixed base amount for this period explicitly',
+      earnFixedFull: 'Full fixed base',
+      earnFixedPartial: 'Partial period: enter my own amount',
+      earnFixedAmount: 'Your explicitly stated base amount for this period ({{currency}})',
+      earnFixedAmountHint:
+        'Enter zero or a positive amount strictly lower than the full monthly source. The app does not prorate by calendar days or work hours.',
+      earnFixedReason: 'Reason for this statement or correction (3–160 characters)',
+      earnFixedReasonPlaceholder: 'Example: I confirmed my partial period base amount',
+      earnFixedRevision: 'Saved statement revision: {{revision}}',
+      earnFixedSave: 'Save versioned fixed base amount statement',
+      earnFixedSaved: 'Fixed base amount statement saved with revision history.',
+      earnFixedInvalid: 'Invalid or stale fixed base salary choice',
+      earnFixedBlocked: 'Custom-period fixed salary base is currently blocked.',
+      earnFixedNotPayslip:
+        'This is only your self-reported PRE-TAX FIXED SALARY BASE AMOUNT. Overtime, bonuses, deductions, corrections, taxes, social insurance and net pay are EXCLUDED. It is not a payslip or payment promise. Existing calendar adjustments or a pay-profile transition block this amount.',
       earnCustomHourlyTitle: 'Custom period: logged actual-work earnings',
       earnRateBreakTitle: 'Break allocation at an hourly rate change',
       earnDualBreakLineAudit:
