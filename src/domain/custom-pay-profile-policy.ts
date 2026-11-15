@@ -2,7 +2,7 @@ import {
   validateEarningsProfile,
   type EarningsProfile,
 } from './earnings-engine.ts';
-import { customPayPeriodBounds } from './pay-period.ts';
+import { customPayPeriodBounds, zonedPayPeriodBounds } from './pay-period.ts';
 import { validatePayPeriodStartDay } from './pay-period-settings.ts';
 import { resolveLocalBoundary } from './zoned-shift-time.ts';
 
@@ -75,6 +75,8 @@ export function planCustomPayProfiles(
 ): CustomPayProfilePlan {
   validatePayPeriodStartDay(startDay);
   const period = customPayPeriodBounds(periodKey, startDay);
+  // Validate the displayed IANA period even if there is no active pay profile.
+  zonedPayPeriodBounds(periodKey, startDay, timeZone);
   if (typeof timeZone !== 'string' || timeZone.length === 0)
     throw new Error('INVALID_PAY_PROFILE_TIMEZONE');
 
