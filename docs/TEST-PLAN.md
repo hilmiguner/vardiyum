@@ -140,3 +140,10 @@
 - Uygulama UI iki ayrı kullanıcı onayını, doğrulanmış payload dışında restore'a girmemeyi; crypto anahtarının app_settings/log/cache'e alınmamasını şart koşar.
 - [CI #43724855020](https://github.com/hilmiguner/vardiyum/actions/runs/43724855020) **127/127 Node PASS**, Expo dep/prettier/ESLint/TypeScript, Android+iOS JS export.
 - **Native backlog:** gerçek iOS/Android AES file Share/Picker, SQLite exclusive txn/reboot/low disk/process-kill ve bildirim izni tekrar onayı henüz yapılmadı. [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) / [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2).
+
+## Issue #22 — Özel maaş dönemi domain kabulü (native beklemede)
+
+- [ ] `npm test` / `tests/pay-period.test.mjs` CI: 26→25, sınır anı exclusive, Feb 28/29, yıl devri, 1–28 kısıtı, DST fall/spring, 30/45 dk ofset, eski takvim-ayına uyum, kaynak eşleşmesi ve manuel mola fail-closed. Testler feature branch'e eklendi; CI sonucu henüz raporlanmadı.
+- [ ] Kullanıcı seçimi ve SQLite migrasyonları/backup restore round-trip; v8 geçmişi ve legacy finance tabloları korunmalı.
+- [ ] Ücret profili efektif ay kesişimi ve sabit tutar, her döneme bağımsız eşik, adjustments ve TR/EN itemized CSV/JSON güvenli paylaşım testleri.
+- [ ] Gerçek Android/iOS cihaz, time zone ICU/tzdb, düşük disk/kill/restart ve restore [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) / [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20).
