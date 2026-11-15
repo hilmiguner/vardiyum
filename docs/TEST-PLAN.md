@@ -184,3 +184,11 @@
 - [x] [PR CI #43747093629](https://github.com/hilmiguner/vardiyum/actions/runs/43747093629) SUCCESS, [main merge CI #43747264298](https://github.com/hilmiguner/vardiyum/actions/runs/43747264298) SUCCESS: **163/163 Node**, Prettier, ESLint, TypeScript, Expo deps, Android/iOS JS exports.
 - [x] 26→25 rate segmentation, effective first-of-month UTC, duplicate/same rate review, mixed currency/model, single fixed blocker, single hourly preview, no beginning profile, February leap/nonleap, year rollover, Kathmandu UTC+5:45, New York DST, midnight DST gap, invalid timezone/effective date, SQLite v1→v8 immutable latest revision and missing revision fail-closed, preference concurrent change, no DB writes/18 table/integrity/FK preservation.
 - [ ] Native iOS/Android timezone and SQLite crash/reopen/backup acceptance Issue #2/#20; actual custom period salary/CSV/JSON, overtime/fixed/adjustment model tests not applicable yet (features still pending).
+
+## 2026-11-15 — Issue #22 / PR #27 custom hourly actual-work Node regresyonu
+
+- [ ] `tests/custom-hourly-work-estimate.test.mjs`: single hourly work-only 26→25; original IANA UTC identity, net/gross time; two adjacent custom periods crossing with 30-min real break and first/second period audited 10/20 min, exact cent conservation; revision change recalculation/source unchanged.
+- [ ] Dönemlik overtime threshold reset (50-minute first + 6h40 next), custom multiplier, zero/null threshold, cumulative tiny-fraction rounding, end-exclusive boundary and no-work; duplicate/overlapping work, unverified planned/source/zone, missing/stale split audit block.
+- [ ] SQLite v1→v8 all migrations, immutable pay profile latest correction, monthly-only break audit NOT substituted, calendar adjustments in either month MUST block, full 18-table/FK/integrity/source data unchanged; DST New York, UTC+5:45 Kathmandu.
+- [ ] GitHub PR CI Prettier/ESLint/TypeScript/Expo/Node + Android/iOS JS export; confirm exact PR sha then merge and rerun main.
+- [ ] Actual native SQLite and encrypted restore on device, low disk/crash and time zone acceptance Issue #2/#20 DEFERRED; mixed profile/fixed/period adjustment/custom CSV-JSON remain pending.

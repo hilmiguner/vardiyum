@@ -12,6 +12,27 @@ const resources = {
       routines: 'Rutinler',
       earnings: 'Kazanç',
       settings: 'Ayarlar',
+      earnCustomHourlyTitle: 'Özel dönem: kaydedilmiş gerçek çalışma kazancı',
+      earnCustomHourlyScope:
+        'Yalnız tek ve dönem boyunca değişmeyen saatlik ücret profilinde, kullanıcı tarafından girilen gerçek çalışma sürelerinden hesaplanır. Takvim ayı prim/kesinti/düzeltmeleri, sabit maaş, vergi, SGK ve net ücret dahil değildir. Belirsizlikte tutar gösterilmez.',
+      earnCustomHourlyPeriod: 'Özel dönem: {{start}} – {{end}} (iki tarih dahil)',
+      earnCustomHourlyTotals:
+        'Kaydedilmiş net çalışma: {{minutes}} dakika · Döneme özel eşik üzeri: {{overtime}} dakika',
+      earnCustomHourlyProfile: 'Ücret kaynağı: {{profile}} · revizyon {{revision}}',
+      earnCustomHourlySources: 'Kaynaklara göre hesaplanan çalışma',
+      earnCustomHourlyKind_regular: 'Normal saatlik çalışma',
+      earnCustomHourlyKind_overtime: 'Dönemlik eşik üzeri saatlik çalışma',
+      earnCustomHourlyLine:
+        'Gerçek çalışma {{work}} · {{seconds}} saniye · Bu parçanın molası {{breakMinutes}} dk · Mola beyanı sürümü {{revision}}',
+      earnCustomHourlyOriginal: 'Orijinal çalışma UTC: {{start}} → {{end}}',
+      earnCustomHourlyStatus_blocked:
+        'Özel dönem hesabı engellendi: profil/mola/çalışma veya ay bazlı düzeltme henüz güvenli değil.',
+      earnCustomHourlyStatus_needs_profile:
+        'Özel dönemin ilk gününde geçerli bir saatlik ücret profili gerekli.',
+      earnCustomHourlyStatus_no_work: 'Bu özel dönemde kaydedilmiş gerçek çalışma bulunamadı.',
+      earnCustomHourlyStatus_disabled: 'Başlangıç günü 1: mevcut takvim ayı raporu kullanılır.',
+      earnCustomHourlyNotPayslip:
+        'Bu rakam kullanıcı beyanına dayalı, vergi öncesi yalnız çalışma ücretinin tahminidir; tam maaş, bordro ya da ödeme taahhüdü değildir. Ay bazlı prim/kesinti/düzeltme varsa tutar gösterilmez. Özel dönem CSV/JSON aktarımı henüz etkin değildir.',
       earnCustomProfileTitle: 'Özel dönem ücret profili kontrolü',
       earnCustomProfileExplanation:
         'Seçtiğin maaş dönemi iki takvim ayını kapsıyorsa ayın 1’inde yeni bir ücret profili başlayabilir. Geçerli profil sürümleri tarih tarih gösterilir; oranlar sessizce birleştirilmez.',
@@ -412,6 +433,28 @@ const resources = {
       routines: 'Routines',
       earnings: 'Earnings',
       settings: 'Settings',
+      earnCustomHourlyTitle: 'Custom period: logged actual-work earnings',
+      earnCustomHourlyScope:
+        'Computed only from self-reported actual work with one unchanged hourly pay profile for the whole period. Calendar-month bonuses, deductions, corrections, fixed salary, tax, social security and net pay are excluded. Ambiguous cases show no amount.',
+      earnCustomHourlyPeriod: 'Custom period: {{start}} – {{end}} (inclusive)',
+      earnCustomHourlyTotals:
+        'Net logged work: {{minutes}} minutes · Above custom-period threshold: {{overtime}} minutes',
+      earnCustomHourlyProfile: 'Pay source: {{profile}} · revision {{revision}}',
+      earnCustomHourlySources: 'Calculated work by original source',
+      earnCustomHourlyKind_regular: 'Regular hourly work',
+      earnCustomHourlyKind_overtime: 'Hourly work above period threshold',
+      earnCustomHourlyLine:
+        'Actual work {{work}} · {{seconds}} seconds · Break in this portion {{breakMinutes}} min · Break audit revision {{revision}}',
+      earnCustomHourlyOriginal: 'Original work UTC: {{start}} → {{end}}',
+      earnCustomHourlyStatus_blocked:
+        'Custom-period estimate blocked: profile, break, work or calendar-month adjustment requires an explicit policy.',
+      earnCustomHourlyStatus_needs_profile:
+        'An active hourly pay profile is required at the beginning of the custom period.',
+      earnCustomHourlyStatus_no_work:
+        'No self-reported actual work exists in this custom period.',
+      earnCustomHourlyStatus_disabled: 'Start day 1: use the existing calendar-month report.',
+      earnCustomHourlyNotPayslip:
+        'This is a user-reported pre-tax estimate of WORK ONLY, not full pay, a payslip or a payment commitment. An existing calendar-month bonus, deduction or correction blocks the estimate. Custom-period CSV/JSON exports are not yet enabled.',
       earnCustomProfileTitle: 'Custom-period pay profile review',
       earnCustomProfileExplanation:
         'A custom pay period can span two calendar months. A new rate may become effective on the 1st. This preview identifies immutable profile revisions for each date range without silently blending rates.',
