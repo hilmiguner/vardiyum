@@ -110,8 +110,7 @@
 
 ## Issue #12 / PR #13 — Yerel rutin hatırlatmaları
 
-**Dal:** `feat/offline-routine-reminders-v5`  
-**PR:** [#13](https://github.com/hilmiguner/vardiyum/pull/13)  
+**[PR #13](https://github.com/hilmiguner/vardiyum/pull/13):** main'e merge edildi (`cc708c8dd22fb614194e019047345b298684ef2b`).  
 **PR kod CI:** [Actions #43708621922](https://github.com/hilmiguner/vardiyum/actions/runs/43708621922) **SUCCESS**: npm ci/Expo check/Prettier/ESLint/TypeScript, **67/67 Node testi**, Android+iOS JS export.
 
 - [x] Rutin başına isteğe bağlı `HH:mm`, zone + revizyon ile kalıcı SQLite v5 kayıt.
@@ -119,7 +118,8 @@
 - [x] Offline 14 günlük / 48 toplam / 6 günlük hatırlatma planlayıcı; UTC mutlak DATE trigger, DST gap/fold atlama.
 - [x] Vardiya/rutin/izin/zaman dilimi/görev tamamlanması değişiminde Vardiyum-aidiyetli bildirimleri uzlaştırma; başkasının bildirimleri korunuyor.
 - [x] Eski v1–v4 veri ve rutin tamamlamalarını koruyan migrasyon testleri.
-- [ ] PR #13 merge ve main CI sonucu henüz belgeye işlenmedi; GitHub'dan kontrol et.
+- [x] **PR #13 squash merge:** `cc708c8dd22fb614194e019047345b298684ef2b`.
+- [x] **Merge sonrası main CI:** [Actions #43708986995](https://github.com/hilmiguner/vardiyum/actions/runs/43708986995) SUCCESS (67/67 Node test, Android/iOS JS export).
 - [ ] **Gerçek cihaz native bildirim izni, teslim, boot/arka plan, SQLite v5 persistans** kullanıcı isteğiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'ye ertelendi. Uygulama sürekli çalışmaz; kesin zamanlı alarm vaadi yok.
 
-**Sıradaki MVP kod fazı:** Faz 4 — fiilî çalışma kayıtlarından ayrı, temkinli/tahmini kazanç motoru; sözleşme ve ödeme politikasını resmi bordro olarak sunma.
+**Sıradaki MVP kod fazı:** [Issue #14 — Faz 4 şeffaf tahmini kazanç motoru](https://github.com/hilmiguner/vardiyum/issues/14). Resmî bordro/mevzuat hesabı iddiası olmadan yalnızca kullanıcı verilerinden şeffaf tahmin; [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) gerçek cihaz QA ertelendi.
