@@ -7,7 +7,7 @@
 | 0 | Ürün, mimari ve proje hafızası belgeleri | ✅ PR #1 ile tamamlandı |
 | 1 | Expo iskeleti, SQLite, i18n, tema, CI | PR #3 main'e alındı; Issue #2 native test açık |
 | 2 | Esnek vardiya motoru, istisnalar ve takvim | PR #5/#7/#9 main'de; cihaz testleri/sürümleme açık |
-| 3 | Rutinler, görev geçmişi, bildirimler | Planlandı |
+| 3 | Rutinler, görev geçmişi, bildirimler | PR #11: rutin/checklist/geçmiş hazır; bildirimler açık |
 | 4 | Mesai ve tahmini kazanç | Planlandı |
 | 5 | Yedekleme, gerçek cihazlar, beta | Planlandı |
 | 6 | App Store ve Google Play yayını | Planlandı |
@@ -52,10 +52,10 @@
 
 ## Faz 3 — Rutinler
 
-**Sıradaki geliştirme:** [Issue #10](https://github.com/hilmiguner/vardiyum/issues/10) — vardiyaya bağlı kurallar ve tamamlanma geçmişi.
+**İlerleme:** [Issue #10](https://github.com/hilmiguner/vardiyum/issues/10), [PR #11](https://github.com/hilmiguner/vardiyum/pull/11). Rutin ve geçmiş kodu/CI başarılı, native cihaz testleri ve yerel bildirimler açık.
 
-- [ ] Haftanın günü, döngü günü ve vardiya türüne bağlı tekrarlar
-- [ ] Günlük görev listesi ve geçmiş tamamlanmalar
+- [x] Haftanın günü, vardiya türü, izin ve herhangi uzunluktaki döngü günü filtre motoru (PR #11).
+- [x] Bugün/Rutinler checklist, tarih seçimi, tamamlama/geri alma, arşiv ve hareket geçmişi (PR #11).
 - [ ] Lokal bildirim, güncellemede yeniden planlama ve izin reddi davranışı
 
 ## Faz 4 — Mesai ve tahmini kazanç

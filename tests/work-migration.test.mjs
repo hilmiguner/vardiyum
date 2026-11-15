@@ -2,12 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { DatabaseSync } from 'node:sqlite';
 
-import {
-  INITIAL_SCHEMA,
-  MIGRATION_2_SQL,
-  MIGRATION_3_SQL,
-  SCHEMA_VERSION,
-} from '../src/data/schema.ts';
+import { INITIAL_SCHEMA, MIGRATION_2_SQL, MIGRATION_3_SQL } from '../src/data/schema.ts';
 
 function originalV2() {
   const db = new DatabaseSync(':memory:');
@@ -31,7 +26,7 @@ test('v1 to v2 to v3 is additive and preserves existing cycle and work row', () 
         VALUES('legacy_1','2026-11-01','2026-11-01T04:00:00Z','2026-11-01T12:00:00Z',480,'regular');
     `);
     db.exec(`BEGIN IMMEDIATE; ${MIGRATION_3_SQL} COMMIT;`);
-    assert.equal(db.prepare('PRAGMA user_version').get().user_version, SCHEMA_VERSION);
+    assert.equal(db.prepare('PRAGMA user_version').get().user_version, 3);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM pattern_days').get().n, 1);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM day_overrides').get().n, 1);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM work_entries').get().n, 1);

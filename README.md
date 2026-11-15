@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Expo temel PR #3, vardiya/takvim PR #5, DST motoru PR #7 ve günlük saat seçimleri/gerçek çalışma kayıtları PR #9 **main'e birleştirildi**. 39 Node testi ve Android/iOS JavaScript paketleme başarılı. **Native gerçek cihaz testleri ertelendi.** [docs/STATUS.md](docs/STATUS.md).
+> **Durum (2026-11-15):** Vardiya ve DST temeli PR #3/#5/#7/#9 ile main'de. Çevrimdışı vardiyaya/güne bağlı rutin kuralları, günlük checklist ve tamamlanma geçmişi **PR #11** kapsamında geliştirilmiştir. CI sonucu [Actions #43706375916](https://github.com/hilmiguner/vardiyum/actions/runs/43706375916) SUCCESS (51/51 birim testi, Android+iOS JS export). **Native cihaz testleri kullanıcı isteğiyle ertelendi.** Güncel durum: [docs/STATUS.md](docs/STATUS.md).
 
 ## Geliştirme kurulumu
 
@@ -71,3 +71,12 @@ Lisans henüz seçilmedi. **Vardiyum** çalışma adıdır; marka, alan adı ve 
 - Tüm gerçek çalışmalar **kullanıcı beyanıdır**: işveren doğrulaması, otomatik maaş hesaplaması veya resmi bordro yerine geçmez.
 - Yerel SQLite v3 migrasyonu v1/v2 vardiya ve eski `work_entries` satırlarını silmez; yeni kayıtlar ayrı `actual_work_sessions` tablosundadır.
 - **Cihaz testleri:** yalnızca CI ve JS paketleme kanıtlandı; [docs/DEVICE-SMOKE.md](docs/DEVICE-SMOKE.md) gerçek cihaz testi ileride yapılacak.
+
+## Faz 3 — Offline rutinler (PR #11)
+
+- Rutinler ekranında rutin oluşturma, düzenleme, devre dışı bırakma, arşivleme ve arşivden geri alma.
+- Vardiya türü, ISO haftanın günü, herhangi uzunlukta döngü günü ve izin günü filtreleri; aynı filtre grubunda **VEYA**, gruplar arasında **VE**. Boş filtre = tüm günler.
+- Bugün ve Rutinler ekranlarında seçili günün görevleri, tamamlandı/geri al işaretleri ve geçmiş hareketler.
+- Günlük vardiya istisnaları dikkate alınır; gece vardiyası görevi, vardiyanın **başladığı** takvim gününe bağlanır.
+- SQLite v4 eski `routine_rules` ve `task_completions` verilerini korur, eski tamamlanmaları `routine_completion_events` geçmişine taşır. Bir rutini arşivlemek geçmişini **silmez**.
+- Yerel bildirimler ve native cihaz testleri **henüz yapılmadı**; Faz 3'ün ayrı işleri.

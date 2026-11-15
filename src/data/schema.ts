@@ -2,7 +2,7 @@
  * Versioned SQLite schema. Static SQL only: never interpolate user-controlled data.
  * Schema versions are tracked by PRAGMA user_version.
  */
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 export const INITIAL_SCHEMA = `
 CREATE TABLE IF NOT EXISTS shift_templates (
@@ -123,4 +123,35 @@ CREATE TABLE IF NOT EXISTS actual_work_sessions (
 CREATE INDEX IF NOT EXISTS idx_actual_work_date ON actual_work_sessions(local_date);
 CREATE INDEX IF NOT EXISTS idx_actual_work_interval ON actual_work_sessions(start_instant_utc, end_instant_utc);
 PRAGMA user_version = 3;
+`;
+
+/**
+ * V4 augments existing v1 routine tables WITHOUT dropping rows or cascading
+ * completion deletion. Routine removal is soft-archive; audit is append-only.
+ * Historical completions are backfilled once into an independent event log.
+ */
+export const MIGRATION_4_SQL = `
+ALTER TABLE routine_rules ADD COLUMN archived_at TEXT;
+ALTER TABLE routine_rules ADD COLUMN revision INTEGER NOT NULL DEFAULT 1
+  CHECK(revision >= 1);
+CREATE INDEX IF NOT EXISTS idx_routine_active
+  ON routine_rules(archived_at, enabled);
+CREATE TABLE IF NOT EXISTS routine_completion_events (
+  id TEXT PRIMARY KEY NOT NULL,
+  routine_id TEXT NOT NULL,
+  local_date TEXT NOT NULL,
+  action TEXT NOT NULL CHECK(action IN ('completed','uncompleted')),
+  title_snapshot TEXT NOT NULL,
+  recurrence_snapshot TEXT NOT NULL,
+  occurred_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_routine_events_date
+  ON routine_completion_events(local_date, occurred_at, id);
+INSERT OR IGNORE INTO routine_completion_events
+  (id, routine_id, local_date, action, title_snapshot, recurrence_snapshot, occurred_at)
+SELECT 'legacy:' || c.routine_id || ':' || c.local_date,
+  c.routine_id, c.local_date, 'completed', r.title, r.recurrence_json, c.completed_at
+FROM task_completions c
+JOIN routine_rules r ON r.id = c.routine_id;
+PRAGMA user_version = 4;
 `;
