@@ -32,7 +32,7 @@ const resources = {
       earnAttribEarlierAmount:
         '{{period}} başlangıçlı ilk özel döneme ayırdığın tutar ({{currency}})',
       earnAttribRemainder:
-        '{{period}} başlangıçlı ikinci özel döneme kalan tutar kendiliğinden atanır. Kesintiler eksi işaretli, primler artı işaretli olmalı.',
+        '{{period}} başlangıçlı ikinci özel döneme kalan tutar kendiliğinden atanır. Kesinti veya negatif düzeltme için pozitif büyüklük de girebilirsin; uygulama kaynak kaydın eksi işaretini korur.',
       earnAttribReason: 'Atıf veya düzeltme nedeni (3–160 karakter)',
       earnAttribReasonPlaceholder:
         'Örneğin: Kasım priminin hangi maaş dönemine ait olduğunu doğruladım',
@@ -604,7 +604,7 @@ const resources = {
       earnAttribEarlierAmount:
         'Amount assigned to earlier custom period {{period}} ({{currency}})',
       earnAttribRemainder:
-        'The rest is assigned to later custom period {{period}}. Deductions must be negative; bonuses positive.',
+        'The rest is assigned to later custom period {{period}}. For a negative deduction or correction, you may enter its positive magnitude; the app preserves the original negative sign.',
       earnAttribReason: 'Allocation or correction reason (3–160 characters)',
       earnAttribReasonPlaceholder:
         'Example: I verified which custom period this November bonus belongs to',
