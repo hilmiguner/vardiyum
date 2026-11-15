@@ -2,66 +2,62 @@
 
 **Vardiyanı bil. Gününü planla. Kazancını takip et.**
 
-Vardiyum, **tüm sektörlerdeki vardiyalı çalışanlar** için tasarlanan, iOS ve Android üzerinde çalışacak **çevrimdışı öncelikli (offline-first)** kişisel vardiya asistanıdır.
+Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Proje durumu (2026-11-15):** Ürün vizyonu, MVP kapsamı ve başlangıç teknik mimarisi planlandı. Henüz mobil uygulama kodu, test veya mağaza yayını oluşturulmadı. Başlangıç dokümantasyonu PR #1 ile main dalına eklendi; mobil uygulama geliştirmesi başlamadı. Güncel ve doğrulanabilir durum için [docs/STATUS.md](docs/STATUS.md) dosyasını okuyun.
+> **Durum (2026-11-15):** Expo/React Native uygulama **iskeleti Faz 1 geliştirme dalında** hazırlanmıştır. Kapsamlı vardiya şablonları, rutinler, kazanç motoru, gerçek cihaz testleri ve mağaza yayını tamamlanmış değildir. En son doğrulanmış durum: [docs/STATUS.md](docs/STATUS.md).
 
-## Neyi çözüyoruz?
+## Geliştirme kurulumu
 
-1. **Ne zaman çalışıyorum?** Esnek vardiya türleri, tekrar eden döngüler, vardiya değişiklikleri ve takvim.
-2. **Bugün ne yapmam gerekiyor?** Vardiyaya, haftanın gününe ve döngü gününe bağlanabilen kişisel/iş rutinleri ve hatırlatmalar.
-3. **Bu ay yaklaşık ne kadar kazanacağım?** Çalışma, mesai, prim ve kesintilere dayalı, açıklanabilir **tahmini** kazanç özeti (hukuki/bordro garantisi değil).
+**Gereksinimler:** Node.js 22.13+ (önerilen 22 LTS), npm, Android Emulator veya fiziksel telefon; iOS yerel derlemesi için macOS/Xcode ya da uygun Expo EAS hesabı.
 
-## Kimin için?
+```bash
+git clone https://github.com/hilmiguner/vardiyum.git
+cd vardiyum
+npm ci
+npx expo install --check
+npm start
+```
 
-Fabrika, sağlık, güvenlik, perakende, lojistik, konaklama ve diğer tüm vardiyalı çalışanlar. Mesleğe özel ürünler yerine **genel amaçlı esnek vardiya motoru** tercih edildi; ilk test senaryolarında farklı sektörlerin düzenleri yer alacak.
+Android veya iOS için Expo CLI ekranındaki yönlendirmeler kullanılabilir. Geliştirici bilgisayarında Expo Go veya development build seçimi cihaz ve SDK uyumuna göre kontrol edilmelidir. İlk kod sürümü **Expo SDK 57** (React Native 0.86 / React 19.2) ile planlandı. SDK 58'e geçiş ayrı test/PR gerektirir.
 
-## İlk sürüm (MVP)
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run format
+```
 
-- Özel vardiyalar ve tekrarlayan örüntüler; düzensiz günler için manuel istisnalar
-- Günlük / haftalık / aylık takvim ve izin / mesai kayıtları
-- Vardiyaya ve güne bağlı tekrarlayan rutinler; görev tamamlama geçmişi
-- Cihaz üzerinde çalışan hatırlatmalar
-- Sabit aylık veya saatlik ücret üzerinden tahmini kazanç hesaplama
-- Türkçe ve İngilizce, çevrimdışı çalışma, yerel veri saklama
-- Temel veri dışa aktarma / yedekleme, erişilebilir kullanıcı deneyimi
+> **Bağımlılık kilidi:** `package-lock.json` GitHub Actions kullanılarak üretildi ve geliştirme dalına eklendi. CI artık `npm ci` ile tam bu kilit dosyasını kullanır. Android ve iOS JavaScript paketleme kontrolleri [Actions #43697865419](https://github.com/hilmiguner/vardiyum/actions/runs/43697865419) ile başarılı; native cihaz doğrulaması açık.
 
-**İlk yayında planlanmayanlar:** zorunlu üyelik, bulut senkronizasyonu, şirket/personel yönetimi, sosyal özellikler, ülkelere özel eksiksiz bordro/vergi motoru. Widget, bulut senkronizasyonu, detaylı bordro analizi ve arkadaşlarla takvim karşılaştırması sonraki sürümlere adaydır.
+## Şu anda uygulamada neler var?
 
-## Planlanan teknik yön
+- Expo Router: Bugün / Takvim / Rutinler / Kazanç sekmeleri ve Ayarlar
+- Sistem dilinden TR/EN seçimi ve açık/koyu tema renkleri
+- SQLite açılış migrasyonu ve yerel vardiya döngüsü kalıcılığı
+- Ayarlardan döngü günü ekleme/çıkarma, vardiya türü seçimi ve 8 günlük örnek düzen
+- Bugünkü vardiya ve önümüzdeki 14 gün görünümü
+- Saf, çevrimdışı test edilebilir takvim günü hesaplama motoru
 
-| Alan | Seçim |
-| --- | --- |
-| Mobil | React Native + Expo + TypeScript |
-| Navigasyon | Expo Router |
-| Yerel depolama | SQLite / expo-sqlite |
-| Uygulama durumu / doğrulama | Zustand / Zod |
-| Bildirimler | expo-notifications |
-| Çoklu dil | expo-localization + i18next |
-| Test stratejisi | Saf domain fonksiyonları için birim testleri, kritik mobil akışlar için E2E |
-| CI/CD | GitHub Actions; mobil derlemeler için Expo EAS (uygulanırken doğrulanacak) |
-| İleride (opsiyonel) | Supabase ile hesap, yedekleme ve cihazlar arası senkronizasyon |
+**Kısıt:** Faz 1'deki vardiya türleri sabit örneklerdir; özel vardiya saatleri, izin istisnaları ve gece vardiyası zaman aralıklarının detaylı yönetimi Faz 2'de geliştirilecek. Rutin ve kazanç ekranları yol haritası açıklaması içerir, henüz işlevsel değildir.
 
-Teknik seçimler geliştirme başlarken sürüm ve platform uyumluluğu açısından yeniden doğrulanacaktır.
+## Temel prensipler
 
-## Proje belgeleri
+- **Offline-first:** İlk sürümde zorunlu hesap veya sunucu bulunmaz.
+- **Doğru takvim:** Döngü güne bağlıdır; DST değişiminde geçen milisaniyeye bağlı olarak ilerlemez.
+- **Açıklanabilir kazanç:** Gelecekteki kazanç hesapları yasal bordro yerine geçmez.
+- **Proje hafızası:** Kodun durumu ve planlanan işler GitHub belgeleri/PR'larla doğrulanır; sohbet geçmişi tek kaynak değildir.
 
-- [Ürün tanımı ve MVP kriterleri](docs/PRODUCT.md)
-- [Teknik mimari ve veri modeli](docs/ARCHITECTURE.md)
-- [Aşamalar ve çıkış koşulları](docs/ROADMAP.md)
-- [Karar kaydı](docs/DECISIONS.md)
-- [Test stratejisi](docs/TEST-PLAN.md)
-- [Güncel durum ve doğrulanan ilerleme](docs/STATUS.md)
-- [Yeni sohbet / geliştirici için devir notu](docs/HANDOFF.md)
+## Belge dizini
 
-## Çalışmaya devam etmek
+- [Ürün ve MVP](docs/PRODUCT.md)
+- [Mimari ve veri modeli](docs/ARCHITECTURE.md)
+- [Yol haritası](docs/ROADMAP.md)
+- [Kararlar](docs/DECISIONS.md)
+- [Test planı](docs/TEST-PLAN.md)
+- [Durum](docs/STATUS.md)
+- [Yeni sohbet devir notu](docs/HANDOFF.md)
+- [Gerçek cihaz test listesi](docs/DEVICE-SMOKE.md)
 
-Yeni bir sohbette **`docs/HANDOFF.md` ve `docs/STATUS.md` dosyalarını önce oku**, GitHub'ın güncel branch/PR/CI durumuyla karşılaştır, sonra `docs/ROADMAP.md` içindeki sıradaki açık işi seç. Geçmişte konuşulanları tamamlanmış kabul etme; yalnızca GitHub'da doğrulanan işlemleri tamamlandı olarak işaretle.
+## Lisans ve marka
 
-## İsim ve yayın notu
-
-**Vardiyum** çalışma adıdır. Marka, alan adı ve uygulama mağazası isim uygunluğu henüz teyit edilmedi. Planlanan yayın platformları Apple App Store ve Google Play'dir; geliştirici hesapları ve mağaza uygunluk gereksinimleri yayın öncesinde güncel resmî kaynaklardan kontrol edilmelidir.
-
-## Lisans
-
-Lisans kararı henüz verilmedi. Depoda bir lisans dosyası bulunmadıkça kodun açık kaynak lisansı altında olduğu varsayılmamalıdır.
+Lisans henüz seçilmedi. **Vardiyum** çalışma adıdır; marka, alan adı ve mağaza adı uygunluğu teyit edilmemiştir.

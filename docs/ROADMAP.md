@@ -1,98 +1,65 @@
 # Vardiyum — Yol Haritası
 
-**Başlangıç referansı:** 2026-11-15. Öncelik sırası öneridir. Durum iddiaları için [STATUS.md](STATUS.md) esas alınır.
+**Güncelleme:** 2026-11-15; doğrulanmış durum için [STATUS.md](STATUS.md).
 
-| Faz | Çıktı | Durum |
+| Faz | İçerik | Durum |
 | --- | --- | --- |
-| 0 | Ürün/mimari/karar/devir belgeleri | Tamamlandı; PR #1 main dalına birleştirildi |
-| 1 | Çalışan Expo projesi, test ve CI altyapısı | Başlamadı |
-| 2 | Vardiya döngüsü motoru ve takvim | Başlamadı |
-| 3 | Rutin kuralları ve bildirimler | Başlamadı |
-| 4 | Mesai ve tahmini kazanç | Başlamadı |
-| 5 | Kalite, cihaz testleri ve beta | Başlamadı |
-| 6 | iOS / Android mağaza yayını | Başlamadı |
+| 0 | Ürün, mimari ve proje hafızası belgeleri | ✅ PR #1 ile tamamlandı |
+| 1 | Expo iskeleti, SQLite, i18n, tema, CI | 🚧 Issue #2 geliştirme dalında; doğrulama açık |
+| 2 | Esnek vardiya motoru, istisnalar ve takvim | Planlandı |
+| 3 | Rutinler, görev geçmişi, bildirimler | Planlandı |
+| 4 | Mesai ve tahmini kazanç | Planlandı |
+| 5 | Yedekleme, gerçek cihazlar, beta | Planlandı |
+| 6 | App Store ve Google Play yayını | Planlandı |
 
-## Faz 0 — Projeyi belgelerle başlat
+## Faz 1 — [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)
 
-- [x] Ürün adı çalışma adı olarak Vardiyum belirlendi.
-- [x] Sektör bağımsız hedef kitle ve temel değer önerisi belirlendi.
-- [x] MVP / sonraki sürüm sınırları konuşuldu.
-- [x] Teknik yön ve offline-first ilkesi belirlendi.
-- [x] Belgeler main dalına squash merge edildi: PR #1, commit 8a29a3a6f908d234326c53307ce6b18ae16223a5.
-- [ ] İsim / marka / domain / mağaza görünürlüğü kontrolü (yayın öncesi).
+- [x] Expo SDK 57 / TypeScript proje dosyaları yazıldı.
+- [x] Dört ana ekran + Ayarlar ekranı yazıldı.
+- [x] TR/EN çeviri ve tema altyapısı yazıldı.
+- [x] Yerel SQLite veritabanı şema/migrasyon kodu yazıldı.
+- [x] Saf vardiya döngüsü ve birim test senaryoları yazıldı.
+- [x] GitHub Actions lint/typecheck/test workflow dosyası yazıldı.
+- [x] npm bağımlılık kilidi GitHub Actions üzerinden üretildi ve branch'e eklendi.
+- [x] Expo paket sürüm kontrolü başarılı: Actions #43697865419.
+- [x] CI: lint/typecheck/test ve iki platform JS export PASS (#43697865419).
+- [ ] Android ve iOS smoke testlerinin kaydı.
+- [ ] Yerel veri persistansının cihaz test kanıtı.
+- [ ] Faz 1 PR merge + final main SHA.
 
-## Faz 1 — Temel uygulama
+**Kod var ≠ test geçti / yayınlandı.** Gerçek doğrulama olmadan üstteki kabul kutuları kapatılmaz.
 
-**Takip:** [GitHub Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) (açık; henüz geliştirilmedi).
+## Faz 2 — Gerçek vardiya esnekliği
 
-- [ ] Expo + React Native + TypeScript başlangıç dosyaları
-- [ ] Expo Router, dört sekme ve ayarlar iskeleti
-- [ ] SQLite veri katmanı ve migration politikası
-- [ ] Çoklu dil (TR/EN), tema ve erişilebilirlik temeli
-- [ ] Lint / format / typecheck / unit-test GitHub Actions CI
-- [ ] Android + iOS geliştirme derlemesi; gerçek cihaz smoke test
+- [ ] Kullanıcı tanımlı saatler, vardiya türleri, 12/24 saat çalışma
+- [ ] Döngüden bağımsız tek gün izin/mesai/shift override
+- [ ] UTC offset, DST ve zaman dilimi sınır durumları
+- [ ] Aylık takvimde düzenleme ve filtreler
+- [ ] Kalıcılık, migrasyon ve aralık hesaplama testleri
 
-**Çıkış ölçütü:** iki platformda açılan, çevrimdışı çalışan, CI kontrolleri yeşil uygulama iskeleti.
+## Faz 3 — Rutinler
 
-## Faz 2 — Vardiya motoru
-
-- [ ] Şablonlar, pattern tanımı, başlangıç tarihi
-- [ ] Saf döngü hesaplama fonksiyonu
-- [ ] İstisnalar / değişiklikler / izin girişleri
-- [ ] Gece geçişi, ay/yıl sınırları, uzun döngüler ve DST testleri
-- [ ] Gün/hafta/ay takvim UI'si
-- [ ] İlk kurulum ve örnek şablonlar
-
-**Çıkış ölçütü:** farklı sektör örneklerini hesaplayan, geriye ve ileriye doğru doğru çalışan takvim.
-
-## Faz 3 — Rutinler ve hatırlatmalar
-
-- [ ] Görev oluşturma, düzenleme, silme
-- [ ] Vardiya + hafta günü + döngü günü kuralları
-- [ ] Günlük görev listesi ve tamamlama geçmişi
-- [ ] Yerel planlı bildirimler ve yeniden planlama
-- [ ] Bildirim izinleri kapalı senaryosu ve gerçek cihaz testi
-
-**Çıkış ölçütü:** vardiyaya göre günlük yapılacaklar ve doğru görev geçmişi.
+- [ ] Haftanın günü, döngü günü ve vardiya türüne bağlı tekrarlar
+- [ ] Günlük görev listesi ve geçmiş tamamlanmalar
+- [ ] Lokal bildirim, güncellemede yeniden planlama ve izin reddi davranışı
 
 ## Faz 4 — Mesai ve tahmini kazanç
 
-- [ ] Gerçekleşen çalışma / fazla mesai kayıtları
-- [ ] Aylık ve saatlik ücret profilleri
-- [ ] Katsayılar, primler, kesintiler ve dönemler
-- [ ] Yüksek hassasiyetli tutar hesapları ve doğrulama
-- [ ] Tahmin dökümü ve kullanıcıya sınırları açıklayan UI
+- [ ] Gerçekleşen çalışma, mesai ve izin defteri
+- [ ] Sabit/saatlik ücret, katsayı, prim ve kesinti
+- [ ] Hassas para birimi hesabı, dönem dökümü, tahmin uyarıları
 
-**Çıkış ölçütü:** birim testlerinde doğru, izah edilebilir tahmini kazanç.
+## Faz 5 — Beta
 
-## Faz 5 — Beta/kalite
-
-- [ ] Yerel veri dışa aktarma/geri alma; bozuk yedek testleri
-- [ ] Android/iOS cihaz matrisi, uygulama kapanması, güncelleme ve saat dilimi testleri
-- [ ] Erişilebilirlik, performans ve hata raporları
-- [ ] Çeşitli sektörlerden hedef 20 test kullanıcısı
-- [ ] Kritik vardiya hesabı ve veri kaybı hataları kapatılmış
-- [ ] Gizlilik metni, destek iletişim kanalı ve beta geri bildirim döngüsü
-
-**Çıkış ölçütü:** yayın için aday üretim derlemesi ve kabul test raporu.
+- [ ] Güvenli dışa aktarma ve içe alma
+- [ ] Android/iOS cihaz matrisi ve veri kaybı testleri
+- [ ] Çeşitli sektörlerden 20 kişiyle hedef kullanıcı testi
+- [ ] Gizlilik/beyan ve erişilebilirlik kontrolleri
 
 ## Faz 6 — Mağaza yayını
 
-- [ ] Apple Developer ve Google Play Console hazırlıkları
-- [ ] App Store / Play mağaza açıklamaları, ekran görüntüleri, dil içerikleri
-- [ ] O tarihte geçerli SDK/API hedefleri, izinler ve veri güvenliği beyanları
-- [ ] TestFlight ve Google Play test prosedürü / uygunluk
-- [ ] Sürümleme, çökme takibi, yayın sonrası destek ve güncelleme planı
+- [ ] Geliştirici hesapları ve mağaza önkoşulları
+- [ ] Mağaza varlıkları, gizlilik beyanları ve beta kabul süreçleri
+- [ ] İki mağazaya üretim sürümünün gönderimi
 
-**Çıkış ölçütü:** her iki mağazada yayınlanmış doğrulanmış sürüm.
-
-## V1.1 / V2 adayları (MVP dışı)
-
-V1.1: Widget'lar, gelişmiş istatistikler, isteğe bağlı bulut yedekleme ve çoklu cihaz senkronizasyonu, bordro karşılaştırması.  
-V2: Arkadaşlarla takvim karşılaştırma, sektörel şablonlar, gelişmiş ülke/işveren ücret kuralları, birden fazla iş profili.
-
-## Tahmin ve takip
-
-İlk varsayımsal tahmin: tek geliştirici için **10–16 hafta etkin geliştirme**. Saat/hafta, dış bağımlılıklar, mağaza incelemesi veya kapsam artışıyla değişir. Taahhüt edilmiş teslim tarihi değildir.
-
-Her PR'da ilgili faza referans ver; test sonuçlarını doğrula; ardından [STATUS.md](STATUS.md), [HANDOFF.md](HANDOFF.md) ve bu dosyadaki tamamlanma kutularını güncelle.
+V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyon, bordro karşılaştırma, arkadaş takvimi. İlk 10–16 hafta varsayımı teslim garantisi değildir.
