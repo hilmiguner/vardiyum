@@ -199,3 +199,11 @@
 - [x] 14 yeni `tests/custom-hourly-work-estimate.test.mjs`: tek hourly gerçek çalışma 26→25, 30 dk sınır mola audit 10+20 dağılımı ve 2 custom dönemde tam net saniye/kuruş korunması; audit düzeltme rev2, 2 ayrı OT threshold reset ve 1.5x multiplier, BigInt 1 kuruş tiny seconds cumulative rounding, monthly adjustments block, missing custom audit/monthly audit substitute forbidden, mixed effective-month profile/fixed/opening missing, duplicate/overlap/planned/source-local-date mismatch, end exclusive, zero/null OT, Kathmandu 45-min UTC ve New York DST, immutable profil revizyonu + SQLite v1→v8 18 tablo/FK/integrity invariants.
 - [ ] Native iOS/Android custom report ve AES backup/clean-target restore, process kill/düşük disk, gerçek tzdb/DST testleri Issue #2/#20 ertelendi.
 - [ ] Mixed-rate & fixed salary / explicit period adjustment attribution / custom CSV+JSON ve yeni politika kararı testleri Issue #22 açık.
+
+## 2026-11-15 — Karma hourly ücret geçişi regresyonu (feature CI bekliyor)
+
+- [ ] 2 saatlik profil Oct→Nov: 2h ilk ücret, 3h ikinci ücret ve eşik 3h (bir kez), 1.5x overtime; kayıt ID/revision ve source UTC segment.
+- [ ] 31 Oct→1 Nov 00:00 gerçek crossing **0 break** ile iki rate UTC split, **>0 break** ile fail-closed (rate-break allocation yok). Kathmandu UTC+5:45 ve New York DST, **schedule zone'dan bağımsız work zone**.
+- [ ] Aynı currency/same threshold zorunlu, differing multiplier ilgili rate'ye uygulanır, mixed fixed/FX/threshold ve takvim ayı adjustments blocked, duplicate/overlap/planned/malformed work fail-closed, year/month boundary, micro-second cumulative BigInt cent rounding.
+- [ ] Node SQLite v1→v8: gerçek iki source profile ve immutable latest revision, read-only exact source work, 18 tables/foreign key/integrity, eski month adjustments ve period audit unaffected.
+- [ ] PR Actions Prettier/lint/TS/Expo/Node ve Android/iOS JS, sonra exact-head squash merge + main CI. Native iOS/Android SQLite/AES restore/DST Issue #2/#20 erteli.

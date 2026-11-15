@@ -1,3 +1,4 @@
+import { estimateCustomMixedHourlyWork } from './custom-mixed-hourly-work.ts';
 import {
   roundRational,
   validateEarningsProfile,
@@ -54,8 +55,9 @@ export type CustomHourlyEstimate =
       startDate: string;
       endDateInclusive: string;
       currency: string;
-      profileId: string;
-      profileRevision: number;
+      profileId: string | null;
+      profileRevision: number | null;
+      profileCount: number;
       regularSeconds: number;
       overtimeSeconds: number;
       loggedSeconds: number;
@@ -112,6 +114,8 @@ export function estimateCustomHourlyWork(
   const period = customPayPeriodBounds(periodKey, startDay);
   if (!Number.isSafeInteger(calendarAdjustmentCount) || calendarAdjustmentCount < 0)
     return result('blocked', periodKey, startDay, ['INVALID_CUSTOM_ADJUSTMENT_COUNT']);
+  if (plan.status === 'profile_transition_review_required')
+    return estimateCustomMixedHourlyWork(plan, sources, calendarAdjustmentCount);
   if (plan.status === 'needs_profile')
     return result('needs_profile', periodKey, startDay, [
       'CUSTOM_PAY_OPENING_PROFILE_REQUIRED',
@@ -264,6 +268,7 @@ export function estimateCustomHourlyWork(
     currency: profile.currency,
     profileId: profile.id,
     profileRevision: profile.revision,
+    profileCount: 1,
     regularSeconds,
     overtimeSeconds,
     loggedSeconds,

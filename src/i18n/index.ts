@@ -14,11 +14,15 @@ const resources = {
       settings: 'Ayarlar',
       earnCustomHourlyTitle: 'Özel dönem: kaydedilmiş gerçek çalışma kazancı',
       earnCustomHourlyScope:
-        'Yalnız tek ve dönem boyunca değişmeyen saatlik ücret profilinde, kullanıcı tarafından girilen gerçek çalışma sürelerinden hesaplanır. Takvim ayı prim/kesinti/düzeltmeleri, sabit maaş, vergi, SGK ve net ücret dahil değildir. Belirsizlikte tutar gösterilmez.',
+        'Kullanıcının kaydettiği gerçek saatlik çalışma üzerinden hesaplanır. Ücret değişiminde her iş parçasına kendi kayıtlı IANA saat dilimindeki geçerli oran uygulanır; dönemlik fazla mesai eşiği değişmeden kalmalıdır. Mola ücret değişimi anını aşıyorsa, farklı para birimi/eşik veya aylık prim/kesinti varsa hesap durur. Sabit maaş, vergi, SGK ve net ücret dahil değildir.',
       earnCustomHourlyPeriod: 'Özel dönem: {{start}} – {{end}} (iki tarih dahil)',
       earnCustomHourlyTotals:
         'Kaydedilmiş net çalışma: {{minutes}} dakika · Döneme özel eşik üzeri: {{overtime}} dakika',
       earnCustomHourlyProfile: 'Ücret kaynağı: {{profile}} · revizyon {{revision}}',
+      earnCustomHourlyMixedRates:
+        'Bu özel dönemde {{count}} farklı saatlik ücret profili uygulandı. Dönemlik mesai eşiği tek kez işlendi.',
+      earnCustomHourlyLineProfile:
+        'Bu parçanın ücret kaynağı: {{profile}} · sürüm {{revision}}',
       earnCustomHourlySources: 'Kaynaklara göre hesaplanan çalışma',
       earnCustomHourlyKind_regular: 'Normal saatlik çalışma',
       earnCustomHourlyKind_overtime: 'Dönemlik eşik üzeri saatlik çalışma',
@@ -44,7 +48,7 @@ const resources = {
       earnCustomProfileStatus_fixed_salary_assumption_required:
         'Sabit ücret: tam/eksik özel dönem ödeme varsayımı seçilmeden tahmin yapılamaz.',
       earnCustomProfileStatus_profile_transition_review_required:
-        'Dönem içinde ücret profili değişiyor. Oran geçişi ve fazla mesai politikası ayrıca onaylanmadan hesap yapılmaz.',
+        'Ücret profili dönem içinde değişiyor. İki saatlik ücret aynı para birimi ve fazla mesai eşiğini kullanıyorsa çalışma parçaları farklı oranlarla hesaplanabilir; belirsiz molalar ve farklı eşikler engellenir.',
       earnCustomProfileSource:
         'Kaynak profil: {{id}} · sürüm {{revision}} · geçerlilik {{effective}}',
       earnCustomProfileModel: '{{model}} · kayıtlı tutar: {{amount}}',
@@ -435,11 +439,15 @@ const resources = {
       settings: 'Settings',
       earnCustomHourlyTitle: 'Custom period: logged actual-work earnings',
       earnCustomHourlyScope:
-        'Computed only from self-reported actual work with one unchanged hourly pay profile for the whole period. Calendar-month bonuses, deductions, corrections, fixed salary, tax, social security and net pay are excluded. Ambiguous cases show no amount.',
+        'Computed from self-reported actual hourly work. When hourly rates change, each portion uses the rate effective in the saved IANA zone of the actual work record, with one unchanged period-wide overtime threshold. A break across a rate-change midnight, mixed currencies/thresholds, or existing monthly adjustments blocks the estimate. Fixed salary, tax, social security and net pay are excluded.',
       earnCustomHourlyPeriod: 'Custom period: {{start}} – {{end}} (inclusive)',
       earnCustomHourlyTotals:
         'Net logged work: {{minutes}} minutes · Above custom-period threshold: {{overtime}} minutes',
       earnCustomHourlyProfile: 'Pay source: {{profile}} · revision {{revision}}',
+      earnCustomHourlyMixedRates:
+        '{{count}} distinct hourly rate profiles apply in this period; one overtime threshold is shared.',
+      earnCustomHourlyLineProfile:
+        'Rate source for this portion: {{profile}} · revision {{revision}}',
       earnCustomHourlySources: 'Calculated work by original source',
       earnCustomHourlyKind_regular: 'Regular hourly work',
       earnCustomHourlyKind_overtime: 'Hourly work above period threshold',
@@ -466,7 +474,7 @@ const resources = {
       earnCustomProfileStatus_fixed_salary_assumption_required:
         'Fixed pay: a full/partial custom-period payment assumption is required before estimating.',
       earnCustomProfileStatus_profile_transition_review_required:
-        'A pay profile changes inside the period. Rate and overtime policies need explicit review before any estimate.',
+        'A pay profile changes inside the period. Two hourly rates can be applied to separate work portions only if currency and period overtime threshold agree; ambiguous breaks or differing thresholds block payment estimation.',
       earnCustomProfileSource:
         'Profile source: {{id}} · revision {{revision}} · effective {{effective}}',
       earnCustomProfileModel: '{{model}} · saved amount: {{amount}}',
