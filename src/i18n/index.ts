@@ -34,14 +34,14 @@ const resources = {
       earnDualBreakSaved: 'İki sınır beyanı kaydedildi; özel dönem kazanç tahmini yenilendi.',
       earnDualBreakInvalid: 'İki sınır beyanı geçersiz, çelişkili veya sürümü eski',
       earnDualBreakNotPayslip:
-        'Mola dağılımı otomatik varsayılmaz. Her çalışma yalnız kendi kayıtlı UTC ve saat dilimiyle fiyatlandırılır. Bu bir vergi öncesi çalışma tahminidir, resmi bordro değildir.',
+        'Mola dağılımı otomatik varsayılmaz. İki sınırı aşan vardiyalar ayrı sürümlü beyanla değerlendirilebilir. Her çalışma kendi UTC ve IANA saat dilimiyle fiyatlandırılır; bu resmi bordro değildir.',
 
       earnRateBreakExplanation:
         'Ayın 1’inde saatlik ücret değişirken iki ücret aralığını aşan gerçek çalışmanın molasını eski ve yeni orana açıkça dağıtabilirsin. Bu ayrı, kaynaklı ve sürümlü beyan yalnız özel dönem saatlik tahmininde kullanılır.',
       earnRateBreakNone:
         'Bu özel dönemde ayrı beyan gerektiren, ücret değişimini aşan molalı çalışma yok.',
       earnRateBreakCrossPeriodUnavailable:
-        '{{count}} çalışma aynı anda hem özel dönem hem ücret değişim sınırını aşıyor. Bu karma senaryo henüz desteklenmiyor; tutar hesaplanmaz.',
+        '{{count}} çalışma her iki sınırı da aşıyor. Bu vardiyalar için önce maaş dönemi, ardından yukarıdaki iki sınır mola beyanını tamamla; eksik beyanla ücret hesaplanmaz.',
       earnRateBreakMidnight: 'Ücret değişimi: {{date}} · UTC sınırı: {{utc}}',
       earnRateBreakTotal: 'Orijinal toplam mola: {{minutes}} dakika',
       earnRateBreakLimits:
@@ -502,14 +502,14 @@ const resources = {
       earnDualBreakSaved: 'Statement saved; custom hourly estimate refreshed.',
       earnDualBreakInvalid: 'Invalid, inconsistent or stale two-boundary break statement',
       earnDualBreakNotPayslip:
-        'Break timing is never assumed. Every work segment uses its original UTC and IANA zone. This is a user-reported pre-tax work-only estimate, not an official payslip.',
+        'Break timing is never assumed. Dual-boundary shifts need a separate versioned statement. Every segment uses its original UTC and IANA zone; this is not an official payslip.',
 
       earnRateBreakExplanation:
         'When hourly pay changes on the 1st, you can declare how a break spanning both rates is allocated to the old and new rate intervals. This is a separate source-linked, versioned statement used only for custom-period work-only estimates.',
       earnRateBreakNone:
         'No work with a break crossing an hourly rate-change midnight needs attribution in this period.',
       earnRateBreakCrossPeriodUnavailable:
-        '{{count}} sessions also cross a custom pay-period boundary. This combined scenario is not yet supported and cannot be priced.',
+        '{{count}} sessions cross both boundaries. Complete the pay-period break declaration and then the separate two-boundary declaration above; missing attribution blocks estimation.',
       earnRateBreakMidnight: 'Rate change: {{date}} · UTC boundary: {{utc}}',
       earnRateBreakTotal: 'Original reported break: {{minutes}} minutes',
       earnRateBreakLimits:
