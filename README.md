@@ -13,7 +13,7 @@ Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Andr
 ```bash
 git clone https://github.com/hilmiguner/vardiyum.git
 cd vardiyum
-npm install
+npm ci
 npx expo install --check
 npm start
 ```
@@ -27,7 +27,7 @@ npm test
 npm run format
 ```
 
-> **Bağımlılık kilidi:** Başlangıç PR'ında ağ erişim kısıtı nedeniyle `package-lock.json` henüz oluşturulamadı. `npm install` sonrası üretilen lock dosyası doğrulanıp repoya eklenmeden yeniden üretilebilir kurulum garantisi verilmez. **`npm ci` kullanabilmek için lockfile zorunludur.** Bu eksiklik [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) kapanmadan giderilmelidir.
+> **Bağımlılık kilidi:** `package-lock.json` GitHub Actions kullanılarak üretildi ve geliştirme dalına eklendi. CI artık `npm ci` ile tam bu kilit dosyasını kullanır. Gerçek cihaz ve paketleme kontrolleri ayrıca doğrulanmalıdır.
 
 ## Şu anda uygulamada neler var?
 

@@ -95,7 +95,7 @@ export default function SettingsScreen() {
       <Panel>
         <Action label={t('example')} onPress={() => {
           setAnchor(localDateString());
-          setDays([...SAMPLE]);
+          setDays(() => [...SAMPLE]);
         }} />
         <Muted>{t('exampleHint')}</Muted>
       </Panel>

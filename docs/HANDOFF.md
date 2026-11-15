@@ -18,7 +18,7 @@ Türkçe/İngilizce, kullanıcı hesabı zorunlu değil, ileride isteğe bağlı
 - PR #1: Ürün planı, mimari, yol haritası ve devir dosyaları; **main'e merge edildi**.
 - [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2): Faz 1 Expo uygulama temeli.
 - Faz 1 dalı: `feat/expo-mobile-foundation` — uygulama iskeleti, dört sekme, dil/tema, SQLite, basit döngü düzenleme, saf takvim motoru, GitHub Actions CI.
-- **Henüz doğrulanmamış:** Bağımlılıkların kurulumu, CI pass, gerçek iOS/Android build, SQLite cihaz persistans testi. `package-lock.json` eksik olabilir; CI şimdilik `npm install` ile bootstrap yapıyor.
+- **Henüz doğrulanmamış:** Bağımlılıkların kurulumu, CI pass, gerçek iOS/Android build, SQLite cihaz persistans testi. `package-lock.json` GitHub Actions tarafından üretildi ve PR'a eklendi; CI `npm ci` kullanıyor (son test sonucu kontrol edilmeli).
 - **Henüz geliştirilmemiş:** tam vardiya istisnaları, özel saatler, rutin/mesai/kazanç motorları, yedek alma/geri yükleme ve yayın.
 
 ## Mimari kurallar
@@ -32,7 +32,7 @@ Türkçe/İngilizce, kullanıcı hesabı zorunlu değil, ileride isteğe bağlı
 
 ## Sıradaki adım
 
-**Önce GitHub'da güncel PR/CI kontrol et.** Faz 1 PR'ındaki bağımlılık hatalarını düzelt; Expo paket sürümlerini kontrol et; lockfile oluştur; lint/typecheck/unit testleri yeşil hale getir. Ardından iOS/Android smoke testlerini doğrula ve ancak kabul kriterleri karşılanınca merge et. Her gelişme sonrası STATUS, HANDOFF, ROADMAP ve gerekiyorsa DECISIONS dosyalarını güncelle.
+**Önce GitHub'da güncel PR/CI kontrol et.** Faz 1 PR'ındaki bağımlılık hatalarını düzelt; Expo paket sürümlerini kontrol et; eklenen lockfile ile `npm ci` çalıştığını doğrula; lint/typecheck/unit testleri ve iki platformun JS bundle kontrolünü yeşil hale getir. Ardından iOS/Android smoke testlerini doğrula ve ancak kabul kriterleri karşılanınca merge et. Her gelişme sonrası STATUS, HANDOFF, ROADMAP ve gerekiyorsa DECISIONS dosyalarını güncelle.
 
 ### Yeni sohbet için mesaj
 

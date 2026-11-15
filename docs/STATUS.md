@@ -25,7 +25,7 @@
 ## Açık doğrulama / engeller
 
 - [ ] `npm install` ve `npx expo install --check` ile bağımlılık uyumluluğunu doğrula.
-- [ ] `package-lock.json` oluşturup PR'a ekle ve CI'ı `npm ci`'a geçir.
+- [x] `package-lock.json` GitHub Actions ile oluşturulup PR'a eklendi; CI yapılandırması `npm ci` kullanacak şekilde güncellendi. Yeni çalışmanın sonucu ayrıca kontrol edilmeli.
 - [ ] CI sonucunu kontrol et: lint, typecheck, domain test; başarısızsa düzelt.
 - [ ] Android/iOS gerçek cihaz veya emülatör smoke test yap.
 - [ ] Yerel veritabanı kalıcılığını yeniden başlatma/migrasyon testleriyle kanıtla.

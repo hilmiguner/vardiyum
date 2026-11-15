@@ -20,7 +20,8 @@
 - [x] Yerel SQLite veritabanı şema/migrasyon kodu yazıldı.
 - [x] Saf vardiya döngüsü ve birim test senaryoları yazıldı.
 - [x] GitHub Actions lint/typecheck/test workflow dosyası yazıldı.
-- [ ] Bağımlılık kilidi ve Expo sürüm doğrulaması.
+- [x] npm bağımlılık kilidi GitHub Actions üzerinden üretildi ve branch'e eklendi.
+- [ ] Expo paket sürüm uyumluluk kontrolü başarılı.
 - [ ] CI yeşil; lint/typecheck/test sonuçları kanıtlandı.
 - [ ] Android ve iOS smoke testlerinin kaydı.
 - [ ] Yerel veri persistansının cihaz test kanıtı.

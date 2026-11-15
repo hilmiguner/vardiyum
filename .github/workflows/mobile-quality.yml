@@ -8,21 +8,26 @@ on:
 jobs:
   quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Node
+      - name: Setup Node and npm cache
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-      # Temporary bootstrap: create and commit package-lock.json before release.
-      # Switch to npm ci and setup-node cache: npm when a verified lock is committed.
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Check Expo dependency compatibility
+        run: npx expo install --check
       - name: Lint
         run: npm run lint
       - name: Typecheck
         run: npm run typecheck
       - name: Domain unit tests
         run: npm test
+      - name: Bundle Android JavaScript
+        run: npx expo export --platform android --output-dir dist/android
+      - name: Bundle iOS JavaScript
+        run: npx expo export --platform ios --output-dir dist/ios
