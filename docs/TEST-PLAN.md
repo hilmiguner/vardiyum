@@ -123,3 +123,11 @@
 - `tests/earnings-profile-migration.test.mjs`: SQLite v7→v8 eski vardiya/rutin/UTC çalışma/mola ve pay verisi korunumu; her sürüm tam snapshot, FK/PK/CHECK ve DELETE/UPDATE trigger immutability kanıtı.
 - Tarihsel `tests/earnings-period-migration.test.mjs` v7 düzeyinde kalır; `SCHEMA_VERSION=8` güncel migrasyon testindedir.
 - Kanıt: [Actions #43717238275](https://github.com/hilmiguner/vardiyum/actions/runs/43717238275) SUCCESS. Native SQLite v8/testler kullanıcı tarafından ertelendi.
+
+## Issue #16 / PR #19 — Şifreli backup ve salt-okunur import önizlemesi
+
+- `tests/backup-archive.test.mjs`: Gerçek SQLite **v1→v8** şema migrasyonu ve 18 tablo allowlist'in canlı SQLite tablo listesiyle eşleşmesi; tutarlı SQL kolonları ve seed tabloları.
+- Unicode (TR/EN/emoji) UTF-8 byte dönüşümü; SHA-256 snapshot digest, JSON zarf/sürüm kontrolü, tam tablo sayısı, eksik/değişmiş kolon, farklı veri tipi ve unsafe integer, çok büyük dosya/alan.
+- Node native crypto ile **AES-256-GCM** nonce+ciphertext+tag formatının round-trip'i, yanlış key ve değiştirilmiş ciphertext/AAD doğrulamasının fail olması; Expo native kripto adapteri Node testi **değildir**.
+- Dosya doğrulandıktan sonra `BackupPreview.canRestore=false` garanti; hiçbir domain import/writer API'ı sunulmaz. Yanlış-key ve bozuk dosya gerçek cihaz testi **henüz yapılmadı**.
+- **CI:** [#43721507257](https://github.com/hilmiguner/vardiyum/actions/runs/43721507257) SUCCESS, **119/119 Node test**, npm ci/Expo/Prettier/ESLint/TypeScript, Android+iOS JS export.

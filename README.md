@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Offline vardiya/rutin/hatırlatma ve gerçek UTC çalışmadan tahmini kazanç PR #3/#5/#7/#9/#11/#13/#15/#17 ile, **gerekçeli ve silinmez ücret profili düzeltmesi SQLite v8/PR #18 ile main'de**. PR #18 merge `01f781ac9db442a163b14e6e9033839679a60ce5`; [merge sonrası main CI #43718105350](https://github.com/hilmiguner/vardiyum/actions/runs/43718105350) SUCCESS (Node testi, Android/iOS JS export). Kontrollü içe alma/şifreli yedek [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık; cihaz QA [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ertelendi. Resmî bordro/net/vergi hesabı yok.
+> **Durum (2026-11-15):** Offline vardiya/rutin/hatırlatma ve tahmini kazanç PR #3/#5/#7/#9/#11/#13/#15/#17/#18 ile main'de. **PR #19** kapsamında AES-256-GCM şifreli yerel SQLite v8 yedeği oluşturma ve **salt-okunur içe alma önizlemesi** geliştirildi; [CI #43721507257](https://github.com/hilmiguner/vardiyum/actions/runs/43721507257) SUCCESS (119/119 Node testi, Android/iOS JS export). **Veri geri yükleme/yazma HENÜZ YOK**, native cihaz testleri ertelendi. Controlled restore ve özel maaş dönemi Issue #16'da açık; resmî bordro/net/vergi hesabı yok.
 
 ## Geliştirme kurulumu
 
@@ -117,3 +117,11 @@ Lisans henüz seçilmedi. **Vardiyum** çalışma adıdır; marka, alan adı ve 
 - Bir aylık tahmin en yeni geçerli ücret profil sürümünü kullanır. Kazanç ekranında **sürüm geçmişi ve eski bir sürümün ücretiyle yeniden hesaplama** bulunur; CSV/JSON çıktısı kullanılan profil kimliği ve sürümünü belirtir.
 - **Önemli:** Eski sürüme dönerek yapılan hesap, ***bugünkü*** gerçek çalışma ve prim/kesinti kayıtlarını kullanır. Geçmişte ekranda görülmüş tahminin birebir dondurulmuş kaydı, işveren bordrosu veya net ödeme garantisi değildir.
 - Çok eski uygulama kayıtları SQLite v1–v7 korunur; native cihaz kabulü [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi. Kontrollü içe alma/şifreli yedek [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16)'da açık.
+
+## Güvenli veri taşınabilirliği — PR #19 (yalnızca şifreli yedek ve önizleme)
+
+- **Ayarlar > Şifreli yedek:** Uygulama SQLite **v8** veritabanındaki **18 tanımlı tabloyu** sabit bir SQLite okuma işlemi içinde JSON snapshot'a alır. Şablonlar, vardiyalar, gerçek UTC çalışma, rutin geçmişi, tahmini kazanç ve tüm profil/mola revizyonlarının kayıtları kapsamdadır. 4 milyon karakterlik açık veri sınırı vardır; aşılırsa **kesilmeden hata verir**.
+- Her yedek için rastgele **256-bit AES-GCM anahtarı** üretilir. Şifrelenmiş `.vdb` dosyasının içinde **anahtar yoktur**; anahtarı **ayrı yerde** güvenli saklaman gerekir. Anahtar kaybolursa Vardiyum yedeği açamaz. Anahtar yalnızca ekranda gösterilir; otomatik ağ aktarımı veya parola/kurtarma servisi yoktur.
+- Kullanıcı anahtarı ayrı kaydettiğini onaylamadan cihazın paylaşım ekranına geçemez. Paylaşılan dosya **yalnızca şifreli veri** içerir; kullanıcı hangi uygulamaya göndereceğini seçer. Kaynak SQLite dosyası/WAL veya düz metin snapshot paylaşıma yazılmaz.
+- **Yedek seç ve doğrula:** Kullanıcı şifreli dosya ve ayrı anahtar girince AES-GCM kimlik doğrulaması, SHA-256 bütünlük kontrolü, SQLite v8 tablo/kolon uyumu ve satır sayıları doğrulanır. Veritabanına **hiçbir INSERT/UPDATE/DELETE yapılmaz**; yalnızca oluşturulma zamanı ve tablo bazlı sayılar gösterilir. Bu aşama **gerçek veri geri yükleme değildir**.
+- Sonraki kapsam: temiz kurulum üzerinde atomik geri yükleme, mevcut verilerle çakışma ve veri kaybı önleme, key kurtarma UX ve gerçek Android/iOS cihaz smoke. [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) ve [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) açık kalır.

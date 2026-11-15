@@ -176,3 +176,20 @@
 - [ ] [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) açık: native Android/iOS SQLite v8 ve UI sürümleme testleri kullanıcı isteğiyle ertelendi.
 
 **Sıradaki:** [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık: kontrollü içe alma/şifreli yedekleme ve özel maaş dönemi tasarımı. Profil sürümü PR #18 main'de; native cihaz kanıtı [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) üzerinde ertelendi.
+
+## Issue #16 / PR #19 — Offline şifreli yedek + read-only import preview
+
+**Dal:** `feat/encrypted-backup-readonly-restore-preview`  
+**PR:** [#19](https://github.com/hilmiguner/vardiyum/pull/19)  
+**Kod CI:** [Actions #43721507257](https://github.com/hilmiguner/vardiyum/actions/runs/43721507257) **SUCCESS** (**119/119 Node test**, npm ci, Expo SDK 57 uyumu, Prettier/ESLint/TypeScript, Android/iOS JavaScript export).
+
+- [x] 18 adet SQLite v8 tabloyu tutarlı salt-okunur an olarak şifreli snapshot'a alma; legacy finans/veri ve orijinal UTC oturumları dahil, limit aşımında fail-closed.
+- [x] Rastgele 256-bit AES-GCM **tek yedek anahtarı**, key dosyadan ayrı; AES-GCM tag ve snapshot SHA-256; AAD.
+- [x] Kullanıcı anahtarı ayrı sakladığını onaylamadan şifreli dosya sistem paylaşım ekranına gönderilmez; otomatik ağ gönderimi yapılmaz.
+- [x] Sistem dosya seçimi ve secret girince authenticated **salt-okunur preview**, SQLite v8 schema/kolon/veri tipi ve boyut denetimleri, tablo bazlı satır sayıları.
+- [x] Yanlış key, bozulan dosya, schema downgrade, missing/extra column ve çok büyük veri birim testlerinde fail-closed.
+- [ ] PR #19 final belge commit'i merge ve main CI doğrulanacak.
+- [ ] **Gerçek restore/import-yazma YOK**; mevcut SQLite dosyası/tabloları bu PR ile değiştirilmez. Restore için atomic clean-target, FK/integrity ve izinli apply ayrı geliştirme [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16)'da.
+- [ ] Gerçek Android/iOS cihazda AES/file picker/Share sheet/anahtar UI/SQLite tutarlı kopya ve restore testleri kullanıcı tercihiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.
+
+**Sıradaki:** PR #19 main CI'ını doğrula; restore için ayrıca ayrı Issue/PR ve önce native risk değerlendirmesi oluştur. Issue #16 kapatılmayacak.
