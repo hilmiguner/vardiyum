@@ -1,39 +1,45 @@
 # Vardiyum — Güncel Durum / Kanıt Kaydı
 
-**Güncelleme tarihi:** 2026-11-15  
+**Güncelleme:** 2026-11-15  
 **Repo:** https://github.com/hilmiguner/vardiyum  
 **Ana dal:** main  
-**Hedef:** Sektörden bağımsız vardiya takvimi + vardiyaya bağlı rutinler + tahmini kazanç; iOS / Android.
+**Geliştirme:** [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2), `feat/expo-mobile-foundation` dalı.
 
-## GitHub üzerinde doğrulananlar
+## Main dalında daha önce doğrulananlar
 
-- [x] GitHub deposu var: hilmiguner/vardiyum (erişim/metadata doğrulandı).
-- [x] Depo başlangıçta boştu; başlangıç README.md kaydı eklendi (commit: 42239462fb9a21d7a642ddc30d04657c2cd86a96).
-- [x] Ürün hedefi, kapsam, mimari, yol haritası, test planı, karar kayıtları ve devir dokümantasyonu yazıldı (bu dokümantasyon değişikliği).
-- [x] PR #1 (https://github.com/hilmiguner/vardiyum/pull/1) squash merge edildi; main commit: 8a29a3a6f908d234326c53307ce6b18ae16223a5.
+- [x] Ürün ve teknik kapsam dokümanları PR #1 ile birleştirildi.
+- [x] En son dokümantasyon commit'i: 43dd9e4c54ef6c9d1725326a1ca98cd509b56304 (Faz 1 başlamadan önceki referans).
 
-## Henüz yapılmayanlar
+## Faz 1 geliştirme dalında hazırlananlar — main'e merge edilmedi
 
-- [ ] Expo / React Native proje kodu oluşturulmadı.
-- [ ] Uygulama ekranları veya SQLite şeması uygulanmadı.
-- [ ] Otomatik test / GitHub Actions CI kurulmadı veya çalıştırılmadı.
-- [ ] Vardiya motoru / rutin motoru / kazanç motoru geliştirilmedi.
-- [ ] iOS/Android build, TestFlight, Play Console beta, mağaza yayınları yapılmadı.
-- [ ] İsim/marka/domain/mağaza adının kullanılabilirliği doğrulanmadı.
-- [ ] Geliştirici üyeliklerinin açıldığı doğrulanmadı.
+- [x] Expo SDK 57 / React Native / TypeScript proje konfigürasyonu
+- [x] Expo Router ile Bugün, Takvim, Rutinler, Kazanç, Ayarlar ekranları
+- [x] Türkçe/İngilizce çeviriler ve sistem teması
+- [x] SQLite şeması (sürüm 1) ve transactional başlangıç migrasyonu
+- [x] Vardiya döngüsü için yerel okuma/yazma, örnek döngü ve temel editör
+- [x] Takvim günü hesaplama motoru ve planlanan Node testleri
+- [x] GitHub Actions lint/typecheck/test iş akışı dosyası
 
-## Sıradaki somut iş
+**Uyarı:** Yukarıdaki kutular `kod yazıldı` anlamındadır; `CI/test geçti`, `mobil cihazda çalıştı` veya `main'e merge edildi` anlamına gelmez. PR ve CI sonucu yeni oturumda doğrulanmalıdır.
 
-**[Faz 1 — GitHub Issue #2](https://github.com/hilmiguner/vardiyum/issues/2):** Expo + React Native + TypeScript projesini oluştur; Expo Router, TR/EN, tema, SQLite, test ve GitHub Actions kalite kapısı kur. Vardiya motoru için saf domain arayüzünü ve ilk kabul senaryosu testlerini ekle. CI ve derlemeleri doğrula.
+## Açık doğrulama / engeller
 
-### Tamamlanma kanıtı standardı
+- [ ] `npm install` ve `npx expo install --check` ile bağımlılık uyumluluğunu doğrula.
+- [ ] `package-lock.json` oluşturup PR'a ekle ve CI'ı `npm ci`'a geçir.
+- [ ] CI sonucunu kontrol et: lint, typecheck, domain test; başarısızsa düzelt.
+- [ ] Android/iOS gerçek cihaz veya emülatör smoke test yap.
+- [ ] Yerel veritabanı kalıcılığını yeniden başlatma/migrasyon testleriyle kanıtla.
+- [ ] Rutin ve kazanç ekranları gerçek işlevselliğe henüz sahip değil.
+- [ ] Faz 2: özelleştirilebilir saatler, izin/değişiklik istisnaları, gece vardiyası süreleri ve takvim.
 
-Bir iş, konuşmada “hazır” denildiği için tamamlanmış sayılmaz. Dosya/commit/PR/CI veya test çıktılarıyla kanıtlanmalı. Her ilerlemeden sonra:
-1. GitHub main ve açık PR/branch'leri kontrol et.
-2. Gerçekleşen işi, ilgili commit veya PR'ı ve test sonucunu buraya yaz.
-3. [ROADMAP.md](ROADMAP.md) ve [HANDOFF.md](HANDOFF.md) içindeki sonraki adımı güncelle.
-4. Başarısız/bekleyen işleri açık durumlarıyla bırak.
+## Sıradaki eylem
 
-## Değişiklik geçmişi
+1. Faz 1 PR'ı ve GitHub Actions kontrol sonuçlarını incele.
+2. Bağımlılık kilidini ve uyumluluk sorunlarını gider; çalışır geliştirme sürümü doğrula.
+3. Faz 1 kabul kriterleri sağlanınca merge et; main SHA/CI bilgilerini bu dosyaya işle.
+4. Faz 2 için tarih/istisna/gece vardiyası kabul testleriyle vardiya motorunu genişlet.
 
-- **2026-11-15:** Başlangıç ürün ve teknik planı kabul edildi. Kullanıcının açtığı GitHub deposuna proje hafızası aktarımı başlatıldı. README oluşturuldu; PR #1 ile yedi ayrıntılı doküman main dalına birleştirildi. Uygulama kodu henüz yok.
+## Geçmiş
+
+- **2026-11-15:** Başlangıç proje hafızası ve yol haritası PR #1 ile main'e eklendi.
+- **2026-11-15:** Faz 1 için Expo mobil iskeleti, SQLite ve kalite kapısı geliştirme dalında hazırlandı; derleme ve test doğrulaması bekliyor.
