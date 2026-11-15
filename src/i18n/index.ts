@@ -1,8 +1,8 @@
 import { createInstance } from 'i18next';
-
-const i18n = createInstance();
 import { initReactI18next } from 'react-i18next';
 import { getLocales } from 'expo-localization';
+
+const i18n = createInstance();
 
 const resources = {
   tr: {
