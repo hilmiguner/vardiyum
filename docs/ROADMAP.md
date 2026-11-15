@@ -8,7 +8,7 @@
 | 1 | Expo iskeleti, SQLite, i18n, tema, CI | PR #3 main'e alındı; Issue #2 native test açık |
 | 2 | Esnek vardiya motoru, istisnalar ve takvim | PR #5/#7/#9 main'de; cihaz testleri/sürümleme açık |
 | 3 | Rutinler, görev geçmişi, bildirimler | PR #11/#13 main'de; native bildirim teslimi/QA açık |
-| 4 | Mesai ve tahmini kazanç | PR #15 ilk güvenli tahmin motoru; mevzuat/rapor sınırları açık |
+| 4 | Mesai ve tahmini kazanç | PR #15 main'de; ay sınırı/dışa aktarma Issue #16 açık |
 | 5 | Yedekleme, gerçek cihazlar, beta | Planlandı |
 | 6 | App Store ve Google Play yayını | Planlandı |
 
@@ -61,13 +61,14 @@
 
 ## Faz 4 — Mesai ve tahmini kazanç
 
-**İlerleme:** [Issue #14](https://github.com/hilmiguner/vardiyum/issues/14), [PR #15](https://github.com/hilmiguner/vardiyum/pull/15) — saatlik ve tam aylık profil, kaynak bazlı tahmin ve SQLite v6. [CI #43710412387](https://github.com/hilmiguner/vardiyum/actions/runs/43710412387) SUCCESS (84 test, iki platform JS); merge ayrıca doğrulanacak.
+**İlerleme:** [Issue #14](https://github.com/hilmiguner/vardiyum/issues/14) / [PR #15](https://github.com/hilmiguner/vardiyum/pull/15) **main'e merge edildi** (`510f4ee8`); [main CI #43710791686](https://github.com/hilmiguner/vardiyum/actions/runs/43710791686) SUCCESS (84 test, Android&iOS JS export). Sıradaki [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) ay sınırı, profil sürümü, dışa aktarma.
 
 - [x] Kullanıcı beyanlı gerçek UTC çalışma kayıtlarının kazanç tahmininde okunması PR #15.
 - [ ] Ücretlendirilebilir izin günü, işveren doğrulaması ve ay sınırını geçen vardiya dağıtımı.
 - [x] Sabit tam ay/saatlik ücret, kullanıcı eşiği/mesai katsayısı, prim-kesinti-düzeltme PR #15.
 - [x] Integer/BigInt para hesabı, kalem kalem kaynaklı dönem raporu, geçersiz kayıtta bloklama PR #15.
-- [ ] Özel maaş dönemleri ve aylar arası bölme, veri dışa aktarma ve native cihaz testleri.
+- [ ] Özel maaş dönemleri, aylar arası vardiya bölünmesi, güvenli rapor dışa aktarma ve profil geçmiş düzeltme: [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16).
+- [ ] Native Android/iOS SQLite v6 ve ekran/çevrimdışı kontrolleri: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) (kullanıcı isteğiyle ertelendi).
 
 ## Faz 5 — Beta
 

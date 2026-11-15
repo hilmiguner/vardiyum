@@ -103,14 +103,14 @@ Yeni sohbet prompt'u:
 
 ## 2026-11-15 — Issue #14 / PR #15 yeni devir notu
 
-- **PR:** [#15](https://github.com/hilmiguner/vardiyum/pull/15), dal `feat/transparent-earnings-v6`; merge ve son main CI durumu GitHub'dan ayrıca doğrulanacak.
+- **PR #15 merged:** [PR #15](https://github.com/hilmiguner/vardiyum/pull/15), main SHA `510f4ee833d03b7e6df2453bd2542be86534c6d9`; merge sonrası [Actions #43710791686](https://github.com/hilmiguner/vardiyum/actions/runs/43710791686) SUCCESS.
 - **CI:** [Actions #43710412387](https://github.com/hilmiguner/vardiyum/actions/runs/43710412387) **SUCCESS** — npm ci, Expo sürüm uyumu, Prettier, ESLint, TypeScript, **84/84 Node testi**, Android+iOS JS export.
 - **Kod:** `src/domain/earnings-engine.ts` saf açıklanabilir, fail-closed tam sayı para motoru; `src/domain/money-text.ts` kesin kuruş parse/format; `src/data/earnings-repository.ts` eski kayıtları karıştırmadan kullanıcı çalışma oturumu/profil/düzeltme okuma ve ekleme; `src/data/schema.ts` SQLite v6; `src/app/(tabs)/earnings.tsx` TR/EN ekran.
 - **Ürün sınırları:** Kullanıcı beyanlı gerçek UTC aralık, planlanan vardiya iş sayılmaz. Saatlik ve tam ay sabit ücret, yalnızca **kullanıcı belirlediği** mesai eşiği/çarpanı, manuel prim/kesinti. Toplam, mevzuat/SGK/vergi/net veya işveren onaylı bordro **değildir**.
 - **Koruma:** `compensation_profiles`, `pay_adjustments`, `work_entries` legacy taslakları otomatik yeni hesaplamaya katılmaz; SQLite v1–v5 korunur. Çalışma ay sonunu geçerse, çakışma/kayıt bozuksa rapor bloklanır, otomatik bölen algoritma henüz yok.
 - **Kalanlar:** Native Android/iOS ekran/SQLite v6 testleri [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi; ay sonu vardiya bölmesi, gün içinde oranlama, farklı maaş periyodu, işveren doğrulaması ve rapor dışa aktarması ayrıca ele alınacak.
-- **Sıradaki:** PR #15'i son CI başarı ve main merge sonrasında STATUS/HANDOFF'a gerçek commit/CI ile kaydet. Ardından kalan Faz 4 işlerini ayrı Issue ile ele al ve cihaz testlerini kullanıcı istemedikçe tamamlandı gösterme.
+- **Sıradaki:** [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) aylar arası vardiya bölünmesi ve rapor dışa aktarma/ücret profili sürümleme. Cihaz testleri Issue #2'de ertelendi; resmî bordro/SGK/vergi/net ücrete geçme.
 
 Yeni sohbet komutu:
 
-> Vardiyum https://github.com/hilmiguner/vardiyum. Önce main SHA, açık PR/Issue, son Actions ve docs/STATUS.md, docs/HANDOFF.md, docs/ROADMAP.md, docs/DECISIONS.md kontrol et. Son çalışma Issue #14 / PR #15: kullanıcı beyanlı gerçek UTC çalışma üzerinden BigInt/minor-unit ile açıklanabilir tahmini gelir, saatlik/tam ay modeli, kullanıcı tarafından seçilen fazla mesai eşiği/çarpanı ve SQLite v6. Resmî bordro/net/vergi/SGK hesaplaması yok. Native cihaz testleri ertelendi (Issue #2). Kod/CI ve merge kanıtını doğrula; projeyi GitHub üzerinden sürdür.
+> Vardiyum https://github.com/hilmiguner/vardiyum. Önce main SHA, açık PR/Issue, son Actions ve docs/STATUS.md, docs/HANDOFF.md, docs/ROADMAP.md, docs/DECISIONS.md kontrol et. Issue #14 / PR #15 gerçek UTC çalışma üzerinden BigInt/minor-unit ile açıklanabilir tahmini kazanç, saatlik/tam ay modeli ve SQLite v6 main'e merge edildi. Sonraki Issue #16: ay sonunu aşan vardiya, profil sürümleri ve dışa aktarma. Resmî bordro/net/vergi/SGK hesaplaması yok. Native cihaz testleri ertelendi (Issue #2). Kod/CI ve merge kanıtını doğrula; projeyi GitHub üzerinden sürdür.

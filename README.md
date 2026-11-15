@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Offline vardiya, rutinler ve yerel hatırlatmalar (PR #3/#5/#7/#9/#11/#13) main'de. Şeffaf **tahmini kazanç** ve fazla mesai motoru, manuel düzeltmeler ve SQLite v6 [PR #15](https://github.com/hilmiguner/vardiyum/pull/15) kapsamında geliştirildi. [CI #43710412387](https://github.com/hilmiguner/vardiyum/actions/runs/43710412387) SUCCESS: 84 Node test ve Android/iOS JS export. Native cihaz doğrulaması kullanıcı isteğiyle ertelendi; resmî bordro/net maaş iddiası yok. [docs/STATUS.md](docs/STATUS.md).
+> **Durum (2026-11-15):** Offline vardiya/rutin/hatırlatma (PR #3/#5/#7/#9/#11/#13) ve **tahmini kazanç (PR #15)** main'e alındı. [Merge sonrası CI #43710791686](https://github.com/hilmiguner/vardiyum/actions/runs/43710791686) SUCCESS: 84/84 Node test ve Android/iOS JS export. Aylar arası gece vardiyası dağıtımı/rapor dışa aktarma [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) kapsamındadır. Native cihaz testleri ertelendi; resmî bordro/net maaş iddiası yok.
 
 ## Geliştirme kurulumu
 
