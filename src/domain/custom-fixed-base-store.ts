@@ -1,3 +1,4 @@
+import { adjustmentAttributionGate } from './custom-adjustment-attribution-store.ts';
 import {
   createCustomFixedBaseEvent,
   decodeCustomFixedBaseHistory,
@@ -215,7 +216,7 @@ export async function loadCustomFixedBaseReportFromStore(
       latestRevision: history.length,
       reasons: ['INVALID_FIXED_BASE_ADJUSTMENT_SOURCE'],
     };
-  if (adjustments.n > 0)
+  if ((await adjustmentAttributionGate(store, periodKey, adjustments.n)) > 0)
     return {
       status: 'blocked',
       periodKey,
