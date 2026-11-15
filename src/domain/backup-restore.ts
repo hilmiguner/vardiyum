@@ -6,7 +6,7 @@ import {
   type BackupSqlValue,
   type BackupTableName,
   type ExpectedColumns,
-} from './backup-archive';
+} from './backup-archive.ts';
 
 export const RESTORE_MARKER_KEY = 'backup_restore_consumed';
 export const REMINDER_CONSENT_KEY = 'routine_reminders_opted_in';
