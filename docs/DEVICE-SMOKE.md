@@ -94,3 +94,16 @@
 - [ ] Resmî net ücret/SGK/vergi sonuçlarının veya hukuki mevzuat varsayımının **sunulmadığı** onayı.
 
 **Henüz yapılmadı:** Kullanıcı isteğiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'ye ertelendi; Android/iOS JS export yalnızca paketlemeyi doğrular.
+
+## Issue #16 / PR #17 — İleride yapılacak native ay bölme/paylaşım kabulü
+
+- [ ] Android/iOS SQLite v6→v7 additive migrasyon ve eski gerçek çalışma/profil/ayarlama/rutin verilerinin, uygulama kapatılıp açıldıktan sonra korunması.
+- [ ] Ayın son günü 23:00–07:00 gece vardiyasında (Türkiye) Kasım/Aralık farklı profile göre 1h/7h doğru hesap.
+- [ ] New York DST geri/ileri, Nepal 45 dakika ve Adelaide yarım saat UTC offsetlerinde ay sınırı UTC bölünmesi.
+- [ ] Mola 0 otomatik; mola >0 kullanıcı başlangıç ayı dk girip kaydedince iki ayda ayrı bölüm, tekrar açılışta aynı tercih, düzeltmede v7 audit izi.
+- [ ] İmkânsız mola dağılımı, UTC uçlarının değişmesi, çakışma ve ay sınırı çözümsüzse kazanç tahmininin bloke edilmesi.
+- [ ] Kullanıcı onayı olmadan rapor paylaşılmaması; Share sheet iptal, CSV/JSON metin, başka uygulama seçme, gizlilik uyarısı, iOS/Android UI.
+- [ ] TalkBack/VoiceOver, TR/EN, uzun rakam/eksi para, erişilebilirlik ve çevrimdışı çalışma.
+- [ ] **Gerçek resmî bordro/net ücret/vergisel uygunluk iddiası yapılmıyor.**
+
+**Durum:** Kullanıcının tercihiyle native cihaz QA sonraya bırakıldı ([Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)). JS export, Share sheet/SQLite v7 cihaz davranışını doğrulamaz.
