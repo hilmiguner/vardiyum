@@ -1,3 +1,4 @@
+import { adjustmentAttributionGate } from './custom-adjustment-attribution-store.ts';
 import {
   customBreakSourcePeriods,
   type CustomPayBreakEvent,
@@ -142,5 +143,6 @@ export async function loadCustomHourlyEstimateFromStore(
   // Protect against a changed preference while a report is being assembled.
   if ((await readPayPeriodStartDay(store)) !== plan.startDay)
     throw new Error('CUSTOM_PAY_SETTING_CHANGED_DURING_REPORT');
-  return estimateCustomHourlyWork(plan, sources, adjustments?.n ?? -1);
+  const remaining = await adjustmentAttributionGate(store, periodKey, adjustments?.n ?? -1);
+  return estimateCustomHourlyWork(plan, sources, remaining);
 }
