@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Action, Heading, Muted, Page, Panel } from '../../components/ui';
+import { ScheduledDuration } from '../../components/scheduled-duration';
 import {
   addCalendarDays,
   calendarDateInZone,
@@ -67,6 +68,7 @@ export default function TodayScreen() {
                 <Text style={{ color: c.muted, fontSize: 15 }}>{timeLabel(current)}</Text>
               </View>
             </View>
+            <ScheduledDuration date={today} template={current.template} timeZone={schedule.timeZone} />
             {current.source === 'override' && <Muted>{t('editedDay')}</Muted>}
           </Panel>
           <Panel>

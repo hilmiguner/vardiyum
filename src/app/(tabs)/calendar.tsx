@@ -3,6 +3,7 @@ import { Alert, Pressable, Text, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Action, Heading, Muted, Page, Panel } from '../../components/ui';
+import { ScheduledDuration } from '../../components/scheduled-duration';
 import {
   addCalendarDays,
   calendarDateInZone,
@@ -170,6 +171,7 @@ export default function CalendarScreen() {
                   {chosen.template.name}
                 </Text>
                 <Muted>{timeLabel(chosen.template)}</Muted>
+                <ScheduledDuration date={selectedDate} template={chosen.template} timeZone={schedule.timeZone} />
                 {chosen.source === 'override' ? <Muted>{t('editedDay')}</Muted> : null}
               </>
             )}
