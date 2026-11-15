@@ -71,8 +71,8 @@ export function CustomAdjustmentAttributionPanel({
       const parsed = parseMoneyMinor(entered);
       // Decimal phone keyboards may not expose a minus key. Preserve the
       // source's negative sign for deductions or negative corrections.
-      const earlierMinorUnits = candidate.originalMinorUnits < 0 && parsed >= 0
-        ? -parsed : parsed;
+      const earlierMinorUnits =
+        candidate.originalMinorUnits < 0 && parsed >= 0 ? -parsed : parsed;
       if (
         candidate.originalMinorUnits > 0 &&
         (earlierMinorUnits < 0 || earlierMinorUnits > candidate.originalMinorUnits)
