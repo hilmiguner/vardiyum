@@ -115,6 +115,16 @@ export function CustomHourlyEstimatePanel({
                   revision: line.breakAuditRevision ?? '-',
                 })}
               </Muted>
+              {line.rateBreakAuditRevision ? (
+                <Muted>
+                  {t(
+                    line.rateBreakAuditKind === 'dual'
+                      ? 'earnDualBreakLineAudit'
+                      : 'earnRateBreakLineAudit',
+                    { revision: line.rateBreakAuditRevision },
+                  )}
+                </Muted>
+              ) : null}
               <Muted>
                 {line.segmentStartUtc} → {line.segmentEndUtc} ({line.timeZone})
               </Muted>
