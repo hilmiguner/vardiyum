@@ -16,7 +16,8 @@ const resources = {
       earnFixedExplanation:
         'Bu bölüm yalnız sabit aylık ücretin özel dönem için kullanıcı tarafından açıkça seçilen ana tutarını gösterir. Takvim günleri veya kaydedilen çalışma süresi kullanılarak otomatik oranlama yapılmaz. İki ayrı maaş profili varsa tahmin durur.',
       earnFixedPeriod: 'Özel maaş dönemi: {{start}} – {{end}}',
-      earnFixedProfile: 'Ücret profili {{profile}} · sürüm {{revision}} · tam aylık kaynak {{amount}}',
+      earnFixedProfile:
+        'Ücret profili {{profile}} · sürüm {{revision}} · tam aylık kaynak {{amount}}',
       earnFixedSavedScope: 'Kullanıcının seçtiği, yalnız sabit ücret ANA TUTAR tahmini:',
       earnFixedSavedChoice: '{{mode}} · beyan revizyonu {{revision}}',
       earnFixedStale:
@@ -35,8 +36,7 @@ const resources = {
       earnFixedSave: 'Sabit ücret ana tutarı beyanını kaydet',
       earnFixedSaved: 'Sabit ücret ana tutarı beyanı sürümlü olarak kaydedildi.',
       earnFixedInvalid: 'Sabit ücret seçimi geçersiz veya eskimiş',
-      earnFixedBlocked:
-        'Özel dönem sabit ücret ana tutarı şu an hesaplanamaz.',
+      earnFixedBlocked: 'Özel dönem sabit ücret ana tutarı şu an hesaplanamaz.',
       earnFixedNotPayslip:
         'Bu yalnız kullanıcı beyanına dayalı VERGİ ÖNCESİ SABİT ÜCRET ANA TUTARIDIR. Fazla mesai, prim, kesinti, düzeltme, SGK, vergi ve net maaş dahil değildir; tam bordro veya ödeme taahhüdü değildir. Aylık düzeltmeler veya profil geçişi varsa tutar bloke edilir.',
       earnCustomHourlyTitle: 'Özel dönem: kaydedilmiş gerçek çalışma kazancı',
@@ -514,7 +514,8 @@ const resources = {
       earnFixedExplanation:
         'This section shows only the fixed-salary base amount that you explicitly choose for a custom period. No automatic daily or hourly prorating is inferred from calendar dates or logged work. A period with two effective profiles stays blocked.',
       earnFixedPeriod: 'Custom pay period: {{start}} – {{end}}',
-      earnFixedProfile: 'Pay profile {{profile}} · revision {{revision}} · full monthly source {{amount}}',
+      earnFixedProfile:
+        'Pay profile {{profile}} · revision {{revision}} · full monthly source {{amount}}',
       earnFixedSavedScope: 'Your explicitly chosen fixed salary BASE-ONLY estimate:',
       earnFixedSavedChoice: '{{mode}} · statement revision {{revision}}',
       earnFixedStale:

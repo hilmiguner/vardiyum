@@ -27,9 +27,7 @@ export async function loadCustomFixedBaseReport(
   const db = await getDatabase();
   const holder: { value: CustomFixedBaseReport | null } = { value: null };
   await db.withExclusiveTransactionAsync(async (tx) => {
-    holder.value = await loadCustomFixedBaseReportFromStore(
-      tx, periodKey, scheduleTimeZone,
-    );
+    holder.value = await loadCustomFixedBaseReportFromStore(tx, periodKey, scheduleTimeZone);
   });
   if (holder.value === null) throw new Error('CUSTOM_FIXED_BASE_READ_DID_NOT_FINISH');
   return holder.value;

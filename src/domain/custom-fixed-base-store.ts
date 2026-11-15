@@ -72,9 +72,10 @@ export async function readCustomFixedBaseHistory(
   startDay: number,
 ): Promise<CustomFixedBaseEvent[]> {
   const prefix = fixedBasePrefix(periodKey, startDay);
-  const rows = await store.getAllAsync<{key: string; value: string}>(
+  const rows = await store.getAllAsync<{ key: string; value: string }>(
     'SELECT key,value FROM app_settings WHERE substr(key,1,?)=? ORDER BY key',
-    prefix.length, prefix,
+    prefix.length,
+    prefix,
   );
   return decodeCustomFixedBaseHistory(periodKey, startDay, rows);
 }
@@ -93,19 +94,25 @@ export async function appendCustomFixedBaseRevision(
     !Number.isSafeInteger(input.expectedRevision) ||
     input.expectedRevision < 0 ||
     input.expectedRevision >= 64
-  ) throw new Error('INVALID_FIXED_BASE_EXPECTED_REVISION');
+  )
+    throw new Error('INVALID_FIXED_BASE_EXPECTED_REVISION');
   const plan = await loadCustomPayProfilePreviewFromStore(
-    store, input.periodKey, input.scheduleTimeZone,
+    store,
+    input.periodKey,
+    input.scheduleTimeZone,
   );
   if (plan.startDay !== input.startDay) throw new Error('FIXED_BASE_SETTING_CHANGED');
   eligibleFixedBaseProfile(plan);
   const history = await readCustomFixedBaseHistory(store, input.periodKey, input.startDay);
-  if (history.length !== input.expectedRevision)
-    throw new Error('STALE_FIXED_BASE_REVISION');
+  if (history.length !== input.expectedRevision) throw new Error('STALE_FIXED_BASE_REVISION');
 
   const event = createCustomFixedBaseEvent(
-    plan, input.choice, input.partialBaseMinorUnits, history.length + 1,
-    input.reason, input.recordedAt,
+    plan,
+    input.choice,
+    input.partialBaseMinorUnits,
+    history.length + 1,
+    input.reason,
+    input.recordedAt,
   );
   if (history.length) {
     const latest = history[history.length - 1];
@@ -114,9 +121,9 @@ export async function appendCustomFixedBaseRevision(
       latest.chosenBaseMinorUnits === event.chosenBaseMinorUnits &&
       latest.scheduleTimeZone === event.scheduleTimeZone &&
       JSON.stringify(latest.profile) === JSON.stringify(event.profile)
-    ) throw new Error('UNCHANGED_FIXED_BASE_CHOICE');
-    if (event.recordedAt < latest.recordedAt)
-      throw new Error('INVALID_FIXED_BASE_REVISION');
+    )
+      throw new Error('UNCHANGED_FIXED_BASE_CHOICE');
+    if (event.recordedAt < latest.recordedAt) throw new Error('INVALID_FIXED_BASE_REVISION');
   }
 
   await store.runAsync(
@@ -130,7 +137,9 @@ export async function appendCustomFixedBaseRevision(
   } else {
     const updated = await store.runAsync(
       'UPDATE app_settings SET value=? WHERE key=? AND value=?',
-      String(event.revision), head, String(history.length),
+      String(event.revision),
+      head,
+      String(history.length),
     );
     if (updated.changes !== 1) throw new Error('STALE_FIXED_BASE_REVISION');
   }
@@ -138,7 +147,8 @@ export async function appendCustomFixedBaseRevision(
   if (
     readback.length !== event.revision ||
     JSON.stringify(readback[readback.length - 1]) !== JSON.stringify(event)
-  ) throw new Error('FIXED_BASE_READBACK_MISMATCH');
+  )
+    throw new Error('FIXED_BASE_READBACK_MISMATCH');
   return event;
 }
 
@@ -152,29 +162,39 @@ export async function loadCustomFixedBaseReportFromStore(
   periodKey: string,
   scheduleTimeZone: string,
 ): Promise<CustomFixedBaseReport> {
-  const plan = await loadCustomPayProfilePreviewFromStore(
-    store, periodKey, scheduleTimeZone,
-  );
-  if (plan.startDay === 1 || plan.status === 'single_hourly_profile' ||
+  const plan = await loadCustomPayProfilePreviewFromStore(store, periodKey, scheduleTimeZone);
+  if (
+    plan.startDay === 1 ||
+    plan.status === 'single_hourly_profile' ||
     (plan.status === 'profile_transition_review_required' &&
-      plan.segments.every(segment => segment.profile.model === 'hourly')))
+      plan.segments.every((segment) => segment.profile.model === 'hourly'))
+  )
     return { status: 'not_applicable', periodKey, startDay: plan.startDay };
   if (plan.status === 'needs_profile')
     return {
-      status: 'blocked', periodKey, startDay: plan.startDay,
-      latestRevision: 0, reasons: ['CUSTOM_FIXED_OPENING_PROFILE_REQUIRED'],
+      status: 'blocked',
+      periodKey,
+      startDay: plan.startDay,
+      latestRevision: 0,
+      reasons: ['CUSTOM_FIXED_OPENING_PROFILE_REQUIRED'],
     };
   if (plan.status !== 'fixed_salary_assumption_required')
     return {
-      status: 'blocked', periodKey, startDay: plan.startDay,
-      latestRevision: 0, reasons: ['CUSTOM_FIXED_MIXED_PROFILE_POLICY_REQUIRED'],
+      status: 'blocked',
+      periodKey,
+      startDay: plan.startDay,
+      latestRevision: 0,
+      reasons: ['CUSTOM_FIXED_MIXED_PROFILE_POLICY_REQUIRED'],
     };
   let profile;
   try {
     profile = eligibleFixedBaseProfile(plan);
   } catch (error) {
     return {
-      status: 'blocked', periodKey, startDay: plan.startDay, latestRevision: 0,
+      status: 'blocked',
+      periodKey,
+      startDay: plan.startDay,
+      latestRevision: 0,
       reasons: [error instanceof Error ? error.message : 'INVALID_FIXED_BASE_PROFILE'],
     };
   }
@@ -184,16 +204,22 @@ export async function loadCustomFixedBaseReportFromStore(
   const bounds = customPayPeriodBounds(periodKey, plan.startDay);
   const adjustments = await store.getFirstAsync<{ n: number }>(
     'SELECT COUNT(*) AS n FROM earnings_adjustments WHERE period_key IN (?,?)',
-    bounds.startDate.slice(0,7), bounds.endDateInclusive.slice(0,7),
+    bounds.startDate.slice(0, 7),
+    bounds.endDateInclusive.slice(0, 7),
   );
   if (!adjustments || !Number.isSafeInteger(adjustments.n) || adjustments.n < 0)
     return {
-      status: 'blocked', periodKey, startDay: plan.startDay,
-      latestRevision: history.length, reasons: ['INVALID_FIXED_BASE_ADJUSTMENT_SOURCE'],
+      status: 'blocked',
+      periodKey,
+      startDay: plan.startDay,
+      latestRevision: history.length,
+      reasons: ['INVALID_FIXED_BASE_ADJUSTMENT_SOURCE'],
     };
   if (adjustments.n > 0)
     return {
-      status: 'blocked', periodKey, startDay: plan.startDay,
+      status: 'blocked',
+      periodKey,
+      startDay: plan.startDay,
       latestRevision: history.length,
       reasons: ['CUSTOM_FIXED_CALENDAR_ADJUSTMENTS_REQUIRE_ATTRIBUTION'],
     };
@@ -210,31 +236,42 @@ export async function loadCustomFixedBaseReportFromStore(
       fullBaseMinorUnits: profile.baseMinorUnits,
       latestRevision: history.length,
       stale,
-      latestChoice: stale ? null : latest?.choice ?? null,
+      latestChoice: stale ? null : (latest?.choice ?? null),
       latestPartialMinorUnits: null,
     };
   }
   // Latest must be canonical, validated by the entire history and bound to the
   // exact current profile. Do not confuse this with a complete wage estimate.
   const current = createCustomFixedBaseEvent(
-    plan, latest.choice,
+    plan,
+    latest.choice,
     latest.choice === 'full_base' ? null : latest.chosenBaseMinorUnits,
-    latest.revision, latest.reason, latest.recordedAt,
+    latest.revision,
+    latest.reason,
+    latest.recordedAt,
   );
   if (JSON.stringify(current) !== JSON.stringify(latest))
     return {
-      status: 'blocked', periodKey, startDay: plan.startDay,
-      latestRevision: history.length, reasons: ['INVALID_FIXED_BASE_CHOICE_SOURCE'],
+      status: 'blocked',
+      periodKey,
+      startDay: plan.startDay,
+      latestRevision: history.length,
+      reasons: ['INVALID_FIXED_BASE_CHOICE_SOURCE'],
     };
   if ((await readPayPeriodStartDay(store)) !== plan.startDay)
     throw new Error('FIXED_BASE_SETTING_CHANGED_DURING_REPORT');
   return {
     status: 'estimated',
-    periodKey, startDay: plan.startDay,
-    startDate: bounds.startDate, endDateInclusive: bounds.endDateInclusive,
-    currency: profile.currency, profileId: profile.id, profileRevision: profile.revision,
+    periodKey,
+    startDay: plan.startDay,
+    startDate: bounds.startDate,
+    endDateInclusive: bounds.endDateInclusive,
+    currency: profile.currency,
+    profileId: profile.id,
+    profileRevision: profile.revision,
     fullBaseMinorUnits: profile.baseMinorUnits,
-    latestRevision: latest.revision, choice: latest.choice,
+    latestRevision: latest.revision,
+    choice: latest.choice,
     baseOnlyMinorUnits: latest.chosenBaseMinorUnits,
     scope: 'BASE_ONLY_OVERTIME_WORK_ADJUSTMENTS_EXCLUDED',
     disclaimer: 'USER_REPORTED_PRE_TAX_ESTIMATE',

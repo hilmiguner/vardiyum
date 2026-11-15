@@ -48,18 +48,24 @@ export function CustomFixedBasePanel({
       setPartial('');
       setReason('');
       void loadCustomFixedBaseReport(periodKey, timeZone)
-        .then(value => {
+        .then((value) => {
           if (active) setReport(value);
         })
         .catch((e: unknown) => {
           if (active) setError(e instanceof Error ? e.message : 'CUSTOM_FIXED_REPORT_FAILED');
         });
-      return () => { active = false; };
+      return () => {
+        active = false;
+      };
     }, [periodKey, timeZone, refreshRevision, reload]),
   );
 
   const save = async () => {
-    if (!report || (report.status !== 'estimated' && report.status !== 'requires_choice') || !choice) {
+    if (
+      !report ||
+      (report.status !== 'estimated' && report.status !== 'requires_choice') ||
+      !choice
+    ) {
       Alert.alert(t('earnFixedInvalid'));
       return;
     }
@@ -82,7 +88,7 @@ export function CustomFixedBasePanel({
         expectedRevision: report.latestRevision,
         reason,
       });
-      setReload(old => old + 1);
+      setReload((old) => old + 1);
       onSaved?.();
       Alert.alert(t('earnFixedSaved'));
     } catch (e) {
@@ -106,31 +112,44 @@ export function CustomFixedBasePanel({
           <Text style={{ color: palette.danger, fontWeight: '700' }}>
             {t('earnFixedBlocked')}
           </Text>
-          {report.reasons.map(code => <Muted key={code}>{code}</Muted>)}
+          {report.reasons.map((code) => (
+            <Muted key={code}>{code}</Muted>
+          ))}
         </>
       ) : report.status === 'estimated' || report.status === 'requires_choice' ? (
         <>
-          <Muted>{t('earnFixedPeriod', { start: report.startDate, end: report.endDateInclusive })}</Muted>
-          <Muted>{t('earnFixedProfile', {
-            profile: report.profileId,
-            revision: report.profileRevision,
-            amount: formatMoneyMinor(report.fullBaseMinorUnits, report.currency, locale),
-          })}</Muted>
+          <Muted>
+            {t('earnFixedPeriod', { start: report.startDate, end: report.endDateInclusive })}
+          </Muted>
+          <Muted>
+            {t('earnFixedProfile', {
+              profile: report.profileId,
+              revision: report.profileRevision,
+              amount: formatMoneyMinor(report.fullBaseMinorUnits, report.currency, locale),
+            })}
+          </Muted>
           {report.status === 'estimated' ? (
             <>
               <Muted>{t('earnFixedSavedScope')}</Muted>
-              <Text accessibilityRole="text" style={{
-                color: palette.text, fontSize: 24, fontWeight: '800',
-              }}>
+              <Text
+                accessibilityRole="text"
+                style={{
+                  color: palette.text,
+                  fontSize: 24,
+                  fontWeight: '800',
+                }}
+              >
                 {formatMoneyMinor(report.baseOnlyMinorUnits, report.currency, locale)}
               </Text>
-              <Muted>{t('earnFixedSavedChoice', {
-                mode: t(report.choice === 'full_base' ? 'earnFixedFull' : 'earnFixedPartial'),
-                revision: report.latestRevision,
-              })}</Muted>
+              <Muted>
+                {t('earnFixedSavedChoice', {
+                  mode: t(report.choice === 'full_base' ? 'earnFixedFull' : 'earnFixedPartial'),
+                  revision: report.latestRevision,
+                })}
+              </Muted>
             </>
           ) : report.stale ? (
-            <Text style={{color: palette.danger, fontWeight: '700'}}>
+            <Text style={{ color: palette.danger, fontWeight: '700' }}>
               {t('earnFixedStale')}
             </Text>
           ) : (
@@ -138,7 +157,7 @@ export function CustomFixedBasePanel({
           )}
           <Muted>{t('earnFixedSelection')}</Muted>
           <View style={{ flexDirection: 'row', gap: 8 }}>
-            {(['full_base', 'explicit_partial_base'] as const).map(option => (
+            {(['full_base', 'explicit_partial_base'] as const).map((option) => (
               <Pressable
                 key={option}
                 accessibilityRole="button"
@@ -153,10 +172,13 @@ export function CustomFixedBasePanel({
                   paddingHorizontal: 8,
                 }}
               >
-                <Text style={{
-                  color: palette.text, fontWeight: choice === option ? '800' : '400',
-                  textAlign: 'center',
-                }}>
+                <Text
+                  style={{
+                    color: palette.text,
+                    fontWeight: choice === option ? '800' : '400',
+                    textAlign: 'center',
+                  }}
+                >
                   {t(option === 'full_base' ? 'earnFixedFull' : 'earnFixedPartial')}
                 </Text>
               </Pressable>
@@ -164,9 +186,9 @@ export function CustomFixedBasePanel({
           </View>
           {choice === 'explicit_partial_base' ? (
             <>
-              <Muted>{t('earnFixedAmount', {currency: report.currency})}</Muted>
+              <Muted>{t('earnFixedAmount', { currency: report.currency })}</Muted>
               <TextInput
-                accessibilityLabel={t('earnFixedAmount', {currency: report.currency})}
+                accessibilityLabel={t('earnFixedAmount', { currency: report.currency })}
                 value={partial}
                 onChangeText={setPartial}
                 keyboardType="decimal-pad"
@@ -174,8 +196,11 @@ export function CustomFixedBasePanel({
                 placeholder="15000,00"
                 placeholderTextColor={palette.muted}
                 style={{
-                  borderWidth: 1, borderColor: palette.border,
-                  borderRadius: 12, padding: 12, color: palette.text,
+                  borderWidth: 1,
+                  borderColor: palette.border,
+                  borderRadius: 12,
+                  padding: 12,
+                  color: palette.text,
                 }}
               />
               <Muted>{t('earnFixedAmountHint')}</Muted>
@@ -190,11 +215,14 @@ export function CustomFixedBasePanel({
             placeholder={t('earnFixedReasonPlaceholder')}
             placeholderTextColor={palette.muted}
             style={{
-              borderWidth: 1, borderColor: palette.border,
-              borderRadius: 12, padding: 12, color: palette.text,
+              borderWidth: 1,
+              borderColor: palette.border,
+              borderRadius: 12,
+              padding: 12,
+              color: palette.text,
             }}
           />
-          <Muted>{t('earnFixedRevision', {revision: report.latestRevision})}</Muted>
+          <Muted>{t('earnFixedRevision', { revision: report.latestRevision })}</Muted>
           <Action
             label={t('earnFixedSave')}
             disabled={busy || !choice}

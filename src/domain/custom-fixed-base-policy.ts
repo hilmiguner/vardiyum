@@ -1,7 +1,4 @@
-import {
-  validateEarningsProfile,
-  type EarningsProfile,
-} from './earnings-engine.ts';
+import { validateEarningsProfile, type EarningsProfile } from './earnings-engine.ts';
 import {
   planCustomPayProfiles,
   type CustomPayProfilePlan,
@@ -60,7 +57,8 @@ export function fixedBaseEventKey(
     !Number.isSafeInteger(revision) ||
     revision < 1 ||
     revision > CUSTOM_FIXED_BASE_MAX_REVISIONS
-  ) throw new Error('FIXED_BASE_REVISION_LIMIT');
+  )
+    throw new Error('FIXED_BASE_REVISION_LIMIT');
   return fixedBasePrefix(periodKey, startDay) + 'event:' + String(revision).padStart(3, '0');
 }
 
@@ -79,13 +77,14 @@ export function eligibleFixedBaseProfile(plan: CustomPayProfilePlan): EarningsPr
     segment.endDateInclusive !== bounds.endDateInclusive ||
     profile.model !== 'monthly_fixed' ||
     profile.effectiveFrom > bounds.startDate
-  ) throw new Error('FIXED_BASE_PROFILE_COVERAGE_MISMATCH');
+  )
+    throw new Error('FIXED_BASE_PROFILE_COVERAGE_MISMATCH');
 
   // The profile plan must not have lost a source transition or changed
   // time-zone boundary between the app's display and saved declaration.
-  const canonical = planCustomPayProfiles(
-    plan.periodKey, plan.startDay, plan.timeZone, [profile],
-  );
+  const canonical = planCustomPayProfiles(plan.periodKey, plan.startDay, plan.timeZone, [
+    profile,
+  ]);
   if (JSON.stringify(canonical) !== JSON.stringify(plan))
     throw new Error('FIXED_BASE_PROFILE_PLAN_CHANGED');
   return profile;
@@ -113,7 +112,8 @@ export function createCustomFixedBaseEvent(
       !Number.isSafeInteger(partialBaseMinorUnits) ||
       (partialBaseMinorUnits as number) < 0 ||
       (partialBaseMinorUnits as number) >= profile.baseMinorUnits
-    ) throw new Error('INVALID_FIXED_BASE_PARTIAL_AMOUNT');
+    )
+      throw new Error('INVALID_FIXED_BASE_PARTIAL_AMOUNT');
     amount = partialBaseMinorUnits as number;
   }
   if (!Number.isSafeInteger(amount) || amount < 0 || amount > MAX_MONEY)
@@ -152,21 +152,22 @@ export function createCustomFixedBaseEvent(
 export function decodeCustomFixedBaseHistory(
   periodKey: string,
   startDay: number,
-  rows: readonly {key: string; value: string}[],
+  rows: readonly { key: string; value: string }[],
 ): CustomFixedBaseEvent[] {
   const prefix = fixedBasePrefix(periodKey, startDay);
   if (!Array.isArray(rows)) throw new Error('INVALID_FIXED_BASE_HISTORY');
   if (!rows.length) return [];
   if (rows.length > CUSTOM_FIXED_BASE_MAX_REVISIONS + 1)
     throw new Error('FIXED_BASE_REVISION_LIMIT');
-  const heads = rows.filter(item => item.key === prefix + 'head');
-  const events = rows.filter(item => item.key !== prefix + 'head');
+  const heads = rows.filter((item) => item.key === prefix + 'head');
+  const events = rows.filter((item) => item.key !== prefix + 'head');
   if (
     heads.length !== 1 ||
     !/^[1-9][0-9]*$/.test(heads[0].value) ||
     Number(heads[0].value) !== events.length ||
     events.length === 0
-  ) throw new Error('INVALID_FIXED_BASE_HEAD');
+  )
+    throw new Error('INVALID_FIXED_BASE_HEAD');
   const history: CustomFixedBaseEvent[] = [];
   for (let i = 0; i < events.length; i++) {
     const row = events[i];
@@ -185,27 +186,31 @@ export function decodeCustomFixedBaseHistory(
       throw new Error('INVALID_FIXED_BASE_EVENT');
     let canonical: CustomFixedBaseEvent;
     try {
-      const historical = planCustomPayProfiles(
-        periodKey, startDay, item.scheduleTimeZone, [item.profile],
-      );
+      const historical = planCustomPayProfiles(periodKey, startDay, item.scheduleTimeZone, [
+        item.profile,
+      ]);
       canonical = createCustomFixedBaseEvent(
-        historical, item.choice,
+        historical,
+        item.choice,
         item.choice === 'full_base' ? null : item.chosenBaseMinorUnits,
-        revision, item.reason, item.recordedAt,
+        revision,
+        item.reason,
+        item.recordedAt,
       );
     } catch {
       throw new Error('INVALID_FIXED_BASE_EVENT');
     }
-    if (JSON.stringify(canonical) !== row.value)
-      throw new Error('INVALID_FIXED_BASE_EVENT');
+    if (JSON.stringify(canonical) !== row.value) throw new Error('INVALID_FIXED_BASE_EVENT');
     if (
       history.length &&
       (canonical.recordedAt < history[history.length - 1].recordedAt ||
         (canonical.choice === history[history.length - 1].choice &&
-         canonical.chosenBaseMinorUnits === history[history.length - 1].chosenBaseMinorUnits &&
-         JSON.stringify(canonical.profile) === JSON.stringify(history[history.length - 1].profile) &&
-         canonical.scheduleTimeZone === history[history.length - 1].scheduleTimeZone))
-    ) throw new Error('INVALID_FIXED_BASE_REVISION');
+          canonical.chosenBaseMinorUnits === history[history.length - 1].chosenBaseMinorUnits &&
+          JSON.stringify(canonical.profile) ===
+            JSON.stringify(history[history.length - 1].profile) &&
+          canonical.scheduleTimeZone === history[history.length - 1].scheduleTimeZone))
+    )
+      throw new Error('INVALID_FIXED_BASE_REVISION');
     history.push(canonical);
   }
   return history;
