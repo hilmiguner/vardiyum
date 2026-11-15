@@ -6,7 +6,12 @@ import { useTranslation } from 'react-i18next';
 
 import { usePalette } from '../theme/colors';
 
-export function Page({ children, title, subtitle, settings = true }: PropsWithChildren<{
+export function Page({
+  children,
+  title,
+  subtitle,
+  settings = true,
+}: PropsWithChildren<{
   title: string;
   subtitle?: string;
   settings?: boolean;
@@ -14,17 +19,33 @@ export function Page({ children, title, subtitle, settings = true }: PropsWithCh
   const palette = usePalette();
   const { t } = useTranslation();
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: palette.bg }} edges={['top', 'left', 'right']}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: palette.bg }}
+      edges={['top', 'left', 'right']}
+    >
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 36, gap: 18 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <View style={{ flex: 1 }}>
-            <Text style={{ color: palette.text, fontSize: 30, fontWeight: '800' }}>{title}</Text>
-            {subtitle ? <Text style={{ color: palette.muted, marginTop: 6 }}>{subtitle}</Text> : null}
+            <Text style={{ color: palette.text, fontSize: 30, fontWeight: '800' }}>
+              {title}
+            </Text>
+            {subtitle ? (
+              <Text style={{ color: palette.muted, marginTop: 6 }}>{subtitle}</Text>
+            ) : null}
           </View>
           {settings ? (
             <Link href="/settings" asChild>
-              <Pressable accessibilityRole="button" accessibilityLabel={t('settings')}
-                style={{ padding: 12, backgroundColor: palette.card, borderRadius: 14 }}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('settings')}
+                style={{ padding: 12, backgroundColor: palette.card, borderRadius: 14 }}
+              >
                 <Text style={{ color: palette.text, fontSize: 19 }}>⚙</Text>
               </Pressable>
             </Link>
@@ -39,8 +60,16 @@ export function Page({ children, title, subtitle, settings = true }: PropsWithCh
 export function Panel({ children }: PropsWithChildren) {
   const c = usePalette();
   return (
-    <View style={{ padding: 18, backgroundColor: c.card, borderRadius: 20,
-      borderWidth: 1, borderColor: c.border, gap: 12 }}>
+    <View
+      style={{
+        padding: 18,
+        backgroundColor: c.card,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: c.border,
+        gap: 12,
+      }}
+    >
       {children}
     </View>
   );
@@ -56,17 +85,30 @@ export function Muted({ children }: { children: ReactNode }) {
   return <Text style={{ color: c.muted, fontSize: 14, lineHeight: 21 }}>{children}</Text>;
 }
 
-export function Action({ label, onPress, disabled = false }: {
+export function Action({
+  label,
+  onPress,
+  disabled = false,
+}: {
   label: string;
   onPress: () => void;
   disabled?: boolean;
 }) {
   const c = usePalette();
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={label}
-      disabled={disabled} onPress={onPress}
-      style={{ padding: 15, alignItems: 'center', borderRadius: 14,
-        backgroundColor: c.accent, opacity: disabled ? 0.45 : 1 }}>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      disabled={disabled}
+      onPress={onPress}
+      style={{
+        padding: 15,
+        alignItems: 'center',
+        borderRadius: 14,
+        backgroundColor: c.accent,
+        opacity: disabled ? 0.45 : 1,
+      }}
+    >
       <Text style={{ color: c.bg, fontSize: 16, fontWeight: '800' }}>{label}</Text>
     </Pressable>
   );

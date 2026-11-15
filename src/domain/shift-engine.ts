@@ -25,7 +25,8 @@ export function calendarOrdinal(isoDate: string): number {
     utc.getUTCFullYear() !== year ||
     utc.getUTCMonth() !== month - 1 ||
     utc.getUTCDate() !== day
-  ) throw new Error('INVALID_DATE');
+  )
+    throw new Error('INVALID_DATE');
   return Math.floor(utc.getTime() / 86_400_000);
 }
 
@@ -58,7 +59,8 @@ export function localDateString(date: Date = new Date()): string {
 
 export function validatePattern(value: ShiftPattern): ShiftPattern {
   calendarOrdinal(value.anchorDate);
-  if (value.days.length < 1 || value.days.length > 366) throw new Error('INVALID_PATTERN_LENGTH');
+  if (value.days.length < 1 || value.days.length > 366)
+    throw new Error('INVALID_PATTERN_LENGTH');
   const allowed: ShiftCode[] = ['morning', 'evening', 'night', 'off'];
   if (!value.days.every((code) => allowed.includes(code))) throw new Error('INVALID_SHIFT');
   return { anchorDate: value.anchorDate, days: [...value.days] };

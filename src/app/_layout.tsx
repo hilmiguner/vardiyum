@@ -20,5 +20,9 @@ function Navigation() {
 }
 
 export default function RootLayout() {
-  return <AppStateProvider><Navigation /></AppStateProvider>;
+  return (
+    <AppStateProvider>
+      <Navigation />
+    </AppStateProvider>
+  );
 }

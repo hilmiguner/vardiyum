@@ -35,6 +35,12 @@ test('DST does not affect ordinal difference', () => {
 test('invalid values are rejected', () => {
   assert.throws(() => calendarOrdinal('2026-02-29'), /INVALID_DATE/);
   assert.throws(() => calendarOrdinal('2026-1-2'), /INVALID_DATE/);
-  assert.throws(() => validatePattern({ anchorDate: '2026-11-15', days: [] }), /INVALID_PATTERN_LENGTH/);
-  assert.throws(() => scheduledShift('2026-11-15', { anchorDate: '2026-11-15', days: [] }), /EMPTY_PATTERN/);
+  assert.throws(
+    () => validatePattern({ anchorDate: '2026-11-15', days: [] }),
+    /INVALID_PATTERN_LENGTH/,
+  );
+  assert.throws(
+    () => scheduledShift('2026-11-15', { anchorDate: '2026-11-15', days: [] }),
+    /EMPTY_PATTERN/,
+  );
 });

@@ -22,7 +22,10 @@ export async function loadShiftPattern(): Promise<ShiftPattern | null> {
     'SELECT day_index, shift_code FROM pattern_days WHERE pattern_id = ? ORDER BY day_index',
     PRIMARY_ID,
   );
-  return validatePattern({ anchorDate: row.anchor_date, days: dayRows.map((r) => r.shift_code) });
+  return validatePattern({
+    anchorDate: row.anchor_date,
+    days: dayRows.map((r) => r.shift_code),
+  });
 }
 
 export async function saveShiftPattern(input: ShiftPattern): Promise<void> {

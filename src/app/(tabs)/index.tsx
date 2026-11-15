@@ -19,9 +19,15 @@ export default function TodayScreen() {
 
   return (
     <Page title="Vardiyum" subtitle={t('greeting')}>
-      {loading ? <Muted>{t('loading')}</Muted> : error ? (
-        <Panel><Muted>{t('databaseError')} ({error})</Muted>
-          <Action label={t('retry')} onPress={() => void reload()} /></Panel>
+      {loading ? (
+        <Muted>{t('loading')}</Muted>
+      ) : error ? (
+        <Panel>
+          <Muted>
+            {t('databaseError')} ({error})
+          </Muted>
+          <Action label={t('retry')} onPress={() => void reload()} />
+        </Panel>
       ) : !pattern ? (
         <Panel>
           <Heading>{t('configure')}</Heading>
@@ -31,14 +37,25 @@ export default function TodayScreen() {
       ) : (
         <>
           <Panel>
-            <Muted>{t('shiftToday')} · {today}</Muted>
+            <Muted>
+              {t('shiftToday')} · {today}
+            </Muted>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-              <View style={{ width: 9, height: 55, borderRadius: 10,
-                backgroundColor: SHIFT_PRESENTATION[current!].color }} />
+              <View
+                style={{
+                  width: 9,
+                  height: 55,
+                  borderRadius: 10,
+                  backgroundColor: SHIFT_PRESENTATION[current!].color,
+                }}
+              />
               <View>
-                <Text style={{ color: c.text, fontSize: 30, fontWeight: '800' }}>{t(current!)}</Text>
+                <Text style={{ color: c.text, fontSize: 30, fontWeight: '800' }}>
+                  {t(current!)}
+                </Text>
                 <Text style={{ color: c.muted, fontSize: 15 }}>
-                  {SHIFT_PRESENTATION[current!].startsAt ?? '—'} – {SHIFT_PRESENTATION[current!].endsAt ?? '—'}
+                  {SHIFT_PRESENTATION[current!].startsAt ?? '—'} –{' '}
+                  {SHIFT_PRESENTATION[current!].endsAt ?? '—'}
                 </Text>
               </View>
             </View>
