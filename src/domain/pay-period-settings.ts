@@ -27,7 +27,9 @@ export function decodePayPeriodStartDay(row: { value: string } | null): number {
   return validatePayPeriodStartDay(Number(row.value));
 }
 
-export async function readPayPeriodStartDay(store: PayPeriodSettingsStore): Promise<number> {
+export async function readPayPeriodStartDay(
+  store: Pick<PayPeriodSettingsStore, 'getFirstAsync'>,
+): Promise<number> {
   const row = await store.getFirstAsync<{ value: string }>(
     'SELECT value FROM app_settings WHERE key = ?',
     PAY_PERIOD_START_DAY_KEY,

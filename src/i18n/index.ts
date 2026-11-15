@@ -12,6 +12,26 @@ const resources = {
       routines: 'Rutinler',
       earnings: 'Kazanç',
       settings: 'Ayarlar',
+      earnCustomProfileTitle: 'Özel dönem ücret profili kontrolü',
+      earnCustomProfileExplanation:
+        'Seçtiğin maaş dönemi iki takvim ayını kapsıyorsa ayın 1’inde yeni bir ücret profili başlayabilir. Geçerli profil sürümleri tarih tarih gösterilir; oranlar sessizce birleştirilmez.',
+      earnCustomProfilePeriod: 'Özel maaş dönemi: {{start}} – {{end}} ({{zone}})',
+      earnCustomProfileStatus_needs_profile:
+        'Bu dönemin başlangıcında geçerli ücret profili bulunamadı. Tahmin bloke.',
+      earnCustomProfileStatus_single_hourly_profile:
+        'Dönem boyunca tek saatlik ücret profili geçerli. Bu bir hesaplama veya ödeme onayı değildir.',
+      earnCustomProfileStatus_fixed_salary_assumption_required:
+        'Sabit ücret: tam/eksik özel dönem ödeme varsayımı seçilmeden tahmin yapılamaz.',
+      earnCustomProfileStatus_profile_transition_review_required:
+        'Dönem içinde ücret profili değişiyor. Oran geçişi ve fazla mesai politikası ayrıca onaylanmadan hesap yapılmaz.',
+      earnCustomProfileSource:
+        'Kaynak profil: {{id}} · sürüm {{revision}} · geçerlilik {{effective}}',
+      earnCustomProfileModel: '{{model}} · kayıtlı tutar: {{amount}}',
+      earnCustomProfileUtc: 'Saat dilimi karşılığı UTC: {{start}} → {{end}} (bitiş hariç)',
+      earnCustomProfileZoneWarning:
+        'Bu gösterim vardiya planının saat dilimini kullanır. Gerçek çalışma ücreti hesaplanırken her kaydın kendi IANA saat dilimi ve UTC anları esas alınmalıdır.',
+      earnCustomProfileNotApplied:
+        'Önemli: Bu panel yalnızca ücret profili geçişini gözden geçirir. Mevcut aylık Kazanç tutarı, mola dağılımları, primler ve CSV/JSON burada gösterilen özel döneme göre yeniden hesaplanmaz.',
       earnCustomBreakTitle: 'Özel dönem mola dağılımı (hazırlık)',
       earnCustomBreakExplanation:
         '26–25 gibi seçtiğin dönemin sınırını aşan, mola içeren gerçek çalışma kayıtlarını ayrı beyan edebilirsin. Bu kayıtlar mevcut aylık kazanç hesabına otomatik eklenmez.',
@@ -392,6 +412,26 @@ const resources = {
       routines: 'Routines',
       earnings: 'Earnings',
       settings: 'Settings',
+      earnCustomProfileTitle: 'Custom-period pay profile review',
+      earnCustomProfileExplanation:
+        'A custom pay period can span two calendar months. A new rate may become effective on the 1st. This preview identifies immutable profile revisions for each date range without silently blending rates.',
+      earnCustomProfilePeriod: 'Custom pay period: {{start}} – {{end}} ({{zone}})',
+      earnCustomProfileStatus_needs_profile:
+        'No pay profile covers the start of this period. Estimation is blocked.',
+      earnCustomProfileStatus_single_hourly_profile:
+        'One hourly pay profile covers this period. This is not a calculation or payroll approval.',
+      earnCustomProfileStatus_fixed_salary_assumption_required:
+        'Fixed pay: a full/partial custom-period payment assumption is required before estimating.',
+      earnCustomProfileStatus_profile_transition_review_required:
+        'A pay profile changes inside the period. Rate and overtime policies need explicit review before any estimate.',
+      earnCustomProfileSource:
+        'Profile source: {{id}} · revision {{revision}} · effective {{effective}}',
+      earnCustomProfileModel: '{{model}} · saved amount: {{amount}}',
+      earnCustomProfileUtc: 'Projected UTC boundaries: {{start}} → {{end}} (end exclusive)',
+      earnCustomProfileZoneWarning:
+        'This preview uses the schedule time zone. Actual work earnings must use each record’s original IANA zone and UTC instants.',
+      earnCustomProfileNotApplied:
+        'Important: This panel reviews pay profile transitions only. Existing calendar-month Earnings totals, breaks, adjustments and CSV/JSON are not recalculated for the custom period.',
       earnCustomBreakTitle: 'Custom-period break split (preparation)',
       earnCustomBreakExplanation:
         'For a period such as 26–25, you can declare how a break in actual work crossing the period boundary is split. These declarations do not automatically change existing monthly earnings.',
