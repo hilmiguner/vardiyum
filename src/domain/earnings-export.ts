@@ -14,8 +14,16 @@ export function createEarningsExport(
   format: EarningsExportFormat,
 ): { name: string; mimeType: string; content: string } {
   if (report.status !== 'estimated') throw new Error('EARNINGS_NOT_EXPORTABLE');
-  const { periodKey, profile, lines, totalMinorUnits, loggedSeconds,
-    regularSeconds, overtimeSeconds, splitAcrossMonthsCount } = report;
+  const {
+    periodKey,
+    profile,
+    lines,
+    totalMinorUnits,
+    loggedSeconds,
+    regularSeconds,
+    overtimeSeconds,
+    splitAcrossMonthsCount,
+  } = report;
   const snapshot = {
     schema: 'vardiyum-estimated-earnings-v1',
     disclaimer: 'USER_REPORTED_PRE_TAX_ESTIMATE',
@@ -58,23 +66,48 @@ export function createEarningsExport(
   }
   if (format !== 'csv') throw new Error('INVALID_EARNINGS_EXPORT_FORMAT');
   const columns = [
-    'periodKey','currency','kind','sourceId','profileId',
-    'profileRevision','segmentStartUtc','segmentEndUtc','seconds',
-    'amountMinorUnits','description',
+    'periodKey',
+    'currency',
+    'kind',
+    'sourceId',
+    'profileId',
+    'profileRevision',
+    'segmentStartUtc',
+    'segmentEndUtc',
+    'seconds',
+    'amountMinorUnits',
+    'description',
   ];
-  const rows = lines.map((line) => [
-    safeCsvText(periodKey),safeCsvText(profile.currency),safeCsvText(line.kind),
-    safeCsvText(line.sourceId),safeCsvText(line.profileId),
-    String(line.profileRevision),
-    safeCsvText(line.segmentStartUtc ?? ''),safeCsvText(line.segmentEndUtc ?? ''),
-    String(line.seconds),String(line.amountMinorUnits),safeCsvText(line.description),
-  ].join(','));
-  rows.push([
-    safeCsvText(periodKey),safeCsvText(profile.currency),safeCsvText('TOTAL'),
-    safeCsvText(''),safeCsvText(profile.id),String(profile.revision),
-    safeCsvText(''),safeCsvText(''),'0',String(totalMinorUnits),
-    safeCsvText('User-entered, pre-tax estimate; not an official payslip'),
-  ].join(','));
+  const rows = lines.map((line) =>
+    [
+      safeCsvText(periodKey),
+      safeCsvText(profile.currency),
+      safeCsvText(line.kind),
+      safeCsvText(line.sourceId),
+      safeCsvText(line.profileId),
+      String(line.profileRevision),
+      safeCsvText(line.segmentStartUtc ?? ''),
+      safeCsvText(line.segmentEndUtc ?? ''),
+      String(line.seconds),
+      String(line.amountMinorUnits),
+      safeCsvText(line.description),
+    ].join(','),
+  );
+  rows.push(
+    [
+      safeCsvText(periodKey),
+      safeCsvText(profile.currency),
+      safeCsvText('TOTAL'),
+      safeCsvText(''),
+      safeCsvText(profile.id),
+      String(profile.revision),
+      safeCsvText(''),
+      safeCsvText(''),
+      '0',
+      String(totalMinorUnits),
+      safeCsvText('User-entered, pre-tax estimate; not an official payslip'),
+    ].join(','),
+  );
   return {
     name: 'vardiyum-estimate-' + periodKey + '.csv',
     mimeType: 'text/csv',

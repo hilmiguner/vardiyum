@@ -322,7 +322,8 @@ export default function EarningsScreen() {
   const refresh = useCallback(async () => {
     try {
       const [next, candidates] = await Promise.all([
-        loadEarningsReport(month), loadBreakAllocationCandidates(month),
+        loadEarningsReport(month),
+        loadBreakAllocationCandidates(month),
       ]);
       setReport(next);
       setBreakCandidates(candidates);
@@ -336,9 +337,7 @@ export default function EarningsScreen() {
   useFocusEffect(
     useCallback(() => {
       let active = true;
-      void Promise.all([
-        loadEarningsReport(month), loadBreakAllocationCandidates(month),
-      ])
+      void Promise.all([loadEarningsReport(month), loadBreakAllocationCandidates(month)])
         .then(([next, candidates]) => {
           if (active) {
             setReport(next);
@@ -380,14 +379,16 @@ export default function EarningsScreen() {
         onPress: () => {
           try {
             const result = createEarningsExport(report, formatType);
-            void Share.share({ title: result.name, message: result.content })
-              .catch((reason: unknown) => {
-                Alert.alert(t('earnExportFailed'),
-                  reason instanceof Error ? reason.message : '');
-              });
+            void Share.share({ title: result.name, message: result.content }).catch(
+              (reason: unknown) => {
+                Alert.alert(
+                  t('earnExportFailed'),
+                  reason instanceof Error ? reason.message : '',
+                );
+              },
+            );
           } catch (reason) {
-            Alert.alert(t('earnExportFailed'),
-              reason instanceof Error ? reason.message : '');
+            Alert.alert(t('earnExportFailed'), reason instanceof Error ? reason.message : '');
           }
         },
       },

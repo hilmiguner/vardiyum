@@ -34,8 +34,11 @@ function nextMonth(month: string): string {
   const year = Number(month.slice(0, 4));
   const number = Number(month.slice(5, 7));
   if (year === 9999 && number === 12) throw new Error('INVALID_EARNINGS_PERIOD');
-  return String(number === 12 ? year + 1 : year).padStart(4, '0') + '-' +
-    String(number === 12 ? 1 : number + 1).padStart(2, '0');
+  return (
+    String(number === 12 ? year + 1 : year).padStart(4, '0') +
+    '-' +
+    String(number === 12 ? 1 : number + 1).padStart(2, '0')
+  );
 }
 
 function monthBoundaryUtc(month: string, zone: string): number {
@@ -83,24 +86,25 @@ export function splitWorkForMonth(
       breakMinutes = 0;
     } else {
       if (!allocation) throw new Error('BREAK_ALLOCATION_REQUIRED');
-      if (allocation.source !== 'user_entered' ||
-          allocation.workId !== work.id || allocation.startPeriodKey !== startMonth ||
-          allocation.originalBreakMinutes !== work.breakMinutes ||
-          allocation.originalStartUtc !== work.startInstantUtc ||
-          allocation.originalEndUtc !== work.endInstantUtc ||
-          !Number.isSafeInteger(allocation.startMonthBreakMinutes) ||
-          allocation.startMonthBreakMinutes < 0 ||
-          allocation.startMonthBreakMinutes > work.breakMinutes)
+      if (
+        allocation.source !== 'user_entered' ||
+        allocation.workId !== work.id ||
+        allocation.startPeriodKey !== startMonth ||
+        allocation.originalBreakMinutes !== work.breakMinutes ||
+        allocation.originalStartUtc !== work.startInstantUtc ||
+        allocation.originalEndUtc !== work.endInstantUtc ||
+        !Number.isSafeInteger(allocation.startMonthBreakMinutes) ||
+        allocation.startMonthBreakMinutes < 0 ||
+        allocation.startMonthBreakMinutes > work.breakMinutes
+      )
         throw new Error('INVALID_BREAK_ALLOCATION');
       const boundary = monthBoundaryUtc(lastInstantMonth, work.timeZone);
       const firstGross = (boundary - startMs) / 1000;
       const secondGross = (endMs - boundary) / 1000;
       const otherBreak = work.breakMinutes - allocation.startMonthBreakMinutes;
-      if (allocation.startMonthBreakMinutes * 60 > firstGross ||
-          otherBreak * 60 > secondGross)
+      if (allocation.startMonthBreakMinutes * 60 > firstGross || otherBreak * 60 > secondGross)
         throw new Error('BREAK_ALLOCATION_EXCEEDS_SEGMENT');
-      breakMinutes = periodKey === startMonth ?
-        allocation.startMonthBreakMinutes : otherBreak;
+      breakMinutes = periodKey === startMonth ? allocation.startMonthBreakMinutes : otherBreak;
     }
   } else if (allocation) {
     throw new Error('UNEXPECTED_BREAK_ALLOCATION');
@@ -112,7 +116,9 @@ export function splitWorkForMonth(
     workId: work.id,
     startInstantUtc: new Date(begin).toISOString(),
     endInstantUtc: new Date(end).toISOString(),
-    grossSeconds, breakMinutes, netSeconds,
+    grossSeconds,
+    breakMinutes,
+    netSeconds,
     originStartUtc: work.startInstantUtc,
     originEndUtc: work.endInstantUtc,
     originalLocalDate: work.localDate,

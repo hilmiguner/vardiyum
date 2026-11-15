@@ -1,5 +1,9 @@
 import { addCalendarDays, calendarOrdinal } from './shift-engine.ts';
-import { splitWorkForMonth, type MonthBreakAllocation, type WorkPeriodPortion } from './earnings-period.ts';
+import {
+  splitWorkForMonth,
+  type MonthBreakAllocation,
+  type WorkPeriodPortion,
+} from './earnings-period.ts';
 
 export type EarningsModel = 'hourly' | 'monthly_fixed';
 export type AdjustmentKind = 'bonus' | 'deduction' | 'correction';
@@ -251,7 +255,8 @@ export function estimateEarnings(
     }
   }
   sessions.sort(
-    (a, b) => a.startInstantUtc.localeCompare(b.startInstantUtc) || a.workId.localeCompare(b.workId),
+    (a, b) =>
+      a.startInstantUtc.localeCompare(b.startInstantUtc) || a.workId.localeCompare(b.workId),
   );
   let latestEnd = sessions[0]?.endInstantUtc ?? '';
   for (let i = 1; i < sessions.length; i++) {
@@ -290,11 +295,12 @@ export function estimateEarnings(
       profileId: profile.id,
       profileRevision: profile.revision,
       description,
-      ...(sessions.find((row) => row.workId === sourceId) ?
-        {
-          segmentStartUtc: sessions.find((row) => row.workId === sourceId)!.startInstantUtc,
-          segmentEndUtc: sessions.find((row) => row.workId === sourceId)!.endInstantUtc,
-        } : {}),
+      ...(sessions.find((row) => row.workId === sourceId)
+        ? {
+            segmentStartUtc: sessions.find((row) => row.workId === sourceId)!.startInstantUtc,
+            segmentEndUtc: sessions.find((row) => row.workId === sourceId)!.endInstantUtc,
+          }
+        : {}),
     });
   };
   if (profile.model === 'monthly_fixed') {

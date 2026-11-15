@@ -60,9 +60,13 @@ function toBreak(row: BreakRow): MonthBreakAllocation {
 
 function toWork(row: WorkRow): EarningsWork {
   return {
-    id: row.id, localDate: row.local_date, endDate: row.end_date,
-    timeZone: row.timezone_id, startInstantUtc: row.start_instant_utc,
-    endInstantUtc: row.end_instant_utc, breakMinutes: row.break_minutes,
+    id: row.id,
+    localDate: row.local_date,
+    endDate: row.end_date,
+    timeZone: row.timezone_id,
+    startInstantUtc: row.start_instant_utc,
+    endInstantUtc: row.end_instant_utc,
+    breakMinutes: row.break_minutes,
     source: row.source as EarningsWork['source'],
   };
 }
@@ -107,7 +111,8 @@ export async function loadEarningsReport(periodKey: string): Promise<EarningsRep
          SELECT id FROM actual_work_sessions
          WHERE local_date <= ? AND end_date >= ?
        )`,
-      last, first,
+      last,
+      first,
     ),
   ]);
   return estimateEarnings(
@@ -200,7 +205,8 @@ export async function loadBreakAllocationCandidates(
       `SELECT id,local_date,end_date,timezone_id,start_instant_utc,
        end_instant_utc,break_minutes,source FROM actual_work_sessions
        WHERE local_date <= ? AND end_date >= ? ORDER BY start_instant_utc,id`,
-      last, first,
+      last,
+      first,
     ),
     db.getAllAsync<BreakRow>('SELECT * FROM earnings_month_break_allocations'),
   ]);
@@ -208,17 +214,23 @@ export async function loadBreakAllocationCandidates(
   const result: BreakAllocationCandidate[] = [];
   for (const row of work) {
     const original = validateEarningsWork(toWork(row));
-    const firstMonth = calendarDateInZone(original.timeZone, new Date(original.startInstantUtc)).slice(0,7);
+    const firstMonth = calendarDateInZone(
+      original.timeZone,
+      new Date(original.startInstantUtc),
+    ).slice(0, 7);
     const lastMonth = calendarDateInZone(
-      original.timeZone, new Date(Date.parse(original.endInstantUtc) - 1),
-    ).slice(0,7);
+      original.timeZone,
+      new Date(Date.parse(original.endInstantUtc) - 1),
+    ).slice(0, 7);
     if (firstMonth === lastMonth || !original.breakMinutes) continue;
     const allocation = byId.get(original.id);
     result.push({
-      workId: original.id, startPeriodKey: firstMonth,
+      workId: original.id,
+      startPeriodKey: firstMonth,
       originalBreakMinutes: original.breakMinutes,
       startInstantUtc: original.startInstantUtc,
-      endInstantUtc: original.endInstantUtc, timeZone: original.timeZone,
+      endInstantUtc: original.endInstantUtc,
+      timeZone: original.timeZone,
       chosenStartMinutes: allocation?.startMonthBreakMinutes ?? null,
     });
   }
@@ -245,23 +257,31 @@ export async function saveBreakAllocation(
     );
     if (!raw) throw new Error('WORK_NOT_FOUND');
     const work = validateEarningsWork(toWork(raw));
-    const startMonth = calendarDateInZone(work.timeZone, new Date(work.startInstantUtc)).slice(0,7);
+    const startMonth = calendarDateInZone(work.timeZone, new Date(work.startInstantUtc)).slice(
+      0,
+      7,
+    );
     const endMonth = calendarDateInZone(
-      work.timeZone, new Date(Date.parse(work.endInstantUtc) - 1),
-    ).slice(0,7);
+      work.timeZone,
+      new Date(Date.parse(work.endInstantUtc) - 1),
+    ).slice(0, 7);
     if (startMonth === endMonth || work.breakMinutes === 0)
       throw new Error('WORK_NOT_CROSS_MONTH_BREAK');
     const allocation: MonthBreakAllocation = {
-      workId, startPeriodKey: startMonth, startMonthBreakMinutes,
+      workId,
+      startPeriodKey: startMonth,
+      startMonthBreakMinutes,
       originalBreakMinutes: work.breakMinutes,
-      originalStartUtc: work.startInstantUtc, originalEndUtc: work.endInstantUtc,
+      originalStartUtc: work.startInstantUtc,
+      originalEndUtc: work.endInstantUtc,
       source: 'user_entered',
     };
     // Prove both sides are nonnegative, even when editing from only one month.
     splitWorkForMonth(work, startMonth, allocation);
     splitWorkForMonth(work, endMonth, allocation);
     const old = await tx.getFirstAsync<{ revision: number }>(
-      'SELECT revision FROM earnings_month_break_allocations WHERE work_id = ?', workId,
+      'SELECT revision FROM earnings_month_break_allocations WHERE work_id = ?',
+      workId,
     );
     const revision = (old?.revision ?? 0) + 1;
     await tx.runAsync(
@@ -276,18 +296,29 @@ export async function saveBreakAllocation(
        original_start_utc=excluded.original_start_utc,
        original_end_utc=excluded.original_end_utc,
        revision=excluded.revision,updated_at=CURRENT_TIMESTAMP`,
-      workId, startMonth, startMonthBreakMinutes, work.breakMinutes,
-      work.startInstantUtc, work.endInstantUtc, revision,
+      workId,
+      startMonth,
+      startMonthBreakMinutes,
+      work.breakMinutes,
+      work.startInstantUtc,
+      work.endInstantUtc,
+      revision,
     );
-    const eventId = 'break_evt_' + Date.now().toString(36) + '_' +
-      Math.random().toString(36).slice(2, 14);
+    const eventId =
+      'break_evt_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 14);
     await tx.runAsync(
       `INSERT INTO earnings_month_break_allocation_events(
        id,work_id,revision,start_period_key,start_month_break_minutes,
        original_break_minutes,original_start_utc,original_end_utc,recorded_at
        ) VALUES (?,?,?,?,?,?,?,?,?)`,
-      eventId, workId, revision, startMonth, startMonthBreakMinutes,
-      work.breakMinutes, work.startInstantUtc, work.endInstantUtc,
+      eventId,
+      workId,
+      revision,
+      startMonth,
+      startMonthBreakMinutes,
+      work.breakMinutes,
+      work.startInstantUtc,
+      work.endInstantUtc,
       new Date().toISOString(),
     );
   });

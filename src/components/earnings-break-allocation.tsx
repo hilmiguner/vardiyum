@@ -3,13 +3,15 @@ import { Alert, Text, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import {
-  saveBreakAllocation, type BreakAllocationCandidate,
+  saveBreakAllocation,
+  type BreakAllocationCandidate,
 } from '../data/earnings-repository';
 import { usePalette } from '../theme/colors';
 import { Action, Heading, Muted, Panel } from './ui';
 
 export function EarningsBreakAllocationPanel({
-  candidates, onSaved,
+  candidates,
+  onSaved,
 }: {
   candidates: readonly BreakAllocationCandidate[];
   onSaved: () => Promise<void>;
@@ -20,7 +22,8 @@ export function EarningsBreakAllocationPanel({
   const [busy, setBusy] = useState<string | null>(null);
   if (!candidates.length) return null;
   const save = async (item: BreakAllocationCandidate) => {
-    const value = inputs[item.workId] ??
+    const value =
+      inputs[item.workId] ??
       (item.chosenStartMinutes === null ? '' : String(item.chosenStartMinutes));
     if (!/^[0-9]+$/.test(value)) {
       Alert.alert(t('earnBreakInvalid'));
@@ -45,26 +48,45 @@ export function EarningsBreakAllocationPanel({
       <Heading>{t('earnBreakSplitTitle')}</Heading>
       <Muted>{t('earnBreakSplitExplanation')}</Muted>
       {candidates.map((item) => (
-        <View key={item.workId} style={{ gap: 9, paddingVertical: 9,
-          borderBottomWidth: 1, borderColor: c.border }}>
+        <View
+          key={item.workId}
+          style={{ gap: 9, paddingVertical: 9, borderBottomWidth: 1, borderColor: c.border }}
+        >
           <Text style={{ color: c.text, fontWeight: '700' }}>{item.workId}</Text>
-          <Muted>{item.startInstantUtc} — {item.endInstantUtc} ({item.timeZone})</Muted>
+          <Muted>
+            {item.startInstantUtc} — {item.endInstantUtc} ({item.timeZone})
+          </Muted>
           <Muted>{t('earnBreakTotal', { minutes: item.originalBreakMinutes })}</Muted>
           <Muted>{t('earnBreakStartMonth', { month: item.startPeriodKey })}</Muted>
           <TextInput
             accessibilityLabel={t('earnBreakStartMonth', { month: item.startPeriodKey })}
-            value={inputs[item.workId] ??
-              (item.chosenStartMinutes === null ? '' : String(item.chosenStartMinutes))}
-            onChangeText={(value) => setInputs((before) => ({
-              ...before, [item.workId]: value,
-            }))}
-            maxLength={4} keyboardType="number-pad" placeholder="0"
+            value={
+              inputs[item.workId] ??
+              (item.chosenStartMinutes === null ? '' : String(item.chosenStartMinutes))
+            }
+            onChangeText={(value) =>
+              setInputs((before) => ({
+                ...before,
+                [item.workId]: value,
+              }))
+            }
+            maxLength={4}
+            keyboardType="number-pad"
+            placeholder="0"
             placeholderTextColor={c.muted}
-            style={{ borderWidth: 1, borderColor: c.border, color: c.text,
-              borderRadius: 11, padding: 12 }}
+            style={{
+              borderWidth: 1,
+              borderColor: c.border,
+              color: c.text,
+              borderRadius: 11,
+              padding: 12,
+            }}
           />
-          <Action label={t('earnSaveBreakSplit')}
-            disabled={busy !== null} onPress={() => void save(item)} />
+          <Action
+            label={t('earnSaveBreakSplit')}
+            disabled={busy !== null}
+            onPress={() => void save(item)}
+          />
         </View>
       ))}
       <Muted>{t('earnBreakAuditHint')}</Muted>
