@@ -221,3 +221,11 @@
 - **Testler eklendi; CI sonucu PR üzerinde doğrulanmalı:** `tests/pay-period.test.mjs`. Tasarım: [PAY-PERIOD-DESIGN.md](./PAY-PERIOD-DESIGN.md).
 - **Henüz tamamlanmadı:** SQLite v8'de kullanıcı seçimi veya özel dönem mola kayıtları kalıcı değil; kazanç sekmesi/hizmet hâlen takvim ayını kullanıyor. Ücret profili ayın 1'inde değiştiğinde karma oran politikası, sabit ücret dönemi ve manuel düzeltme eşlemesi açık. Mevcut AES yedek v8 şeması **değişmedi**.
 - **Takip:** [Issue #22](https://github.com/hilmiguner/vardiyum/issues/22) **açık**; [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) üst iş; native QA [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2), restore native [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) ertelendi/açık. Mevzuat, vergi, SGK, net ücret veya onaylı bordro hesabı yok.
+
+## 2026-11-15 — Issue #22 / PR #23 ve kalıcı dönem tercihi dilimi
+
+- [x] **PR #23 merge:** `d85f63f0c468f15692aef0f78f13d0a2e695d4c3`; [main Mobile quality #43728968056](https://github.com/hilmiguner/vardiyum/actions/runs/43728968056) **SUCCESS**; 137 Node test + Android/iOS JavaScript export. Salt domain UTC/IANA dönem sınırı ve mola doğrulaması main'de.
+- [ ] **Yeni feature branch `feat/pay-period-persisted-setting` (PR/CI incelemesi bekleniyor):** V8 `app_settings` tek satır anahtarı `earnings_pay_period_start_day_v1` ile kullanıcının **1–28** başlangıç günü kaydı; olmayan anahtar = 1, bozuk anahtar = blokla. Şema versiyonu/18 tablo değişmedi.
+- [ ] Ayarlar'da TR/EN başlangıç günü seçimi ve 26→25 dönem tarih önizlemesi; **halen Kazanç sekmesinde takvim ayı hesaplaması** uygulanır. Kaydedilen tercih finansal rapora otomatik yansımaz.
+- [ ] Node v8 tam migration/preference/persistence/fail-closed/korunan SQLite schema/FK/integrity testleri eklendi; yeni PR CI sonucu doğrulanacak.
+- **Kalan Issue #22:** Kullanıcıya gerçek özel dönem kazanç hesaplama, otomatik karışık aylık ücret profilini güvenli çözümleme, özel dönem mola audit, period-keyed adjustments, sabit ücret kararı ve CSV/JSON. Native cihaz [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2), restore cihaz QA [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) açık.
