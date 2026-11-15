@@ -437,7 +437,7 @@ const resources = {
       settings: 'Settings',
       earnCustomHourlyTitle: 'Custom period: logged actual-work earnings',
       earnCustomHourlyScope:
-        'Computed from self-reported actual hourly work. When hourly rates change, each portion uses the rate effective in the actual work's saved IANA zone, with one unchanged period-wide overtime threshold. A break across a rate-change midnight, mixed currencies/thresholds, or existing monthly adjustments blocks the estimate. Fixed salary, tax, social security and net pay are excluded.',
+        'Computed from self-reported actual hourly work. When hourly rates change, each portion uses the rate effective in the saved IANA zone of the actual work record, with one unchanged period-wide overtime threshold. A break across a rate-change midnight, mixed currencies/thresholds, or existing monthly adjustments blocks the estimate. Fixed salary, tax, social security and net pay are excluded.',
       earnCustomHourlyPeriod: 'Custom period: {{start}} – {{end}} (inclusive)',
       earnCustomHourlyTotals:
         'Net logged work: {{minutes}} minutes · Above custom-period threshold: {{overtime}} minutes',
