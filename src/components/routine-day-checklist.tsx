@@ -24,7 +24,7 @@ export function RoutineDayChecklist({
 }) {
   const { t } = useTranslation();
   const c = usePalette();
-  const { schedule, loading: scheduleLoading } = useAppState();
+  const { schedule, loading: scheduleLoading, refreshReminders } = useAppState();
   const [loaded, setLoaded] = useState<{ date: string; data: RoutineSnapshot } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
@@ -58,6 +58,7 @@ export function RoutineDayChecklist({
     setBusy(id);
     try {
       await setRoutineCompletion(id, date, checked, schedule);
+      refreshReminders();
       await refresh();
     } catch (e) {
       Alert.alert(t('routineError'), e instanceof Error ? e.message : '');

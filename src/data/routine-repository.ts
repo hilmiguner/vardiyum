@@ -15,6 +15,8 @@ interface RuleRow {
   enabled: number;
   archived_at: string | null;
   revision: number;
+  reminder_clock: string | null;
+  reminder_timezone_id: string | null;
 }
 interface CompletionRow {
   routine_id: string;
@@ -48,6 +50,8 @@ function fromRow(row: RuleRow): RoutineRule {
     enabled: row.enabled === 1,
     archivedAt: row.archived_at,
     revision: row.revision,
+    reminderClock: row.reminder_clock,
+    reminderTimeZone: row.reminder_timezone_id,
   });
 }
 
@@ -109,11 +113,15 @@ export async function createRoutine(input: RoutineRule): Promise<void> {
   if (rule.archivedAt !== null || rule.revision !== 1) throw new Error('INVALID_NEW_ROUTINE');
   const db = await getDatabase();
   await db.runAsync(
-    'INSERT INTO routine_rules(id,title,recurrence_json,enabled,revision) VALUES (?,?,?,?,1)',
+    `INSERT INTO routine_rules
+       (id,title,recurrence_json,enabled,revision,reminder_clock,reminder_timezone_id)
+       VALUES (?,?,?,?,1,?,?)`,
     rule.id,
     rule.title,
     JSON.stringify(rule.recurrence),
     rule.enabled ? 1 : 0,
+    rule.reminderClock ?? null,
+    rule.reminderTimeZone ?? null,
   );
 }
 
@@ -124,11 +132,13 @@ export async function updateRoutine(input: RoutineRule): Promise<void> {
   // Optimistic revision guard prevents stale editor screens overwriting edits.
   const result = await db.runAsync(
     `UPDATE routine_rules SET title = ?, recurrence_json = ?, enabled = ?,
-       revision = revision + 1
+       reminder_clock = ?, reminder_timezone_id = ?, revision = revision + 1
        WHERE id = ? AND revision = ? AND archived_at IS NULL`,
     rule.title,
     JSON.stringify(rule.recurrence),
     rule.enabled ? 1 : 0,
+    rule.reminderClock ?? null,
+    rule.reminderTimeZone ?? null,
     rule.id,
     rule.revision,
   );

@@ -2,7 +2,7 @@
  * Versioned SQLite schema. Static SQL only: never interpolate user-controlled data.
  * Schema versions are tracked by PRAGMA user_version.
  */
-export const SCHEMA_VERSION = 4;
+export const SCHEMA_VERSION = 5;
 
 export const INITIAL_SCHEMA = `
 CREATE TABLE IF NOT EXISTS shift_templates (
@@ -154,4 +154,22 @@ SELECT 'legacy:' || c.routine_id || ':' || c.local_date,
 FROM task_completions c
 JOIN routine_rules r ON r.id = c.routine_id;
 PRAGMA user_version = 4;
+`;
+
+/**
+ * V5 stores optional reminder settings on the existing routine rule.
+ * No permission is requested by migration. Consent is an app_settings row
+ * written only after an explicit user action.
+ */
+export const MIGRATION_5_SQL = `
+ALTER TABLE routine_rules ADD COLUMN reminder_clock TEXT
+  CHECK(reminder_clock IS NULL OR (
+    length(reminder_clock) = 5 AND substr(reminder_clock, 3, 1) = ':'
+    AND substr(reminder_clock, 1, 2) BETWEEN '00' AND '23'
+    AND substr(reminder_clock, 4, 2) BETWEEN '00' AND '59'
+  ));
+ALTER TABLE routine_rules ADD COLUMN reminder_timezone_id TEXT;
+CREATE INDEX IF NOT EXISTS idx_routine_reminder_clock
+  ON routine_rules(reminder_clock, archived_at, enabled);
+PRAGMA user_version = 5;
 `;
