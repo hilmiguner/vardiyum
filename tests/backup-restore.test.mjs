@@ -44,7 +44,7 @@ function snapshot(db) {
   return value;
 }
 function addSourceRecords(db) {
-  db.exec(\`
+  db.exec(`
     INSERT INTO shift_templates(id,name,color,starts_at_local,ends_at_local,end_day_offset,is_rest_day,break_minutes)
     VALUES('weekend','Hafta sonu','#55AA77','09:00','17:00',0,0,15);
     INSERT INTO shift_patterns(id,anchor_date,timezone_id)
@@ -98,7 +98,7 @@ function addSourceRecords(db) {
            'Kayıt düzeltmesi','2026-11-15T13:00:00.000Z');
     INSERT INTO app_settings(key,value)
     VALUES('routine_reminders_opted_in','1');
-  \`);
+  `);
 }
 function nodeStore(db, options={}) {
   let insertIndex=0;
