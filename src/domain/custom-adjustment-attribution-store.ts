@@ -240,7 +240,6 @@ export async function loadCustomAdjustmentReportFromStore(
   };
 }
 
-
 /**
  * Existing work-only and fixed BASE-only estimates may resume when every
  * overlapping calendar adjustment has a verified explicit attribution.
@@ -252,10 +251,10 @@ export async function adjustmentAttributionGate(
   periodKey: string,
   adjustmentCount: number,
 ): Promise<number> {
-  if (!Number.isSafeInteger(adjustmentCount) || adjustmentCount < 0)
-    return -1;
+  if (!Number.isSafeInteger(adjustmentCount) || adjustmentCount < 0) return -1;
   if (adjustmentCount === 0) return 0;
   const report = await loadCustomAdjustmentReportFromStore(store, periodKey);
   return report.status === 'verified' && report.candidates.length === adjustmentCount
-    ? 0 : adjustmentCount;
+    ? 0
+    : adjustmentCount;
 }
