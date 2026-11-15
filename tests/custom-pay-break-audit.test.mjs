@@ -293,7 +293,7 @@ test('work IDs containing underscore do not wildcard-match another audit stream'
     const work = actualWork(db);
     const prefix = customBreakPrefix(WORK_ID, 26);
     db.prepare('INSERT INTO app_settings(key,value) VALUES (?,?)').run(
-      prefix.replace('_', 'x') + 'event:001',
+      customBreakPrefix('workxnight_1', 26) + 'event:001',
       '{}',
     );
     assert.equal((await readCustomPayBreakHistory(store(db), work, 26)).length, 1);
