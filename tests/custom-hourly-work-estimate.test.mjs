@@ -426,7 +426,7 @@ test('planned, invalid-zone/source, stale break provenance, and fake audit revis
     'blocked',
   );
   assert.equal(
-    estimateCustomHourlyWork(policy(), [{ work: { ...a, timeZone: 'America/New_York' } }], 0)
+    estimateCustomHourlyWork(policy(), [{ work: { ...a, timeZone: 'Pacific/Honolulu' } }], 0)
       .status,
     'blocked',
   );
