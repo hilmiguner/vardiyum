@@ -117,7 +117,7 @@ export function validateEarningsProfile(profile: EarningsProfile): EarningsProfi
     throw new Error('PROFILE_MUST_START_FIRST_OF_MONTH');
   if (profile.model !== 'hourly' && profile.model !== 'monthly_fixed')
     throw new Error('INVALID_EARNINGS_MODEL');
-  if (!/^[A-Z]{3}$/.test(profile.currency)) throw new Error('INVALID_CURRENCY');
+  if (!/^(TRY|USD|EUR|GBP)$/.test(profile.currency)) throw new Error('INVALID_CURRENCY');
   money(profile.baseMinorUnits, false);
   money(profile.overtimeHourlyMinorUnits, false);
   if (profile.baseMinorUnits <= 0) throw new Error('INVALID_BASE_RATE');
@@ -145,7 +145,7 @@ export function validateAdjustment(row: EarningsAdjustment): EarningsAdjustment 
     throw new Error('BONUS_MUST_BE_POSITIVE');
   if (row.kind === 'deduction' && row.amountMinorUnits >= 0)
     throw new Error('DEDUCTION_MUST_BE_NEGATIVE');
-  if (!/^[A-Z]{3}$/.test(row.currency)) throw new Error('INVALID_CURRENCY');
+  if (!/^(TRY|USD|EUR|GBP)$/.test(row.currency)) throw new Error('INVALID_CURRENCY');
   const note = row.note.trim();
   if (!note || note.length > 160) throw new Error('INVALID_ADJUSTMENT_NOTE');
   if (row.source !== 'user_entered') throw new Error('UNVERIFIED_ADJUSTMENT_SOURCE');
@@ -243,9 +243,11 @@ export function estimateEarnings(
   sessions.sort(
     (a, b) => a.startInstantUtc.localeCompare(b.startInstantUtc) || a.id.localeCompare(b.id),
   );
+  let latestEnd = sessions[0]?.endInstantUtc ?? '';
   for (let i = 1; i < sessions.length; i++) {
-    if (sessions[i].startInstantUtc < sessions[i - 1].endInstantUtc)
+    if (sessions[i].startInstantUtc < latestEnd)
       reasons.push('OVERLAPPING_WORK_SESSIONS:' + sessions[i].id);
+    if (sessions[i].endInstantUtc > latestEnd) latestEnd = sessions[i].endInstantUtc;
   }
   const adjustments: EarningsAdjustment[] = [];
   for (const row of adjustmentRows) {
