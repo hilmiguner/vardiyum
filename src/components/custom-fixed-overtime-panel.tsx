@@ -190,9 +190,9 @@ export function CustomFixedOvertimePanel({
               <Text style={{ color: palette.danger, fontWeight: '700' }}>
                 {t('earnFixedOtBlocked')}
               </Text>
-              {view.estimate.reasons.map((r) => (
-                <Muted key={r}>{r}</Muted>
-              ))}
+              {view.estimate.status === 'blocked'
+                ? view.estimate.reasons.map((r) => <Muted key={r}>{r}</Muted>)
+                : null}
             </>
           )}
           <Muted>{t('earnFixedOtSelection')}</Muted>
