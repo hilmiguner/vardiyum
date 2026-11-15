@@ -1,0 +1,114 @@
+# Vardiyum — Teknik Mimari (Taslak)
+
+**Tarih:** 2026-11-15  
+**Durum:** Uygulanmamış mimari tasarım; sürüm uyumlulukları proje kurulurken doğrulanacak.
+
+## Mimari ilkeler
+
+1. **Offline-first:** vardiya, rutin, görev tamamlamaları ve kazanç çevrimdışı çalışır.
+2. **Tek mobil kod tabanı:** React Native + Expo + TypeScript ile iOS/Android.
+3. **Saf domain motorları:** hesaplama kodu UI, ağ ve veri deposundan bağımsızdır; deterministik test edilebilir.
+4. **Yerel kaynak veri:** ilk sürüm SQLite kayıtları kaynak kabul edilir; gelecekteki Supabase isteğe bağlıdır.
+5. **Doğrulanabilirlik:** Plan ile gerçekleşen çalışma; dönem tahmini ile gerçek bordro birbirinden ayrılır.
+6. **Güvenlik ve gizlilik:** minimum veri toplama, dışa aktarmada açık kullanıcı eylemi, gizli bilgi asla git içine konmaz.
+
+## Planlanan araçlar
+
+| Katman | Aday | Not |
+| --- | --- | --- |
+| Çerçeve | React Native + Expo + TypeScript | SDK ve mağaza hedefleri uygulama anında teyit edilecek |
+| Navigasyon | Expo Router | Dosya bazlı yönlendirme |
+| Yerel veri | expo-sqlite | Şema migrasyonları ve yedekleme şart |
+| UI state | Zustand | Kısa ömürlü ekran durumu |
+| Veri sözleşmeleri | Zod | Depolanan ve alınan verilerin doğrulanması |
+| Bildirim | expo-notifications | İşletim sistemi sınırlamaları altında |
+| Çoklu dil | expo-localization + i18next | tr/en, saat ve para yerelleştirme |
+| Test | Vitest ve mobil E2E (Maestro aday) | Native çalışma uyumluluğu doğrulanacak |
+| CI | GitHub Actions | Lint, typecheck, unit test, build kontrolü |
+| Derleme/yayın | Expo EAS (aday) | Geliştirici hesapları ayrıca gerekli |
+| Sonraki sürüm | Supabase (aday) | Opsiyonel kullanıcı hesabı + senkronizasyon |
+
+İlk MVP için ayrı API sunucusu ve sürekli çalışan backend **öngörülmüyor**.
+
+## Önerilen modüler yapı
+
+- src/app: ekranlar ve Expo Router
+- src/components: tekrar kullanılan UI parçaları
+- src/features/{onboarding,calendar,shifts,routines,earnings,settings}: özellik bazlı UI ve use-case
+- src/domain/{shift-engine,routine-engine,earnings-engine}: saf iş kuralları
+- src/data/{sqlite,repositories,migrations}: yerel kalıcılık
+- src/services/{notifications,backup}: platform servisleri
+- src/i18n, src/theme
+- tests: unit, integration ve E2E senaryoları
+- docs: ürün, kararlar, mimari, devir ve durum
+
+## Mantıksal veri modeli
+
+| Varlık / tablo | Ana alanlar / sorumluluk |
+| --- | --- |
+| shift_templates | id, name, color, starts_at_local, ends_at_local, end_day_offset, is_rest_day |
+| shift_patterns | id, name, anchor_local_date, timezone_id, active/revision metadata |
+| pattern_days | pattern_id, offset_index, shift_template_id |
+| day_overrides | local_date, override_kind, shift_template_id?, note; tek günlük istisna |
+| routine_rules | id, name, enabled, recurrence_selector, optional_shift_id, reminder |
+| task_completions | id, rule_id, local_date, completed_at |
+| work_entries | id, date, actual_start/end, worked_minutes, kind (regular/overtime/etc.) |
+| compensation_profiles | id, effective_from, payment_model, currency, base/rate, rule config |
+| pay_adjustments | id, applicable_period, kind, amount_minor_units, note |
+| notification_preferences | reminder_offset, enabled, timezone-aware rules |
+| app_settings | locale, time format, currency, theme, backup preferences |
+
+Bu tablo isimleri öneridir; gerçek SQLite migrasyonu ile kesinleşecek. Foreign key, index, unique constraint, veri yaşam döngüsü ve veri taşıma testleri geliştirme sırasında tanımlanacak.
+
+## Vardiya hesaplama sözleşmesi
+
+- Vardiya şablonu yerel başlangıç saati ve gerekirse bir sonraki takvim günündeki bitişiyle saklanır.
+- Bir takvim günü için: index = positive_mod(day_difference(local_date, anchor_local_date), pattern_length). İlgili pattern_days kaydı seçilir.
+- Aynı gün için day_overrides varsa **istisna, düzenli döngünün önüne geçer**.
+- Haftanın günü, döngü indeksi ve vardiya türü birbirinden ayrı kavramlardır.
+- Gece yarısını aşan vardiyanın başlangıç günü, vardiyanın takvimde ilişkilendirildiği gündür. Gerçek zaman aralığı saat dilimiyle hesaplanır.
+- Tarih farkı **UTC milisaniyesini 86_400_000'e bölerek** yapılmaz; takvim günü hesabı kullanılır. Yaz/kış saati ve zaman dilimi değişiklikleri test edilir.
+- Uzun süreli geleceği db satırlarıyla doldurmak yerine görünür zaman aralıkları talep üzerine hesaplanır.
+- İstisna girişi vardiya döngüsünün sonraki indekslerini kaydırmaz.
+- Zaman dilimi seyahati, farklı ülkeler ve DST geçişleri için ürün davranışı implementasyondan önce açıkça kararlaştırılır.
+
+## Rutin kural motoru
+
+- Kural filtreleri: vardiya türü, haftanın günü, döngü günü veya basit günlük tekrar; birleştirme (AND/OR) davranışı UI'de açık olmalı.
+- Aynı kural aynı yerel gün için tek görev örneği olarak görünür.
+- Tamamlanma kaydı kural değişse bile geçmişte korunur.
+- Kuralların düzenlenmesi ve silinmesi geçmiş ilerleme açısından açık politikaya tabi olmalı.
+
+## Kazanç hesaplama motoru
+
+- **Tahmin**, resmi bordro değil; hesaplanan satırların kaynağı ve yöntemi kullanıcıya gösterilir.
+- Sabit aylık veya saatlik ücret; fazla mesai katsayıları, prim ve manuel kesinti desteklenecek.
+- Paralar küçük tam sayı birimleri (örn. kuruş) veya hassas ondalık aritmetik ile işlenecek; ikili float toplamlarından kaçınılacak.
+- Ücret kuralı ve oranı için geçerlilik tarihi / snapshot kullanılacak.
+- Planlanan vardiya ile gerçekleşen çalışma farklıdır; yalnızca uygun kaynağa göre hesap yapılır.
+- Ülkeye özgü vergi, SGK, resmi tatil, ücret katsayıları **varsayılan doğruymuş gibi sabitlenmeyecek**. İlk sürümde kullanıcı girdisiyle açık tahmin.
+- Dönem sınırı, para birimi, ara yuvarlama, manuel prim/kesinti ve sıfır çalışma ayrı test edilir.
+
+## Yerel bildirimlerin yönetimi
+
+- Kullanıcı izni alındıktan sonra kısa ileri dönem için planla; düzen değiştiğinde etkilenen bildirimleri iptal/yeniden oluştur.
+- Her alarm için kayıt kimliği ve idempotent yenileme stratejisi.
+- Uygulama açılışı, zaman dilimi/ayar değişikliği ve cihaz yeniden başlama senaryoları kontrol edilir.
+- OS kısıtları nedeniyle **tam zamanında çalışma garantisi** verilmez; reddedilen izin için uygulama içi görünür hatırlatmalar kalır.
+
+## Yedekleme, migrasyon, gizlilik
+
+- İlk sürümde kullanıcı kontrollü dışa aktarma / içe alma; format sürümlü olmalı.
+- İçerik doğrulama, bozuk dosyada güvenli hata, çakışma stratejisi ve geri alma senaryoları test edilmeli.
+- Sürüm yükseltmelerinde SQLite migrasyon testleri ve veri bütünlüğü kontrolleri.
+- Gelecekte hesap ve senkronizasyon eklense bile temel deneyim yerel çalışmaya devam eder.
+- Analitik seçilirse ücret/çalışma ayrıntıları kimliksizleştirilmeden otomatik gönderilmez.
+
+## Başlamadan önce netleştirilecek teknik açık noktalar
+
+- İstisna vs izin vs gerçekleşen çalışma düzenleme UX'i
+- Zaman dilimi hareketliliğinde başlangıç referansı
+- Rutin kurallarındaki eşleştirme mantığı ve tamamlanma geçmişi
+- Local-only yedekleme şifrelemesi ve paylaşım/ithalat akışı
+- Maaş dönem başlangıcı ve açık katsayı editörü
+- Expo SDK, native test ve EAS sürüm uyumluluğu
