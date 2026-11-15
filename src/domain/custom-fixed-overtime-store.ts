@@ -72,12 +72,13 @@ export async function readFixedOvertimeHistory(
   periodKey: string,
   startDay: number,
 ): Promise<FixedOvertimeEvent[]> {
-  const prefix=fixedOvertimePrefix(periodKey,startDay);
-  const rows=await store.getAllAsync<{key:string;value:string}>(
+  const prefix = fixedOvertimePrefix(periodKey, startDay);
+  const rows = await store.getAllAsync<{ key: string; value: string }>(
     'SELECT key,value FROM app_settings WHERE substr(key,1,?)=? ORDER BY key',
-    prefix.length,prefix,
+    prefix.length,
+    prefix,
   );
-  return decodeFixedOvertimeHistory(periodKey,startDay,rows);
+  return decodeFixedOvertimeHistory(periodKey, startDay, rows);
 }
 
 /** Caller MUST provide an exclusive transaction: insert-once event and CAS head. */
@@ -85,65 +86,78 @@ export async function appendFixedOvertimeRevision(
   store: CustomBreakSqlStore,
   input: FixedOvertimeSave,
 ): Promise<FixedOvertimeEvent> {
-  fixedOvertimePrefix(input.periodKey,input.startDay);
-  if(!Number.isSafeInteger(input.expectedRevision) ||
-     input.expectedRevision<0 || input.expectedRevision>=64)
+  fixedOvertimePrefix(input.periodKey, input.startDay);
+  if (
+    !Number.isSafeInteger(input.expectedRevision) ||
+    input.expectedRevision < 0 ||
+    input.expectedRevision >= 64
+  )
     throw new Error('INVALID_FIXED_OVERTIME_EXPECTED_REVISION');
-  const plan=await loadCustomPayProfilePreviewFromStore(
-    store,input.periodKey,input.scheduleTimeZone,
+  const plan = await loadCustomPayProfilePreviewFromStore(
+    store,
+    input.periodKey,
+    input.scheduleTimeZone,
   );
-  if(plan.startDay!==input.startDay)
-    throw new Error('FIXED_OVERTIME_SETTING_CHANGED');
+  if (plan.startDay !== input.startDay) throw new Error('FIXED_OVERTIME_SETTING_CHANGED');
   validateFixedOvertimeProfile(plan);
-  const baseReport=await loadCustomFixedBaseReportFromStore(
-    store,input.periodKey,input.scheduleTimeZone,
+  const baseReport = await loadCustomFixedBaseReportFromStore(
+    store,
+    input.periodKey,
+    input.scheduleTimeZone,
   );
-  if(baseReport.status!=='estimated')
-    throw new Error('FIXED_OVERTIME_BASE_CHOICE_REQUIRED');
-  const baseHistory=await readCustomFixedBaseHistory(
-    store,input.periodKey,input.startDay,
-  );
-  const base=baseHistory[baseHistory.length-1];
-  if(!base || base.revision!==baseReport.latestRevision ||
-     base.chosenBaseMinorUnits!==baseReport.baseOnlyMinorUnits)
+  if (baseReport.status !== 'estimated') throw new Error('FIXED_OVERTIME_BASE_CHOICE_REQUIRED');
+  const baseHistory = await readCustomFixedBaseHistory(store, input.periodKey, input.startDay);
+  const base = baseHistory[baseHistory.length - 1];
+  if (
+    !base ||
+    base.revision !== baseReport.latestRevision ||
+    base.chosenBaseMinorUnits !== baseReport.baseOnlyMinorUnits
+  )
     throw new Error('FIXED_OVERTIME_BASE_READBACK_MISMATCH');
 
-  const history=await readFixedOvertimeHistory(
-    store,input.periodKey,input.startDay,
-  );
-  if(history.length!==input.expectedRevision)
+  const history = await readFixedOvertimeHistory(store, input.periodKey, input.startDay);
+  if (history.length !== input.expectedRevision)
     throw new Error('STALE_FIXED_OVERTIME_REVISION');
-  const event=createFixedOvertimeEvent(
-    plan,base,input.decision,history.length+1,input.reason,input.recordedAt,
+  const event = createFixedOvertimeEvent(
+    plan,
+    base,
+    input.decision,
+    history.length + 1,
+    input.reason,
+    input.recordedAt,
   );
-  if(history.length) {
-    const previous=history[history.length-1];
-    if(previous.decision===event.decision &&
-       JSON.stringify(previous.fixedBase)===JSON.stringify(event.fixedBase))
+  if (history.length) {
+    const previous = history[history.length - 1];
+    if (
+      previous.decision === event.decision &&
+      JSON.stringify(previous.fixedBase) === JSON.stringify(event.fixedBase)
+    )
       throw new Error('UNCHANGED_FIXED_OVERTIME_DECISION');
-    if(event.recordedAt<previous.recordedAt)
+    if (event.recordedAt < previous.recordedAt)
       throw new Error('INVALID_FIXED_OVERTIME_REVISION');
   }
   await store.runAsync(
     'INSERT INTO app_settings(key,value) VALUES (?,?)',
-    fixedOvertimeEventKey(input.periodKey,input.startDay,event.revision),
+    fixedOvertimeEventKey(input.periodKey, input.startDay, event.revision),
     JSON.stringify(event),
   );
-  const head=fixedOvertimeHeadKey(input.periodKey,input.startDay);
-  if(history.length===0) {
-    await store.runAsync('INSERT INTO app_settings(key,value) VALUES (?,?)',head,'1');
+  const head = fixedOvertimeHeadKey(input.periodKey, input.startDay);
+  if (history.length === 0) {
+    await store.runAsync('INSERT INTO app_settings(key,value) VALUES (?,?)', head, '1');
   } else {
-    const updated=await store.runAsync(
+    const updated = await store.runAsync(
       'UPDATE app_settings SET value=? WHERE key=? AND value=?',
-      String(event.revision),head,String(history.length),
+      String(event.revision),
+      head,
+      String(history.length),
     );
-    if(updated.changes!==1) throw new Error('STALE_FIXED_OVERTIME_REVISION');
+    if (updated.changes !== 1) throw new Error('STALE_FIXED_OVERTIME_REVISION');
   }
-  const verify=await readFixedOvertimeHistory(
-    store,input.periodKey,input.startDay,
-  );
-  if(verify.length!==event.revision ||
-     JSON.stringify(verify[verify.length-1])!==JSON.stringify(event))
+  const verify = await readFixedOvertimeHistory(store, input.periodKey, input.startDay);
+  if (
+    verify.length !== event.revision ||
+    JSON.stringify(verify[verify.length - 1]) !== JSON.stringify(event)
+  )
     throw new Error('FIXED_OVERTIME_READBACK_MISMATCH');
   return event;
 }
@@ -154,101 +168,125 @@ export async function appendFixedOvertimeRevision(
  * zone and UTC interval (not the phone/schedule zone) control the real split.
  */
 export async function loadFixedOvertimeViewFromStore(
-  store: Pick<CustomBreakSqlStore,'getFirstAsync' | 'getAllAsync'>,
+  store: Pick<CustomBreakSqlStore, 'getFirstAsync' | 'getAllAsync'>,
   periodKey: string,
   scheduleTimeZone: string,
 ): Promise<FixedOvertimeView> {
-  const plan=await loadCustomPayProfilePreviewFromStore(
-    store,periodKey,scheduleTimeZone,
+  const plan = await loadCustomPayProfilePreviewFromStore(store, periodKey, scheduleTimeZone);
+  if (
+    plan.startDay === 1 ||
+    plan.status === 'single_hourly_profile' ||
+    (plan.status === 'profile_transition_review_required' &&
+      plan.segments.every((segment) => segment.profile.model === 'hourly'))
+  )
+    return { status: 'not_applicable', periodKey, startDay: plan.startDay, reasons: [] };
+  const baseReport = await loadCustomFixedBaseReportFromStore(
+    store,
+    periodKey,
+    scheduleTimeZone,
   );
-  if(plan.startDay===1 || plan.status==='single_hourly_profile' ||
-     (plan.status==='profile_transition_review_required' &&
-       plan.segments.every(segment=>segment.profile.model==='hourly')))
-    return {status:'not_applicable',periodKey,startDay:plan.startDay,reasons:[]};
-  const baseReport=await loadCustomFixedBaseReportFromStore(
-    store,periodKey,scheduleTimeZone,
-  );
-  if(baseReport.status==='blocked')
+  if (baseReport.status === 'blocked')
     return {
-      status:'blocked',periodKey,startDay:plan.startDay,
-      reasons:baseReport.reasons,
+      status: 'blocked',
+      periodKey,
+      startDay: plan.startDay,
+      reasons: baseReport.reasons,
     };
-  if(baseReport.status!=='estimated')
+  if (baseReport.status !== 'estimated')
     return {
-      status:'requires_base',periodKey,startDay:plan.startDay,
-      reasons:['CUSTOM_FIXED_BASE_CHOICE_REQUIRED'],
+      status: 'requires_base',
+      periodKey,
+      startDay: plan.startDay,
+      reasons: ['CUSTOM_FIXED_BASE_CHOICE_REQUIRED'],
     };
 
-  const profile=eligibleFixedBaseProfile(plan);
-  try { validateFixedOvertimeProfile(plan); }
-  catch(error){
+  const profile = eligibleFixedBaseProfile(plan);
+  try {
+    validateFixedOvertimeProfile(plan);
+  } catch (error) {
     return {
-      status:'needs_configuration',periodKey,startDay:plan.startDay,
-      reasons:[error instanceof Error?error.message:'CUSTOM_FIXED_OVERTIME_NOT_CONFIGURED'],
+      status: 'needs_configuration',
+      periodKey,
+      startDay: plan.startDay,
+      reasons: [
+        error instanceof Error ? error.message : 'CUSTOM_FIXED_OVERTIME_NOT_CONFIGURED',
+      ],
     };
   }
-  const baseHistory=await readCustomFixedBaseHistory(store,periodKey,plan.startDay);
-  const base=baseHistory[baseHistory.length-1];
-  if(!base || base.revision!==baseReport.latestRevision ||
-     base.chosenBaseMinorUnits!==baseReport.baseOnlyMinorUnits)
+  const baseHistory = await readCustomFixedBaseHistory(store, periodKey, plan.startDay);
+  const base = baseHistory[baseHistory.length - 1];
+  if (
+    !base ||
+    base.revision !== baseReport.latestRevision ||
+    base.chosenBaseMinorUnits !== baseReport.baseOnlyMinorUnits
+  )
     return {
-      status:'blocked',periodKey,startDay:plan.startDay,
-      reasons:['FIXED_OVERTIME_BASE_READBACK_MISMATCH'],
+      status: 'blocked',
+      periodKey,
+      startDay: plan.startDay,
+      reasons: ['FIXED_OVERTIME_BASE_READBACK_MISMATCH'],
     };
-  const history=await readFixedOvertimeHistory(store,periodKey,plan.startDay);
-  const current=history[history.length-1]??null;
-  const stale=current!==null && JSON.stringify(current.fixedBase)!==JSON.stringify(base);
-  const bounds=customPayPeriodBounds(periodKey,plan.startDay);
-  const adjustments=await store.getFirstAsync<{n:number}>(
+  const history = await readFixedOvertimeHistory(store, periodKey, plan.startDay);
+  const current = history[history.length - 1] ?? null;
+  const stale = current !== null && JSON.stringify(current.fixedBase) !== JSON.stringify(base);
+  const bounds = customPayPeriodBounds(periodKey, plan.startDay);
+  const adjustments = await store.getFirstAsync<{ n: number }>(
     'SELECT COUNT(*) AS n FROM earnings_adjustments WHERE period_key IN (?,?)',
-    bounds.startDate.slice(0,7),bounds.endDateInclusive.slice(0,7),
+    bounds.startDate.slice(0, 7),
+    bounds.endDateInclusive.slice(0, 7),
   );
-  if(!adjustments || !Number.isSafeInteger(adjustments.n) || adjustments.n!==0)
+  if (!adjustments || !Number.isSafeInteger(adjustments.n) || adjustments.n !== 0)
     return {
-      status:'blocked',periodKey,startDay:plan.startDay,
-      reasons:['CUSTOM_FIXED_CALENDAR_ADJUSTMENTS_REQUIRE_ATTRIBUTION'],
+      status: 'blocked',
+      periodKey,
+      startDay: plan.startDay,
+      reasons: ['CUSTOM_FIXED_CALENDAR_ADJUSTMENTS_REQUIRE_ATTRIBUTION'],
     };
 
-  const sources: FixedOvertimeWorkSource[]=[];
-  if(current?.decision==='include_logged_overtime' && !stale) {
-    const rows=await store.getAllAsync<CustomBreakWorkRow>(
+  const sources: FixedOvertimeWorkSource[] = [];
+  if (current?.decision === 'include_logged_overtime' && !stale) {
+    const rows = await store.getAllAsync<CustomBreakWorkRow>(
       CUSTOM_BREAK_WORK_SQL +
         ' WHERE local_date <= ? AND end_date >= ? ORDER BY start_instant_utc,id',
-      bounds.endDateInclusive,bounds.startDate,
+      bounds.endDateInclusive,
+      bounds.startDate,
     );
-    for(const row of rows) {
-      const work=validateEarningsWork(workFromCustomBreakRow(row));
-      const first=calendarDateInZone(work.timeZone,new Date(work.startInstantUtc));
-      const last=calendarDateInZone(
-        work.timeZone,new Date(Date.parse(work.endInstantUtc)-1),
+    for (const row of rows) {
+      const work = validateEarningsWork(workFromCustomBreakRow(row));
+      const first = calendarDateInZone(work.timeZone, new Date(work.startInstantUtc));
+      const last = calendarDateInZone(
+        work.timeZone,
+        new Date(Date.parse(work.endInstantUtc) - 1),
       );
-      if(payPeriodForDate(first,plan.startDay)!==payPeriodForDate(last,plan.startDay) &&
-         work.breakMinutes>0) {
-        const breakHistory=await readCustomPayBreakHistory(
-          store,work,plan.startDay,
-        );
-        sources.push({work,periodAudit:breakHistory[breakHistory.length-1]});
+      if (
+        payPeriodForDate(first, plan.startDay) !== payPeriodForDate(last, plan.startDay) &&
+        work.breakMinutes > 0
+      ) {
+        const breakHistory = await readCustomPayBreakHistory(store, work, plan.startDay);
+        sources.push({ work, periodAudit: breakHistory[breakHistory.length - 1] });
       } else {
-        sources.push({work});
+        sources.push({ work });
       }
     }
   }
-  if((await readPayPeriodStartDay(store))!==plan.startDay)
+  if ((await readPayPeriodStartDay(store)) !== plan.startDay)
     throw new Error('FIXED_OVERTIME_SETTING_CHANGED_DURING_REPORT');
-  const estimate=estimateCustomFixedOvertime(
-    plan,base,current,sources,adjustments.n,
-  );
+  const estimate = estimateCustomFixedOvertime(plan, base, current, sources, adjustments.n);
   return {
-    status:'review',periodKey,startDay:plan.startDay,
-    currency:profile.currency,profileId:profile.id,
-    profileRevision:profile.revision,baseRevision:base.revision,
-    baseMinorUnits:base.chosenBaseMinorUnits,
-    thresholdMinutes:profile.overtimeAfterMinutes!,
-    overtimeHourlyMinorUnits:profile.overtimeHourlyMinorUnits,
-    multiplierNumerator:profile.overtimeMultiplierNumerator,
-    multiplierDenominator:profile.overtimeMultiplierDenominator,
-    latestRevision:history.length,
-    latestDecision:stale?null:current?.decision??null,
+    status: 'review',
+    periodKey,
+    startDay: plan.startDay,
+    currency: profile.currency,
+    profileId: profile.id,
+    profileRevision: profile.revision,
+    baseRevision: base.revision,
+    baseMinorUnits: base.chosenBaseMinorUnits,
+    thresholdMinutes: profile.overtimeAfterMinutes!,
+    overtimeHourlyMinorUnits: profile.overtimeHourlyMinorUnits,
+    multiplierNumerator: profile.overtimeMultiplierNumerator,
+    multiplierDenominator: profile.overtimeMultiplierDenominator,
+    latestRevision: history.length,
+    latestDecision: stale ? null : (current?.decision ?? null),
     stale,
     estimate,
   };

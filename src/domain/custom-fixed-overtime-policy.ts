@@ -4,7 +4,10 @@ import {
   fixedBaseChoiceMatchesPlan,
   type CustomFixedBaseEvent,
 } from './custom-fixed-base-policy.ts';
-import { planCustomPayProfiles, type CustomPayProfilePlan } from './custom-pay-profile-policy.ts';
+import {
+  planCustomPayProfiles,
+  type CustomPayProfilePlan,
+} from './custom-pay-profile-policy.ts';
 
 export const FIXED_OVERTIME_PREFIX = 'earnings_custom_fixed_overtime_v1:';
 export const FIXED_OVERTIME_MAX_REVISIONS = 64;
@@ -35,10 +38,20 @@ export function fixedOvertimePrefix(periodKey: string, startDay: number): string
 export function fixedOvertimeHeadKey(periodKey: string, startDay: number): string {
   return fixedOvertimePrefix(periodKey, startDay) + 'head';
 }
-export function fixedOvertimeEventKey(periodKey: string, startDay: number, revision: number): string {
-  if (!Number.isSafeInteger(revision) || revision < 1 || revision > FIXED_OVERTIME_MAX_REVISIONS)
+export function fixedOvertimeEventKey(
+  periodKey: string,
+  startDay: number,
+  revision: number,
+): string {
+  if (
+    !Number.isSafeInteger(revision) ||
+    revision < 1 ||
+    revision > FIXED_OVERTIME_MAX_REVISIONS
+  )
     throw new Error('INVALID_FIXED_OVERTIME_REVISION');
-  return fixedOvertimePrefix(periodKey, startDay) + 'event:' + String(revision).padStart(3, '0');
+  return (
+    fixedOvertimePrefix(periodKey, startDay) + 'event:' + String(revision).padStart(3, '0')
+  );
 }
 
 export function validateFixedOvertimeProfile(plan: CustomPayProfilePlan): void {
@@ -51,12 +64,18 @@ function canonicalBase(base: CustomFixedBaseEvent): CustomFixedBaseEvent {
   if (!base || typeof base !== 'object' || Array.isArray(base))
     throw new Error('INVALID_OVERTIME_BASE_SOURCE');
   const historicalPlan = planCustomPayProfiles(
-    base.periodKey, base.startDay, base.scheduleTimeZone, [base.profile],
+    base.periodKey,
+    base.startDay,
+    base.scheduleTimeZone,
+    [base.profile],
   );
   const reconstructed = createCustomFixedBaseEvent(
-    historicalPlan, base.choice,
+    historicalPlan,
+    base.choice,
     base.choice === 'full_base' ? null : base.chosenBaseMinorUnits,
-    base.revision, base.reason, base.recordedAt,
+    base.revision,
+    base.reason,
+    base.recordedAt,
   );
   if (JSON.stringify(reconstructed) !== JSON.stringify(base))
     throw new Error('INVALID_OVERTIME_BASE_SOURCE');
@@ -106,50 +125,65 @@ export function createFixedOvertimeEvent(
 export function decodeFixedOvertimeHistory(
   periodKey: string,
   startDay: number,
-  rows: readonly {key: string; value: string}[],
+  rows: readonly { key: string; value: string }[],
 ): FixedOvertimeEvent[] {
   const prefix = fixedOvertimePrefix(periodKey, startDay);
   if (!Array.isArray(rows)) throw new Error('INVALID_FIXED_OVERTIME_HISTORY');
   if (rows.length === 0) return [];
   if (rows.length > FIXED_OVERTIME_MAX_REVISIONS + 1)
     throw new Error('FIXED_OVERTIME_REVISION_LIMIT');
-  const head = rows.filter(row => row.key === prefix + 'head');
-  const events = rows.filter(row => row.key !== prefix + 'head');
+  const head = rows.filter((row) => row.key === prefix + 'head');
+  const events = rows.filter((row) => row.key !== prefix + 'head');
   if (
-    head.length !== 1 || !/^[1-9][0-9]*$/.test(head[0].value) ||
-    Number(head[0].value) !== events.length || events.length === 0
-  ) throw new Error('INVALID_FIXED_OVERTIME_HEAD');
+    head.length !== 1 ||
+    !/^[1-9][0-9]*$/.test(head[0].value) ||
+    Number(head[0].value) !== events.length ||
+    events.length === 0
+  )
+    throw new Error('INVALID_FIXED_OVERTIME_HEAD');
   const history: FixedOvertimeEvent[] = [];
-  for (let index=0; index<events.length; index++) {
-    const revision=index+1;
-    const row=events[index];
-    if (row.key !== fixedOvertimeEventKey(periodKey,startDay,revision))
+  for (let index = 0; index < events.length; index++) {
+    const revision = index + 1;
+    const row = events[index];
+    if (row.key !== fixedOvertimeEventKey(periodKey, startDay, revision))
       throw new Error('FIXED_OVERTIME_EVENT_GAP');
     if (typeof row.value !== 'string' || row.value.length > 2500)
       throw new Error('INVALID_FIXED_OVERTIME_EVENT');
     let candidate: FixedOvertimeEvent;
-    try { candidate=JSON.parse(row.value) as FixedOvertimeEvent; }
-    catch { throw new Error('INVALID_FIXED_OVERTIME_EVENT'); }
+    try {
+      candidate = JSON.parse(row.value) as FixedOvertimeEvent;
+    } catch {
+      throw new Error('INVALID_FIXED_OVERTIME_EVENT');
+    }
     if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate))
       throw new Error('INVALID_FIXED_OVERTIME_EVENT');
     let canonical: FixedOvertimeEvent;
     try {
-      const base=candidate.fixedBase;
-      const historicalPlan=planCustomPayProfiles(
-        periodKey,startDay,base.scheduleTimeZone,[base.profile],
+      const base = candidate.fixedBase;
+      const historicalPlan = planCustomPayProfiles(periodKey, startDay, base.scheduleTimeZone, [
+        base.profile,
+      ]);
+      canonical = createFixedOvertimeEvent(
+        historicalPlan,
+        base,
+        candidate.decision,
+        revision,
+        candidate.reason,
+        candidate.recordedAt,
       );
-      canonical=createFixedOvertimeEvent(
-        historicalPlan,base,candidate.decision,revision,candidate.reason,candidate.recordedAt,
-      );
-    } catch { throw new Error('INVALID_FIXED_OVERTIME_EVENT'); }
+    } catch {
+      throw new Error('INVALID_FIXED_OVERTIME_EVENT');
+    }
     if (JSON.stringify(canonical) !== row.value)
       throw new Error('INVALID_FIXED_OVERTIME_EVENT');
     if (
       history.length &&
-      (canonical.recordedAt < history[history.length-1].recordedAt ||
-        (canonical.decision === history[history.length-1].decision &&
-         JSON.stringify(canonical.fixedBase) === JSON.stringify(history[history.length-1].fixedBase)))
-    ) throw new Error('INVALID_FIXED_OVERTIME_REDECISION');
+      (canonical.recordedAt < history[history.length - 1].recordedAt ||
+        (canonical.decision === history[history.length - 1].decision &&
+          JSON.stringify(canonical.fixedBase) ===
+            JSON.stringify(history[history.length - 1].fixedBase)))
+    )
+      throw new Error('INVALID_FIXED_OVERTIME_REDECISION');
     history.push(canonical);
   }
   return history;

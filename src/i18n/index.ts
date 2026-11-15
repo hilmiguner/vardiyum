@@ -45,8 +45,7 @@ const resources = {
       earnFixedOtInclude: 'Kayıtlı fazla mesaiyi ekle',
       earnFixedOtExclude: 'Bu dönemde ekleme',
       earnFixedOtReason: 'Bu onayın veya düzeltmenin nedeni (3–160 karakter)',
-      earnFixedOtReasonPlaceholder:
-        'Örneğin: kayıtlı mesai eşiği ve oranını kendim onayladım',
+      earnFixedOtReasonPlaceholder: 'Örneğin: kayıtlı mesai eşiği ve oranını kendim onayladım',
       earnFixedOtRevision: 'Fazla mesai onayı revizyonu: {{revision}}',
       earnFixedOtSave: 'Fazla mesai kararını sürümlü kaydet',
       earnFixedOtSaved: 'Fazla mesai kararı sürümlü kaydedildi; tahmin yeniden hesaplanacak.',
