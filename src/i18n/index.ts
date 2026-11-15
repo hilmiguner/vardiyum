@@ -16,7 +16,8 @@ const resources = {
       earnRateBreakTitle: 'Ücret değişimi sınırındaki mola beyanı',
       earnDualBreakLineAudit:
         'Maaş dönemi + ücret sınırı mola beyanı: revizyon {{revision}}',
-      earnRateBreakLineAudit: 'Ücret değişimi mola beyanı: revizyon {{revision}}',
+      earnRateBreakLineAudit:
+        'Ücret değişimi mola beyanı: revizyon {{revision}}',
       earnDualBreakTitle: 'İki sınırı aşan vardiyada mola dağılımı',
       earnDualBreakExplanation:
         'Önce özel maaş dönemi sınırına düşen mola dakikalarını yukarıdaki bölümde beyan et. Bu bölümde yalnız aynı vardiyanın ücret değişimi anını da aşan parçasındaki molanın eski/yeni ücret tarafına dağılımını ayrıca gir. Her beyan ilk mola kaydının belirli sürümüne bağlıdır.',
@@ -488,7 +489,8 @@ const resources = {
       earnRateBreakTitle: 'Break allocation at an hourly rate change',
       earnDualBreakLineAudit:
         'Pay-period + rate-boundary break statement revision {{revision}}',
-      earnRateBreakLineAudit: 'Rate-change break statement revision {{revision}}',
+      earnRateBreakLineAudit:
+        'Rate-change break statement revision {{revision}}',
       earnDualBreakTitle: 'Break allocation when one shift crosses two boundaries',
       earnDualBreakExplanation:
         'First record the break split across custom pay periods above. Here, separately assign the break within the rate-changing part of the same shift to the old and new hourly rates. Each statement is tied to the specific revision of the pay-period break declaration.',
