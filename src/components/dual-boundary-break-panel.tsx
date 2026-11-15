@@ -28,7 +28,9 @@ export function DualBoundaryBreakPanel({
 }) {
   const { t } = useTranslation();
   const palette = usePalette();
-  const [result, setResult] = useState<Awaited<ReturnType<typeof loadDualBoundaryBreakCandidates>> | null>(null);
+  const [result, setResult] = useState<Awaited<
+    ReturnType<typeof loadDualBoundaryBreakCandidates>
+  > | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [reasons, setReasons] = useState<Record<string, string>>({});
@@ -163,9 +165,7 @@ export function DualBoundaryBreakPanel({
                   })}
                 </Muted>
                 {candidate.stale ? (
-                  <Text style={{ color: palette.danger }}>
-                    {t('earnDualBreakStale')}
-                  </Text>
+                  <Text style={{ color: palette.danger }}>{t('earnDualBreakStale')}</Text>
                 ) : null}
                 <Muted>{t('earnDualBreakBefore')}</Muted>
                 <TextInput
@@ -209,9 +209,7 @@ export function DualBoundaryBreakPanel({
                     padding: 12,
                   }}
                 />
-                <Muted>
-                  {t('earnDualBreakRevision', { revision: candidate.revision })}
-                </Muted>
+                <Muted>{t('earnDualBreakRevision', { revision: candidate.revision })}</Muted>
                 <Action
                   label={t('earnDualBreakSave')}
                   disabled={busyId !== null}

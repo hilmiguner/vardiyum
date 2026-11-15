@@ -68,7 +68,8 @@ export async function readDualBoundaryHistory(
   const prefix = dualBreakPrefix(work.id, startDay, periodKey);
   const rows = await store.getAllAsync<{ key: string; value: string }>(
     'SELECT key,value FROM app_settings WHERE substr(key,1,?)=? ORDER BY key',
-    prefix.length, prefix,
+    prefix.length,
+    prefix,
   );
   return decodeDualBoundaryHistory(work, startDay, periodKey, effectiveDate, rows);
 }
@@ -85,7 +86,8 @@ function rateEffectiveDate(
     second.model !== 'hourly' ||
     first.currency !== second.currency ||
     first.overtimeAfterMinutes !== second.overtimeAfterMinutes
-  ) throw new Error('DUAL_BREAK_UNSUPPORTED_PROFILE_POLICY');
+  )
+    throw new Error('DUAL_BREAK_UNSUPPORTED_PROFILE_POLICY');
   return plan.segments[1].startDate;
 }
 
@@ -104,15 +106,19 @@ export async function appendDualBoundaryBreakRevision(
     !Number.isSafeInteger(input.expectedRevision) ||
     input.expectedRevision < 0 ||
     input.expectedRevision >= 64
-  ) throw new Error('INVALID_DUAL_BREAK_EXPECTED_REVISION');
+  )
+    throw new Error('INVALID_DUAL_BREAK_EXPECTED_REVISION');
   const plan = await loadCustomPayProfilePreviewFromStore(
-    store, input.periodKey, input.scheduleTimeZone,
+    store,
+    input.periodKey,
+    input.scheduleTimeZone,
   );
   if (plan.startDay !== input.startDay) throw new Error('DUAL_BREAK_SETTING_CHANGED');
   if (rateEffectiveDate(plan) !== input.effectiveDate)
     throw new Error('DUAL_BREAK_RATE_EFFECTIVE_DATE_CHANGED');
   const row = await store.getFirstAsync<CustomBreakWorkRow>(
-    CUSTOM_BREAK_WORK_SQL + ' WHERE id=?', input.workId,
+    CUSTOM_BREAK_WORK_SQL + ' WHERE id=?',
+    input.workId,
   );
   if (!row) throw new Error('DUAL_BREAK_WORK_NOT_FOUND');
   const work = validateEarningsWork(workFromCustomBreakRow(row));
@@ -122,22 +128,32 @@ export async function appendDualBoundaryBreakRevision(
   dualBoundarySource(work, input.startDay, input.periodKey, input.effectiveDate, periodAudit);
 
   const history = await readDualBoundaryHistory(
-    store, work, input.startDay, input.periodKey, input.effectiveDate,
+    store,
+    work,
+    input.startDay,
+    input.periodKey,
+    input.effectiveDate,
   );
-  if (history.length !== input.expectedRevision)
-    throw new Error('STALE_DUAL_BREAK_REVISION');
+  if (history.length !== input.expectedRevision) throw new Error('STALE_DUAL_BREAK_REVISION');
   if (history.length) {
     const previous = history[history.length - 1];
     if (
       previous.beforeRateBreakMinutes === input.beforeRateBreakMinutes &&
       previous.payPeriodAudit.revision === periodAudit.revision
-    ) throw new Error('UNCHANGED_DUAL_BREAK_ALLOCATION');
-    if (input.recordedAt < previous.recordedAt)
-      throw new Error('INVALID_DUAL_BREAK_REVISION');
+    )
+      throw new Error('UNCHANGED_DUAL_BREAK_ALLOCATION');
+    if (input.recordedAt < previous.recordedAt) throw new Error('INVALID_DUAL_BREAK_REVISION');
   }
   const event = createDualBoundaryBreakEvent(
-    work, input.startDay, input.periodKey, input.effectiveDate, periodAudit,
-    input.beforeRateBreakMinutes, history.length + 1, input.reason, input.recordedAt,
+    work,
+    input.startDay,
+    input.periodKey,
+    input.effectiveDate,
+    periodAudit,
+    input.beforeRateBreakMinutes,
+    history.length + 1,
+    input.reason,
+    input.recordedAt,
   );
   await store.runAsync(
     'INSERT INTO app_settings(key,value) VALUES (?,?)',
@@ -150,17 +166,24 @@ export async function appendDualBoundaryBreakRevision(
   } else {
     const updated = await store.runAsync(
       'UPDATE app_settings SET value=? WHERE key=? AND value=?',
-      String(event.revision), head, String(history.length),
+      String(event.revision),
+      head,
+      String(history.length),
     );
     if (updated.changes !== 1) throw new Error('STALE_DUAL_BREAK_REVISION');
   }
   const check = await readDualBoundaryHistory(
-    store, work, input.startDay, input.periodKey, input.effectiveDate,
+    store,
+    work,
+    input.startDay,
+    input.periodKey,
+    input.effectiveDate,
   );
   if (
     check.length !== event.revision ||
     JSON.stringify(check[check.length - 1]) !== JSON.stringify(event)
-  ) throw new Error('DUAL_BREAK_READBACK_MISMATCH');
+  )
+    throw new Error('DUAL_BREAK_READBACK_MISMATCH');
   return event;
 }
 
@@ -170,11 +193,8 @@ export async function loadDualBoundaryCandidatesFromStore(
   periodKey: string,
   scheduleTimeZone: string,
 ): Promise<DualBoundaryCandidateResult> {
-  const plan = await loadCustomPayProfilePreviewFromStore(
-    store, periodKey, scheduleTimeZone,
-  );
-  if (plan.startDay === 1)
-    return { startDay: 1, candidates: [], pendingPeriodBreakCount: 0 };
+  const plan = await loadCustomPayProfilePreviewFromStore(store, periodKey, scheduleTimeZone);
+  if (plan.startDay === 1) return { startDay: 1, candidates: [], pendingPeriodBreakCount: 0 };
   let effectiveDate: string;
   try {
     effectiveDate = rateEffectiveDate(plan);
@@ -185,7 +205,8 @@ export async function loadDualBoundaryCandidatesFromStore(
   const works = await store.getAllAsync<CustomBreakWorkRow>(
     CUSTOM_BREAK_WORK_SQL +
       ' WHERE local_date <= ? AND end_date >= ? ORDER BY start_instant_utc,id',
-    bounds.endDateInclusive, bounds.startDate,
+    bounds.endDateInclusive,
+    bounds.startDate,
   );
   const candidates: DualBoundaryCandidate[] = [];
   let pendingPeriodBreakCount = 0;
@@ -195,20 +216,19 @@ export async function loadDualBoundaryCandidatesFromStore(
     try {
       keys = customBreakSourcePeriods(work, plan.startDay);
     } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message === 'WORK_NOT_CROSS_CUSTOM_PAY_PERIOD_BREAK'
-      ) continue;
+      if (error instanceof Error && error.message === 'WORK_NOT_CROSS_CUSTOM_PAY_PERIOD_BREAK')
+        continue;
       throw error;
     }
     if (periodKey !== keys.first && periodKey !== keys.last) continue;
     const zonePeriod = zonedPayPeriodBounds(periodKey, plan.startDay, work.timeZone);
-    const rateMidnight = resolveLocalBoundary(
-      effectiveDate, '00:00', work.timeZone, 'reject',
-    );
+    const rateMidnight = resolveLocalBoundary(effectiveDate, '00:00', work.timeZone, 'reject');
     if (rateMidnight.status !== 'resolved') throw new Error('DUAL_BREAK_MIDNIGHT_UNRESOLVED');
     const rateMs = Date.parse(rateMidnight.instantUtc);
-    const start = Math.max(Date.parse(work.startInstantUtc), Date.parse(zonePeriod.startInstantUtc));
+    const start = Math.max(
+      Date.parse(work.startInstantUtc),
+      Date.parse(zonePeriod.startInstantUtc),
+    );
     const end = Math.min(Date.parse(work.endInstantUtc), Date.parse(zonePeriod.endInstantUtc));
     if (!(start < rateMs && rateMs < end)) continue;
 
@@ -219,10 +239,18 @@ export async function loadDualBoundaryCandidatesFromStore(
       continue;
     }
     const source = dualBoundarySource(
-      work, plan.startDay, periodKey, effectiveDate, periodAudit,
+      work,
+      plan.startDay,
+      periodKey,
+      effectiveDate,
+      periodAudit,
     );
     const history = await readDualBoundaryHistory(
-      store, work, plan.startDay, periodKey, effectiveDate,
+      store,
+      work,
+      plan.startDay,
+      periodKey,
+      effectiveDate,
     );
     const latest = history[history.length - 1];
     candidates.push({

@@ -1,4 +1,7 @@
-import { customBreakSourcePeriods, type CustomPayBreakEvent } from './custom-pay-break-audit.ts';
+import {
+  customBreakSourcePeriods,
+  type CustomPayBreakEvent,
+} from './custom-pay-break-audit.ts';
 import { dualBoundarySource } from './dual-boundary-break-audit.ts';
 import { readDualBoundaryHistory } from './dual-boundary-break-store.ts';
 import {
@@ -113,11 +116,13 @@ export async function loadCustomHourlyEstimateFromStore(
 
       if (latestPeriodBreak) {
         try {
-          dualBoundarySource(
-            work, plan.startDay, periodKey, rateDate, latestPeriodBreak,
-          );
+          dualBoundarySource(work, plan.startDay, periodKey, rateDate, latestPeriodBreak);
           const history = await readDualBoundaryHistory(
-            store, work, plan.startDay, periodKey, rateDate,
+            store,
+            work,
+            plan.startDay,
+            periodKey,
+            rateDate,
           );
           sources[sources.length - 1].dualBreakAudit = history[history.length - 1];
         } catch (error) {
@@ -127,7 +132,8 @@ export async function loadCustomHourlyEstimateFromStore(
               'DUAL_BREAK_RATE_NOT_IN_PAY_PORTION',
               'DUAL_BREAK_REQUIRES_BREAK_IN_RATE_PORTION',
             ].includes(error.message)
-          ) throw error;
+          )
+            throw error;
         }
       }
     }

@@ -1,4 +1,8 @@
-import { createCustomBreakEvent, customBreakSourcePeriods, type CustomPayBreakEvent } from './custom-pay-break-audit.ts';
+import {
+  createCustomBreakEvent,
+  customBreakSourcePeriods,
+  type CustomPayBreakEvent,
+} from './custom-pay-break-audit.ts';
 import { validateEarningsWork, type EarningsWork } from './earnings-engine.ts';
 import { splitWorkForPayPeriod, type PayPeriodWorkPortion } from './pay-period.ts';
 import { resolveLocalBoundary } from './zoned-shift-time.ts';
@@ -63,7 +67,9 @@ export function dualBreakEventKey(
 ): string {
   if (!Number.isSafeInteger(revision) || revision < 1 || revision > DUAL_BREAK_MAX_REVISIONS)
     throw new Error('DUAL_BREAK_REVISION_LIMIT');
-  return dualBreakPrefix(workId, startDay, periodKey) + 'event:' + String(revision).padStart(3, '0');
+  return (
+    dualBreakPrefix(workId, startDay, periodKey) + 'event:' + String(revision).padStart(3, '0')
+  );
 }
 
 /** Requires a CURRENT validated custom-pay-period break audit. */
@@ -130,7 +136,8 @@ export function createDualBoundaryBreakEvent(
     beforeRateBreakMinutes > info.portion.breakMinutes ||
     beforeRateBreakMinutes * 60 > info.beforeSeconds ||
     (info.portion.breakMinutes - beforeRateBreakMinutes) * 60 > info.afterSeconds
-  ) throw new Error('DUAL_BREAK_EXCEEDS_RATE_SEGMENT');
+  )
+    throw new Error('DUAL_BREAK_EXCEEDS_RATE_SEGMENT');
   if (typeof reason !== 'string' || reason.trim().length < 3 || reason.trim().length > 160)
     throw new Error('INVALID_DUAL_BREAK_REASON');
   if (typeof recordedAt !== 'string' || !UTC.test(recordedAt))
@@ -180,16 +187,16 @@ export function decodeDualBoundaryHistory(
   const prefix = dualBreakPrefix(work.id, startDay, periodKey);
   if (!Array.isArray(rows)) throw new Error('INVALID_DUAL_BREAK_HISTORY');
   if (rows.length === 0) return [];
-  if (rows.length > DUAL_BREAK_MAX_REVISIONS + 1)
-    throw new Error('DUAL_BREAK_REVISION_LIMIT');
-  const heads = rows.filter(row => row.key === prefix + 'head');
-  const events = rows.filter(row => row.key !== prefix + 'head');
+  if (rows.length > DUAL_BREAK_MAX_REVISIONS + 1) throw new Error('DUAL_BREAK_REVISION_LIMIT');
+  const heads = rows.filter((row) => row.key === prefix + 'head');
+  const events = rows.filter((row) => row.key !== prefix + 'head');
   if (
     heads.length !== 1 ||
     !/^[1-9][0-9]*$/.test(heads[0].value) ||
     Number(heads[0].value) !== events.length ||
     events.length === 0
-  ) throw new Error('INVALID_DUAL_BREAK_HEAD');
+  )
+    throw new Error('INVALID_DUAL_BREAK_HEAD');
 
   const history: DualBoundaryBreakEvent[] = [];
   for (let index = 0; index < events.length; index++) {
@@ -210,20 +217,29 @@ export function decodeDualBoundaryHistory(
     let canonical: DualBoundaryBreakEvent;
     try {
       canonical = createDualBoundaryBreakEvent(
-        work, startDay, periodKey, effectiveDate, parsed.payPeriodAudit,
-        parsed.beforeRateBreakMinutes, revision, parsed.reason, parsed.recordedAt,
+        work,
+        startDay,
+        periodKey,
+        effectiveDate,
+        parsed.payPeriodAudit,
+        parsed.beforeRateBreakMinutes,
+        revision,
+        parsed.reason,
+        parsed.recordedAt,
       );
     } catch {
       throw new Error('INVALID_DUAL_BREAK_EVENT');
     }
-    if (JSON.stringify(canonical) !== row.value)
-      throw new Error('INVALID_DUAL_BREAK_EVENT');
+    if (JSON.stringify(canonical) !== row.value) throw new Error('INVALID_DUAL_BREAK_EVENT');
     if (
       history.length &&
       (canonical.recordedAt < history[history.length - 1].recordedAt ||
-        (canonical.beforeRateBreakMinutes === history[history.length - 1].beforeRateBreakMinutes &&
-         canonical.payPeriodAudit.revision === history[history.length - 1].payPeriodAudit.revision))
-    ) throw new Error('INVALID_DUAL_BREAK_REVISION');
+        (canonical.beforeRateBreakMinutes ===
+          history[history.length - 1].beforeRateBreakMinutes &&
+          canonical.payPeriodAudit.revision ===
+            history[history.length - 1].payPeriodAudit.revision))
+    )
+      throw new Error('INVALID_DUAL_BREAK_REVISION');
     history.push(canonical);
   }
   return history;

@@ -19,7 +19,8 @@ const resources = {
         'Önce özel maaş dönemi sınırına düşen mola dakikalarını yukarıdaki bölümde beyan et. Bu bölümde yalnız aynı vardiyanın ücret değişimi anını da aşan parçasındaki molanın eski/yeni ücret tarafına dağılımını ayrıca gir. Her beyan ilk mola kaydının belirli sürümüne bağlıdır.',
       earnDualBreakNeedsFirst:
         '{{count}} vardiya için önce yukarıdaki özel dönem mola dağılımı kaydedilmeli. Bu yapılmadan ücret hesaplanmaz.',
-      earnDualBreakNone: 'Bu dönemde iki sınırı aşan, ayrıca mola beyanı gerektiren vardiya bulunamadı.',
+      earnDualBreakNone:
+        'Bu dönemde iki sınırı aşan, ayrıca mola beyanı gerektiren vardiya bulunamadı.',
       earnDualBreakContext:
         'Maaş dönemi: {{period}} · ücret değişimi: {{rate}} (UTC {{utc}}) · ilk beyan sürümü: {{audit}}',
       earnDualBreakAmounts:
@@ -487,7 +488,8 @@ const resources = {
         'First record the break split across custom pay periods above. Here, separately assign the break within the rate-changing part of the same shift to the old and new hourly rates. Each statement is tied to the specific revision of the pay-period break declaration.',
       earnDualBreakNeedsFirst:
         '{{count}} shifts require a pay-period break statement above before a rate-boundary declaration can be saved or earnings calculated.',
-      earnDualBreakNone: 'No recorded shift in this period requires a second break attribution.',
+      earnDualBreakNone:
+        'No recorded shift in this period requires a second break attribution.',
       earnDualBreakContext:
         'Pay period: {{period}} · rate changes: {{rate}} (UTC {{utc}}) · first statement revision: {{audit}}',
       earnDualBreakAmounts:
@@ -496,7 +498,8 @@ const resources = {
         'The first break statement changed. The prior second statement is stale; record a fresh rate allocation.',
       earnDualBreakBefore: 'Break minutes before the new hourly rate in this pay period',
       earnDualBreakReason: 'Statement or correction reason (3–160 characters)',
-      earnDualBreakReasonPlaceholder: 'Example: verified the break position across both boundaries',
+      earnDualBreakReasonPlaceholder:
+        'Example: verified the break position across both boundaries',
       earnDualBreakRevision: 'Second statement revision: {{revision}}',
       earnDualBreakSave: 'Save versioned two-boundary break allocation',
       earnDualBreakSaved: 'Statement saved; custom hourly estimate refreshed.',
