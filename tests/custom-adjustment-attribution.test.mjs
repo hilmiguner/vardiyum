@@ -33,7 +33,6 @@ import {
 import { loadCustomHourlyEstimateFromStore } from '../src/domain/custom-hourly-work-store.ts';
 import { adjustmentAttributionGate } from '../src/domain/custom-adjustment-attribution-store.ts';
 
-
 const DAY = 26;
 const EARLIER = '2026-10';
 const LATER = '2026-11';
@@ -602,16 +601,21 @@ test('v1 to v8 SQLite schema and encrypted backup-compatible 18-table contract u
   }
 });
 
-
 function addPayProfile(db, model) {
   db.prepare(
     'INSERT INTO earnings_profiles(id,effective_from,model,currency,base_minor_units,' +
-    'overtime_hourly_minor_units,overtime_after_minutes,overtime_multiplier_numerator,' +
-    "overtime_multiplier_denominator,revision,source) VALUES(?,?,?,?,?,?,?,?,?,1,'user_entered')",
+      'overtime_hourly_minor_units,overtime_after_minutes,overtime_multiplier_numerator,' +
+      "overtime_multiplier_denominator,revision,source) VALUES(?,?,?,?,?,?,?,?,?,1,'user_entered')",
   ).run(
-    'pay_oct', '2026-10-01', model, 'TRY',
+    'pay_oct',
+    '2026-10-01',
+    model,
+    'TRY',
     model === 'monthly_fixed' ? 2_750_000 : 10_000,
-    0, null, 1, 1,
+    0,
+    null,
+    1,
+    1,
   );
 }
 
@@ -620,38 +624,57 @@ test('verified source split unblocks fixed BASE-only but NEVER inflates it with 
   try {
     addPayProfile(db, 'monthly_fixed');
     insertAdjustment(db, adjustment());
-    await transaction(db, adapter => appendCustomFixedBaseRevision(adapter, {
-      periodKey: EARLIER,
-      startDay: DAY,
-      scheduleTimeZone: 'Europe/Istanbul',
-      choice: 'full_base',
-      partialBaseMinorUnits: null,
-      expectedRevision: 0,
-      reason: 'I selected my fixed base for the period',
-      recordedAt: STAMP1,
-    }));
-    const before = await loadCustomFixedBaseReportFromStore(store(db), EARLIER, 'Europe/Istanbul');
+    await transaction(db, (adapter) =>
+      appendCustomFixedBaseRevision(adapter, {
+        periodKey: EARLIER,
+        startDay: DAY,
+        scheduleTimeZone: 'Europe/Istanbul',
+        choice: 'full_base',
+        partialBaseMinorUnits: null,
+        expectedRevision: 0,
+        reason: 'I selected my fixed base for the period',
+        recordedAt: STAMP1,
+      }),
+    );
+    const before = await loadCustomFixedBaseReportFromStore(
+      store(db),
+      EARLIER,
+      'Europe/Istanbul',
+    );
     assert.equal(before.status, 'blocked');
     assert.ok(before.reasons.includes('CUSTOM_FIXED_CALENDAR_ADJUSTMENTS_REQUIRE_ATTRIBUTION'));
     assert.equal(await adjustmentAttributionGate(store(db), EARLIER, 1), 1);
     await save(db, 'bonus_nov', 43_211);
     assert.equal(await adjustmentAttributionGate(store(db), EARLIER, 1), 0);
-    const after = await loadCustomFixedBaseReportFromStore(store(db), EARLIER, 'Europe/Istanbul');
+    const after = await loadCustomFixedBaseReportFromStore(
+      store(db),
+      EARLIER,
+      'Europe/Istanbul',
+    );
     assert.equal(after.status, 'estimated');
     assert.equal(after.baseOnlyMinorUnits, 2_750_000);
     assert.equal(after.scope, 'BASE_ONLY_OVERTIME_WORK_ADJUSTMENTS_EXCLUDED');
     const allocated = await loadCustomAdjustmentReportFromStore(store(db), EARLIER);
     assert.equal(allocated.totals[0].minorUnits, 43_211);
     assert.notEqual(after.baseOnlyMinorUnits, 2_793_211);
-    insertAdjustment(db, adjustment({
-      id: 'late_deduction',
-      kind: 'deduction',
-      amountMinorUnits: -10_000,
-    }));
-    const newSourcePending = await loadCustomFixedBaseReportFromStore(store(db), EARLIER, 'Europe/Istanbul');
+    insertAdjustment(
+      db,
+      adjustment({
+        id: 'late_deduction',
+        kind: 'deduction',
+        amountMinorUnits: -10_000,
+      }),
+    );
+    const newSourcePending = await loadCustomFixedBaseReportFromStore(
+      store(db),
+      EARLIER,
+      'Europe/Istanbul',
+    );
     assert.equal(newSourcePending.status, 'blocked');
     assert.equal('baseOnlyMinorUnits' in newSourcePending, false);
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('verified source split unblocks hourly WORK-ONLY without including a bonus in its amount', async () => {
@@ -660,19 +683,36 @@ test('verified source split unblocks hourly WORK-ONLY without including a bonus 
     addPayProfile(db, 'hourly');
     db.prepare(
       'INSERT INTO actual_work_sessions(' +
-      'id,local_date,start_clock,end_date,end_clock,timezone_id,start_choice,end_choice,' +
-      'start_instant_utc,end_instant_utc,break_minutes,note) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
+        'id,local_date,start_clock,end_date,end_clock,timezone_id,start_choice,end_choice,' +
+        'start_instant_utc,end_instant_utc,break_minutes,note) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
     ).run(
-      'hour_work', '2026-11-10', '08:00', '2026-11-10', '09:00', 'Europe/Istanbul',
-      'reject', 'reject', '2026-11-10T05:00:00.000Z',
-      '2026-11-10T06:00:00.000Z', 0, 'User-reported work',
+      'hour_work',
+      '2026-11-10',
+      '08:00',
+      '2026-11-10',
+      '09:00',
+      'Europe/Istanbul',
+      'reject',
+      'reject',
+      '2026-11-10T05:00:00.000Z',
+      '2026-11-10T06:00:00.000Z',
+      0,
+      'User-reported work',
     );
     insertAdjustment(db, adjustment());
-    const before = await loadCustomHourlyEstimateFromStore(store(db), EARLIER, 'Europe/Istanbul');
+    const before = await loadCustomHourlyEstimateFromStore(
+      store(db),
+      EARLIER,
+      'Europe/Istanbul',
+    );
     assert.equal(before.status, 'blocked');
     assert.ok(before.reasons.includes('CUSTOM_PAY_CALENDAR_ADJUSTMENTS_REQUIRE_ATTRIBUTION'));
     await save(db, 'bonus_nov', 43_211);
-    const after = await loadCustomHourlyEstimateFromStore(store(db), EARLIER, 'Europe/Istanbul');
+    const after = await loadCustomHourlyEstimateFromStore(
+      store(db),
+      EARLIER,
+      'Europe/Istanbul',
+    );
     assert.equal(after.status, 'estimated');
     assert.equal(after.loggedSeconds, 3600);
     assert.equal(after.workOnlyMinorUnits, 10_000);
@@ -681,5 +721,7 @@ test('verified source split unblocks hourly WORK-ONLY without including a bonus 
       (await loadCustomAdjustmentReportFromStore(store(db), EARLIER)).totals[0].minorUnits,
       43_211,
     );
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
