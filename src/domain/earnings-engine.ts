@@ -1,4 +1,5 @@
 import { addCalendarDays, calendarOrdinal } from './shift-engine.ts';
+import { splitWorkForMonth, type MonthBreakAllocation, type WorkPeriodPortion } from './earnings-period.ts';
 
 export type EarningsModel = 'hourly' | 'monthly_fixed';
 export type AdjustmentKind = 'bonus' | 'deduction' | 'correction';
@@ -57,6 +58,8 @@ export interface EarningsLine {
   seconds: number;
   amountMinorUnits: number;
   description: string;
+  segmentStartUtc?: string;
+  segmentEndUtc?: string;
 }
 
 export type EarningsReport =
@@ -71,6 +74,7 @@ export type EarningsReport =
       regularSeconds: number;
       overtimeSeconds: number;
       lines: EarningsLine[];
+      splitAcrossMonthsCount: number;
       /** There is no tax, social security, employer approval or net-pay engine. */
       disclaimer: 'USER_REPORTED_PRE_TAX_ESTIMATE';
     };
@@ -212,8 +216,9 @@ export function estimateEarnings(
   profiles: readonly EarningsProfile[],
   workRows: readonly EarningsWork[],
   adjustmentRows: readonly EarningsAdjustment[],
+  breakAllocations: readonly MonthBreakAllocation[] = [],
 ): EarningsReport {
-  const { first, last } = periodBounds(periodKey);
+  const { first } = periodBounds(periodKey);
   const allProfiles = profiles.map(validateEarningsProfile);
   const active = allProfiles
     .filter((item) => item.effectiveFrom <= first)
@@ -223,7 +228,12 @@ export function estimateEarnings(
     throw new Error('AMBIGUOUS_PROFILE_EFFECTIVE_DATE');
   const profile = active[0];
   const reasons: string[] = [];
-  const sessions: Array<EarningsWork & { netSeconds: number }> = [];
+  const sessions: WorkPeriodPortion[] = [];
+  const breaks = new Map<string, MonthBreakAllocation>();
+  for (const allocation of breakAllocations) {
+    if (breaks.has(allocation.workId)) throw new Error('DUPLICATE_BREAK_ALLOCATION');
+    breaks.set(allocation.workId, allocation);
+  }
   const ids = new Set<string>();
 
   for (const work of workRows) {
@@ -231,22 +241,22 @@ export function estimateEarnings(
       const session = validateEarningsWork(work);
       if (ids.has(session.id)) throw new Error('DUPLICATE_WORK_RECORD');
       ids.add(session.id);
-      // Period attribution uses the manually recorded START civil date, with
-      // no silent overnight split, especially when a month changes.
-      if (session.localDate < first || session.localDate > last || session.endDate > last)
-        throw new Error('WORK_CROSSES_REPORT_PERIOD');
-      sessions.push(session);
+      // Split on saved IANA civil-month midnight using original UTC instants.
+      // Zero-break crossings split automatically; nonzero breaks require an
+      // explicit, source-bound allocation in BOTH monthly reports.
+      const portion = splitWorkForMonth(session, periodKey, breaks.get(session.id));
+      if (portion) sessions.push(portion);
     } catch (error) {
       reasons.push((error instanceof Error ? error.message : 'INVALID_WORK') + ':' + work.id);
     }
   }
   sessions.sort(
-    (a, b) => a.startInstantUtc.localeCompare(b.startInstantUtc) || a.id.localeCompare(b.id),
+    (a, b) => a.startInstantUtc.localeCompare(b.startInstantUtc) || a.workId.localeCompare(b.workId),
   );
   let latestEnd = sessions[0]?.endInstantUtc ?? '';
   for (let i = 1; i < sessions.length; i++) {
     if (sessions[i].startInstantUtc < latestEnd)
-      reasons.push('OVERLAPPING_WORK_SESSIONS:' + sessions[i].id);
+      reasons.push('OVERLAPPING_WORK_SESSIONS:' + sessions[i].workId);
     if (sessions[i].endInstantUtc > latestEnd) latestEnd = sessions[i].endInstantUtc;
   }
   const adjustments: EarningsAdjustment[] = [];
@@ -280,6 +290,11 @@ export function estimateEarnings(
       profileId: profile.id,
       profileRevision: profile.revision,
       description,
+      ...(sessions.find((row) => row.workId === sourceId) ?
+        {
+          segmentStartUtc: sessions.find((row) => row.workId === sourceId)!.startInstantUtc,
+          segmentEndUtc: sessions.find((row) => row.workId === sourceId)!.endInstantUtc,
+        } : {}),
     });
   };
   if (profile.model === 'monthly_fixed') {
@@ -310,7 +325,7 @@ export function estimateEarnings(
       if (regular)
         addLine(
           'hourly_regular',
-          row.id,
+          row.workId,
           regular,
           roundRational(BigInt(profile.baseMinorUnits) * BigInt(regular), 3600n),
           'User-reported working seconds at explicit hourly rate',
@@ -318,7 +333,7 @@ export function estimateEarnings(
       if (overtime)
         addLine(
           'hourly_overtime',
-          row.id,
+          row.workId,
           overtime,
           roundRational(
             BigInt(profile.baseMinorUnits) *
@@ -331,7 +346,7 @@ export function estimateEarnings(
     } else {
       addLine(
         'logged_work',
-        row.id,
+        row.workId,
         row.netSeconds,
         0,
         'Informational self-reported hours only; monthly base not prorated',
@@ -339,7 +354,7 @@ export function estimateEarnings(
       if (overtime)
         addLine(
           'monthly_overtime',
-          row.id,
+          row.workId,
           overtime,
           roundRational(
             BigInt(profile.overtimeHourlyMinorUnits) *
@@ -362,6 +377,7 @@ export function estimateEarnings(
     periodKey,
     profile,
     totalMinorUnits: asNumber(total),
+    splitAcrossMonthsCount: sessions.filter((row) => row.splitAcrossMonths).length,
     loggedSeconds: totalLogged,
     regularSeconds,
     overtimeSeconds,

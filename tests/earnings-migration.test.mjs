@@ -8,7 +8,6 @@ import {
   MIGRATION_4_SQL,
   MIGRATION_5_SQL,
   MIGRATION_6_SQL,
-  SCHEMA_VERSION,
 } from '../src/data/schema.ts';
 
 function v5() {
@@ -63,7 +62,7 @@ test('SQLite v1-v5 data remains intact when additive version 6 is deployed', () 
       "INSERT INTO actual_work_sessions(id,local_date,start_clock,end_date,end_clock,timezone_id,start_choice,end_choice,start_instant_utc,end_instant_utc,break_minutes,note) VALUES('work_1','2026-11-15','08:00','2026-11-15','16:00','Europe/Istanbul','reject','reject','2026-11-15T05:00:00.000Z','2026-11-15T13:00:00.000Z',30,'reported');",
     );
     db.exec('BEGIN IMMEDIATE;' + MIGRATION_6_SQL + 'COMMIT;');
-    assert.equal(db.prepare('PRAGMA user_version').get().user_version, SCHEMA_VERSION);
+    assert.equal(db.prepare('PRAGMA user_version').get().user_version, 6);
     for (const table of [
       'shift_patterns',
       'pattern_days',
