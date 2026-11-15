@@ -276,7 +276,7 @@ test('corrupt head, missing event, revision gap and modified source are rejected
     assert.throws(() => decodeCustomBreakHistory(staleWork, 26, payload), /INVALID_CUSTOM_BREAK_EVENT/);
     const changedPayload = payload.map((r) =>
       r.key === customBreakEventKey(WORK_ID, 26, 1)
-        ? { ...r, value: r.value.replace('"startPeriodBreakMinutes":10', '"startPeriodBreakMinutes":9') }
+        ? { ...r, value: r.value.replace('"originalBreakMinutes":30', '"originalBreakMinutes":29') }
         : r,
     );
     assert.throws(() => decodeCustomBreakHistory(work, 26, changedPayload), /INVALID_CUSTOM_BREAK_EVENT/);
