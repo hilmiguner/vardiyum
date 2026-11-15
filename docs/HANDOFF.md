@@ -76,14 +76,14 @@ Yeni sohbet başlangıcı:
 
 ## 2026-11-15 — Issue #10 / PR #11 son geliştirme devri
 
-- **PR:** https://github.com/hilmiguner/vardiyum/pull/11, dal `feat/shift-aware-routines-v4`. Önce gerçek merge durumunu/main SHA/son Actions CI'ı kontrol et.
+- **PR #11 merged:** https://github.com/hilmiguner/vardiyum/pull/11, merge SHA `e336bf4dce5597932482b774235575fe68428217`. Merge sonrası main [Actions #43706843264](https://github.com/hilmiguner/vardiyum/actions/runs/43706843264) SUCCESS.
 - **Kod:** `src/domain/routine-engine.ts` saf seçim motoru; `src/data/routine-repository.ts` transaction'lar; `src/components/routine-day-checklist.tsx` günlük görevler ve geçmiş; `src/app/(tabs)/routines.tsx` düzenleme/arşiv yönetimi; `src/data/schema.ts` SQLite v4.
 - **İş kuralları:** Vardiya başlangıcının sivil günü, 8/12/366 günlük döngü, override, dinlenme ve ISO haftanın günü. Filtreler gruplar arasında AND, aynı grupta OR; boş filtre tüm günler.
 - **Veri güvenliği:** Rutin silme yok, soft archive var. Mevcut checkbox `task_completions` içinde; tamamla/geri al snapshot'lı olayları append-only `routine_completion_events` içine yazar. V1–V3 verileri ve eski tamamlamalar v4'e kayıpsız aktarılmalı.
 - **CI:** [Actions #43706375916](https://github.com/hilmiguner/vardiyum/actions/runs/43706375916) SUCCESS — **51 Node test**, 0 fail, npm ci/Expo check/format/lint/tsc/Android&iOS JS export PASS.
 - **Açık:** Native gerçek cihaz ve çevrimdışı/SQLite v4 testleri kullanıcı isteğiyle ertelendi ([Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)); yerel hatırlatma bildirimleri henüz yapılmadı.
-- **Sonraki:** PR #11'i son CI + merge doğrulamasıyla main'e al; docs/STATUS ve HANDOFF'u main commit/CI ile güncelle; Faz 3 bildirim motorunu ayrı Issue/PR ile ilerlet.
+- **Sonraki:** [Issue #12](https://github.com/hilmiguner/vardiyum/issues/12) Faz 3 lokal rutin hatırlatmaları ve yeniden zamanlama. Bildirim tesliminin native kanıtı olmadan PASS deme; cihaz testleri Issue #2'de ertelendi.
 
 Yeni sohbet başlangıcı:
 
-> Vardiyum https://github.com/hilmiguner/vardiyum. Önce docs/STATUS.md, docs/HANDOFF.md, docs/ROADMAP.md, docs/DECISIONS.md, main commit, açık PR/Issue ve Actions'ı doğrula. Son kod çalışması Issue #10 / PR #11: vardiyaya bağlı rutinler, günlük görevler ve tamamlanma geçmişi, SQLite v4. Native cihaz testleri kullanıcı isteğiyle sonraya bırakıldı (Issue #2). Doğrulanan işleri GitHub'a kaydet ve sıradaki Faz 3 lokal bildirim motoruna geç.
+> Vardiyum https://github.com/hilmiguner/vardiyum. Önce docs/STATUS.md, docs/HANDOFF.md, docs/ROADMAP.md, docs/DECISIONS.md, main commit, açık PR/Issue ve Actions'ı doğrula. PR #11 (Issue #10) vardiyaya bağlı rutinler, günlük görevler ve geçmiş + SQLite v4 **main'de**. Sıradaki Issue #12 lokal bildirimler. Native cihaz testleri kullanıcı isteğiyle sonraya bırakıldı (Issue #2). Doğrulanan işleri GitHub'a kaydet ve sıradaki Faz 3 lokal bildirim motoruna geç.

@@ -94,15 +94,16 @@
 
 ## Issue #10 — Faz 3 rutin motoru / PR #11
 
-**Dal:** `feat/shift-aware-routines-v4`; [PR #11](https://github.com/hilmiguner/vardiyum/pull/11)  
+**[PR #11](https://github.com/hilmiguner/vardiyum/pull/11):** main'e squash merge edildi (`e336bf4dce5597932482b774235575fe68428217`).  
 **Kanıt:** [Actions #43706375916](https://github.com/hilmiguner/vardiyum/actions/runs/43706375916) **SUCCESS** — npm ci, Expo check, Prettier, ESLint, TypeScript, **51/51 Node testi**, Android ve iOS JavaScript export.
 
 - [x] Günlük vardiya override'ını dikkate alan vardiya/hafta/döngü/izin filtreli saf rutin motoru.
 - [x] Bugün/Rutinler görevleri; tamamlandı/geri al, geçmiş tarih, rutin oluşturma/düzenleme/etkinleştirme/arşivleme/geri alma.
 - [x] SQLite v3→v4 eklemeli migrasyon; eski `routine_rules`, `task_completions`, shift/work verileri korunur; legacy checkbox olaylarına backfill yapılır.
 - [x] Tamamlanma geçmişinde olay zamanı başlık/filtre snapshot'ı; kullanıcı checkbox geri alsa veya rutini arşivlese de geçmiş kaybolmaz.
-- [ ] Son doküman commit'i için CI ve PR merge/main CI ayrıca kontrol edilecek.
+- [x] **PR #11 squash merge:** `e336bf4dce5597932482b774235575fe68428217`.
+- [x] **Merge sonrası main CI:** [Actions #43706843264](https://github.com/hilmiguner/vardiyum/actions/runs/43706843264) SUCCESS (51/51 Node test, Android/iOS JS export).
 - [ ] Yerel bildirimler ayrı Faz 3 işi.
 - [ ] Gerçek Android/iOS cihaz, SQLite v4 ve offline standalone kontrolü kullanıcı isteğiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'ye ertelendi.
 
-**Sıradaki iş:** PR #11 kontrolü/merge ve main SHA+CI doğrulaması; Faz 3 yerel bildirimleri için yeni Issue/PR.
+**Sıradaki iş:** [Issue #12 — Faz 3 yerel hatırlatmalar](https://github.com/hilmiguner/vardiyum/issues/12). Bildirim izni, zamanlama, yeniden planlama ve DST koşullarını güvenli testlerle ele al. [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) cihaz testleri ertelenmiş ve açık.
