@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Expo mobil iskeleti **PR #3**, özel vardiya/takvim **PR #5** ve DST gerçek geçen süre motoru **PR #7** ile main'e eklendi. Kod testleri ve Android/iOS JavaScript paketleme başarılı; **native cihaz testleri henüz yapılmadı**. [docs/STATUS.md](docs/STATUS.md).
+> **Durum (2026-11-15):** Expo temel PR #3, vardiya/takvim PR #5 ve DST motoru PR #7 **main'de**. Gün bazlı DST kararları, gerçek çalışma kayıtları ve açık saat dilimi değiştirme UI'si **PR #9 ile hazırlanmıştır**; son merge durumu [docs/STATUS.md](docs/STATUS.md) ve GitHub'dan doğrulanmalı. Gerçek native cihaz testleri kullanıcı isteğiyle ertelendi.
 
 ## Geliştirme kurulumu
 
@@ -62,3 +62,12 @@ npm run format
 ## Lisans ve marka
 
 Lisans henüz seçilmedi. **Vardiyum** çalışma adıdır; marka, alan adı ve mağaza adı uygunluğu teyit edilmemiştir.
+
+## Gerçek çalışma ve saat dilimi — Faz 2 / PR #9
+
+- Aylık takvimde belirsiz saatler için **o tarihe özgü** `earlier/later` seçimleri saklanabilir. Vardiya saatleri veya program saat dilimi değişince eski seçim otomatik uygulanmaz.
+- Takvimden **kendi giriş/çıkış saatlerin ve fiilî mola süren** girilebilir. Kaydedilen iki UTC anı, girişteki saat dilimi ve yerel saatler birlikte saklanır. Çakışan çalışma aralıkları reddedilir; kayıtlar silinebilir.
+- Ayarlardan kayıtlı IANA saat dilimi, eski ve yeni UTC başlangıç örneği karşılaştırılarak **açık onayla** değiştirilebilir. Takvim döngüsünün yerel tarih/saatleri değişmez; geçmiş gerçek kayıtlar korunur.
+- Tüm gerçek çalışmalar **kullanıcı beyanıdır**: işveren doğrulaması, otomatik maaş hesaplaması veya resmi bordro yerine geçmez.
+- Yerel SQLite v3 migrasyonu v1/v2 vardiya ve eski `work_entries` satırlarını silmez; yeni kayıtlar ayrı `actual_work_sessions` tablosundadır.
+- **Cihaz testleri:** yalnızca CI ve JS paketleme kanıtlandı; [docs/DEVICE-SMOKE.md](docs/DEVICE-SMOKE.md) gerçek cihaz testi ileride yapılacak.

@@ -45,3 +45,16 @@
 - [ ] Değişiklik geri alınınca düzenli döngü görünür; kapat/aç sonrası kalıcıdır.
 - [ ] Türkçe ve İngilizce metinler; Android/iOS açık/koyu tema ve TalkBack/VoiceOver erişimi.
 - [ ] Kullanıcı geçersiz saat veya mola girince uygulama çökmemeli, kayıt reddedilmeli.
+
+## Issue #8 — Gelecekteki cihaz kontrolü (kullanıcı tercihiyle ertelendi)
+
+- [ ] iOS ve Android'de v2->v3 SQLite migrasyonu; pattern/override/eski work_entries korunur.
+- [ ] NYC 2026-11-01 01:30 fold: erken/geç seçenekleri tek gün için saklanır; uygulama kapanıp açılınca yeniden yüklenir.
+- [ ] Şablon saati veya program bölgesi değişince eski DST seçimi kullanılmaz.
+- [ ] Planlanan ile gerçek giriş/çıkış farklı tutulur; gerçek mola girişi ve silme sonrası kalıcılık.
+- [ ] Aynı gerçek UTC aralık çakışması reddedilir, ardışık aralıklara izin verilir.
+- [ ] Program IANA saat dilimi değişim önizlemesi/açık onayı, geçmiş fiilî UTC kayıtlar değişmez.
+- [ ] Geliştirme vs üretim build, çevrimdışı kullanım, uygulama kapanıp açılınca kayıtlar, TalkBack/VoiceOver.
+- [ ] Hermes/ICU/tzdb sürümünden kaynaklanan DST farkları kaydedilir; ücret motoruna otomatik aktarılmaz.
+
+**Durum:** Henüz gerçek cihaz testi yapılmadı. Bunlar planlanan, tamamlanmamış maddelerdir.

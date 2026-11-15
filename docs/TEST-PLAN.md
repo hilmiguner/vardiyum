@@ -70,3 +70,15 @@
 - Geçersiz tarih/saat/IANA zone/fold policy, izin gününde sıfır, yalnızca brüt elapsed time
 
 **CI kanıtı:** [#43702389590](https://github.com/hilmiguner/vardiyum/actions/runs/43702389590) SUCCESS. Gerçek mobil tzdb/Intl uygulama davranışı Issue #2 kapsamında sonradan test edilmeli.
+
+## Issue #8 / PR #9 — Test kapsamı
+
+- Gün bazlı DST fold kaydı: aynı gün/saat dilimi/şablon için geçerli, başka gün, farklı vardiya saati/ID veya başka program zonunda **geçersiz**.
+- Tam çözümlenmemiş veya geçersiz DST saatleri **persist edilmez**.
+- Gerçek çalışma başlangıcı için ayrı fold kararı ve çıkış için bağımsız seçim; programın fold seçimini miras almaz.
+- Geçersiz tarih, mola, uzun not, sıfır/negatif/72 saatten uzun aralık reddi; kaynağı kullanıcı beyanıdır.
+- İleri atlayan saatlerde gerçek UTC anları doğru, gerçek çalışma mola sonrası saniyesi net hesaplanır (bordro değil).
+- SQLite v1/v2'dan v3'e kayıpsız migrasyon; eski `work_entries`, `day_overrides`, `pattern_days` aynen korunur.
+- Aynı UTC aralığında iki kaydın örtüşmesi SQL sorgusuyla tespit edilir; DB check constraints korunur.
+
+**Kanıt:** [Actions #43704251648](https://github.com/hilmiguner/vardiyum/actions/runs/43704251648) **SUCCESS**, toplam 39 Node test / 0 başarısız. Expo/Android/iOS JavaScript bundle PASS; native cihaz doğrulaması **yapılmadı**.

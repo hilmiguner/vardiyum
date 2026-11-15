@@ -68,3 +68,21 @@
 - [ ] Fold kararını gerçek kullanıcı tarihi/mesai kaydıyla kalıcı bağlama: [Issue #8](https://github.com/hilmiguner/vardiyum/issues/8). Resmî maaş motoru henüz yok.
 
 **Takip:** [Issue #6](https://github.com/hilmiguner/vardiyum/issues/6) çekirdek UTC/DST çözümleyicisi tamamlandı; kalıcı fold tercihi ve gerçek mesai kaydı [Issue #8](https://github.com/hilmiguner/vardiyum/issues/8) üzerinden takip edilecek. Bu iş bitse bile Faz 2 / [Issue #4](https://github.com/hilmiguner/vardiyum/issues/4) diğer açık maddeler nedeniyle devam eder.
+
+## Issue #8 / PR #9 — gün bazlı DST kararı, gerçek çalışma ve zone değiştirme
+
+**Geliştirme dalı:** `feat/persisted-fold-work-sessions-v3`  
+**PR:** [#9](https://github.com/hilmiguner/vardiyum/pull/9)  
+**Kod/CI kanıtı:** [GitHub Actions #43704251648](https://github.com/hilmiguner/vardiyum/actions/runs/43704251648) **SUCCESS**: npm ci, Expo package check, Prettier, ESLint, TypeScript, **39/39 Node testi**, Android/iOS JavaScript paketlemesi.
+
+- [x] Vardiya başlangıç/bitiş fold seçimleri gün+şablon+IANA imzasıyla yerel SQLite v3 kaydı.
+- [x] Değişen vardiya saati veya zone için önceki fold kararını uygulamama.
+- [x] Kullanıcının fiilî giriş/çıkış UTC anlarını ve mola/not girdilerini ayrı tabloda saklama; örtüşen aralık reddi.
+- [x] Gün seçimi ve saat dilimi değişimini açıklayan TR/EN form ve onay/önizleme.
+- [x] V1/v2 -> v3 SQLite migrasyonu, önceki `work_entries` ve pattern/override verilerini koruma testleri.
+- [ ] PR #9 squash merge + main CI son doğrulaması (bu belge hazırlanırken bekliyor).
+- [ ] Gerçek Android/iOS native cihaz/simülatör SQLite persistans, Intl/tzdb testi: **kullanıcı tercihine göre sonra**, [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) açık.
+- [ ] Gerçek kayıt **kullanıcı beyanı**; resmi puantaj, ücretlendirilebilir saat ve maaş motoru değildir.
+- [ ] Tarihsel vardiya şablonu sürümleme ve işveren doğrulaması sonraki işler.
+
+**Sıradaki kod hedefi:** Kalan Faz 2 geçmiş sürümleme/şablon yönetimi veya Faz 3 günlük rutin motoru; yeni PR öncesi main SHA ve CI doğrulanacak.
