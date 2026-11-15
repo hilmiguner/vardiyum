@@ -176,7 +176,7 @@ test('negative deductions and signed corrections are partitioned without sign in
     assert.equal(Math.sign(event.earlierMinorUnits), Math.sign(source.amountMinorUnits));
     assert.equal(Math.sign(event.laterMinorUnits), Math.sign(source.amountMinorUnits));
   }
-  for (const first of [12_346, -1, -20_000]) {
+  for (const first of [123_457, -1, -20_000]) {
     assert.throws(
       () =>
         createCustomAdjustmentAttributionEvent(
