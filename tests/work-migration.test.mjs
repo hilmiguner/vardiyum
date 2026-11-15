@@ -2,11 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { DatabaseSync } from 'node:sqlite';
 
-import {
-  INITIAL_SCHEMA,
-  MIGRATION_2_SQL,
-  MIGRATION_3_SQL,
-} from '../src/data/schema.ts';
+import { INITIAL_SCHEMA, MIGRATION_2_SQL, MIGRATION_3_SQL } from '../src/data/schema.ts';
 
 function originalV2() {
   const db = new DatabaseSync(':memory:');
