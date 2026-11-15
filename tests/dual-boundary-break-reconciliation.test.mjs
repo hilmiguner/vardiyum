@@ -582,7 +582,7 @@ test('falsified in-memory dual event, changed pay audit revision and missing cur
     STAMP_2,
   );
   const plan = planCustomPayProfiles(PREVIOUS, 2, 'Europe/Istanbul', [oldPay, newPay]);
-  for (const entry of [
+  for (const [caseIndex, entry] of [
     {
       work,
       allocation: period,
@@ -597,9 +597,9 @@ test('falsified in-memory dual event, changed pay audit revision and missing cur
       dualBreakAudit: { ...dual, beforeRateBreakMinutes: 21 },
     },
     { work, dualBreakAudit: dual },
-  ]) {
+  ].entries()) {
     const estimate = estimateCustomHourlyWork(plan, [entry], 0);
-    assert.equal(estimate.status, 'blocked');
+    assert.equal(estimate.status, 'blocked', 'invalid case ' + caseIndex);
     assert.equal('workOnlyMinorUnits' in estimate, false);
   }
 });
