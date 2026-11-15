@@ -213,3 +213,11 @@
 **Sıradaki:** PR #21 main ve CI başarılı. [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) native restore kalıcılık/crash/low-disk kabulü için **açık**; [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) kullanıcı isteğiyle ertelendi. Dolu DB merge yok, cihaz kurtarma doğrulandı iddiası yok. [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16)'da özel maaş dönemi kaldı.
 
 **Sonraki bağımsız MVP işi:** [Issue #22](https://github.com/hilmiguner/vardiyum/issues/22) — kullanıcı tanımlı maaş dönemi (ör. 26→25), DST/UTC sınırları, ayrı dönem mesai eşiği ve ücret profil geçerlilik kuralları. Gerçek cihaz QA [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ertelendi; restore native kabulü [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) açık.
+
+## 2026-11-15 — Issue #22 / özel maaş dönemi: ilk domain kodu (PR incelemesinde)
+
+- **Kapsam:** `src/domain/pay-period.ts` ile 1–28 kullanıcı seçimi; `YYYY-MM` anahtarı **başlangıç ayı**; 26→25, Şubat 28/29 ve yıl devri için fail-closed sınırlar.
+- Kaydedilmiş çalışma IANA zone'unda 00:00 UTC dönüşümü, DST gap/fold belirsizliğinde blok; UTC kaynak oturumu değiştirmeden net çalışma parçalama, *yeni* dönem mola dağılımı kaynak doğrulaması ve çift saymayı önleme.
+- **Testler eklendi; CI sonucu PR üzerinde doğrulanmalı:** `tests/pay-period.test.mjs`. Tasarım: [PAY-PERIOD-DESIGN.md](./PAY-PERIOD-DESIGN.md).
+- **Henüz tamamlanmadı:** SQLite v8'de kullanıcı seçimi veya özel dönem mola kayıtları kalıcı değil; kazanç sekmesi/hizmet hâlen takvim ayını kullanıyor. Ücret profili ayın 1'inde değiştiğinde karma oran politikası, sabit ücret dönemi ve manuel düzeltme eşlemesi açık. Mevcut AES yedek v8 şeması **değişmedi**.
+- **Takip:** [Issue #22](https://github.com/hilmiguner/vardiyum/issues/22) **açık**; [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) üst iş; native QA [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2), restore native [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) ertelendi/açık. Mevzuat, vergi, SGK, net ücret veya onaylı bordro hesabı yok.
