@@ -12,6 +12,46 @@ const resources = {
       routines: 'Rutinler',
       earnings: 'Kazanç',
       settings: 'Ayarlar',
+      earnFixedOtTitle: 'Özel dönem: sabit ücrete ek kayıtlı fazla mesai',
+      earnFixedOtExplanation:
+        'Önce sabit ücret ana tutarını beyan et. Ardından ücret profilindeki kendi belirlediğin fazla mesai eşiğini, saatlik ek ücret ve çarpanı kullanarak yalnız kayıtlı gerçek çalışmanın eşik üzerindeki süresini hesaplamaya açıkça izin verebilirsin. Normal saatler sabit ücrete tekrar eklenmez.',
+      earnFixedOtState_requires_base:
+        'Önce sabit ücret ana tutarı beyanını kaydet veya güncelle.',
+      earnFixedOtState_needs_configuration:
+        'Sabit ücret profilinde kullanıcı tanımlı fazla mesai eşiği ve pozitif fazla mesai saatlik ücreti bulunmalı. Önce ücret profilini sürümlü düzenle.',
+      earnFixedOtState_blocked:
+        'Fazla mesai tahmini kaynak uyuşmazlığı veya dönemlik prim/kesinti nedeniyle engellendi.',
+      earnFixedOtState_not_applicable: 'Bu dönem için geçerli değil.',
+      earnFixedOtSource:
+        'Sabit kaynak: {{id}} · profil sürümü {{revision}} · ana tutar beyanı {{baseRevision}} · seçilen ana tutar {{base}}',
+      earnFixedOtRate:
+        'Kendi seçtiğin eşik: {{threshold}} net dakika / özel dönem · fazla mesai saatlik {{rate}} × {{numerator}}/{{denominator}}',
+      earnFixedOtStale:
+        'Sabit ücret ana tutarı veya ücret profili değişti: eski fazla mesai onayı geçersiz. Yeni kararını açıkça kaydet.',
+      earnFixedOtCombinedScope:
+        'Yalnız seçilen sabit ana tutar + kayıtlı gerçek fazla mesai TAHMİNİ:',
+      earnFixedOtSum: 'Sabit ana tutar {{base}} + ek fazla mesai {{overtime}}',
+      earnFixedOtSeconds:
+        'Kaydedilen net çalışma {{logged}} sn · eşiğe kadar {{regular}} sn (tekrar ücretlendirilmez) · ek fazla mesai {{overtime}} sn',
+      earnFixedOtLine:
+        'Gerçek çalışma {{work}} · ek fazla mesai {{seconds}} sn · {{amount}} · dönem molası beyanı {{audit}}',
+      earnFixedOtExcluded:
+        'Fazla mesaiyi bu özel döneme dahil etmemeyi açıkça seçtin. Birleşik tutar gösterilmez.',
+      earnFixedOtNeedsConsent:
+        'Bu dönem için fazla mesai ekleme onayı henüz verilmedi. Birleşik tutar gösterilmez.',
+      earnFixedOtBlocked:
+        'Kaynak çalışma veya sınır mola kayıtları güvenli biçimde doğrulanamadı. Birleşik tutar gösterilmez.',
+      earnFixedOtSelection: 'Fazla mesaiyi eklemeyi açıkça seç',
+      earnFixedOtInclude: 'Kayıtlı fazla mesaiyi ekle',
+      earnFixedOtExclude: 'Bu dönemde ekleme',
+      earnFixedOtReason: 'Bu onayın veya düzeltmenin nedeni (3–160 karakter)',
+      earnFixedOtReasonPlaceholder: 'Örneğin: kayıtlı mesai eşiği ve oranını kendim onayladım',
+      earnFixedOtRevision: 'Fazla mesai onayı revizyonu: {{revision}}',
+      earnFixedOtSave: 'Fazla mesai kararını sürümlü kaydet',
+      earnFixedOtSaved: 'Fazla mesai kararı sürümlü kaydedildi; tahmin yeniden hesaplanacak.',
+      earnFixedOtInvalid: 'Fazla mesai kararı geçersiz veya eskimiş',
+      earnFixedOtNotPayslip:
+        'Yalnız kullanıcı bildirimi esaslı vergi öncesi tahmindir. Ücret profili eşiği yasal mesai sınırı değildir. Takvim bazlı prim, kesinti, düzeltme, SGK, vergi ve net maaş hariçtir; resmî bordro değildir. Gerçek çalışmalar sonradan değiştirilirse tutar güncellenir.',
       earnFixedTitle: 'Özel maaş dönemi: sabit ücret ana tutarı',
       earnFixedExplanation:
         'Bu bölüm yalnız sabit aylık ücretin özel dönem için kullanıcı tarafından açıkça seçilen ana tutarını gösterir. Takvim günleri veya kaydedilen çalışma süresi kullanılarak otomatik oranlama yapılmaz. İki ayrı maaş profili varsa tahmin durur.',
@@ -510,6 +550,47 @@ const resources = {
       routines: 'Routines',
       earnings: 'Earnings',
       settings: 'Settings',
+      earnFixedOtTitle: 'Custom period: logged overtime on top of fixed base',
+      earnFixedOtExplanation:
+        'First declare the fixed salary base. You can then explicitly authorize adding overtime only for recorded actual work above your own selected threshold, using the saved profile overtime hourly rate and multiplier. Regular hours are not paid a second time.',
+      earnFixedOtState_requires_base:
+        'First record or update your fixed salary base statement.',
+      earnFixedOtState_needs_configuration:
+        'Your fixed salary profile needs an explicit overtime threshold and a positive overtime hourly rate. Correct the profile first.',
+      earnFixedOtState_blocked:
+        'Overtime estimate blocked by invalid source or calendar-month adjustments.',
+      earnFixedOtState_not_applicable: 'Not applicable to this period.',
+      earnFixedOtSource:
+        'Fixed source: {{id}} · profile revision {{revision}} · base statement {{baseRevision}} · chosen base {{base}}',
+      earnFixedOtRate:
+        'Your selected threshold: {{threshold}} net min per custom period · overtime hourly {{rate}} × {{numerator}}/{{denominator}}',
+      earnFixedOtStale:
+        'The base statement or pay profile changed. Prior overtime consent is stale; explicitly record a new decision.',
+      earnFixedOtCombinedScope:
+        'Estimate of selected fixed BASE plus reported actual overtime ONLY:',
+      earnFixedOtSum: 'Fixed base {{base}} + additional overtime {{overtime}}',
+      earnFixedOtSeconds:
+        'Reported net work {{logged}} sec · regular {{regular}} sec (not paid again) · overtime {{overtime}} sec',
+      earnFixedOtLine:
+        'Actual work {{work}} · additional overtime {{seconds}} sec · {{amount}} · pay break audit {{audit}}',
+      earnFixedOtExcluded:
+        'You explicitly chose not to include overtime in this custom period. No combined amount is shown.',
+      earnFixedOtNeedsConsent:
+        'Overtime inclusion has not been explicitly authorized for this period. No combined amount is shown.',
+      earnFixedOtBlocked:
+        'Actual work or boundary break provenance could not be verified. No combined amount is shown.',
+      earnFixedOtSelection: 'Make an explicit overtime inclusion decision',
+      earnFixedOtInclude: 'Include recorded overtime',
+      earnFixedOtExclude: 'Do not include this period',
+      earnFixedOtReason: 'Reason for this consent or correction (3–160 characters)',
+      earnFixedOtReasonPlaceholder:
+        'Example: I verified my logged-work threshold and hourly overtime rate',
+      earnFixedOtRevision: 'Overtime consent revision: {{revision}}',
+      earnFixedOtSave: 'Save versioned overtime decision',
+      earnFixedOtSaved: 'Versioned overtime decision saved; the estimate will refresh.',
+      earnFixedOtInvalid: 'Invalid or stale overtime decision',
+      earnFixedOtNotPayslip:
+        'User-reported PRE-TAX estimate only. Your chosen threshold is not a statutory overtime rule. Calendar bonuses, deductions, corrections, tax, social insurance and net pay are excluded; this is not an official payslip. Edited work records reprice the estimate.',
       earnFixedTitle: 'Custom pay period: fixed salary base only',
       earnFixedExplanation:
         'This section shows only the fixed-salary base amount that you explicitly choose for a custom period. No automatic daily or hourly prorating is inferred from calendar dates or logged work. A period with two effective profiles stays blocked.',
