@@ -6,6 +6,8 @@
 
 ## GitHub main dalında doğrulananlar
 
+- [x] **PR #9**: SQLite v3, gün bazlı DST seçimi, gerçek çalışma kayıtları, IANA zaman dilimi değişimi — merge SHA `a4fcb627b203e2aa626266ed1f90adc543de2403`; merge CI [#43704664276](https://github.com/hilmiguner/vardiyum/actions/runs/43704664276) SUCCESS.
+
 - [x] PR #1: ürün/mimari/handoff belgeleri.
 - [x] PR #3: Expo SDK 57, React Native, TypeScript mobil iskeleti; dört sekme ve ayarlar, SQLite v1, yerel demo döngü.
 - [x] PR #3 main sonrası Actions [#43698720966](https://github.com/hilmiguner/vardiyum/actions/runs/43698720966) SUCCESS.
@@ -32,7 +34,8 @@
 - [ ] Native iOS/Android uygulama derlemesi ve gerçek cihaz/emülatör açılışı: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2).
 - [ ] Gerçek cihazda SQLite v1→v2 güncellemesi ve uygulama yeniden açılışında veri kalıcılığı.
 - [ ] Gerçek standalone pakette internet olmadan çalışma.
-- [ ] Yaz saati geçişlerinde **gerçek geçen dakika** hesabı. Mevcut süre yalnızca planlanan yerel duvar saati süresidir; ücret hesabına otomatik aktarılmamalı.
+- [x] Yaz saati değişimi üzerinden planlanan vardiyanın UTC gerçek geçen süre dönüşümü PR #7 ile doğrulandı.
+- [ ] Bu planlı süre, **gerçek çalışılmış/ücretlendirilebilir süre** olarak otomatik aktarılmıyor; resmi bordro politikası henüz yok.
 - [ ] Tam serbest şablon silme ve geçmiş sürümleme, çakışma davranışı; veri kaybı testi.
 - [ ] Rutinler, bildirimler, maaş/mesai, dışa aktarma/geri alma ve mağazalar.
 
@@ -71,7 +74,7 @@
 
 ## Issue #8 / PR #9 — gün bazlı DST kararı, gerçek çalışma ve zone değiştirme
 
-**Geliştirme dalı:** `feat/persisted-fold-work-sessions-v3`  
+**Geliştirme dalı:** `feat/persisted-fold-work-sessions-v3` (PR #9 merged)  
 **PR:** [#9](https://github.com/hilmiguner/vardiyum/pull/9)  
 **Kod/CI kanıtı:** [GitHub Actions #43704251648](https://github.com/hilmiguner/vardiyum/actions/runs/43704251648) **SUCCESS**: npm ci, Expo package check, Prettier, ESLint, TypeScript, **39/39 Node testi**, Android/iOS JavaScript paketlemesi.
 
@@ -80,9 +83,10 @@
 - [x] Kullanıcının fiilî giriş/çıkış UTC anlarını ve mola/not girdilerini ayrı tabloda saklama; örtüşen aralık reddi.
 - [x] Gün seçimi ve saat dilimi değişimini açıklayan TR/EN form ve onay/önizleme.
 - [x] V1/v2 -> v3 SQLite migrasyonu, önceki `work_entries` ve pattern/override verilerini koruma testleri.
-- [ ] PR #9 squash merge + main CI son doğrulaması (bu belge hazırlanırken bekliyor).
+- [x] **PR #9 squash merge:** `a4fcb627b203e2aa626266ed1f90adc543de2403`.
+- [x] **Merge sonrası main CI:** [Actions #43704664276](https://github.com/hilmiguner/vardiyum/actions/runs/43704664276) SUCCESS.
 - [ ] Gerçek Android/iOS native cihaz/simülatör SQLite persistans, Intl/tzdb testi: **kullanıcı tercihine göre sonra**, [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) açık.
 - [ ] Gerçek kayıt **kullanıcı beyanı**; resmi puantaj, ücretlendirilebilir saat ve maaş motoru değildir.
 - [ ] Tarihsel vardiya şablonu sürümleme ve işveren doğrulaması sonraki işler.
 
-**Sıradaki kod hedefi:** Kalan Faz 2 geçmiş sürümleme/şablon yönetimi veya Faz 3 günlük rutin motoru; yeni PR öncesi main SHA ve CI doğrulanacak.
+**Sıradaki kod hedefi:** [Issue #10 — Faz 3 vardiyaya bağlı rutin motoru](https://github.com/hilmiguner/vardiyum/issues/10). Paralelde Faz 2 şablon geçmiş sürümlemesi [Issue #4](https://github.com/hilmiguner/vardiyum/issues/4) açık. Cihaz testleri [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ertelendi.

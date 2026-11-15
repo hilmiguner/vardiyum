@@ -63,13 +63,13 @@
 
 - **[PR #9](https://github.com/hilmiguner/vardiyum/pull/9)**, branch `feat/persisted-fold-work-sessions-v3`: günlük DST fold seçimi, açık saat dilimi değiştirme/önizleme, fiilî giriş/çıkış kayıtları ve yerel SQLite v3 migrasyonu.
 - **Kanıt:** [Actions #43704251648](https://github.com/hilmiguner/vardiyum/actions/runs/43704251648) SUCCESS — Prettier, ESLint, TypeScript, npm ci, Expo dependency check, **39 Node test, 0 fail**, Android ve iOS JS export.
-- **Henüz belgelendiği anda:** PR merge edilmedi; önce PR #9 HEAD/merge/main CI durumunu sorgula.
+- **PR #9 merged:** main commit `a4fcb627b203e2aa626266ed1f90adc543de2403`; merge sonrası [Actions #43704664276](https://github.com/hilmiguner/vardiyum/actions/runs/43704664276) SUCCESS. Sonraki sohbetler yeni commit/CI varsa onları da kontrol etmeli.
 - **Ana sınır:** Bir günün fold seçimi yalnızca şablonun saatleri/ID'si ve program zaman dilimi aynıysa geçerli. Gerçek çalışma giriş/çıkışı planlanan vardiyadan ayrı ve kullanıcı beyanıdır; aynı UTC anları için çakışan fiilî kayıt reddedilir. Maaş motoru halen yok.
 - **SQLite:** V3 `shift_boundary_choices` ve `actual_work_sessions` ekler. V1/V2 veri ve tarih korunur; legacy `work_entries` yanlışlıkla doğrulanmış sayılmaz.
 - **Saat dilimi:** kullanıcı açık onayla program IANA zonunu değiştirir; yerel döngü tarih/saatleri korunur, geçmiş actual UTC kayıtları yeniden hesaplanmaz.
 - **Cihazlar:** kullanıcı cihaz testlerini sonraya bırakmayı istedi. Bu eksiklik [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de açık, **PASS denmeyecek**.
-- **Sıradaki iş:** PR #9 merge ve main CI doğrulanır; sonra STATUS/HANDOFF/ROADMAP commit/CI bilgileriyle güncellenir. Faz 2 tarihsel şablon sürümleme ya da Faz 3 rutine ilerlenir.
+- **Sıradaki iş:** [Issue #10](https://github.com/hilmiguner/vardiyum/issues/10) Faz 3 vardiyaya bağlı rutinler/önceki tamamlanmalar. [Issue #4](https://github.com/hilmiguner/vardiyum/issues/4) geçmiş vardiya sürümlemesi açık; cihaz doğrulaması Issue #2 üzerinden sonraya ertelendi.
 
 Yeni sohbet başlangıcı:
 
-> Vardiyum projemiz https://github.com/hilmiguner/vardiyum. Önce docs/STATUS.md, docs/HANDOFF.md, docs/ROADMAP.md ve docs/DECISIONS.md dosyalarını, açık PR/Issue ve güncel main CI'ını doğrula. PR #7 UTC/DST motoru main'de; PR #9 günlük fold seçimi, gerçek çalışma ve saat dilimi ayarı ile SQLite v3. Native cihaz testleri kullanıcı isteğiyle ertelendi (Issue #2). Belgelenen gerçek test kanıtlarını esas al, sonraki MVP geliştirmesine geç, değişiklikleri GitHub'a işle.
+> Vardiyum projemiz https://github.com/hilmiguner/vardiyum. Önce docs/STATUS.md, docs/HANDOFF.md, docs/ROADMAP.md ve docs/DECISIONS.md dosyalarını, açık PR/Issue ve güncel main CI'ını doğrula. PR #7 UTC/DST motoru main'de; PR #9 günlük fold seçimi, gerçek çalışma ve saat dilimi ayarı ile SQLite v3 **main'e merge edildi**; sıradaki Issue #10 rutin motoru. Native cihaz testleri kullanıcı isteğiyle ertelendi (Issue #2). Belgelenen gerçek test kanıtlarını esas al, sonraki MVP geliştirmesine geç, değişiklikleri GitHub'a işle.

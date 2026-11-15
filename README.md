@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Expo temel PR #3, vardiya/takvim PR #5 ve DST motoru PR #7 **main'de**. Gün bazlı DST kararları, gerçek çalışma kayıtları ve açık saat dilimi değiştirme UI'si **PR #9 ile hazırlanmıştır**; son merge durumu [docs/STATUS.md](docs/STATUS.md) ve GitHub'dan doğrulanmalı. Gerçek native cihaz testleri kullanıcı isteğiyle ertelendi.
+> **Durum (2026-11-15):** Expo temel PR #3, vardiya/takvim PR #5, DST motoru PR #7 ve günlük saat seçimleri/gerçek çalışma kayıtları PR #9 **main'e birleştirildi**. 39 Node testi ve Android/iOS JavaScript paketleme başarılı. **Native gerçek cihaz testleri ertelendi.** [docs/STATUS.md](docs/STATUS.md).
 
 ## Geliştirme kurulumu
 

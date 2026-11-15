@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | 0 | Ürün, mimari ve proje hafızası belgeleri | ✅ PR #1 ile tamamlandı |
 | 1 | Expo iskeleti, SQLite, i18n, tema, CI | PR #3 main'e alındı; Issue #2 native test açık |
-| 2 | Esnek vardiya motoru, istisnalar ve takvim | PR #5/#7 main'de; PR #9 gerçek çalışma ve seçimler, native test/sürümleme açık |
+| 2 | Esnek vardiya motoru, istisnalar ve takvim | PR #5/#7/#9 main'de; cihaz testleri/sürümleme açık |
 | 3 | Rutinler, görev geçmişi, bildirimler | Planlandı |
 | 4 | Mesai ve tahmini kazanç | Planlandı |
 | 5 | Yedekleme, gerçek cihazlar, beta | Planlandı |
@@ -42,7 +42,7 @@
 - [x] Döngü indeksi ve takvim günü için DST / IANA tarih senaryoları test edildi.
 - [x] IANA saat dilimiyle gerçek UTC aralığı ve geçen saniye; DST gap/fold fail-closed kuralı, otomatik testler **PR #7 main'e merge edildi** (`5d4e1f9f`), main CI [#43702715736](https://github.com/hilmiguner/vardiyum/actions/runs/43702715736) SUCCESS.
 - [ ] Gerçek cihaz ICU/tzdb sınır durumları: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) (kullanıcı isteğiyle ertelendi).
-- [x] Bir gün için ayrı DST fold seçimi ve şablon/saat dilimi imzası; fiilî çalışma kayıtları ve açık saat dilimi değişim UI'si [PR #9](https://github.com/hilmiguner/vardiyum/pull/9) (kod/CI, merge durumu ayrıca doğrulanmalı).
+- [x] Bir gün için ayrı DST fold seçimi ve şablon/saat dilimi imzası; fiilî çalışma kayıtları ve açık saat dilimi değişim UI'si [PR #9](https://github.com/hilmiguner/vardiyum/pull/9) main'e merge edildi (`a4fcb627`); main CI [#43704664276](https://github.com/hilmiguner/vardiyum/actions/runs/43704664276) SUCCESS.
 - [ ] Native cihazda DST, SQLite v3 kalıcılığı ve UTC kayıt doğrulaması: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ertelendi.
 - [x] Aylık takvim, ay gezinme, gün seçimi ve günlük override PR #5.
 - [ ] İleri düzey filtreleme.
@@ -51,6 +51,8 @@
 - [ ] Şablon silme ve sürümleme stratejisi.
 
 ## Faz 3 — Rutinler
+
+**Sıradaki geliştirme:** [Issue #10](https://github.com/hilmiguner/vardiyum/issues/10) — vardiyaya bağlı kurallar ve tamamlanma geçmişi.
 
 - [ ] Haftanın günü, döngü günü ve vardiya türüne bağlı tekrarlar
 - [ ] Günlük görev listesi ve geçmiş tamamlanmalar
