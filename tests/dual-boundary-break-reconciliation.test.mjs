@@ -594,7 +594,7 @@ test('falsified in-memory dual event, changed pay audit revision and missing cur
       work,
       allocation: period,
       auditRevision: 1,
-      dualBreakAudit: { ...dual, beforeRateBreakMinutes: 21 },
+      dualBreakAudit: { ...dual, portionBreakMinutes: 61 },
     },
     { work, dualBreakAudit: dual },
   ].entries()) {
