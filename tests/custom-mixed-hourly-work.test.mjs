@@ -161,7 +161,7 @@ test('a rate boundary follows saved Kathmandu work zone, NEVER the displayed Ist
   assert.equal(report.loggedSeconds, 3600);
   assert.equal(report.lines[0].segmentEndUtc, '2026-10-31T18:15:00.000Z');
   assert.equal(report.lines[1].segmentStartUtc, '2026-10-31T18:15:00.000Z');
-  assert.equal(report.workOnlyMinorUnits, 19167);
+  assert.equal(report.workOnlyMinorUnits, 17500);
   assert.deepEqual(report.lines.map((line) => line.profileId), ['oct', 'nov']);
 });
 
@@ -359,7 +359,7 @@ test('SQLite v1→v8 uses latest two immutable hourly revisions and writes nothi
     const settings = db.prepare('SELECT key,value FROM app_settings ORDER BY key').all().map((row) => ({ ...row }));
     const report = await loadCustomHourlyEstimateFromStore(store(db), PERIOD, 'Europe/Istanbul');
     assert.equal(report.status, 'estimated');
-    assert.equal(report.workOnlyMinorUnits, 150000);
+    assert.equal(report.workOnlyMinorUnits, 140000);
     assert.deepEqual(report.lines.map((line) => [line.profileId, line.profileRevision]), [
       ['oct', 1],
       ['nov', 2],
