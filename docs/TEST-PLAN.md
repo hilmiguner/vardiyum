@@ -147,3 +147,9 @@
 - [ ] Kullanıcı seçimi ve SQLite migrasyonları/backup restore round-trip; v8 geçmişi ve legacy finance tabloları korunmalı.
 - [ ] Ücret profili efektif ay kesişimi ve sabit tutar, her döneme bağımsız eşik, adjustments ve TR/EN itemized CSV/JSON güvenli paylaşım testleri.
 - [ ] Gerçek Android/iOS cihaz, time zone ICU/tzdb, düşük disk/kill/restart ve restore [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) / [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20).
+
+## 2026-11-15 — Issue #22 persisted setting v8 regresyonu
+
+- [ ] `tests/pay-period-settings.test.mjs`: gerçek Node SQLite v1→v8 tüm göçler, anahtar yoksa day=1 ve DB mutasyonu yok, 26 seçimi/reload/1 reset, diğer app_settings satırları korunur, 0/29/31/float/noncanonical JSON/bozuk değer reddi, şema 18 tablo/user_version 8 değişmez, FK ve integrity `ok`. Yeni feature CI ile teyit edilecek.
+- [ ] Settings TR/EN 1–28 UI, schedule IANA önizlemesi ve restore sonrası gerçek cihazda saved app_settings round-trip: native [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2).
+- [ ] Custom earnings calculation, break audit, etkili profil dönemi, sabit ücret, manuel adjustments, CSV/JSON **henüz tamamlanmadı**.

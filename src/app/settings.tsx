@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Action, Heading, Muted, Page, Panel } from '../components/ui';
 import { TimeZoneSettings } from '../components/time-zone-settings';
 import { EncryptedBackupPanel } from '../components/encrypted-backup-panel';
+import { PayPeriodSettingsPanel } from '../components/pay-period-settings-panel';
 import {
   DEFAULT_TEMPLATES,
   localDateString,
@@ -323,6 +324,7 @@ export default function SettingsScreen() {
           <TimeZoneSettings />
         </>
       )}
+      <PayPeriodSettingsPanel timeZone={schedule.timeZone} />
       <EncryptedBackupPanel />
     </Page>
   );

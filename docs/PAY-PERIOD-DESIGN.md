@@ -29,3 +29,9 @@ A user-selected payroll-period start day is an **integer 1–28**. A closing day
 \`tests/pay-period.test.mjs\` exercises 26→25, February leap/non-leap, year boundaries, UTC end-exclusivity, 30/45-minute zones, DST elapsed time, break allocation, stale/source mismatch, and compatibility at start day 1.
 
 This first increment intentionally does **not** close Issue #22 or claim that custom periods are visible or usable in the app. Next PR should add migration-safe persistence and the reviewed profile/adjustment/UX policy before enabling a custom-period report.
+
+## 2026-11-15 — Next increment: v8 preferences without new tables
+
+The new `earnings_pay_period_start_day_v1` canonical string setting is stored in the already-inventoried SQLite v8 `app_settings` table. An absent key is day 1; an invalid/corrupt key fails closed (not silently reset). On a normal save, only this key is UPSERTed. It is already included in the encrypted v8 18-table snapshot; current clean-target restore remains schema-compatible, subject to real-device acceptance.
+
+Settings shows a `1..28` numeric choice and civil-date preview in the stored schedule IANA zone. It clearly labels this as **not yet affecting the Earnings calculation or exports**. New domain tests verify migrations and preservation; a separate custom break audit and profile/adjustment policy must be implemented before enabling actual pay-period financial reports. No SDK/native runtime was tested by these Node tests.
