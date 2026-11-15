@@ -152,3 +152,10 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 - [x] [PR #27](https://github.com/hilmiguner/vardiyum/pull/27) **merged** code main `9965a9b904250bc5fbcfb113f07a9ce09cd4c26e`; [main CI #43749478876](https://github.com/hilmiguner/vardiyum/actions/runs/43749478876) **SUCCESS 177/177 Node** ve Android/iOS JS. Sadece dönem genelinde **tek değişmeyen hourly** profil ve gerçek çalışma varsa kaynak bazlı USD/TRY/EUR/GBP cent+rational net saat/fazla mesai tahmini. Sınır mola allocation PR #25 ayrı audit, 26→25 double count yok; TR/EN ayrı Kazanç paneli.
 - [ ] Mixed monthly-effective pay profile değişimi olan dönemde kaynak UTC/IANA segmentleri, özel sınır molası kullanıcı beyanı ve oran/eşik ilişkisi açık politika; `monthly_fixed` tam/partial ödeme varsayımı kullanıcıdan; custom calendar adjustments explicit attribution ve kapsamlı custom CSV/JSON.
 - [ ] Native device/integrity/backup-restore/DST/low disk/process-kill issue #2/#20 erteli. Issue #22 ve parent #16 açık; custom work-only ücret resmi/eksiksiz maaş değildir.
+
+## 2026-11-15 — Karma efektif saatlik ücret segmenti (feature PR/CI bekliyor)
+
+- [x] PR #23–#27: custom payroll UTC period, user start-day setting, ayrı custom period-break audit, immutable effective pay preview ve tek-rate gerçek hourly work-only tahmin. [main CI #43749767124](https://github.com/hilmiguner/vardiyum/actions/runs/43749767124) SUCCESS 177 Node.
+- [ ] `feat/custom-mixed-hourly-rates`: 26→25 içinde ayın 1'inde yeni hourly rate = **orijinal work IANA 00:00 UTC split**; aynı currency/period threshold, her profil özgün OT multiplier ve kaynak ID/revision. Rate-midnight >0 mola, mixed currency/threshold/fixed, missing audit, calendar adjustments fail closed. TR/EN UI ve Node DST/money/v8 regresyonu; PR CI/merge bekliyor.
+- [ ] Rate-boundary break allocation için ayrı açık kullanıcı beyanı ve snapshot provenance tasarımı, fixed salary full/partial, custom period prim/kesinti atfı, gerçek özel dönem kaynaklı CSV/JSON. Issue #22/#16.
+- [ ] Gerçek iOS/Android native + AES clean restore/low disk/process-kill Issue #2/#20 erteli.
