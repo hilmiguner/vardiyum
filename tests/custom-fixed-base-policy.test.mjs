@@ -356,7 +356,7 @@ test('day one is the legacy calendar month; no new custom fixed base statement a
     await writePayPeriodStartDay(store(db),1);
     const report=await loadCustomFixedBaseReportFromStore(store(db),PERIOD,ZONE);
     assert.equal(report.status,'not_applicable');
-    await assert.rejects(()=>save(db,'full_base',null,0),/INVALID_FIXED_BASE_START_DAY/);
+    await assert.rejects(()=>save(db,'full_base',null,0),/FIXED_BASE_SETTING_CHANGED/);
   }finally{db.close();}
 });
 
