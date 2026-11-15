@@ -1,3 +1,4 @@
+import { adjustmentAttributionGate } from './custom-adjustment-attribution-store.ts';
 import {
   createFixedOvertimeEvent,
   decodeFixedOvertimeHistory,
@@ -235,7 +236,7 @@ export async function loadFixedOvertimeViewFromStore(
     bounds.startDate.slice(0, 7),
     bounds.endDateInclusive.slice(0, 7),
   );
-  if (!adjustments || !Number.isSafeInteger(adjustments.n) || adjustments.n !== 0)
+  if (!adjustments || (await adjustmentAttributionGate(store, periodKey, adjustments.n)) !== 0)
     return {
       status: 'blocked',
       periodKey,
