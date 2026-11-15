@@ -139,3 +139,10 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 - [x] [PR #26](https://github.com/hilmiguner/vardiyum/pull/26) **merged** main `b4cd8c9cda15040fb3b7d7206d91c38cd35ea1ed` — 26→25 içinde effective-month ücret profili, son immutable revision, para birimi/model ve schedule-IANA UTC segmenti **salt-okunur** TR/EN Kazanç paneli. [main CI #43747264298](https://github.com/hilmiguner/vardiyum/actions/runs/43747264298) SUCCESS (**163/163 Node**, Android/iOS JS export).
 - [ ] Gerçek custom earnings: her kullanıcı çalışma UTC/IANA aralığını custom period ve varsa profil sınırlarında kes, sınırları aşan molalarda ayrı kaynak beyanı/fail-closed; dönemlik bağımsız fazla mesai eşiği, BigInt oran ve kuruş toplamı; mixed rate döneme explicit politika ve fixed salary full/partial varsayımı; period-keyed adjustments/CSV+JSON. **Mevcut takvim-ay raporu unchanged.** Issue #22/#16 açık.
 - [ ] Native Android/iOS gerçek kayıt + encrypted backup/restore + DST/low disk/crash kabulü Issue #2/#20 erteli.
+
+## 2026-11-15 — Gerçek tek-rate özel dönem saatlik çalışma tahmini (PR #27 bekleniyor)
+
+- [x] PR #23–#26 main: özel dönem UTC/IANA domain, kalıcı 1–28 tercih, ayrı custom mola geçmişi, efektif ay profil değişiminin read-only önizlemesi (main CI #43747540464 SUCCESS, 163 Node).
+- [ ] [PR #27](https://github.com/hilmiguner/vardiyum/pull/27) tek ve değişmeyen saatlik profil altında 26→25 dönemi için **ilk kaynak-bağlı brüt çalışma ücreti tahmini**, gerçek UTC çalışma ve ayrı mola audit, dönemlik OT eşik reset, BigInt kuruş, duplicate/overlap fail-closed, TR/EN ayrı panel. Aylık adjustments varsa hesap tamamen bloke. PR CI/merge ve main kanıtı bekleniyor.
+- [ ] Mixed pay profile profile-boundary mola split/review policy; fixed full/partial dönem ödeme varsayımı; custom period adjustment attribution ve CSV/JSON contract. Çalışma ücreti tahmini net/tam maaş değildir. Issue #22/#16 açık.
+- [ ] Native iOS/Android SQLite/restore/düşük disk/DST kabulü Issue #2/#20 erteli.
