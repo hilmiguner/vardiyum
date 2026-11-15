@@ -14,6 +14,8 @@ import {
   type PayPeriodWorkPortion,
 } from './pay-period.ts';
 import { resolveLocalBoundary } from './zoned-shift-time.ts';
+import { createDualBoundaryBreakEvent, type DualBoundaryBreakEvent } from './dual-boundary-break-audit.ts';
+import type { PayPeriodBreakAllocation } from './pay-period.ts';
 import {
   createRateBreakEvent,
   type RateBoundaryBreakEvent,
@@ -43,6 +45,7 @@ type RatePart = {
   breakMinutes: number;
   auditRevision: number | null;
   rateBreakAuditRevision: number | null;
+  rateBreakAuditKind: 'rate' | 'dual' | null;
   profile: EarningsProfile;
 };
 
@@ -99,6 +102,8 @@ function rateParts(
   portion: PayPeriodWorkPortion,
   auditRevision: number | null,
   rateBreakAudit: RateBoundaryBreakEvent | undefined,
+  dualBreakAudit: DualBoundaryBreakEvent | undefined,
+  periodAllocation: PayPeriodBreakAllocation | undefined,
   startDay: number,
   profiles: [EarningsProfile, EarningsProfile],
   boundaryLocalDate: string,
@@ -116,24 +121,37 @@ function rateParts(
   const crosses = start < border && border < end;
   // A rate-boundary split is a separate, explicitly user-entered revision.
   // The older pay-period break allocation never resolves rate attribution.
-  if ((!crosses || portion.breakMinutes === 0) && rateBreakAudit)
+  if ((!crosses || portion.breakMinutes === 0) && (rateBreakAudit || dualBreakAudit))
     throw new Error('UNEXPECTED_RATE_BREAK_AUDIT');
+  if (rateBreakAudit && dualBreakAudit)
+    throw new Error('CONFLICTING_RATE_BREAK_AUDITS');
   let beforeBreak = 0;
   if (crosses && portion.breakMinutes > 0) {
-    if (!rateBreakAudit) throw new Error('CUSTOM_RATE_BREAK_ALLOCATION_REQUIRED');
-    const canonical = createRateBreakEvent(
-      work,
-      startDay,
-      portion.periodKey,
-      boundaryLocalDate,
-      rateBreakAudit.beforeRateBreakMinutes,
-      rateBreakAudit.revision,
-      rateBreakAudit.reason,
-      rateBreakAudit.recordedAt,
-    );
-    if (JSON.stringify(canonical) !== JSON.stringify(rateBreakAudit))
-      throw new Error('INVALID_RATE_BREAK_AUDIT_SOURCE');
-    beforeBreak = canonical.beforeRateBreakMinutes;
+    if (portion.splitAcrossPeriods) {
+      if (!dualBreakAudit) throw new Error('DUAL_BOUNDARY_BREAK_ALLOCATION_REQUIRED');
+      if (!periodAllocation || auditRevision !== dualBreakAudit.payPeriodAudit.revision ||
+          JSON.stringify(periodAllocation) !== JSON.stringify(dualBreakAudit.payPeriodAudit))
+        throw new Error('STALE_DUAL_PAY_PERIOD_AUDIT');
+      const canonical = createDualBoundaryBreakEvent(
+        work, startDay, portion.periodKey, boundaryLocalDate,
+        dualBreakAudit.payPeriodAudit,
+        dualBreakAudit.beforeRateBreakMinutes,
+        dualBreakAudit.revision, dualBreakAudit.reason, dualBreakAudit.recordedAt,
+      );
+      if (JSON.stringify(canonical) !== JSON.stringify(dualBreakAudit))
+        throw new Error('INVALID_DUAL_BOUNDARY_AUDIT_SOURCE');
+      beforeBreak = canonical.beforeRateBreakMinutes;
+    } else {
+      if (!rateBreakAudit) throw new Error('CUSTOM_RATE_BREAK_ALLOCATION_REQUIRED');
+      const canonical = createRateBreakEvent(
+        work, startDay, portion.periodKey, boundaryLocalDate,
+        rateBreakAudit.beforeRateBreakMinutes,
+        rateBreakAudit.revision, rateBreakAudit.reason, rateBreakAudit.recordedAt,
+      );
+      if (JSON.stringify(canonical) !== JSON.stringify(rateBreakAudit))
+        throw new Error('INVALID_RATE_BREAK_AUDIT_SOURCE');
+      beforeBreak = canonical.beforeRateBreakMinutes;
+    }
   }
 
   const ranges: { start: number; end: number; profile: EarningsProfile }[] = [
@@ -158,7 +176,8 @@ function rateParts(
       netSeconds: seconds - breaks * 60,
       breakMinutes: breaks,
       auditRevision,
-      rateBreakAuditRevision: rateBreakAudit?.revision ?? null,
+      rateBreakAuditRevision: (dualBreakAudit ?? rateBreakAudit)?.revision ?? null,
+      rateBreakAuditKind: dualBreakAudit ? 'dual' : rateBreakAudit ? 'rate' : null,
       profile: range.profile,
     });
   }
@@ -202,6 +221,8 @@ export function estimateCustomMixedHourlyWork(
     portion: PayPeriodWorkPortion;
     auditRevision: number | null;
     rateBreakAudit?: RateBoundaryBreakEvent;
+    dualBreakAudit?: DualBoundaryBreakEvent;
+    periodAllocation?: PayPeriodBreakAllocation;
   }[] = [];
   const ids = new Set<string>();
   for (const item of sources) {
@@ -236,6 +257,8 @@ export function estimateCustomMixedHourlyWork(
         portion,
         auditRevision: item.auditRevision ?? null,
         rateBreakAudit: item.rateBreakAudit,
+        dualBreakAudit: item.dualBreakAudit,
+        periodAllocation: item.allocation,
       });
     } catch (error) {
       return blocked(
@@ -275,6 +298,8 @@ export function estimateCustomMixedHourlyWork(
           item.portion,
           item.auditRevision,
           item.rateBreakAudit,
+          item.dualBreakAudit,
+          item.periodAllocation,
           plan.startDay,
           policy.profiles,
           policy.boundaryLocalDate,
@@ -348,6 +373,7 @@ export function estimateCustomMixedHourlyWork(
           sourceBreakMinutes: part.breakMinutes,
           breakAuditRevision: part.auditRevision,
           rateBreakAuditRevision: part.rateBreakAuditRevision,
+          rateBreakAuditKind: part.rateBreakAuditKind,
           seconds,
           amountMinorUnits: Number(delta),
           profileId: part.profile.id,
