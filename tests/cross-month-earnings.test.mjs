@@ -274,7 +274,8 @@ test('export is deterministic, blocked reports cannot be shared, CSV formulas es
   const injected = {
     ...report,
     lines: report.lines.map((line) => ({
-      ...line, description: '=HYPERLINK("http://example.test")',
+      ...line,
+      description: '=HYPERLINK("http://example.test")',
     })),
   };
   assert.ok(createEarningsExport(injected, 'csv').content.includes("'=HYPERLINK"));
