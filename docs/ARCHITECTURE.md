@@ -178,3 +178,22 @@ Bu tablo isimleri öneridir; gerçek SQLite migrasyonu ile kesinleşecek. Foreig
 - `src/components/reminder-consent-panel.tsx` bildirimlerin genel etkinleştirme/kapatma UI'sidir; izni **yalnızca kullanıcı basarsa** ister. `app_settings.routine_reminders_opted_in` başlangıçta yoktur/kapalıdır.
 - SQLite v5 eklemeli: `routine_rules.reminder_clock` (null veya 24 saat `HH:mm`), `routine_rules.reminder_timezone_id` (nullable IANA zone), indeks; v1–v4 iş/veri ve completion eventleri korunur. Program zone değişikliği aynı transaction'da hatırlatma zone'larını günceller ve rutin revizyonunu artırarak eski schedule anahtarlarını geçersiz kılar.
 - **Platform sınırları:** iOS pending bildirim kotası, Android 12+ kesin alarm politikası, OS güç tasarrufu, izin reddi, saat dilimi veritabanı farkları ve teslim/yeniden başlatma davranışı **native test yapılmadan kesinlenemez**; [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) üzerinde ertelendi. Planlanmış bildirimin tam zamanında gelmesini garanti etmeyiz.
+
+## Faz 4 — Tahmini kazanç mimarisi (Issue #14 / PR #15)
+
+### Saf hesaplama ve para modeli
+
+- `src/domain/earnings-engine.ts` saf motoru, UTC `actual_work_sessions` kayıtlarından ve manuel `earnings_adjustments` kalemlerinden şeffaf **vergi öncesi tahmin** üretir. `work_entries` ve planlanan shift süreleri veri kaynağına yükseltilmez.
+- `EarningsProfile`: geçerlilik ayının **ilk günü** `effectiveFrom`, `hourly|monthly_fixed`, ISO alt kümesi `TRY|USD|EUR|GBP`, pozitif ücret (minor unit), açık dönem `overtimeAfterMinutes` veya null, `overtimeMultiplierNumerator/Denominator`, sürüm kimliği ve revizyon. Aynı ay birden fazla profil SQLite UNIQUE ile reddedilir. Bu ilk sürüm, tam ay varsayımını kullanır.
+- `hourly`: kullanıcı beyanına dayalı dönem çalışma saniyeleri, kullanıcı eşiğinin altındaki normal ve üstündeki fazla mesai olarak kronolojik ayrılır. `monthly_fixed`: sabit tam ay tutarı bir kez eklenir, çalışma kayıtları bilgi olarak sunulur; fazla mesai eşiği tanımlanmışsa ayrıca belirtilen saat ücreti/çarpanla eklenir. Her iki modelde de mevzuat/işveren puantajı varsayılmaz.
+- Kuruş/cent tüm kayıtlarda **safe integer**; oranlar **BigInt pay/payda** ile hesaplanır, her parasal satırda `half-away-from-zero` yuvarlanır. Toplam BigInt ile toplanır ve safe integer sınırında korunur. `src/domain/money-text.ts` para girişini ondalık float üzerinden **parse etmez**, görüntüde de 2 ondalığı string olarak oluşturur.
+- Her `EarningsLine` için `kind`, `sourceId` (`workId`, profil veya adjustment), `profileId` ve `profileRevision`, gerçek saniye, kullanıcı girdilerinden üretilen integer tutar ve açıklama mevcuttur. Sonuç tipi `needs_profile` | `blocked` | `estimated` ile **fail closed** semantiğini açık gösterir.
+- Rapor dönemleri ilk sürümde **takvim ayı** `YYYY-MM` olup vardiyanın kullanıcının kaydettiği *başlangıç sivil günü* temel alınır. Sivil çıkış günü sonraki aya taşarsa veya önceki aydan gelen kayıt bulunursa **hesap bloklanır**. Gerçek UTC anları/aktif timezone yeniden yorumlanmaz. Tüm raporun sessiz bölünmesi, eksik çalışma için otomatik kesinti ve ülke hukuku kuralları *henüz yoktur*.
+- `src/data/earnings-repository.ts` salt-okunur rapor için ilgili profil, ayı kesen tüm `actual_work_sessions` ve aynı para birimindeki düzeltmeleri kullanır; ekleme API'leri **append-only**. Profil güncelle/sil veya düzeltme silme API'si yoktur; tarihsel kayıtlar kalır. Rutin, bildirim ve diğer finansal legacy tablolar etkilenmez.
+
+### SQLite v6 ve güvenli kapsam
+
+- `earnings_profiles`: `id`, `effective_from UNIQUE`, model, iki ondalıklı desteklenen currency, integer ana ücret, isteğe bağlı fazla mesai eşiği/saat ücreti/çarpan, revision, `source='user_entered'`.
+- `earnings_adjustments`: `id`, ay, `bonus|deduction|correction`, currency, işaretli integer miktar, açıklama, kaynak ve UTC olay anı. Yeni bir ters correction ile hata dengelenebilir; eski satır silinmez.
+- **Eski `compensation_profiles`, `pay_adjustments`, `work_entries` otomatik yeni hesaplamaya alınmaz.** Migration 6 yalnızca yeni tablolar/indeksler ekler; SQLite v1–v5 korunur. `PRAGMA user_version=6`.
+- Bu finansal modül **resmî bordro**, **net gelir**, **SGK/vergi hesabı** veya işveren onaylı puantaj değildir. Gerçek cihazda SQLite v6 migrasyon/kalıcılık testi kullanıcı tercihine göre [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.

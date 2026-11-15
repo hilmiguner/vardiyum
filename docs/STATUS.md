@@ -123,3 +123,22 @@
 - [ ] **Gerçek cihaz native bildirim izni, teslim, boot/arka plan, SQLite v5 persistans** kullanıcı isteğiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'ye ertelendi. Uygulama sürekli çalışmaz; kesin zamanlı alarm vaadi yok.
 
 **Sıradaki MVP kod fazı:** [Issue #14 — Faz 4 şeffaf tahmini kazanç motoru](https://github.com/hilmiguner/vardiyum/issues/14). Resmî bordro/mevzuat hesabı iddiası olmadan yalnızca kullanıcı verilerinden şeffaf tahmin; [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) gerçek cihaz QA ertelendi.
+
+## Issue #14 / PR #15 — Faz 4 tahmini kazanç motoru
+
+**Dal:** `feat/transparent-earnings-v6`  
+**PR:** [#15](https://github.com/hilmiguner/vardiyum/pull/15)  
+**Kanıt:** [Actions #43710412387](https://github.com/hilmiguner/vardiyum/actions/runs/43710412387) **SUCCESS** (npm ci, Expo check, Prettier, ESLint, TypeScript, **84/84 Node test**, Android&iOS JavaScript export).
+
+- [x] Saatlik veya sabit tam aylık ücret profilleri; tarihsel geçerlilik ayı, para birimi (TRY/USD/EUR/GBP), revision ve kayıt kaynağı.
+- [x] Tam sayı kuruş + BigInt/rational çarpan, satır bazında belirgin yuvarlama, kaynak id/sürüm/açıklama.
+- [x] Kullanıcı beyanlı `actual_work_sessions` UTC aralıkları; planlanan vardiyaları gelir olarak saymama.
+- [x] Kullanıcının açık eşik/mesai oranı ile fazla mesai tahmini, manuel prim/kesinti/correction.
+- [x] Geçersiz/örtüşen/aylar arası veya yanlış döviz kaydı varsa toplamı **bloklama**.
+- [x] SQLite v5→v6 eklemeli migrasyon; eski v1–v5, legacy pay ve work taslakları korunur, otomatik bordroya alınmaz.
+- [x] Kazanç sekmesi ve TR/EN bilgilendirici arayüz; net ücret/vergi/SGK resmî beyanı yok.
+- [ ] PR #15 final merge ve merge sonrası main CI bilgisi bu belge hazırlanırken henüz eklenmedi.
+- [ ] Native Android/iOS gerçek cihaz, SQLite v6 kalıcılık ve ekran testi kullanıcı isteğiyle ertelendi: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2).
+- [ ] Aylar arası vardiyayı paylaştırma, işveren onayı, ülke/vergi kuralları, aktarılabilir rapor sonraki iş.
+
+**Sıradaki:** PR #15 green CI'dan sonra merge/main CI onayı; kalan Faz 4 ay sonu sınırları/gelir tahminini daha fazla genişletmeden önce ayrı Issue ile takip et.

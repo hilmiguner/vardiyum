@@ -82,3 +82,15 @@
 - [ ] TR/EN arayüz, TalkBack/VoiceOver ve tamamlanmamış görevlerin çevrimdışı kalıcılığı.
 
 **Durum:** Kullanıcı cihaz testlerini sonraya bırakmıştır; bu kutular tamamlanmış sayılmaz. JS bundle ve Node testleri native izin/teslim kanıtı değildir.
+
+## Issue #14 — Kazanç ekranı ve SQLite v6 için ileride cihaz kabulü
+
+- [ ] v5→v6 yükseltme sonrası eski shift/rutin/tamamlanma/gerçek giriş-çıkış ve hatırlatma kayıtlarının korunması, kapat-aç persistansı.
+- [ ] TR/EN Kazanç sekmesinde ayrı ay seçimi, saatlik/tam aylık kullanıcı profili oluşturma, yeni geçerlilik ayı ve aynı ay ikinci profil reddi.
+- [ ] Gerçek giriş/çıkış ve mola kaynaklı tutarın kalem kalem görünmesi; planlanan vardiyanın otomatik iş sayılmaması.
+- [ ] Kullanıcının eşik, mesai oranı, prim, kesinti ve manuel düzeltme girdileri sonrası raporu yenileme.
+- [ ] DST, ay sınırını aşan vardiya, örtüşen veri ve para birimi uyuşmazlığı halinde sahte toplam yerine blok uyarısı.
+- [ ] Cihazda hatasız integer cent biçimi, büyük tutar/eksi miktar, çevrimdışı kullanım, uygulama kapanıp tekrar açılması, büyük font ve VoiceOver/TalkBack.
+- [ ] Resmî net ücret/SGK/vergi sonuçlarının veya hukuki mevzuat varsayımının **sunulmadığı** onayı.
+
+**Henüz yapılmadı:** Kullanıcı isteğiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'ye ertelendi; Android/iOS JS export yalnızca paketlemeyi doğrular.
