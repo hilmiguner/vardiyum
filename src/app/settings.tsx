@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Alert, Pressable, Text, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -21,16 +21,15 @@ export default function SettingsScreen() {
   const router = useRouter();
   const c = usePalette();
   const { pattern, savePattern } = useAppState();
-  const [anchor, setAnchor] = useState(localDateString());
-  const [days, setDays] = useState<ShiftCode[]>(['morning', 'evening', 'night', 'off']);
+  // Derived defaults track the asynchronously loaded pattern without a state-setting effect.
+  const [draft, setDraft] = useState<{ anchor: string; days: ShiftCode[] } | null>(null);
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (pattern) {
-      setAnchor(pattern.anchorDate);
-      setDays([...pattern.days]);
-    }
-  }, [pattern]);
+  const anchor = draft?.anchor ?? pattern?.anchorDate ?? localDateString();
+  const days = draft?.days ?? pattern?.days ?? ['morning', 'evening', 'night', 'off'];
+  const setAnchor = (value: string) => setDraft({ anchor: value, days: [...days] });
+  const setDays = (update: (before: ShiftCode[]) => ShiftCode[]) => {
+    setDraft({ anchor, days: update([...days]) });
+  };
 
   const toggle = (index: number) => {
     setDays((before) => before.map((code, day) =>

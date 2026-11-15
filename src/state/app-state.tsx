@@ -31,8 +31,21 @@ export function AppStateProvider({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
-    void reload();
-  }, [reload]);
+    let active = true;
+    void loadShiftPattern()
+      .then((value) => {
+        if (active) setPattern(value);
+      })
+      .catch((reason: unknown) => {
+        if (active) setError(reason instanceof Error ? reason.message : 'DATABASE_ERROR');
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const savePattern = useCallback(async (value: ShiftPattern) => {
     await saveShiftPattern(value);
