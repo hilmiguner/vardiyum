@@ -96,14 +96,23 @@ test('two hourly rates use effective calendar days and ONE custom period overtim
   assert.equal(report.regularSeconds, 3 * 3600);
   assert.equal(report.overtimeSeconds, 2 * 3600);
   assert.deepEqual(
-    report.lines.map((line) => [line.workId, line.profileId, line.kind, line.seconds, line.amountMinorUnits]),
+    report.lines.map((line) => [
+      line.workId,
+      line.profileId,
+      line.kind,
+      line.seconds,
+      line.amountMinorUnits,
+    ]),
     [
       ['old', 'oct', 'regular', 7200, 20000],
       ['new', 'nov', 'regular', 3600, 20000],
       ['new', 'nov', 'overtime', 7200, 60000],
     ],
   );
-  assert.equal(report.lines.reduce((sum, line) => sum + line.amountMinorUnits, 0), report.workOnlyMinorUnits);
+  assert.equal(
+    report.lines.reduce((sum, line) => sum + line.amountMinorUnits, 0),
+    report.workOnlyMinorUnits,
+  );
 });
 
 test('break-free work crosses midnight rate boundary in the WORK zone and conserves seconds', () => {
@@ -115,7 +124,10 @@ test('break-free work crosses midnight rate boundary in the WORK zone and conser
   assert.equal(report.loggedSeconds, 3600);
   assert.deepEqual(
     report.lines.map((line) => [line.profileId, line.seconds, line.amountMinorUnits]),
-    [['oct', 1800, 5000], ['nov', 1800, 10000]],
+    [
+      ['oct', 1800, 5000],
+      ['nov', 1800, 10000],
+    ],
   );
   assert.equal(report.lines[0].segmentEndUtc, '2026-10-31T21:00:00.000Z');
   assert.equal(report.lines[1].segmentStartUtc, '2026-10-31T21:00:00.000Z');
@@ -133,10 +145,12 @@ test('unknown break placement around effective midnight blocks BOTH rates and re
 
 test('a break wholly within ONE rate interval is safe even if another rate applies elsewhere', () => {
   const withBreak = { ...newWork, breakMinutes: 30 };
-  const report = priced([oldWork, withBreak], { plan: plan([
-    { ...oct, overtimeAfterMinutes: null },
-    { ...nov, overtimeAfterMinutes: null },
-  ]) });
+  const report = priced([oldWork, withBreak], {
+    plan: plan([
+      { ...oct, overtimeAfterMinutes: null },
+      { ...nov, overtimeAfterMinutes: null },
+    ]),
+  });
   assert.equal(report.status, 'estimated');
   assert.equal(report.workOnlyMinorUnits, 70000);
   assert.equal(report.loggedSeconds, 4.5 * 3600);
@@ -153,16 +167,21 @@ test('a rate boundary follows saved Kathmandu work zone, NEVER the displayed Ist
     0,
     'Asia/Kathmandu',
   );
-  const report = priced([kathmandu], { plan: plan([
-    { ...oct, overtimeAfterMinutes: null },
-    { ...nov, overtimeAfterMinutes: null },
-  ]) });
+  const report = priced([kathmandu], {
+    plan: plan([
+      { ...oct, overtimeAfterMinutes: null },
+      { ...nov, overtimeAfterMinutes: null },
+    ]),
+  });
   assert.equal(report.status, 'estimated');
   assert.equal(report.loggedSeconds, 3600);
   assert.equal(report.lines[0].segmentEndUtc, '2026-10-31T18:15:00.000Z');
   assert.equal(report.lines[1].segmentStartUtc, '2026-10-31T18:15:00.000Z');
   assert.equal(report.workOnlyMinorUnits, 17500);
-  assert.deepEqual(report.lines.map((line) => line.profileId), ['oct', 'nov']);
+  assert.deepEqual(
+    report.lines.map((line) => line.profileId),
+    ['oct', 'nov'],
+  );
 });
 
 test('New York DST fall-back rate midnight uses actual UTC seconds without local-wall guess', () => {
@@ -175,10 +194,12 @@ test('New York DST fall-back rate midnight uses actual UTC seconds without local
     0,
     'America/New_York',
   );
-  const report = priced([ny], { plan: plan([
-    { ...oct, overtimeAfterMinutes: null },
-    { ...nov, overtimeAfterMinutes: null },
-  ]) });
+  const report = priced([ny], {
+    plan: plan([
+      { ...oct, overtimeAfterMinutes: null },
+      { ...nov, overtimeAfterMinutes: null },
+    ]),
+  });
   assert.equal(report.status, 'estimated');
   assert.equal(report.lines[0].segmentEndUtc, '2026-11-01T04:00:00.000Z');
   assert.equal(report.workOnlyMinorUnits, 15000);
@@ -199,12 +220,15 @@ test('mixed currency or fixed pay blocks, even when rates are otherwise valid', 
   assert.equal(differentCurrency.status, 'blocked');
   assert.deepEqual(differentCurrency.reasons, ['CUSTOM_MIXED_CURRENCY_POLICY_REQUIRED']);
   const fixed = priced([oldWork, newWork], {
-    plan: plan([oct, {
-      ...nov,
-      model: 'monthly_fixed',
-      overtimeAfterMinutes: null,
-      overtimeHourlyMinorUnits: 0,
-    }]),
+    plan: plan([
+      oct,
+      {
+        ...nov,
+        model: 'monthly_fixed',
+        overtimeAfterMinutes: null,
+        overtimeHourlyMinorUnits: 0,
+      },
+    ]),
   });
   assert.equal(fixed.status, 'blocked');
   assert.equal('workOnlyMinorUnits' in fixed, false);
@@ -221,16 +245,21 @@ test('effective overtime multiplier may change; rate-specific multiplier applies
 });
 
 test('identical numeric rates but distinct effective source IDs remain separate and traceable', () => {
-  const report = priced([oldWork, newWork], { plan: plan([
-    { ...oct, overtimeAfterMinutes: null },
-    { ...nov, baseMinorUnits: 10000, overtimeAfterMinutes: null, revision: 3 },
-  ]) });
+  const report = priced([oldWork, newWork], {
+    plan: plan([
+      { ...oct, overtimeAfterMinutes: null },
+      { ...nov, baseMinorUnits: 10000, overtimeAfterMinutes: null, revision: 3 },
+    ]),
+  });
   assert.equal(report.status, 'estimated');
   assert.equal(report.workOnlyMinorUnits, 50000);
-  assert.deepEqual(report.lines.map((line) => [line.profileId, line.profileRevision]), [
-    ['oct', 1],
-    ['nov', 3],
-  ]);
+  assert.deepEqual(
+    report.lines.map((line) => [line.profileId, line.profileRevision]),
+    [
+      ['oct', 1],
+      ['nov', 3],
+    ],
+  );
 });
 
 test('calendar-month adjustments in either touched month block mixed-rate report', () => {
@@ -250,7 +279,10 @@ test('duplicate/overlapping source, malformed UTC and falsified profile plan fai
   assert.equal(priced([oldWork, overlap]).status, 'blocked');
   assert.equal(priced([{ ...oldWork, startInstantUtc: 'bad' }]).status, 'blocked');
   const forged = plan();
-  const tampered = { ...forged, segments: [{ ...forged.segments[0], endExclusiveDate: '2026-11-02' }, forged.segments[1]] };
+  const tampered = {
+    ...forged,
+    segments: [{ ...forged.segments[0], endExclusiveDate: '2026-11-02' }, forged.segments[1]],
+  };
   const report = priced([oldWork], { plan: tampered });
   assert.equal(report.status, 'blocked');
   assert.ok(report.reasons.includes('CUSTOM_MIXED_PROFILE_PLAN_CHANGED'));
@@ -258,17 +290,40 @@ test('duplicate/overlapping source, malformed UTC and falsified profile plan fai
 
 test('tiny per-rate fractional seconds round cumulatively, not once per source line', () => {
   const tiny = [
-    work('t1', '2026-10-30T05:00:00.000Z', '2026-10-30T05:00:01.000Z', '2026-10-30', '2026-10-30'),
-    work('t2', '2026-10-30T05:00:01.000Z', '2026-10-30T05:00:02.000Z', '2026-10-30', '2026-10-30'),
-    work('t3', '2026-10-30T05:00:02.000Z', '2026-10-30T05:00:03.000Z', '2026-10-30', '2026-10-30'),
+    work(
+      't1',
+      '2026-10-30T05:00:00.000Z',
+      '2026-10-30T05:00:01.000Z',
+      '2026-10-30',
+      '2026-10-30',
+    ),
+    work(
+      't2',
+      '2026-10-30T05:00:01.000Z',
+      '2026-10-30T05:00:02.000Z',
+      '2026-10-30',
+      '2026-10-30',
+    ),
+    work(
+      't3',
+      '2026-10-30T05:00:02.000Z',
+      '2026-10-30T05:00:03.000Z',
+      '2026-10-30',
+      '2026-10-30',
+    ),
   ];
-  const report = priced(tiny, { plan: plan([
-    { ...oct, baseMinorUnits: 1000, overtimeAfterMinutes: null },
-    { ...nov, baseMinorUnits: 2000, overtimeAfterMinutes: null },
-  ]) });
+  const report = priced(tiny, {
+    plan: plan([
+      { ...oct, baseMinorUnits: 1000, overtimeAfterMinutes: null },
+      { ...nov, baseMinorUnits: 2000, overtimeAfterMinutes: null },
+    ]),
+  });
   assert.equal(report.status, 'estimated');
   assert.equal(report.workOnlyMinorUnits, 1);
-  assert.equal(report.lines.reduce((sum, line) => sum + line.amountMinorUnits, 0), 1);
+  assert.equal(
+    report.lines.reduce((sum, line) => sum + line.amountMinorUnits, 0),
+    1,
+  );
 });
 
 function dbV8() {
@@ -283,7 +338,8 @@ function dbV8() {
     MIGRATION_6_SQL,
     MIGRATION_7_SQL,
     MIGRATION_8_SQL,
-  ]) db.exec('BEGIN IMMEDIATE;' + sql + 'COMMIT;');
+  ])
+    db.exec('BEGIN IMMEDIATE;' + sql + 'COMMIT;');
   return db;
 }
 
@@ -354,23 +410,55 @@ test('SQLite v1→v8 uses latest two immutable hourly revisions and writes nothi
         'base_minor_units,overtime_hourly_minor_units,overtime_after_minutes,' +
         'overtime_multiplier_numerator,overtime_multiplier_denominator,reason,recorded_at,source)' +
         " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'user_entered')",
-    ).run('nov', 2, '2026-11-01', 'hourly', 'TRY', 30000, 0, 180, 3, 2,
-      'Corrected source hourly rate', '2026-11-15T18:00:00.000Z');
-    const settings = db.prepare('SELECT key,value FROM app_settings ORDER BY key').all().map((row) => ({ ...row }));
-    const report = await loadCustomHourlyEstimateFromStore(store(db), PERIOD, 'Europe/Istanbul');
+    ).run(
+      'nov',
+      2,
+      '2026-11-01',
+      'hourly',
+      'TRY',
+      30000,
+      0,
+      180,
+      3,
+      2,
+      'Corrected source hourly rate',
+      '2026-11-15T18:00:00.000Z',
+    );
+    const settings = db
+      .prepare('SELECT key,value FROM app_settings ORDER BY key')
+      .all()
+      .map((row) => ({ ...row }));
+    const report = await loadCustomHourlyEstimateFromStore(
+      store(db),
+      PERIOD,
+      'Europe/Istanbul',
+    );
     assert.equal(report.status, 'estimated');
     assert.equal(report.workOnlyMinorUnits, 140000);
-    assert.deepEqual(report.lines.map((line) => [line.profileId, line.profileRevision]), [
-      ['oct', 1],
-      ['nov', 2],
-      ['nov', 2],
-    ]);
     assert.deepEqual(
-      db.prepare('SELECT key,value FROM app_settings ORDER BY key').all().map((row) => ({ ...row })),
+      report.lines.map((line) => [line.profileId, line.profileRevision]),
+      [
+        ['oct', 1],
+        ['nov', 2],
+        ['nov', 2],
+      ],
+    );
+    assert.deepEqual(
+      db
+        .prepare('SELECT key,value FROM app_settings ORDER BY key')
+        .all()
+        .map((row) => ({ ...row })),
       settings,
     );
     assert.equal(db.prepare('PRAGMA user_version').get().user_version, 8);
-    assert.equal(db.prepare("SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").get().n, 18);
+    assert.equal(
+      db
+        .prepare(
+          "SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+        )
+        .get().n,
+      18,
+    );
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM earnings_profiles').get().n, 2);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM earnings_profile_revisions').get().n, 1);
     assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(), []);
@@ -387,9 +475,18 @@ test('SQLite mixed-rate source crossing 1st with a break blocks; no source revis
     insertProfile(db, oct);
     insertProfile(db, nov);
     insertWork(db, { ...acrossMidnight, breakMinutes: 10 });
-    const report = await loadCustomHourlyEstimateFromStore(store(db), PERIOD, 'Europe/Istanbul');
+    const report = await loadCustomHourlyEstimateFromStore(
+      store(db),
+      PERIOD,
+      'Europe/Istanbul',
+    );
     assert.equal(report.status, 'blocked');
     assert.ok(report.reasons.includes('CUSTOM_RATE_BREAK_ALLOCATION_REQUIRED'));
-    assert.equal(db.prepare('SELECT break_minutes FROM actual_work_sessions').get().break_minutes, 10);
-  } finally { db.close(); }
+    assert.equal(
+      db.prepare('SELECT break_minutes FROM actual_work_sessions').get().break_minutes,
+      10,
+    );
+  } finally {
+    db.close();
+  }
 });

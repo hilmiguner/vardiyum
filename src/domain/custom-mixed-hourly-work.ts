@@ -8,7 +8,11 @@ import {
   planCustomPayProfiles,
   type CustomPayProfilePlan,
 } from './custom-pay-profile-policy.ts';
-import { customPayPeriodBounds, splitWorkForPayPeriod, type PayPeriodWorkPortion } from './pay-period.ts';
+import {
+  customPayPeriodBounds,
+  splitWorkForPayPeriod,
+  type PayPeriodWorkPortion,
+} from './pay-period.ts';
 import { resolveLocalBoundary } from './zoned-shift-time.ts';
 import type {
   CustomHourlyEstimate,
@@ -38,7 +42,12 @@ type RatePart = {
 };
 
 function blocked(plan: CustomPayProfilePlan, reason: string): CustomHourlyEstimate {
-  return { status: 'blocked', periodKey: plan.periodKey, startDay: plan.startDay, reasons: [reason] };
+  return {
+    status: 'blocked',
+    periodKey: plan.periodKey,
+    startDay: plan.startDay,
+    reasons: [reason],
+  };
 }
 
 function resolveMixedPlan(plan: CustomPayProfilePlan): {
@@ -69,14 +78,14 @@ function resolveMixedPlan(plan: CustomPayProfilePlan): {
     throw new Error('CUSTOM_MIXED_CURRENCY_POLICY_REQUIRED');
   if (before.overtimeAfterMinutes !== after.overtimeAfterMinutes)
     throw new Error('CUSTOM_MIXED_THRESHOLD_POLICY_REQUIRED');
-  if (before.id === after.id)
-    throw new Error('CUSTOM_MIXED_PROFILE_ID_COLLISION');
+  if (before.id === after.id) throw new Error('CUSTOM_MIXED_PROFILE_ID_COLLISION');
 
   return {
     profiles: [before, after],
     boundaryLocalDate: plan.segments[1].startDate,
     currency: before.currency,
-    thresholdSeconds: before.overtimeAfterMinutes === null ? null : before.overtimeAfterMinutes * 60,
+    thresholdSeconds:
+      before.overtimeAfterMinutes === null ? null : before.overtimeAfterMinutes * 60,
   };
 }
 
@@ -123,7 +132,10 @@ function rateParts(
       profile: range.profile,
     });
   }
-  if (result.length === 0 || result.reduce((sum, item) => sum + item.netSeconds, 0) !== portion.netSeconds)
+  if (
+    result.length === 0 ||
+    result.reduce((sum, item) => sum + item.netSeconds, 0) !== portion.netSeconds
+  )
     throw new Error('CUSTOM_MIXED_RATE_SECONDS_MISMATCH');
   return result;
 }
@@ -149,7 +161,10 @@ export function estimateCustomMixedHourlyWork(
   try {
     policy = resolveMixedPlan(plan);
   } catch (error) {
-    return blocked(plan, error instanceof Error ? error.message : 'CUSTOM_MIXED_PROFILE_INVALID');
+    return blocked(
+      plan,
+      error instanceof Error ? error.message : 'CUSTOM_MIXED_PROFILE_INVALID',
+    );
   }
 
   const original: { portion: PayPeriodWorkPortion; auditRevision: number | null }[] = [];
@@ -160,14 +175,23 @@ export function estimateCustomMixedHourlyWork(
       const work = validateEarningsWork(item.work);
       if (ids.has(work.id)) throw new Error('DUPLICATE_CUSTOM_WORK_ID');
       ids.add(work.id);
-      const portion = splitWorkForPayPeriod(work, plan.periodKey, plan.startDay, item.allocation);
+      const portion = splitWorkForPayPeriod(
+        work,
+        plan.periodKey,
+        plan.startDay,
+        item.allocation,
+      );
       if (!portion) {
         if (item.allocation || item.auditRevision !== undefined)
           throw new Error('UNEXPECTED_CUSTOM_BREAK_AUDIT');
         continue;
       }
       if (portion.splitAcrossPeriods && work.breakMinutes > 0) {
-        if (!item.allocation || !Number.isSafeInteger(item.auditRevision) || (item.auditRevision as number) < 1)
+        if (
+          !item.allocation ||
+          !Number.isSafeInteger(item.auditRevision) ||
+          (item.auditRevision as number) < 1
+        )
           throw new Error('UNVERIFIED_CUSTOM_BREAK_AUDIT');
       } else if (item.allocation || item.auditRevision !== undefined) {
         throw new Error('UNEXPECTED_CUSTOM_BREAK_AUDIT');
@@ -176,12 +200,19 @@ export function estimateCustomMixedHourlyWork(
     } catch (error) {
       return blocked(
         plan,
-        (error instanceof Error ? error.message : 'INVALID_CUSTOM_WORK') + ':' + (item?.work?.id ?? '-'),
+        (error instanceof Error ? error.message : 'INVALID_CUSTOM_WORK') +
+          ':' +
+          (item?.work?.id ?? '-'),
       );
     }
   }
   if (!original.length)
-    return { status: 'no_work', periodKey: plan.periodKey, startDay: plan.startDay, reasons: [] };
+    return {
+      status: 'no_work',
+      periodKey: plan.periodKey,
+      startDay: plan.startDay,
+      reasons: [],
+    };
 
   original.sort(
     (a, b) =>
@@ -198,10 +229,20 @@ export function estimateCustomMixedHourlyWork(
   let parts: RatePart[] = [];
   try {
     for (const item of original) {
-      parts.push(...rateParts(item.portion, item.auditRevision, policy.profiles, policy.boundaryLocalDate));
+      parts.push(
+        ...rateParts(
+          item.portion,
+          item.auditRevision,
+          policy.profiles,
+          policy.boundaryLocalDate,
+        ),
+      );
     }
   } catch (error) {
-    return blocked(plan, error instanceof Error ? error.message : 'INVALID_CUSTOM_MIXED_RATE_PART');
+    return blocked(
+      plan,
+      error instanceof Error ? error.message : 'INVALID_CUSTOM_MIXED_RATE_PART',
+    );
   }
   parts = parts.sort(
     (a, b) =>
@@ -220,7 +261,8 @@ export function estimateCustomMixedHourlyWork(
     for (const part of parts) {
       const previousLogged = loggedSeconds;
       loggedSeconds += part.netSeconds;
-      if (!Number.isSafeInteger(loggedSeconds)) throw new Error('CUSTOM_PAY_WORK_SECONDS_OVERFLOW');
+      if (!Number.isSafeInteger(loggedSeconds))
+        throw new Error('CUSTOM_PAY_WORK_SECONDS_OVERFLOW');
       const regular =
         policy.thresholdSeconds === null
           ? part.netSeconds
@@ -237,13 +279,15 @@ export function estimateCustomMixedHourlyWork(
         const name = part.profile.id + ':' + part.profile.revision + ':' + kind;
         const bucket = buckets.get(name) ?? { seconds: 0, lastRounded: 0n };
         bucket.seconds += seconds;
-        if (!Number.isSafeInteger(bucket.seconds)) throw new Error('CUSTOM_PAY_WORK_SECONDS_OVERFLOW');
+        if (!Number.isSafeInteger(bucket.seconds))
+          throw new Error('CUSTOM_PAY_WORK_SECONDS_OVERFLOW');
         const numerator =
           BigInt(part.profile.baseMinorUnits) *
           BigInt(bucket.seconds) *
           (kind === 'overtime' ? BigInt(part.profile.overtimeMultiplierNumerator) : 1n);
         const denominator =
-          3600n * (kind === 'overtime' ? BigInt(part.profile.overtimeMultiplierDenominator) : 1n);
+          3600n *
+          (kind === 'overtime' ? BigInt(part.profile.overtimeMultiplierDenominator) : 1n);
         const rounded = BigInt(roundRational(numerator, denominator));
         const delta = rounded - bucket.lastRounded;
         if (delta < 0n || rounded > MAX_MINOR_UNITS || runningTotal + delta > MAX_MINOR_UNITS)
