@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { Action, Heading, Muted, Page, Panel } from '../../components/ui';
 import { ScheduledDuration } from '../../components/scheduled-duration';
+import { BoundaryChoiceEditor } from '../../components/boundary-choice-editor';
+import { ActualWorkEditor } from '../../components/actual-work-editor';
 import {
   addCalendarDays,
   calendarDateInZone,
@@ -229,6 +231,14 @@ export default function CalendarScreen() {
               />
             ) : null}
           </Panel>
+          {chosen && (
+            <>
+              <BoundaryChoiceEditor key={selectedDate + ':' + chosen.template.id}
+                date={selectedDate} template={chosen.template} timeZone={schedule.timeZone} />
+              <ActualWorkEditor key={selectedDate}
+                date={selectedDate} template={chosen.template} timeZone={schedule.timeZone} />
+            </>
+          )}
         </>
       )}
     </Page>

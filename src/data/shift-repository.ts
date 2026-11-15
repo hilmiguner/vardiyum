@@ -160,3 +160,25 @@ export async function saveDayOverride(
     override.note,
   );
 }
+
+/**
+ * Changes the interpretation of local shift times for the entire repeating
+ * schedule only after explicit user confirmation. Historical actual UTC work
+ * sessions remain immutable; old fold policies fail signature validation.
+ */
+export async function changeScheduleTimeZone(nextTimeZone: string): Promise<void> {
+  // Reject non-IANA strings and unsupported time zones before touching SQLite.
+  if (!new RegExp('^[A-Za-z][A-Za-z0-9_.+-]*(?:/[A-Za-z0-9_.+-]+)*$').test(nextTimeZone))
+    throw new Error('INVALID_TIME_ZONE');
+  try {
+    new Intl.DateTimeFormat('en-US', { timeZone: nextTimeZone }).format(new Date());
+  } catch {
+    throw new Error('INVALID_TIME_ZONE');
+  }
+  const db = await getDatabase();
+  const result = await db.runAsync(
+    "UPDATE shift_patterns SET timezone_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+    nextTimeZone, PRIMARY_ID,
+  );
+  if (result.changes !== 1) throw new Error('SCHEDULE_NOT_CONFIGURED');
+}

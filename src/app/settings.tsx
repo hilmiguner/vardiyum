@@ -4,6 +4,7 @@ import { Alert, Pressable, Text, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Action, Heading, Muted, Page, Panel } from '../components/ui';
+import { TimeZoneSettings } from '../components/time-zone-settings';
 import {
   DEFAULT_TEMPLATES,
   localDateString,
@@ -318,6 +319,7 @@ export default function SettingsScreen() {
             <Muted>{t('overnightHint')}</Muted>
           </Panel>
           <Action label={t('save')} onPress={() => void save()} disabled={saving} />
+          <TimeZoneSettings />
         </>
       )}
     </Page>

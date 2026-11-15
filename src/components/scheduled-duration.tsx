@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import type { ShiftTemplate } from '../domain/shift-engine';
 import { resolveShiftInterval, type ShiftInterval } from '../domain/zoned-shift-time';
+import { effectiveBoundaryPolicy } from '../domain/work-records';
+import { useAppState } from '../state/app-state';
 import { usePalette } from '../theme/colors';
 
 interface Props {
@@ -27,14 +29,16 @@ const REASONS = {
 export function ScheduledDuration({ date, template, timeZone }: Props) {
   const { t } = useTranslation();
   const c = usePalette();
+  const { boundaryChoices } = useAppState();
   const interval = useMemo<ShiftInterval | null>(() => {
     try {
-      return resolveShiftInterval(date, template, timeZone);
+      const policy = effectiveBoundaryPolicy(date, template, timeZone, boundaryChoices[date]);
+      return resolveShiftInterval(date, template, timeZone, policy);
     } catch {
       // A corrupt/unsupported zone must not crash the entire calendar.
       return null;
     }
-  }, [date, template, timeZone]);
+  }, [date, template, timeZone, boundaryChoices]);
 
   if (interval?.status === 'rest') return null;
 

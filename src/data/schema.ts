@@ -2,7 +2,7 @@
  * Versioned SQLite schema. Static SQL only: never interpolate user-controlled data.
  * Schema versions are tracked by PRAGMA user_version.
  */
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 export const INITIAL_SCHEMA = `
 CREATE TABLE IF NOT EXISTS shift_templates (
@@ -88,4 +88,39 @@ VALUES
   ('night', 'Gece', '#A18CF6', '23:00', '07:00', 1, 0, 0),
   ('off', 'İzin', '#5EC59C', NULL, NULL, 0, 1, 0);
 PRAGMA user_version = 2;
+`;
+
+/**
+ * V3 is additive and never changes existing v1/v2 pattern or work_entries.
+ * An old work_entries row is not silently promoted to a verified actual session.
+ */
+export const MIGRATION_3_SQL = `
+CREATE TABLE IF NOT EXISTS shift_boundary_choices (
+  local_date TEXT PRIMARY KEY NOT NULL,
+  schedule_signature TEXT NOT NULL,
+  start_choice TEXT NOT NULL CHECK(start_choice IN ('reject', 'earlier', 'later')),
+  end_choice TEXT NOT NULL CHECK(end_choice IN ('reject', 'earlier', 'later')),
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS actual_work_sessions (
+  id TEXT PRIMARY KEY NOT NULL,
+  local_date TEXT NOT NULL,
+  start_clock TEXT NOT NULL,
+  end_date TEXT NOT NULL,
+  end_clock TEXT NOT NULL,
+  timezone_id TEXT NOT NULL,
+  start_choice TEXT NOT NULL CHECK(start_choice IN ('reject','earlier','later')),
+  end_choice TEXT NOT NULL CHECK(end_choice IN ('reject','earlier','later')),
+  start_instant_utc TEXT NOT NULL,
+  end_instant_utc TEXT NOT NULL,
+  break_minutes INTEGER NOT NULL DEFAULT 0 CHECK(break_minutes >= 0),
+  note TEXT NOT NULL DEFAULT '',
+  source TEXT NOT NULL DEFAULT 'user_entered' CHECK(source = 'user_entered'),
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CHECK(end_instant_utc > start_instant_utc)
+);
+CREATE INDEX IF NOT EXISTS idx_actual_work_date ON actual_work_sessions(local_date);
+CREATE INDEX IF NOT EXISTS idx_actual_work_interval ON actual_work_sessions(start_instant_utc, end_instant_utc);
+PRAGMA user_version = 3;
 `;

@@ -7,10 +7,19 @@ import {
   type ShiftSchedule,
   type ShiftTemplate,
 } from '../domain/shift-engine';
-import { loadSchedule, saveDayOverride, saveScheduleConfig } from '../data/shift-repository';
+import {
+  loadSchedule, saveDayOverride, saveScheduleConfig, changeScheduleTimeZone,
+} from '../data/shift-repository';
+import { loadBoundaryChoices, storeBoundaryChoice } from '../data/work-repository';
+import type { StoredBoundaryChoice } from '../domain/work-records';
+import type { BoundaryPolicy } from '../domain/zoned-shift-time';
+import { resolveShift } from '../domain/shift-engine';
 
 interface AppState {
   schedule: ShiftSchedule;
+  boundaryChoices: Record<string, StoredBoundaryChoice>;
+  saveBoundaryChoice: (date: string, policy: Readonly<BoundaryPolicy> | null) => Promise<void>;
+  changeTimeZone: (timeZone: string) => Promise<void>;
   loading: boolean;
   error: string | null;
   saveConfig: (pattern: ShiftPattern, templates: readonly ShiftTemplate[]) => Promise<void>;
@@ -30,6 +39,7 @@ function emptySchedule(): ShiftSchedule {
 
 export function AppStateProvider({ children }: PropsWithChildren) {
   const [schedule, setSchedule] = useState<ShiftSchedule>(emptySchedule);
+  const [boundaryChoices, setBoundaryChoices] = useState<Record<string, StoredBoundaryChoice>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,7 +47,9 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     setLoading(true);
     setError(null);
     try {
-      setSchedule(await loadSchedule());
+      const [nextSchedule, choices] = await Promise.all([loadSchedule(), loadBoundaryChoices()]);
+      setSchedule(nextSchedule);
+      setBoundaryChoices(choices);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'DATABASE_ERROR');
     } finally {
@@ -47,9 +59,12 @@ export function AppStateProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     let active = true;
-    void loadSchedule()
-      .then((result) => {
-        if (active) setSchedule(result);
+    void Promise.all([loadSchedule(), loadBoundaryChoices()])
+      .then(([result, choices]) => {
+        if (active) {
+          setSchedule(result);
+          setBoundaryChoices(choices);
+        }
       })
       .catch((reason: unknown) => {
         if (active) setError(reason instanceof Error ? reason.message : 'DATABASE_ERROR');
@@ -87,9 +102,36 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     [schedule.templates],
   );
 
+  const saveBoundaryChoice = useCallback(
+    async (date: string, policy: Readonly<BoundaryPolicy> | null) => {
+      const selected = resolveShift(date, schedule);
+      if (!selected) throw new Error('SCHEDULE_NOT_CONFIGURED');
+      const stored = await storeBoundaryChoice(
+        date, selected.template, schedule.timeZone, policy,
+      );
+      setBoundaryChoices((before) => {
+        const next = { ...before };
+        if (stored) next[date] = stored;
+        else delete next[date];
+        return next;
+      });
+    },
+    [schedule],
+  );
+
+  const changeTimeZone = useCallback(async (timeZone: string) => {
+    await changeScheduleTimeZone(timeZone);
+    setSchedule((before) => ({ ...before, timeZone }));
+    // Prior boundary choices remain stored for audit, but their signatures
+    // will no longer match and are never silently reused in a new zone.
+  }, []);
+
   const value = useMemo(
-    () => ({ schedule, loading, error, saveConfig, changeDay, reload }),
-    [schedule, loading, error, saveConfig, changeDay, reload],
+    () => ({
+      schedule, boundaryChoices, loading, error, saveConfig, changeDay,
+      saveBoundaryChoice, changeTimeZone, reload,
+    }),
+    [schedule, boundaryChoices, loading, error, saveConfig, changeDay, saveBoundaryChoice, changeTimeZone, reload],
   );
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
