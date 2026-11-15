@@ -211,3 +211,5 @@
 - [ ] Mevcut dolu DB ile merge/overwrite veya özel maaş dönemi yok; [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık.
 
 **Sıradaki:** PR #21 main ve CI başarılı. [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) native restore kalıcılık/crash/low-disk kabulü için **açık**; [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) kullanıcı isteğiyle ertelendi. Dolu DB merge yok, cihaz kurtarma doğrulandı iddiası yok. [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16)'da özel maaş dönemi kaldı.
+
+**Sonraki bağımsız MVP işi:** [Issue #22](https://github.com/hilmiguner/vardiyum/issues/22) — kullanıcı tanımlı maaş dönemi (ör. 26→25), DST/UTC sınırları, ayrı dönem mesai eşiği ve ücret profil geçerlilik kuralları. Gerçek cihaz QA [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ertelendi; restore native kabulü [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) açık.

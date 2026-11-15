@@ -90,3 +90,5 @@
 - [ ] İki mağazaya üretim sürümünün gönderimi
 
 V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyon, bordro karşılaştırma, arkadaş takvimi. İlk 10–16 hafta varsayımı teslim garantisi değildir.
+
+**Takip açıldı:** [Issue #22](https://github.com/hilmiguner/vardiyum/issues/22) — kullanıcıya göre maaş dönemi başlangıcı/kapanışı, farklı aylar ve IANA/DST çalışmayı iki dönemde çift saymama; Node/JS testleri gereklidir. Önceki takvim-ayına göre kazanç motoru geriye uyumlu kalacak. Native cihaz testleri [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ertelendi.

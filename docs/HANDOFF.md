@@ -169,3 +169,5 @@ Yeni sohbet prompt'u:
 Yeni sohbet prompt:
 
 > Vardiyum https://github.com/hilmiguner/vardiyum. Önce main SHA, PR/Issue/Actions ve docs/STATUS.md, HANDOFF.md, ROADMAP.md, DECISIONS.md oku. Issue #20 PR #21: AES-GCM/SHA256 validated backup, yalnız pristine 4 seed template ve diğer 17 tablo boş SQLite v8 hedefe typed RESTORE + ikinci onay, atomik import, FK postcheck, integrity_check, rollback, reminder consent reset; main merge SHA de110794, CI #43725429338 SUCCESS (127 Node ve iki platform JS). **native cihaz testleri yapılmadı (Issue #2)**, Issue #20 açık kalsın. Issue #16 dolu DB merge/özel maaş dönemi açık. PR merge/main CI doğrulayıp GitHub'da yol haritasını güncelle, geliştirmeye devam et.
+
+**Yeni açık iş:** [Issue #22](https://github.com/hilmiguner/vardiyum/issues/22) — saatlik/tam ay modeli için kullanıcı belirli maaş dönemi (26→25 dahil). Önce takvim ayı ile özel dönemi ayıran saf model/özel IANA UTC dilimlemesi ve testlerle ilerle; yasal fazla mesai oranı icat etme. Issue #20 native QA ve Issue #2 ertelemesi sürüyor. Son docs/main CI [#43725596755](https://github.com/hilmiguner/vardiyum/actions/runs/43725596755) SUCCESS.
