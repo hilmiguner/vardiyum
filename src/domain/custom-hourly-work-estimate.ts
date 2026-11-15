@@ -7,6 +7,7 @@ import {
   type EarningsWork,
 } from './earnings-engine.ts';
 import type { CustomPayProfilePlan } from './custom-pay-profile-policy.ts';
+import type { RateBoundaryBreakEvent } from './rate-boundary-break-audit.ts';
 import {
   customPayPeriodBounds,
   splitWorkForPayPeriod,
@@ -23,6 +24,7 @@ export interface CustomHourlySource {
   work: EarningsWork;
   allocation?: PayPeriodBreakAllocation;
   auditRevision?: number;
+  rateBreakAudit?: RateBoundaryBreakEvent;
 }
 
 export interface CustomHourlyLine {
@@ -35,6 +37,7 @@ export interface CustomHourlyLine {
   timeZone: string;
   sourceBreakMinutes: number;
   breakAuditRevision: number | null;
+  rateBreakAuditRevision?: number | null;
   seconds: number;
   amountMinorUnits: number;
   profileId: string;
