@@ -47,7 +47,7 @@ Marka sloganı adayı: “Vardiyanı bil. Gününü planla. Kazancını takip et
 ## Sıradaki en yararlı adım
 
 1. Repo main üzerinde PR #1 (dokümantasyon) durumunu ve varsa daha yeni commit/PR'ları doğrula.
-2. main üzerinde Expo + TS uygulama iskeletini başlat; platform uyumlu bağımlılıkları seç.
+2. [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) üzerinden main üzerinde Expo + TS uygulama iskeletini başlat; platform uyumlu bağımlılıkları seç.
 3. Expo Router dört sekme, TR/EN ve temel tema, SQLite migrasyon altyapısı, test runner ve GitHub Actions CI'ı kur.
 4. Ayrı bir PR ile vardiya engine sözleşmesini, 8 günlük örnek döngü ve tarih/istisna sınır durumlarını testlerle uygula.
 5. Her PR sonrasında STATUS, ROADMAP ve bu HANDOFF'u güncelle.

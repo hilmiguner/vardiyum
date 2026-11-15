@@ -24,7 +24,7 @@
 
 ## Sıradaki somut iş
 
-**Faz 1 / PR-001 (öneri):** Expo + React Native + TypeScript projesini oluştur; Expo Router, TR/EN, tema, SQLite, test ve GitHub Actions kalite kapısı kur. Vardiya motoru için saf domain arayüzünü ve ilk kabul senaryosu testlerini ekle. CI ve derlemeleri doğrula.
+**[Faz 1 — GitHub Issue #2](https://github.com/hilmiguner/vardiyum/issues/2):** Expo + React Native + TypeScript projesini oluştur; Expo Router, TR/EN, tema, SQLite, test ve GitHub Actions kalite kapısı kur. Vardiya motoru için saf domain arayüzünü ve ilk kabul senaryosu testlerini ekle. CI ve derlemeleri doğrula.
 
 ### Tamamlanma kanıtı standardı
 

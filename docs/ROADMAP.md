@@ -23,6 +23,8 @@
 
 ## Faz 1 — Temel uygulama
 
+**Takip:** [GitHub Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) (açık; henüz geliştirilmedi).
+
 - [ ] Expo + React Native + TypeScript başlangıç dosyaları
 - [ ] Expo Router, dört sekme ve ayarlar iskeleti
 - [ ] SQLite veri katmanı ve migration politikası
