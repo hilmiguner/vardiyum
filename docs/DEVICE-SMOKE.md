@@ -69,3 +69,16 @@
 - [ ] Bildirimler henüz uygulanmadı; bu testin kapsamı değil.
 
 **Kullanıcı cihaz testlerini erteledi; native PASS kanıtı yok.**
+
+## Issue #12 — Gerçek cihaz bildirim smoke (henüz yapılmadı)
+
+- [ ] iOS/Android v4→v5 SQLite migrasyonu, önceki rutin/checklist ve geçmiş kayıtları korunuyor.
+- [ ] İzin etkinleştirmesi yalnızca düğmeye basıldığında soruluyor; reddetme, kalıcı red ve sonra Ayarlar'dan izin verme.
+- [ ] Android 13+ kanal/POST_NOTIFICATIONS; Android 12–14 exact alarm verilmediğinde best-effort teslim; iOS yetki (provisional/authorized).
+- [ ] Ekran önünde, arka planda, kilitli telefonda, uygulama kapalı/yeniden başlatılmışken yerel bildirim teslimi ve beklenen OS sınırlamaları.
+- [ ] Günlük vardiya override, döngü değişimi, rutin etkinleştirme/arşivleme, tamamlandı/geri al ve zone değişimi sonrası pending owned bildirimleri yeniden senkronize.
+- [ ] DST gap/fold, farklı IANA tzdb sürümleri ve seyahatte zone değişimi; yanlış saat veya çift hatırlatma olmamalı.
+- [ ] 14 gün/48 toplam/6 günlük sınır, diğer sistem bildirimlerini silmeme ve telefonun pil/izin sınırlamaları.
+- [ ] TR/EN arayüz, TalkBack/VoiceOver ve tamamlanmamış görevlerin çevrimdışı kalıcılığı.
+
+**Durum:** Kullanıcı cihaz testlerini sonraya bırakmıştır; bu kutular tamamlanmış sayılmaz. JS bundle ve Node testleri native izin/teslim kanıtı değildir.

@@ -70,3 +70,11 @@ Kararlar 2026-11-15 itibarıyla konuşulan hedefleri belgeler. Geliştirme sıra
 - **D-033 (uygulandı):** Rutin silme yerine soft archive. Tamamlandı/geri al olayları, o anki rutin başlığını ve filtre kopyasını bağımsız olay tablosuna ekler; checkbox geri alınsa bile geçmiş silinmez. Eski tamamlanmalar SQLite v4 yükseltmesinde korunur.
 - **D-034 (uygulandı):** Rutin düzenleme ve etkinleştirme için `revision` kontrolü; arşivlenmiş/devre dışı/ilgili güne ait olmayan kural için checkbox hareketi reddedilir.
 - **D-035 (açık):** Yerel bildirim izni, hatırlatıcı zamanlaması, izin reddi ve kural değiştiğinde yeniden planlama ayrı Faz 3 işidir. Native cihaz testleri kullanıcı tercihiyle ertelendi.
+
+## 2026-11-15 — Issue #12 / PR #13 hatırlatma kararları
+
+- **D-036 (uygulandı):** Hatırlatma saati rutin bazında **isteğe bağlı**. Uygulama ilk açılışta veya rutin kaydında otomatik **bildirim izni istemez**; yalnızca Rutinler ekranındaki etkinleştirme düğmesinde talep eder. Onay verilmezse checklist çalışır.
+- **D-037 (uygulandı):** Hatırlatma planı kaydedilmiş program IANA zaman dilimine göre **bir defalık mutlak UTC anlarıyla** yapılır; cihazın saat dilimi sessizce karara girmez. DST fold/gap anları otomatik önce/sonra seçilmez, plan dışı bırakılır. Rutin revizyonu ve zone karara/anahtara bağlıdır.
+- **D-038 (uygulandı):** OS kotası ve uygulama açılış yükünü sınırlamak için **14 günlük, toplam 48, gün başı 6** planlama. Bildirimler **best-effort**; Android exact alarm izni istemiyoruz. Uygulama arka planda hiç açılmadan 14 günden sonrası garanti değildir.
+- **D-039 (uygulandı):** Yalnızca `vardiyum-routine-v1` sahibi pending bildirimler senkronize edilir; başka planlanmış sistem/modül bildirimleri topluca iptal edilmez. Vardiya döngüsü, tek gün istisna, rutin arşivleme, tamamlama/geri alma ve program zone değişikliği bildirim planını geçersiz kılar. İşlem UI/foreground sırasında tekrar hesaplanır.
+- **D-040 (ertelendi):** Android/iOS bildirim izni, OS teslim davranışı, background/uygulama kapalı/yeniden başlatma ve ICU/tzdb gerçek cihaz testleri [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) üzerinde açık; CI'da JS export geçmesi native teslim kanıtı değildir.
