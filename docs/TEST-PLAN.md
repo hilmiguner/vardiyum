@@ -57,3 +57,16 @@
 - Kritik vardiya hesaplama hatası: **0**.
 - Veri kaybı: **0**.
 - Bu eşikler planlanan hedeflerdir; başarılar ancak test sonuçları kaydedilince doğrulanır.
+
+## Issue #6 — Saat dilimi ve DST domain testleri (2026-11-15)
+
+`tests/zoned-shift-time.test.mjs` ile:
+- New York ilkbahar 23.00–07.00 = 7 saat; sonbahar 23.00–07.00 = 9 saat, her ikisinde planlanan 8 saat
+- 24 saatlik vardiyada DST nedeniyle 23/25 saat gerçek süre
+- İstanbul sabit modern UTC+3, Sydney güney yarım küre, Lord Howe yarım saatlik değişim, Kathmandu 45 dakika offset
+- NY 01.30 fold için iki UTC anı; varsayılan reddetme ve bilinçli earlier/later
+- NY 02.30 gap için reddetme, Samoa 2011 tarih atlama
+- Başlangıç ve bitişte ayrı ambiguous/gap kodları; UTC yıl sonu ve artık gün
+- Geçersiz tarih/saat/IANA zone/fold policy, izin gününde sıfır, yalnızca brüt elapsed time
+
+**CI kanıtı:** [#43702389590](https://github.com/hilmiguner/vardiyum/actions/runs/43702389590) SUCCESS. Gerçek mobil tzdb/Intl uygulama davranışı Issue #2 kapsamında sonradan test edilmeli.

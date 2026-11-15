@@ -46,3 +46,10 @@ Kararlar 2026-11-15 itibarıyla konuşulan hedefleri belgeler. Geliştirme sıra
 - **D-018 (uygulandı, PR #5):** Vardiya şablonunda `startsAt`, `endsAt` ve `endDayOffset` tutulur; planlı duvar saati süresi, **gerçek UTC geçen süre** değildir. DST üzerinden gerçek çalışma süresi ve maaş hesapları sonraki ayrı karardır.
 - **D-019 (uygulandı, PR #5):** `day_overrides` normal döngünün indeksini değiştirmez. `shift_templates` içindeki mevcut v1 satırları ve geçmiş döngü kayıtları v2 yükseltmesinde ezilmez.
 - **D-020 (açık):** Şablon silme, günlük değişikliklerin zaman çizelgesi sürümleme ve tarihsel vardiya düzeni değişimlerine dair geçmiş koruma politikası henüz tamamlanmadı.
+
+## 2026-11-15 — Issue #6 zaman aralığı kararları (PR #7)
+
+- **D-021 (uygulandı):** Kullanıcının programı, ilk kaydedilen IANA saat dilimine bağlıdır. Cihaz/telefon saat dilimini değiştirmek geçmiş veya gelecek vardiyaların referans zaman dilimini sessizce değiştirmez. Program zaman dilimini bilinçli değiştiren UI ileride ayrı yapılır.
+- **D-022 (uygulandı):** DST geçişinde mevcut olmayan yerel saatler `nonexistent` olarak **reddedilir**. Tekrarlanan yerel saatte varsayılan `reject` kullanılır; başlangıç ve bitişe ayrı, açık `earlier/later` seçimi mümkündür. Bu seçimlerin cihazda kalıcı kaydı/fiilî mesai ile bağlanması henüz yapılmadığı için belirsiz zamanlar ücret hesabına otomatik katılmaz.
+- **D-023 (uygulandı):** `plannedWallMinutes` (yerel saat aralığı) ve `elapsedSeconds` (anlar arasındaki geçen saniye) ayrıdır. Planlanan mola, gerçekleşmiş çalışma ve ödeme hesabı olarak sunulmaz; bu PR bordro motorunu etkinleştirmez.
+- **D-024 (açık):** Farklı mobil işletim sistemleri ve tzdb/ICU sürümleri için gerçek cihaz zaman dilimi kabul testi, fold seçimlerinin kalıcı saklanması ve gerçek bordroya bağlanması sonraki aşamada çözülür. Cihaz testleri kullanıcı tercihiyle ertelendi.

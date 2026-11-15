@@ -36,9 +36,10 @@ npm run format
 - SQLite açılış migrasyonu ve yerel vardiya döngüsü kalıcılığı
 - Ayarlardan döngü günü ekleme/çıkarma, özel vardiya türü/saat/mola tanımlama ve 8 günlük örnek düzen
 - Bugünkü vardiya ve aylık takvim; bir güne özel değişiklik yapma ve normal döngüye döndürme
+- IANA saat dilimine göre **planlanan saat aralığı / gerçek geçen süre** karşılaştırması; DST boşlukları ve tekrar eden saatler için açık uyarı (PR #7)
 - Saf, çevrimdışı test edilebilir takvim günü hesaplama motoru
 
-**Kısıt:** Faz 2'de özel şablon, aylık takvim ve günlük istisna kodu PR #5 ile eklenmiştir. Şablon silme/gerçekleşmiş çalışma kaydı, DST'de gerçek geçen süre ve native cihaz kabulü açık. Rutin ve kazanç ekranları henüz işlevsel değildir.
+**Kısıt:** Faz 2'de özel şablon, aylık takvim ve günlük istisna kodu PR #5; saat dilimi geçişi çözümleyicisi PR #7 ile eklenmiştir. Şablon silme/gerçekleşmiş çalışma kaydı, DST'de gerçek geçen süre ve native cihaz kabulü açık. Rutin ve kazanç ekranları henüz işlevsel değildir.
 
 ## Temel prensipler
 
