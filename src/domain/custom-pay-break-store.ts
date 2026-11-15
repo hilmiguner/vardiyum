@@ -58,7 +58,7 @@ export const CUSTOM_BREAK_WORK_SQL =
 
 /** Underscore in an ID is literal: LIKE would match unrelated stream IDs. */
 export async function readCustomPayBreakHistory(
-  store: CustomBreakSqlStore,
+  store: Pick<CustomBreakSqlStore, 'getAllAsync'>,
   work: EarningsWork,
   startDay: number,
 ): Promise<CustomPayBreakEvent[]> {
