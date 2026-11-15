@@ -9,15 +9,7 @@ import {
 } from '../src/domain/pay-period.ts';
 import { splitWorkForMonth } from '../src/domain/earnings-period.ts';
 
-function work(
-  id,
-  zone,
-  localDate,
-  endDate,
-  startInstantUtc,
-  endInstantUtc,
-  breakMinutes = 0,
-) {
+function work(id, zone, localDate, endDate, startInstantUtc, endInstantUtc, breakMinutes = 0) {
   return {
     id,
     timeZone: zone,
@@ -243,12 +235,7 @@ test('unverified, stale, or malformed source work fails closed', () => {
     /INVALID_PAY_PERIOD_WORK/,
   );
   assert.throws(
-    () =>
-      splitWorkForPayPeriod(
-        { ...crossing, timeZone: 'Invalid/Timezone' },
-        '2026-10',
-        26,
-      ),
+    () => splitWorkForPayPeriod({ ...crossing, timeZone: 'Invalid/Timezone' }, '2026-10', 26),
     /INVALID_TIME_ZONE/,
   );
 });

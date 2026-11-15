@@ -65,8 +65,7 @@ function shiftMonth(key: string, amount: -1 | 1): string {
   const index = year * 12 + month - 1 + amount;
   const shiftedYear = Math.floor(index / 12);
   const shiftedMonth = (index % 12) + 1;
-  if (shiftedYear < 1 || shiftedYear > 9999)
-    throw new Error('PAY_PERIOD_OUT_OF_RANGE');
+  if (shiftedYear < 1 || shiftedYear > 9999) throw new Error('PAY_PERIOD_OUT_OF_RANGE');
   return String(shiftedYear).padStart(4, '0') + '-' + String(shiftedMonth).padStart(2, '0');
 }
 
@@ -122,8 +121,7 @@ export function zonedPayPeriodBounds(
 }
 
 function exactUtc(value: string): number {
-  if (typeof value !== 'string' || !UTC.test(value))
-    throw new Error('INVALID_PAY_PERIOD_WORK');
+  if (typeof value !== 'string' || !UTC.test(value)) throw new Error('INVALID_PAY_PERIOD_WORK');
   const timestamp = Date.parse(value);
   if (!Number.isFinite(timestamp) || new Date(timestamp).toISOString() !== value)
     throw new Error('INVALID_PAY_PERIOD_WORK');
