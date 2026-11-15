@@ -1,0 +1,32 @@
+name: Temporary fixed-base code formatter
+on:
+  push:
+    branches:
+      - feat/custom-fixed-base-explicit-choice
+permissions:
+  contents: write
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    if: github.repository == 'hilmiguner/vardiyum'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Format scoped new fixed-base sources
+        run: |
+          npx prettier --write src/domain/custom-fixed-base-policy.ts src/domain/custom-fixed-base-store.ts src/data/custom-fixed-base-repository.ts src/components/custom-fixed-base-panel.tsx 'src/app/(tabs)/earnings.tsx' src/i18n/index.ts tests/custom-fixed-base-policy.test.mjs
+      - name: Commit canonical source formatting
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/domain/custom-fixed-base-policy.ts src/domain/custom-fixed-base-store.ts src/data/custom-fixed-base-repository.ts src/components/custom-fixed-base-panel.tsx 'src/app/(tabs)/earnings.tsx' src/i18n/index.ts tests/custom-fixed-base-policy.test.mjs
+          if ! git diff --cached --quiet; then
+            git commit -m "style: format explicit custom fixed base source and tests"
+            git push
+          fi
