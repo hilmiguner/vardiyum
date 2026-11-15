@@ -179,8 +179,7 @@
 
 ## Issue #16 / PR #19 — Offline şifreli yedek + read-only import preview
 
-**Dal:** `feat/encrypted-backup-readonly-restore-preview`  
-**PR:** [#19](https://github.com/hilmiguner/vardiyum/pull/19)  
+**[PR #19](https://github.com/hilmiguner/vardiyum/pull/19):** squash merge ile main'de (`1686a844b5c9ee723fea6fc104093695ce5e612b`).  
 **Kod CI:** [Actions #43721507257](https://github.com/hilmiguner/vardiyum/actions/runs/43721507257) **SUCCESS** (**119/119 Node test**, npm ci, Expo SDK 57 uyumu, Prettier/ESLint/TypeScript, Android/iOS JavaScript export).
 
 - [x] 18 adet SQLite v8 tabloyu tutarlı salt-okunur an olarak şifreli snapshot'a alma; legacy finans/veri ve orijinal UTC oturumları dahil, limit aşımında fail-closed.
@@ -188,8 +187,9 @@
 - [x] Kullanıcı anahtarı ayrı sakladığını onaylamadan şifreli dosya sistem paylaşım ekranına gönderilmez; otomatik ağ gönderimi yapılmaz.
 - [x] Sistem dosya seçimi ve secret girince authenticated **salt-okunur preview**, SQLite v8 schema/kolon/veri tipi ve boyut denetimleri, tablo bazlı satır sayıları.
 - [x] Yanlış key, bozulan dosya, schema downgrade, missing/extra column ve çok büyük veri birim testlerinde fail-closed.
-- [ ] PR #19 final belge commit'i merge ve main CI doğrulanacak.
+- [x] **PR #19 squash merge:** `1686a844b5c9ee723fea6fc104093695ce5e612b`.
+- [x] **Merge sonrası main CI:** [Actions #43722072994](https://github.com/hilmiguner/vardiyum/actions/runs/43722072994) SUCCESS (119/119 Node test, Android+iOS JS export).
 - [ ] **Gerçek restore/import-yazma YOK**; mevcut SQLite dosyası/tabloları bu PR ile değiştirilmez. Restore için atomic clean-target, FK/integrity ve izinli apply ayrı geliştirme [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16)'da.
 - [ ] Gerçek Android/iOS cihazda AES/file picker/Share sheet/anahtar UI/SQLite tutarlı kopya ve restore testleri kullanıcı tercihiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.
 
-**Sıradaki:** PR #19 main CI'ını doğrula; restore için ayrıca ayrı Issue/PR ve önce native risk değerlendirmesi oluştur. Issue #16 kapatılmayacak.
+**Sıradaki:** [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) — temiz hedefte atomik, onaylı ve veri kayıpsız SQLite restore/rollback; [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık kalır. Native AES/Share/SQLite veri geri dönüşü [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.

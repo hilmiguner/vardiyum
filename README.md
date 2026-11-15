@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Offline vardiya/rutin/hatırlatma ve tahmini kazanç PR #3/#5/#7/#9/#11/#13/#15/#17/#18 ile main'de. **PR #19** kapsamında AES-256-GCM şifreli yerel SQLite v8 yedeği oluşturma ve **salt-okunur içe alma önizlemesi** geliştirildi; [CI #43721507257](https://github.com/hilmiguner/vardiyum/actions/runs/43721507257) SUCCESS (119/119 Node testi, Android/iOS JS export). **Veri geri yükleme/yazma HENÜZ YOK**, native cihaz testleri ertelendi. Controlled restore ve özel maaş dönemi Issue #16'da açık; resmî bordro/net/vergi hesabı yok.
+> **Durum (2026-11-15):** Vardiya, rutinler, hatırlatmalar ve tahmini kazanç PR #3/#5/#7/#9/#11/#13/#15/#17/#18 ile; **şifreli SQLite v8 yedek oluşturma ve SALT-OKUNUR import önizlemesi PR #19** ile main'de. PR #19 merge `1686a844b5c9ee723fea6fc104093695ce5e612b`, [main CI #43722072994](https://github.com/hilmiguner/vardiyum/actions/runs/43722072994) SUCCESS (**119 Node test**, Android/iOS JS export). Gerçek atomik restore **HENÜZ YOK** ([Issue #20](https://github.com/hilmiguner/vardiyum/issues/20)); native cihaz QA [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi. Resmî bordro/net/vergi hesabı yok.
 
 ## Geliştirme kurulumu
 
