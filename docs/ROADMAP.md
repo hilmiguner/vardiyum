@@ -133,3 +133,9 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 - [ ] `feat/custom-pay-profile-transition-preview`: ayın 1'inde değişen immutable profil/sürüm/para birimi/modelin 26→25 aralığına göre segmentlenmesi ve **review_required**; profile yok/missing revision = fail-closed; monthly_fixed tam/partial dönem varsayımı olmadan hesap yok; read-only kaynaklı TR/EN UI ve SQLite v8/UTC/DST Node testleri. PR CI ve merge bekliyor.
 - [ ] **Gerçek** custom salary estimate: güncel profili her çalışma kaydının orijinal IANA zone/UTC kesitinde uygulamak, eşik ve kuruş BigInt, sınırdaki hem profil hem dönem molası için yeni kullanıcı beyanı, fixed tam/partial politika, period-specific adjustment/CSV/JSON. Takvim-aylı legacy rapor korunacak. Issue #22 açık.
 - [ ] Native telefon/şifreli restore/crash/low-disk kabulü Issue #2/#20 erteli.
+
+## 2026-11-15 — PR #26 rate transition teslim ve hesaplama adımları
+
+- [x] [PR #26](https://github.com/hilmiguner/vardiyum/pull/26) **merged** main `b4cd8c9cda15040fb3b7d7206d91c38cd35ea1ed` — 26→25 içinde effective-month ücret profili, son immutable revision, para birimi/model ve schedule-IANA UTC segmenti **salt-okunur** TR/EN Kazanç paneli. [main CI #43747264298](https://github.com/hilmiguner/vardiyum/actions/runs/43747264298) SUCCESS (**163/163 Node**, Android/iOS JS export).
+- [ ] Gerçek custom earnings: her kullanıcı çalışma UTC/IANA aralığını custom period ve varsa profil sınırlarında kes, sınırları aşan molalarda ayrı kaynak beyanı/fail-closed; dönemlik bağımsız fazla mesai eşiği, BigInt oran ve kuruş toplamı; mixed rate döneme explicit politika ve fixed salary full/partial varsayımı; period-keyed adjustments/CSV+JSON. **Mevcut takvim-ay raporu unchanged.** Issue #22/#16 açık.
+- [ ] Native Android/iOS gerçek kayıt + encrypted backup/restore + DST/low disk/crash kabulü Issue #2/#20 erteli.

@@ -178,3 +178,9 @@
 - [ ] Node SQLite **v1→v8** migration + gerçek DB `earnings_profiles` ve `earnings_profile_revisions` üzerinde latest immutable revision selection, eksik revision chain fail-closed ve startDay concurrent change, 18 tablo/foreign key/integrity/data unchanged.
 - [ ] Prettier, ESLint, TS, Expo dependencies, Android/iOS JS export — GitHub PR CI kanıtı bekleniyor.
 - [ ] Real device pay panel/timezones/restore/persistence Issue #2/#20 ertelendi. Actual earnings adjustment/CSV/JSON and fixed model assumption not yet tested because not implemented.
+
+## 2026-11-15 — PR #26 verified immutable rate transition preview
+
+- [x] [PR CI #43747093629](https://github.com/hilmiguner/vardiyum/actions/runs/43747093629) SUCCESS, [main merge CI #43747264298](https://github.com/hilmiguner/vardiyum/actions/runs/43747264298) SUCCESS: **163/163 Node**, Prettier, ESLint, TypeScript, Expo deps, Android/iOS JS exports.
+- [x] 26→25 rate segmentation, effective first-of-month UTC, duplicate/same rate review, mixed currency/model, single fixed blocker, single hourly preview, no beginning profile, February leap/nonleap, year rollover, Kathmandu UTC+5:45, New York DST, midnight DST gap, invalid timezone/effective date, SQLite v1→v8 immutable latest revision and missing revision fail-closed, preference concurrent change, no DB writes/18 table/integrity/FK preservation.
+- [ ] Native iOS/Android timezone and SQLite crash/reopen/backup acceptance Issue #2/#20; actual custom period salary/CSV/JSON, overtime/fixed/adjustment model tests not applicable yet (features still pending).
