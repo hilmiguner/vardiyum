@@ -142,3 +142,16 @@ Yeni sohbet başlangıcı:
 Yeni sohbet:
 
 > Vardiyum repo https://github.com/hilmiguner/vardiyum. Önce main SHA, PR/Issue, Actions ve docs/STATUS.md, docs/HANDOFF.md, docs/DECISIONS.md, docs/ROADMAP.md oku. Issue #16/PR #18 immutable ücret profili v2+ düzeltme, SQLite v8, geçmiş sürümle güncel çalışma verisinden yeniden hesap **main'de**; merge sonrası CI #43718105350 SUCCESS. Eski görüntülenmiş raporun anlık görüntüsü saklanmıyor. Kontrollü içe alma/şifreli yedek Issue #16'da açık. Cihaz testleri Issue #2'de ertelendi. CI/merge doğrulayarak GitHub'a kaydet, devam et.
+
+## 2026-11-15 — Issue #16 / PR #19 offline backup devir notu
+
+- **PR:** [#19](https://github.com/hilmiguner/vardiyum/pull/19), `feat/encrypted-backup-readonly-restore-preview`. Son güncel main SHA/CI/merge GitHub'dan mutlaka doğrulanmalı.
+- **Kod CI:** [#43721507257](https://github.com/hilmiguner/vardiyum/actions/runs/43721507257) SUCCESS; 119/119 Node test, Expo compatibility, Prettier/ESLint/TS ve Android/iOS **JavaScript export**.
+- **Kod:** `src/domain/backup-archive.ts` 18 SQLite v8 tablo allowlist, row/columns/UTF-8, auth payload/digest/limit; `src/data/backup-repository.ts` consistent read-only DB snapshot; `src/services/encrypted-backup.ts` AES-256-GCM, 256bit random secret ve doğrulama; `src/services/encrypted-backup-files.ts` encrypted cache, Expo share/picker; `src/components/encrypted-backup-panel.tsx` Ayarlar TR/EN arayüz; `tests/backup-archive.test.mjs` SQLite inventory, SHA, format, Unicode, Node AES-GCM tamper/yanlış key testleri.
+- **Gizlilik:** Anahtar plaintext olarak sadece ekranda (user kendisi güvenle saklar), asla şifreli dosyaya/SQLite settings'e eklenmez. Kaybolursa dosya **kurtarılamaz**; PBKDF2/parola kurtarma yok. Yalnızca kullanıcı onaylı sistem share. 4M açık veri/8M zarf karakter limiti, aşan reddedilir. Otomatik bulut gönderimi yok.
+- **KRİTİK:** Bu PR **geri yükleme değildir**. `BackupPreview.canRestore=false`; gelen dosya anahtarla **yalnızca doğrulanır/sayılır**, SQLite üzerine yazma/merge/replace yok. Import'a ilişkin ‘tamamlandı’ iddiasında bulunma. Native cihazda AES/file/share/picker ve restore hiç test edilmedi; [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ertelendi.
+- **Issue #16 AÇIK:** Restoru ancak temiz/uyumlu hedef ve transactional recovery/rollback, FK/integrity, conflict policy, izinli apply ve native kanıtla ayrı PR'da ele al. Özel maaş dönemi de bekliyor. Elektronik tablolar/finansal raporlar resmî bordro değil.
+
+Yeni sohbet prompt'u:
+
+> Vardiyum https://github.com/hilmiguner/vardiyum. Önce main SHA/CI, açık PR/Issue ve docs/STATUS.md, docs/HANDOFF.md, docs/DECISIONS.md, docs/ROADMAP.md kontrol et. Issue #16/PR #19: Expo SDK57 AES-GCM ile 18 SQLite v8 tablosundan **şifreli yedek oluşturma** ve kurtarma anahtarıyla **salt-okunur** import önizlemesi; 119 Node test ve Android/iOS JS export başarılı. Gerçek restore/import-yazma henüz yok; key dosyadan ayrı ve kaybolursa kurtarılmaz. Native cihaz testleri Issue #2'de ertelendi. CI/merge kanıtıyla GitHub üzerinden ilerle, verileri silmeden transactional restore tasarımına geç.

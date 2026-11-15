@@ -9,7 +9,7 @@
 | 2 | Esnek vardiya motoru, istisnalar ve takvim | PR #5/#7/#9 main'de; cihaz testleri/sürümleme açık |
 | 3 | Rutinler, görev geçmişi, bildirimler | PR #11/#13 main'de; native bildirim teslimi/QA açık |
 | 4 | Mesai ve tahmini kazanç | PR #15/#17/#18 main'de; kontrollü içe alma/şifreli yedek Issue #16 açık |
-| 5 | Yedekleme, gerçek cihazlar, beta | Planlandı |
+| 5 | Yedekleme, gerçek cihazlar, beta | PR #19 şifreli backup + doğrulamalı preview; native restore QA açık |
 | 6 | App Store ve Google Play yayını | Planlandı |
 
 ## Faz 1 — [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)
@@ -69,12 +69,14 @@
 - [x] Integer/BigInt para hesabı, kalem kalem kaynaklı dönem raporu, geçersiz kayıtta bloklama PR #15.
 - [x] UTC/IANA ay sınırında gece vardiyası bölünmesi, açık mola dağılımı/revizyon izi ve kullanıcı onaylı CSV/JSON metin paylaşımı: [PR #17](https://github.com/hilmiguner/vardiyum/pull/17) main merge `07deee63`; [main CI #43713571844](https://github.com/hilmiguner/vardiyum/actions/runs/43713571844) SUCCESS.
 - [x] Aynı efektif ay için gerekçeli, silinmeyen ücret profil sürümleri ve eski sürümle yeniden hesaplama: [PR #18](https://github.com/hilmiguner/vardiyum/pull/18), SQLite v8; merge `01f781ac`, [main CI #43718105350](https://github.com/hilmiguner/vardiyum/actions/runs/43718105350) SUCCESS.
-- [ ] Özel maaş dönemi, kontrollü içe alma ve şifreli yedek: [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık kalır.
+- [x] AES-256-GCM ile **şifreli dışa aktarma** ve dosya/key doğrulamalı **salt-okunur** içe alma preview: [PR #19](https://github.com/hilmiguner/vardiyum/pull/19), JS/test CI #43721507257 SUCCESS.
+- [ ] **Gerçek atomik restore**, dolu veritabanında veri kaybı önleme ve özel maaş dönemi: [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık kalır.
 - [ ] Native Android/iOS SQLite v7, kazanç paylaşım ekranı ve çevrimdışı kalıcılık: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) (kullanıcı isteğiyle ertelendi).
 
 ## Faz 5 — Beta
 
-- [ ] Güvenli dışa aktarma ve içe alma
+- [x] Şifreli AES-GCM backup dosyasını oluşturma ve read-only import doğrulama (PR #19).
+- [ ] Gerçek güvenli içe alma (transactional restore) ve restore sonrası cihaz açılış testi (Issue #16/#2).
 - [ ] Android/iOS cihaz matrisi ve veri kaybı testleri
 - [ ] Çeşitli sektörlerden 20 kişiyle hedef kullanıcı testi
 - [ ] Gizlilik/beyan ve erişilebilirlik kontrolleri

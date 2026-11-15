@@ -118,3 +118,15 @@
 - [ ] İşveren onayı, net maaş/vergi/SGK/yasal katsayı iddiası olmadığının doğrulanması.
 
 **Durum:** Kullanıcı isteğiyle gerçek cihaz QA ertelendi ([Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)). JS export native migrasyon ve persistans kanıtı değildir.
+
+## Issue #16 / PR #19 — Native şifreli yedek cihaz kabulü (ertelendi)
+
+- [ ] iOS/Android gerçek cihazda SQLite v8 tüm 18 tabloyu şifreli backup'a alma, 4M plaintext/8M encrypted envelope limitini güvenli reddetme.
+- [ ] `AESEncryptionKey.generate` kriptografik key oluşturma, AES-256-GCM + AAD ve native sealedData biçimi; aynı cihaz ve farklı cihazda .vdb dosyasını key ile doğrulama; yanlış key/bozuk dosyayı reddetme.
+- [ ] Recovery key ekranda görülür, ayrı kaydedildiği onaylanmadan Share açılmaz, anahtar .vdb/cache/SQLite/loglara yazılmaz; uygulamadan çıkınca key yaşam döngüsü.
+- [ ] Android/iOS sistem Share ve DocumentPicker izinleri, .vdb paylaşımı, düşük disk alanı, dosyanın yanlışlıkla silinmesi, target app iptali, büyük dosya, offline.
+- [ ] Dosya/anahtar doğrulamasında tablo sayıları doğru; **mevcut veritabanı hiçbir şekilde değişmemeli** (read-only verification).
+- [ ] Çökme/uygulama kapat-aç, TR/EN, TalkBack/VoiceOver, gizlilik ve finans verisi paylaşım onayı.
+- [ ] **Gerçek atomik restore / temiz hedef üzerinden tüm kullanıcı verilerini geri getirme henüz mevcut değil**; ayrı tasarım, geliştirme ve QA ister.
+
+**Durum:** Kullanıcı gerçek cihaz QA'yı [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de erteledi; JS bundle AES native çalışma, dosya paylaşımları veya data restore kanıtı değildir.
