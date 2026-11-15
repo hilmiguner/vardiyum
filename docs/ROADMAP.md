@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | 0 | Ürün, mimari ve proje hafızası belgeleri | ✅ PR #1 ile tamamlandı |
 | 1 | Expo iskeleti, SQLite, i18n, tema, CI | PR #3 main'e alındı; Issue #2 native test açık |
-| 2 | Esnek vardiya motoru, istisnalar ve takvim | PR #5: çekirdek kod/CI başarılı; native ve kalan kapsam açık |
+| 2 | Esnek vardiya motoru, istisnalar ve takvim | PR #5 main'de; gerçek cihaz ve DST/sürümleme işleri açık |
 | 3 | Rutinler, görev geçmişi, bildirimler | Planlandı |
 | 4 | Mesai ve tahmini kazanç | Planlandı |
 | 5 | Yedekleme, gerçek cihazlar, beta | Planlandı |
@@ -33,13 +33,13 @@
 
 ## Faz 2 — Gerçek vardiya esnekliği
 
-**Takip:** [Issue #4](https://github.com/hilmiguner/vardiyum/issues/4), [PR #5](https://github.com/hilmiguner/vardiyum/pull/5) (özel şablonlar, aylık takvim ve istisnalar; CI #43700598683 başarılı).
+**Takip:** [Issue #4](https://github.com/hilmiguner/vardiyum/issues/4), [PR #5](https://github.com/hilmiguner/vardiyum/pull/5) (özel şablonlar, aylık takvim ve istisnalar main'e merge edildi: d321be3e; son PR CI #43700862285 SUCCESS).
 
 - [x] Kullanıcı tanımlı saatler, vardiya türleri, 12/24 saatlik planlama kodu ve birim testleri PR #5.
 - [x] Döngüden bağımsız tek gün vardiya/izin override ve geri alma PR #5.
 - [ ] Gerçekleşmiş mesai ayrı kayıt akışı (planlanan vardiyadan bağımsız).
 - [x] Döngü indeksi ve takvim günü için DST / IANA tarih senaryoları test edildi.
-- [ ] DST boyunca **gerçek geçen süre** ve zaman dilimi yolculuğu semantiği.
+- [ ] DST boyunca **gerçek geçen süre** ve zaman dilimi yolculuğu semantiği: [Issue #6](https://github.com/hilmiguner/vardiyum/issues/6).
 - [x] Aylık takvim, ay gezinme, gün seçimi ve günlük override PR #5.
 - [ ] İleri düzey filtreleme.
 - [x] SQLite v1→v2 ve eski kayıt koruma Node testleri PR #5.

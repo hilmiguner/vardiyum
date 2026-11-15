@@ -9,12 +9,12 @@
 - [x] PR #1: ürün/mimari/handoff belgeleri.
 - [x] PR #3: Expo SDK 57, React Native, TypeScript mobil iskeleti; dört sekme ve ayarlar, SQLite v1, yerel demo döngü.
 - [x] PR #3 main sonrası Actions [#43698720966](https://github.com/hilmiguner/vardiyum/actions/runs/43698720966) SUCCESS.
-- **PR #5 öncesi main SHA:** `ffb8e5de2d4f2c945057ea4c614ddf4e48458945`.
+- [x] **PR #5** squash merge edildi: main SHA `d321be3e54eac31de6a69e59afcc461113ceaf25` (özel şablonlar, takvim, overrides, SQLite v2).
 
-## Faz 2 — Geliştirme dalında; henüz main'e merge edilmedi
+## Faz 2 — Çekirdek geliştirme main'de, kalan kabul işleri açık
 
 **[PR #5 — Özel vardiyalar ve günlük istisnalar](https://github.com/hilmiguner/vardiyum/pull/5)**  
-**Branch:** `feat/shift-templates-overrides-v2`
+**Merge:** `d321be3e54eac31de6a69e59afcc461113ceaf25`; geliştirme branch'i PR geçmişinde.
 
 - [x] Kullanıcının vardiya türü adı, saatleri, mola süresi ve ek çalışma/izin günü şablonlarını oluşturup düzenlemesi.
 - [x] Bitişi ertesi güne geçen veya 24 saat süren planlı vardiya aralıkları.
@@ -25,7 +25,7 @@
 - [x] TR/EN arayüz metinleri ve planlanan vardiya için takvim saat dilimine göre gün seçimi.
 - [x] **[Actions #43700598683](https://github.com/hilmiguner/vardiyum/actions/runs/43700598683) SUCCESS**: `npm ci`, Expo bağımlılık kontrolü, Prettier, ESLint, TypeScript, Node testleri, Android/iOS JavaScript export.
 
-**Not:** Bu belge sonlandığında PR'ın merge durumu değişmiş olabilir; önce GitHub PR ve main commit'ini kontrol et.
+**Doğrulama:** PR #5 merged. PR head CI [#43700862285](https://github.com/hilmiguner/vardiyum/actions/runs/43700862285) SUCCESS. Main push CI #43700993958 sonucunu ayrıca doğrula.
 
 ## Açık kalan kabul kanıtları
 
@@ -40,7 +40,7 @@
 
 - [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2): native cihaz ve SQLite kalıcılığı.
 - [Issue #4](https://github.com/hilmiguner/vardiyum/issues/4): Faz 2 vardiya motoru; PR #5 ilk dilim.
-- PR #5'in son Actions sonucunu kontrol et ve uygun şekilde merge et; sonra main SHA ve CI doğrulamasını bu dosyaya yaz.
+- PR #5 main'e alındı; [main push CI #43700993958](https://github.com/hilmiguner/vardiyum/actions/runs/43700993958) sonucunu izle. Her yeni commit sonrası CI durumunu doğrula.
 - Kalan Faz 2 konuları için ayrı PR: gerçek cihaz migrasyonu, zaman dilimi/DST süre semantiği, izin/mesai kayıtları ve serbest şablon yönetimi.
 - Her gelişmede bu dosyayı, HANDOFF, ROADMAP ve DECISIONS kayıtlarını kanıtlarla güncelle.
 
