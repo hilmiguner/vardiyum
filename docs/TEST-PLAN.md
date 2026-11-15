@@ -88,3 +88,14 @@
 - `tests/routine-engine.test.mjs`: 8 günlük döngü, anchor öncesi pozitif modulo, DST gece vardiyası başlangıç günü, günlük override, ISO hafta günü, aynı grupta OR/gruplar arasında AND, boş filtre, izin, etkin/pasif/arşiv.
 - `tests/routine-migration.test.mjs`: v1→v2→v3→v4 ve legacy rutin/checkbox/work/pattern koruma; eski tamamlamanın olay günlüğüne aktarımı; arşiv ve değişiklik sonrası olay başlığı snapshot'ı, geri alınınca geçmişin korunması; tarih/rutin kimliği benzersizliği.
 - **CI:** [#43706375916](https://github.com/hilmiguner/vardiyum/actions/runs/43706375916) SUCCESS, 51/51 Node testi. Android/iOS **JS paketleme** PASS; native test ileride.
+
+## Issue #12 / PR #13 — Hatırlatma planlayıcı testleri (2026-11-15)
+
+- Rutin `HH:mm` doğrulama, IANA zone + revision saklama, ilk kurulumda `app_settings` iznin yokluğu.
+- 14 günlük plan, 48 global / 6 günlük kotası; geçmiş hatırlatmayı tekrar tetiklememe, tamamlanan/günlük override/kapalı/arşivli rutinin plan dışına alınması.
+- New York DST gap/fold, zamanı ileri/geri alma; hiçbiri otomatik önce/sonra anına taşınmıyor.
+- Gece vardiyasına bağlı görevin vardiyanın başlangıç günü esas alınması, program timezone değiştirmede eski kayıt anahtarlarının geçersizleşmesi.
+- `reconcileReminderRequests`: başka sisteme ait bildirimi koruma, aynı anahtar kopyasını temizleme, rule edit/opt-out cleanup, scheduling başarısızsa eski bildirimlerin erken iptal edilmemesi.
+- SQLite v4→v5 migrasyon: eski rutin, tamamlamalar ve olay günlüğü korunur; geçersiz clock DB CHECK engellenir; timezone değişimi revision günceller.
+
+**PR test kanıtı:** [Actions #43708621922](https://github.com/hilmiguner/vardiyum/actions/runs/43708621922) SUCCESS, 67/67 Node test, Android/iOS JS export. Native OS teslimi bu testlerin kapsamında değildir.

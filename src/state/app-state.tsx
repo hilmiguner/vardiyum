@@ -23,6 +23,8 @@ interface AppState {
   boundaryChoices: Record<string, StoredBoundaryChoice>;
   saveBoundaryChoice: (date: string, policy: Readonly<BoundaryPolicy> | null) => Promise<void>;
   changeTimeZone: (timeZone: string) => Promise<void>;
+  reminderRevision: number;
+  refreshReminders: () => void;
   loading: boolean;
   error: string | null;
   saveConfig: (pattern: ShiftPattern, templates: readonly ShiftTemplate[]) => Promise<void>;
@@ -46,6 +48,8 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     {},
   );
   const [loading, setLoading] = useState(true);
+  const [reminderRevision, setReminderRevision] = useState(0);
+  const refreshReminders = useCallback(() => setReminderRevision((count) => count + 1), []);
   const [error, setError] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
@@ -141,6 +145,8 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     () => ({
       schedule,
       boundaryChoices,
+      reminderRevision,
+      refreshReminders,
       loading,
       error,
       saveConfig,
@@ -152,6 +158,8 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     [
       schedule,
       boundaryChoices,
+      reminderRevision,
+      refreshReminders,
       loading,
       error,
       saveConfig,

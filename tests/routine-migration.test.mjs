@@ -6,7 +6,6 @@ import {
   MIGRATION_2_SQL,
   MIGRATION_3_SQL,
   MIGRATION_4_SQL,
-  SCHEMA_VERSION,
 } from '../src/data/schema.ts';
 
 function dbAtV3() {
@@ -48,7 +47,7 @@ test('v1-v3 data and legacy routine completions survive migration to v4', () => 
         'reject','reject','2026-11-15T05:00:00.000Z','2026-11-15T13:00:00.000Z',30,'existing');
     `);
     db.exec(`BEGIN IMMEDIATE; ${MIGRATION_4_SQL} COMMIT;`);
-    assert.equal(db.prepare('PRAGMA user_version').get().user_version, SCHEMA_VERSION);
+    assert.equal(db.prepare('PRAGMA user_version').get().user_version, 4);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM task_completions').get().n, 1);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM actual_work_sessions').get().n, 1);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM pattern_days').get().n, 1);

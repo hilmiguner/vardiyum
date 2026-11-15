@@ -87,3 +87,16 @@ Yeni sohbet başlangıcı:
 Yeni sohbet başlangıcı:
 
 > Vardiyum https://github.com/hilmiguner/vardiyum. Önce docs/STATUS.md, docs/HANDOFF.md, docs/ROADMAP.md, docs/DECISIONS.md, main commit, açık PR/Issue ve Actions'ı doğrula. PR #11 (Issue #10) vardiyaya bağlı rutinler, günlük görevler ve geçmiş + SQLite v4 **main'de**. Sıradaki Issue #12 lokal bildirimler. Native cihaz testleri kullanıcı isteğiyle sonraya bırakıldı (Issue #2). Doğrulanan işleri GitHub'a kaydet ve sıradaki Faz 3 lokal bildirim motoruna geç.
+
+## 2026-11-15 — Issue #12 / PR #13 son durum
+
+- **PR:** [#13](https://github.com/hilmiguner/vardiyum/pull/13), dal `feat/offline-routine-reminders-v5`. **PR CI [#43708621922](https://github.com/hilmiguner/vardiyum/actions/runs/43708621922) SUCCESS** (67/67 Node testi, Android&iOS JS export dahil).
+- **Kod:** `src/domain/routine-reminders.ts` DST-safe saf planlayıcı ve owned reconciliation; `src/services/routine-notifications.ts` Expo Notifications; `src/components/reminder-coordinator.tsx` sıralı sync; `src/components/reminder-consent-panel.tsx` yalnızca açık izin; `src/data/reminder-repository.ts`, SQLite v5.
+- **Kurallar:** 14 sivil gün, toplam 48, günlük en fazla 6; kullanıcı izin istemediyse OS permission prompt yok. `reminderClock + reminderTimeZone + revision` kayıtlıdır. Fold/gap anları atlanır, tamamlanan/kapalı/arşivli rutinler planlanmaz. Bildirim anahtarında tarih, zone, revizyon var; yalnızca `vardiyum-routine-v1` sahibi pending bildirimler iptal edilir.
+- **Senkronizasyon:** uygulama açılışı/ön plana dönüş, vardiya/tek gün istisna/zone değişimi, kural ekle-düzenle-arşivle ve tamamlandı/geri al. Uygulama açılmazsa 14 günden ileriye bildirim garantisi yok, exact alarm izni istenmez.
+- **Açık:** Kullanıcı [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) gerçek native/SQLite v5/izin/teslim testlerini erteledi. Expo SDK 57 Android/iOS JS bundle PASS **native/notification-delivery PASS değildir**.
+- **Sıradaki:** PR #13 merge/main CI durumunu doğrula; STATUS/HANDOFF/ROADMAP kanıtlarını main'de güncelle. Ardından Faz 4 tahmini ücret/mesai veri modeline, geçmiş kayıtları koruyan ayrı Issue/PR ile geç. Native cihaz testini kullanıcı istemedikçe zorunlu tutma.
+
+Yeni sohbet prompt'u:
+
+> Vardiyum repo https://github.com/hilmiguner/vardiyum. Önce docs/STATUS.md, docs/HANDOFF.md, docs/DECISIONS.md, docs/ROADMAP.md; main SHA, açık PR/Issue, GitHub Actions son durumunu kontrol et. Issue #12 / PR #13 yerel rutin bildirimleri ve SQLite v5: 14 günlük best-effort, izin yalnızca kullanıcının düğmesine basmasıyla; cihaz testleri Issue #2'de ertelendi. Tamamlanmayan native testleri PASS diye sunma. Gelişmeleri GitHub'a kaydet ve sonraki Faz 4 tahmini kazanç motoru işlerine geç.

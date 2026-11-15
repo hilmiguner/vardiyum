@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Vardiya, DST ve fiilî çalışma altyapıları (PR #3/#5/#7/#9) ile çevrimdışı vardiyaya bağlı **rutinler ve günlük görev geçmişi PR #11 main'de**. Merge sonrası [Actions #43706843264](https://github.com/hilmiguner/vardiyum/actions/runs/43706843264) SUCCESS: 51/51 Node testi ve Android/iOS JS export. Native cihaz testleri kullanıcı isteğiyle ertelendi. Güncel durum: [docs/STATUS.md](docs/STATUS.md).
+> **Durum (2026-11-15):** Vardiya/takvim/DST/fiilî çalışma (PR #3/#5/#7/#9) ve çevrimdışı rutin motoru (PR #11) main'de. **PR #13** ile izin temelli rutin hatırlatmaları ve SQLite v5 geliştirildi; [CI #43708621922](https://github.com/hilmiguner/vardiyum/actions/runs/43708621922) SUCCESS (67 test, Android/iOS JS export). Merge ve son main CI [docs/STATUS.md](docs/STATUS.md)'den kontrol edilmeli. **Native cihazda bildirim teslimi henüz test edilmedi.**
 
 ## Geliştirme kurulumu
 
@@ -80,3 +80,12 @@ Lisans henüz seçilmedi. **Vardiyum** çalışma adıdır; marka, alan adı ve 
 - Günlük vardiya istisnaları dikkate alınır; gece vardiyası görevi, vardiyanın **başladığı** takvim gününe bağlanır.
 - SQLite v4 eski `routine_rules` ve `task_completions` verilerini korur, eski tamamlanmaları `routine_completion_events` geçmişine taşır. Bir rutini arşivlemek geçmişini **silmez**.
 - Yerel bildirimler ve native cihaz testleri **henüz yapılmadı**; Faz 3'ün ayrı işleri.
+
+## Faz 3 — Yerel rutin hatırlatmaları / PR #13
+
+- Rutin başına isteğe bağlı `HH:mm` saat, programın **kaydedilmiş IANA saat dilimi** ve rutin revizyonu ile bağlı.
+- Kullanıcı **Bildirimleri etkinleştir** düğmesine basmadan izin istenmez. İzin verilmez veya geri alınırsa görev listeleri etkilenmez.
+- Yaklaşan **14 sivil gün** için bir defalık saatli bildirimler planlanır; toplam en fazla **48**, günde en fazla **6**. Tamamlanan görevler, kapatılan/arşivlenen rutinler, vardiya istisnaları ve yeni saat dilimi plana yansır.
+- DST geçişinde **iki farklı UTC ana karşılık gelen veya var olmayan saatler atlanır**; otomatik tahmin yapılmaz. Planlayıcı yalnızca Vardiyum'a ait bildirimleri iptal/yeniler.
+- Android'de **kesin alarm izni istenmez**; zamanlama best-effort'tur. İzin, teslim süresi ve yeniden başlatma sonrası teslim **gerçek cihazda doğrulanmadı**.
+- SQLite v5 önceki tüm rutin, çalışma ve vardiya verilerini koruyan eklemeli migrasyondur. Bildirim izni kullanıcı eylemi olmadan varsayılan kapalıdır.

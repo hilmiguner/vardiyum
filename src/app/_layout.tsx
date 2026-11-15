@@ -4,6 +4,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
 import { AppStateProvider } from '../state/app-state';
+import { ReminderCoordinator } from '../components/reminder-coordinator';
 import { usePalette } from '../theme/colors';
 
 function Navigation() {
@@ -22,6 +23,7 @@ function Navigation() {
 export default function RootLayout() {
   return (
     <AppStateProvider>
+      <ReminderCoordinator />
       <Navigation />
     </AppStateProvider>
   );

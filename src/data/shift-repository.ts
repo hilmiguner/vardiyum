@@ -176,10 +176,21 @@ export async function changeScheduleTimeZone(nextTimeZone: string): Promise<void
     throw new Error('INVALID_TIME_ZONE');
   }
   const db = await getDatabase();
-  const result = await db.runAsync(
-    'UPDATE shift_patterns SET timezone_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-    nextTimeZone,
-    PRIMARY_ID,
-  );
-  if (result.changes !== 1) throw new Error('SCHEDULE_NOT_CONFIGURED');
+  await db.withExclusiveTransactionAsync(async (tx) => {
+    const result = await tx.runAsync(
+      'UPDATE shift_patterns SET timezone_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      nextTimeZone,
+      PRIMARY_ID,
+    );
+    if (result.changes !== 1) throw new Error('SCHEDULE_NOT_CONFIGURED');
+    // Keep each configured reminder bound to the schedule zone after the user's
+    // explicit zone-change confirmation. The changed revision invalidates
+    // pending OS notification keys so the coordinator can replace them.
+    await tx.runAsync(
+      `UPDATE routine_rules
+       SET reminder_timezone_id = ?, revision = revision + 1
+       WHERE reminder_clock IS NOT NULL AND archived_at IS NULL`,
+      nextTimeZone,
+    );
+  });
 }

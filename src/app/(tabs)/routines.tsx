@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Action, Heading, Muted, Page, Panel } from '../../components/ui';
 import { RoutineDayChecklist } from '../../components/routine-day-checklist';
+import { ReminderConsentPanel } from '../../components/reminder-consent-panel';
 import {
   archiveRoutine,
   createRoutine,
@@ -37,6 +38,7 @@ function RoutineEditor({
   const c = usePalette();
   const { schedule } = useAppState();
   const recurrence = initial?.recurrence ?? EVERY_DAY;
+  const [reminderText, setReminderText] = useState(initial?.reminderClock ?? '');
   const [title, setTitle] = useState(initial?.title ?? '');
   const [enabled, setEnabled] = useState(initial?.enabled ?? true);
   const [shiftIds, setShiftIds] = useState<string[]>([...recurrence.shiftIds]);
@@ -78,6 +80,8 @@ function RoutineEditor({
         enabled,
         archivedAt: null,
         revision: initial?.revision ?? 1,
+        reminderClock: reminderText.trim() || null,
+        reminderTimeZone: reminderText.trim() ? schedule.timeZone : null,
       });
       setSaving(true);
       if (initial) await updateRoutine(rule);
@@ -158,6 +162,25 @@ function RoutineEditor({
           );
         })}
       </View>
+      <Heading>{t('reminderTimeTitle')}</Heading>
+      <Muted>{t('reminderTimeHint', { timeZone: schedule.timeZone })}</Muted>
+      <TextInput
+        accessibilityLabel={t('reminderTimeTitle')}
+        value={reminderText}
+        onChangeText={setReminderText}
+        maxLength={5}
+        placeholder="08:30"
+        autoCapitalize="none"
+        autoCorrect={false}
+        placeholderTextColor={c.muted}
+        style={{
+          borderWidth: 1,
+          borderColor: c.border,
+          color: c.text,
+          borderRadius: 12,
+          padding: 12,
+        }}
+      />
       <Heading>{t('routineCycleFilter')}</Heading>
       <Muted>{t('routineCycleHint', { length: schedule.pattern?.days.length ?? 0 })}</Muted>
       <TextInput
@@ -224,7 +247,7 @@ function RoutineEditor({
 export default function RoutinesScreen() {
   const { t } = useTranslation();
   const c = usePalette();
-  const { schedule, loading: scheduleLoading } = useAppState();
+  const { schedule, loading: scheduleLoading, refreshReminders } = useAppState();
   const today = calendarDateInZone(schedule.timeZone);
   const [dateInput, setDateInput] = useState(today);
   const [selectedDate, setSelectedDate] = useState(today);
@@ -262,6 +285,7 @@ export default function RoutinesScreen() {
   const perform = async (action: () => Promise<void>) => {
     try {
       await action();
+      refreshReminders();
       await refresh();
     } catch (error) {
       Alert.alert(t('routineError'), error instanceof Error ? error.message : '');
@@ -316,6 +340,7 @@ export default function RoutinesScreen() {
             />
             <Action label={t('showDate')} onPress={setDate} />
           </Panel>
+          <ReminderConsentPanel />
           <RoutineDayChecklist date={selectedDate} revision={revision} showHistory />
           {loadError ? <Text style={{ color: c.danger }}>{loadError}</Text> : null}
           <Panel>
@@ -377,6 +402,7 @@ export default function RoutinesScreen() {
               initial={rules.find((rule) => rule.id === editing)}
               onSaved={() => {
                 setEditing(null);
+                refreshReminders();
                 void refresh();
               }}
               onCancel={() => setEditing(null)}

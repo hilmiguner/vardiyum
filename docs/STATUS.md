@@ -107,3 +107,19 @@
 - [ ] Gerçek Android/iOS cihaz, SQLite v4 ve offline standalone kontrolü kullanıcı isteğiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'ye ertelendi.
 
 **Sıradaki iş:** [Issue #12 — Faz 3 yerel hatırlatmalar](https://github.com/hilmiguner/vardiyum/issues/12). Bildirim izni, zamanlama, yeniden planlama ve DST koşullarını güvenli testlerle ele al. [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) cihaz testleri ertelenmiş ve açık.
+
+## Issue #12 / PR #13 — Yerel rutin hatırlatmaları
+
+**Dal:** `feat/offline-routine-reminders-v5`  
+**PR:** [#13](https://github.com/hilmiguner/vardiyum/pull/13)  
+**PR kod CI:** [Actions #43708621922](https://github.com/hilmiguner/vardiyum/actions/runs/43708621922) **SUCCESS**: npm ci/Expo check/Prettier/ESLint/TypeScript, **67/67 Node testi**, Android+iOS JS export.
+
+- [x] Rutin başına isteğe bağlı `HH:mm`, zone + revizyon ile kalıcı SQLite v5 kayıt.
+- [x] Genel izin yalnızca açık kullanıcı eyleminde soruluyor; varsayılan kapalı ve reddedilirse görevler çalışıyor.
+- [x] Offline 14 günlük / 48 toplam / 6 günlük hatırlatma planlayıcı; UTC mutlak DATE trigger, DST gap/fold atlama.
+- [x] Vardiya/rutin/izin/zaman dilimi/görev tamamlanması değişiminde Vardiyum-aidiyetli bildirimleri uzlaştırma; başkasının bildirimleri korunuyor.
+- [x] Eski v1–v4 veri ve rutin tamamlamalarını koruyan migrasyon testleri.
+- [ ] PR #13 merge ve main CI sonucu henüz belgeye işlenmedi; GitHub'dan kontrol et.
+- [ ] **Gerçek cihaz native bildirim izni, teslim, boot/arka plan, SQLite v5 persistans** kullanıcı isteğiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'ye ertelendi. Uygulama sürekli çalışmaz; kesin zamanlı alarm vaadi yok.
+
+**Sıradaki MVP kod fazı:** Faz 4 — fiilî çalışma kayıtlarından ayrı, temkinli/tahmini kazanç motoru; sözleşme ve ödeme politikasını resmi bordro olarak sunma.

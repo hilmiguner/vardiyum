@@ -23,6 +23,9 @@ export interface RoutineRule {
   enabled: boolean;
   archivedAt: string | null;
   revision: number;
+  /** Optional one-shot notification clock in schedule IANA zone, HH:mm. */
+  reminderClock?: string | null;
+  reminderTimeZone?: string | null;
 }
 
 export interface RoutineEvent {
@@ -95,7 +98,27 @@ export function validateRoutine(input: RoutineRule): RoutineRule {
     throw new Error('INVALID_ROUTINE_ARCHIVED');
   if (!Number.isSafeInteger(input.revision) || input.revision < 1)
     throw new Error('INVALID_ROUTINE_REVISION');
-  return { ...input, title, recurrence: validateRecurrence(input.recurrence) };
+  const clock = input.reminderClock ?? null;
+  const zone = input.reminderTimeZone ?? null;
+  if (clock !== null && !/^([01]\d|2[0-3]):[0-5]\d$/.test(clock))
+    throw new Error('INVALID_REMINDER_CLOCK');
+  if (clock !== null && (!zone || typeof zone !== 'string'))
+    throw new Error('INVALID_REMINDER_TIME_ZONE');
+  if (zone !== null && typeof zone !== 'string') throw new Error('INVALID_REMINDER_TIME_ZONE');
+  if (zone !== null) {
+    try {
+      new Intl.DateTimeFormat('en-US', { timeZone: zone }).format(new Date());
+    } catch {
+      throw new Error('INVALID_REMINDER_TIME_ZONE');
+    }
+  }
+  return {
+    ...input,
+    title,
+    recurrence: validateRecurrence(input.recurrence),
+    reminderClock: clock,
+    reminderTimeZone: clock ? zone : null,
+  };
 }
 
 /**
