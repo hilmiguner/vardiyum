@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import { Action, Heading, Muted, Page, Panel } from '../../components/ui';
 import {
-  addCalendarDays, calendarDateInZone, resolveShift, type ResolvedShift,
+  addCalendarDays,
+  calendarDateInZone,
+  resolveShift,
+  type ResolvedShift,
 } from '../../domain/shift-engine';
 import { useAppState } from '../../state/app-state';
 import { usePalette } from '../../theme/colors';
@@ -31,7 +34,9 @@ export default function TodayScreen() {
         <Muted>{t('loading')}</Muted>
       ) : error ? (
         <Panel>
-          <Muted>{t('databaseError')} ({error})</Muted>
+          <Muted>
+            {t('databaseError')} ({error})
+          </Muted>
           <Action label={t('retry')} onPress={() => void reload()} />
         </Panel>
       ) : !current ? (
@@ -43,10 +48,18 @@ export default function TodayScreen() {
       ) : (
         <>
           <Panel>
-            <Muted>{t('shiftToday')} · {today}</Muted>
+            <Muted>
+              {t('shiftToday')} · {today}
+            </Muted>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-              <View style={{ width: 9, height: 55, borderRadius: 10,
-                backgroundColor: current.template.color }} />
+              <View
+                style={{
+                  width: 9,
+                  height: 55,
+                  borderRadius: 10,
+                  backgroundColor: current.template.color,
+                }}
+              />
               <View>
                 <Text style={{ color: c.text, fontSize: 30, fontWeight: '800' }}>
                   {current.template.name}

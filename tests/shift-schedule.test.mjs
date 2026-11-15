@@ -2,15 +2,26 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
-  DEFAULT_TEMPLATES, addCalendarDays, calendarDateInZone,
-  moveMonth, plannedWallMinutes, resolveShift, validateOverride,
-  validateScheduleConfig, validateTemplate,
+  DEFAULT_TEMPLATES,
+  addCalendarDays,
+  calendarDateInZone,
+  moveMonth,
+  plannedWallMinutes,
+  resolveShift,
+  validateOverride,
+  validateScheduleConfig,
+  validateTemplate,
 } from '../src/domain/shift-engine.ts';
 
 const custom = {
-  id: 'custom_12', name: '12 saat', color: '#20A0F0',
-  startsAt: '19:00', endsAt: '07:00',
-  endDayOffset: 1, breakMinutes: 30, isRestDay: false,
+  id: 'custom_12',
+  name: '12 saat',
+  color: '#20A0F0',
+  startsAt: '19:00',
+  endsAt: '07:00',
+  endDayOffset: 1,
+  breakMinutes: 30,
+  isRestDay: false,
 };
 const pattern = { anchorDate: '2026-11-15', days: ['custom_12', 'off', 'off'] };
 const templates = [...DEFAULT_TEMPLATES, custom];
@@ -25,26 +36,44 @@ test('24-hour interval is allowed and invalid durations are rejected', () => {
   const day = { ...custom, startsAt: '07:00', endsAt: '07:00', endDayOffset: 1 };
   assert.equal(plannedWallMinutes(validateTemplate(day)), 1440);
   assert.throws(() => validateTemplate({ ...custom, endsAt: '25:00' }), /INVALID_SHIFT_TIME/);
-  assert.throws(() => validateTemplate({ ...custom, endDayOffset: 0 }), /INVALID_SHIFT_DURATION/);
-  assert.throws(() => validateTemplate({ ...custom, breakMinutes: 720 }), /INVALID_SHIFT_DURATION/);
+  assert.throws(
+    () => validateTemplate({ ...custom, endDayOffset: 0 }),
+    /INVALID_SHIFT_DURATION/,
+  );
+  assert.throws(
+    () => validateTemplate({ ...custom, breakMinutes: 720 }),
+    /INVALID_SHIFT_DURATION/,
+  );
   assert.throws(() => validateTemplate({ ...custom, name: ' ' }), /INVALID_SHIFT_NAME/);
-  assert.throws(() => validateTemplate({ ...DEFAULT_TEMPLATES[3], startsAt: '10:00' }), /INVALID_REST_SHIFT/);
+  assert.throws(
+    () => validateTemplate({ ...DEFAULT_TEMPLATES[3], startsAt: '10:00' }),
+    /INVALID_REST_SHIFT/,
+  );
 });
 
 test('validates custom IDs, duplicates and references to unknown templates', () => {
   assert.equal(validateScheduleConfig(pattern, templates).pattern.days.length, 3);
-  assert.throws(() => validateScheduleConfig(
-    { anchorDate: pattern.anchorDate, days: ['unknown'] }, templates,
-  ), /UNKNOWN_SHIFT/);
-  assert.throws(() => validateScheduleConfig(pattern, [...templates, custom]), /DUPLICATE_SHIFT_ID/);
-  assert.throws(() => validateScheduleConfig(
-    { ...pattern, days: ['invalid id!'] }, templates,
-  ), /INVALID_SHIFT/);
+  assert.throws(
+    () =>
+      validateScheduleConfig({ anchorDate: pattern.anchorDate, days: ['unknown'] }, templates),
+    /UNKNOWN_SHIFT/,
+  );
+  assert.throws(
+    () => validateScheduleConfig(pattern, [...templates, custom]),
+    /DUPLICATE_SHIFT_ID/,
+  );
+  assert.throws(
+    () => validateScheduleConfig({ ...pattern, days: ['invalid id!'] }, templates),
+    /INVALID_SHIFT/,
+  );
 });
 
 test('one-day overrides never shift the underlying cycle', () => {
   const schedule = {
-    pattern, templates, overrides: {}, timeZone: 'Europe/Istanbul',
+    pattern,
+    templates,
+    overrides: {},
+    timeZone: 'Europe/Istanbul',
   };
   const next = addCalendarDays(pattern.anchorDate, 1);
   const after = addCalendarDays(pattern.anchorDate, 3);

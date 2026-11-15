@@ -108,10 +108,46 @@ export interface ResolvedShift {
 }
 
 export const DEFAULT_TEMPLATES: readonly ShiftTemplate[] = [
-  { id: 'morning', name: 'Sabah', color: '#56A3FF', startsAt: '07:00', endsAt: '15:00', endDayOffset: 0, breakMinutes: 0, isRestDay: false },
-  { id: 'evening', name: 'Akşam', color: '#E8A86E', startsAt: '15:00', endsAt: '23:00', endDayOffset: 0, breakMinutes: 0, isRestDay: false },
-  { id: 'night', name: 'Gece', color: '#A18CF6', startsAt: '23:00', endsAt: '07:00', endDayOffset: 1, breakMinutes: 0, isRestDay: false },
-  { id: 'off', name: 'İzin', color: '#5EC59C', startsAt: null, endsAt: null, endDayOffset: 0, breakMinutes: 0, isRestDay: true },
+  {
+    id: 'morning',
+    name: 'Sabah',
+    color: '#56A3FF',
+    startsAt: '07:00',
+    endsAt: '15:00',
+    endDayOffset: 0,
+    breakMinutes: 0,
+    isRestDay: false,
+  },
+  {
+    id: 'evening',
+    name: 'Akşam',
+    color: '#E8A86E',
+    startsAt: '15:00',
+    endsAt: '23:00',
+    endDayOffset: 0,
+    breakMinutes: 0,
+    isRestDay: false,
+  },
+  {
+    id: 'night',
+    name: 'Gece',
+    color: '#A18CF6',
+    startsAt: '23:00',
+    endsAt: '07:00',
+    endDayOffset: 1,
+    breakMinutes: 0,
+    isRestDay: false,
+  },
+  {
+    id: 'off',
+    name: 'İzin',
+    color: '#5EC59C',
+    startsAt: null,
+    endsAt: null,
+    endDayOffset: 0,
+    breakMinutes: 0,
+    isRestDay: true,
+  },
 ];
 
 /** Return the planned wall-clock interval, without DST elapsed-time assumptions. */
@@ -123,8 +159,9 @@ export function plannedWallMinutes(template: ShiftTemplate): number {
     const [hour, minute] = value.split(':').map(Number);
     return hour * 60 + minute;
   };
-  return toMinutes(template.endsAt) - toMinutes(template.startsAt) +
-    template.endDayOffset * 1440;
+  return (
+    toMinutes(template.endsAt) - toMinutes(template.startsAt) + template.endDayOffset * 1440
+  );
 }
 
 export function validateTemplate(input: ShiftTemplate): ShiftTemplate {
@@ -137,8 +174,12 @@ export function validateTemplate(input: ShiftTemplate): ShiftTemplate {
   if (!Number.isSafeInteger(input.breakMinutes) || input.breakMinutes < 0)
     throw new Error('INVALID_BREAK_MINUTES');
   if (input.isRestDay) {
-    if (input.startsAt !== null || input.endsAt !== null ||
-        input.endDayOffset !== 0 || input.breakMinutes !== 0)
+    if (
+      input.startsAt !== null ||
+      input.endsAt !== null ||
+      input.endDayOffset !== 0 ||
+      input.breakMinutes !== 0
+    )
       throw new Error('INVALID_REST_SHIFT');
   } else {
     const duration = plannedWallMinutes(input);
@@ -181,7 +222,10 @@ export function resolveShift(date: string, schedule: ShiftSchedule): ResolvedShi
   const template = schedule.templates.find((entry) => entry.id === id);
   if (!template) throw new Error('UNKNOWN_SHIFT');
   return {
-    date, template, source: override ? 'override' : 'cycle', note: override?.note ?? '',
+    date,
+    template,
+    source: override ? 'override' : 'cycle',
+    note: override?.note ?? '',
   };
 }
 
@@ -202,7 +246,10 @@ export function moveMonth(monthStart: string, amount: number): string {
 
 export function calendarDateInZone(timeZone: string, instant: Date = new Date()): string {
   const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
   }).formatToParts(instant);
   const piece = (type: string) => parts.find((part) => part.type === type)?.value ?? '';
   const date = `${piece('year')}-${piece('month')}-${piece('day')}`;

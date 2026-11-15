@@ -18,10 +18,13 @@ test('new database migrates to v2 and seeds default templates', () => {
     assert.equal(db.prepare('PRAGMA user_version').get().user_version, SCHEMA_VERSION);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM shift_templates').get().n, 4);
     assert.equal(
-      db.prepare("SELECT break_minutes FROM shift_templates WHERE id = 'night'").get().break_minutes,
+      db.prepare("SELECT break_minutes FROM shift_templates WHERE id = 'night'").get()
+        .break_minutes,
       0,
     );
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('existing v1 cycle, overrides and edited templates survive migration', () => {
@@ -45,5 +48,7 @@ test('existing v1 cycle, overrides and edited templates survive migration', () =
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM pattern_days').get().n, 1);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM day_overrides').get().n, 1);
     assert.equal(db.prepare('PRAGMA user_version').get().user_version, 2);
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });

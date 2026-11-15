@@ -57,8 +57,8 @@ export async function loadSchedule(): Promise<ShiftSchedule> {
     breakMinutes: entry.break_minutes,
     isRestDay: entry.is_rest_day === 1,
   }));
-  const timeZone = row?.timezone_id ||
-    Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const timeZone =
+    row?.timezone_id || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
   let pattern: ShiftPattern | null = null;
   if (row) {
     const days = await db.getAllAsync<DayRow>(
@@ -70,7 +70,11 @@ export async function loadSchedule(): Promise<ShiftSchedule> {
   }
   const byDate: Record<string, DayOverride> = {};
   for (const entry of overrides) {
-    byDate[entry.date] = { date: entry.date, shiftId: entry.shift_code, note: entry.note ?? '' };
+    byDate[entry.date] = {
+      date: entry.date,
+      shiftId: entry.shift_code,
+      note: entry.note ?? '',
+    };
   }
   return {
     pattern,
@@ -102,8 +106,14 @@ export async function saveScheduleConfig(
           end_day_offset = excluded.end_day_offset,
           break_minutes = excluded.break_minutes,
           is_rest_day = excluded.is_rest_day`,
-        entry.id, entry.name, entry.color, entry.startsAt, entry.endsAt,
-        entry.endDayOffset, entry.breakMinutes, entry.isRestDay ? 1 : 0,
+        entry.id,
+        entry.name,
+        entry.color,
+        entry.startsAt,
+        entry.endsAt,
+        entry.endDayOffset,
+        entry.breakMinutes,
+        entry.isRestDay ? 1 : 0,
       );
     }
     await tx.runAsync(
@@ -112,13 +122,17 @@ export async function saveScheduleConfig(
        ON CONFLICT(id) DO UPDATE SET
          anchor_date = excluded.anchor_date,
          updated_at = CURRENT_TIMESTAMP`,
-      PRIMARY_ID, pattern.anchorDate, timeZone,
+      PRIMARY_ID,
+      pattern.anchorDate,
+      timeZone,
     );
     await tx.runAsync('DELETE FROM pattern_days WHERE pattern_id = ?', PRIMARY_ID);
     for (const [index, shiftId] of pattern.days.entries()) {
       await tx.runAsync(
         'INSERT INTO pattern_days (pattern_id, day_index, shift_code) VALUES (?, ?, ?)',
-        PRIMARY_ID, index, shiftId,
+        PRIMARY_ID,
+        index,
+        shiftId,
       );
     }
   });
@@ -141,6 +155,8 @@ export async function saveDayOverride(
      ON CONFLICT(date) DO UPDATE SET
        shift_code = excluded.shift_code,
        note = excluded.note`,
-    override.date, override.shiftId, override.note,
+    override.date,
+    override.shiftId,
+    override.note,
   );
 }

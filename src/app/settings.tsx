@@ -32,9 +32,13 @@ const COLORS = ['#56A3FF', '#E8A86E', '#A18CF6', '#5EC59C', '#F4A4B4'];
 
 function toDraft(template: ShiftTemplate): TemplateDraft {
   return {
-    id: template.id, name: template.name, color: template.color,
-    startsAt: template.startsAt ?? '', endsAt: template.endsAt ?? '',
-    breakText: String(template.breakMinutes), isRestDay: template.isRestDay,
+    id: template.id,
+    name: template.name,
+    color: template.color,
+    startsAt: template.startsAt ?? '',
+    endsAt: template.endsAt ?? '',
+    breakText: String(template.breakMinutes),
+    isRestDay: template.isRestDay,
   };
 }
 
@@ -49,18 +53,21 @@ export default function SettingsScreen() {
   const initial = (): Draft => ({
     anchor: schedule.pattern?.anchorDate ?? localDateString(),
     days: [...(schedule.pattern?.days ?? ['morning', 'evening', 'night', 'off'])],
-    templates: (schedule.templates.length ? schedule.templates : DEFAULT_TEMPLATES).map(toDraft),
+    templates: (schedule.templates.length ? schedule.templates : DEFAULT_TEMPLATES).map(
+      toDraft,
+    ),
   });
   const view = draft ?? initial();
   const edit = (transform: (current: Draft) => Draft) =>
     setDraft((before) => transform(before ?? initial()));
 
-  const cycleDay = (index: number) => edit((before) => {
-    const updated = [...before.days];
-    const ids = before.templates.map((template) => template.id);
-    updated[index] = ids[(ids.indexOf(updated[index]) + 1) % ids.length];
-    return { ...before, days: updated };
-  });
+  const cycleDay = (index: number) =>
+    edit((before) => {
+      const updated = [...before.days];
+      const ids = before.templates.map((template) => template.id);
+      updated[index] = ids[(ids.indexOf(updated[index]) + 1) % ids.length];
+      return { ...before, days: updated };
+    });
 
   const changeTemplate = (id: string, patch: Partial<TemplateDraft>) => {
     edit((before) => ({
@@ -77,13 +84,18 @@ export default function SettingsScreen() {
       const id = `custom_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
       return {
         ...before,
-        templates: [...before.templates, {
-          id, name: isRestDay ? t('restName') : t('customName'),
-          color: COLORS[before.templates.length % COLORS.length],
-          startsAt: isRestDay ? '' : '08:00',
-          endsAt: isRestDay ? '' : '16:00',
-          breakText: '0', isRestDay,
-        }],
+        templates: [
+          ...before.templates,
+          {
+            id,
+            name: isRestDay ? t('restName') : t('customName'),
+            color: COLORS[before.templates.length % COLORS.length],
+            startsAt: isRestDay ? '' : '08:00',
+            endsAt: isRestDay ? '' : '16:00',
+            breakText: '0',
+            isRestDay,
+          },
+        ],
       };
     });
   };
@@ -97,15 +109,17 @@ export default function SettingsScreen() {
         const startsAt = item.isRestDay ? null : item.startsAt.trim();
         const endsAt = item.isRestDay ? null : item.endsAt.trim();
         return {
-          id: item.id, name: item.name, color: item.color,
-          startsAt, endsAt, isRestDay: item.isRestDay,
+          id: item.id,
+          name: item.name,
+          color: item.color,
+          startsAt,
+          endsAt,
+          isRestDay: item.isRestDay,
           endDayOffset: !item.isRestDay && startsAt && endsAt && endsAt <= startsAt ? 1 : 0,
           breakMinutes: Number(item.breakText),
         };
       });
-      valid = validateScheduleConfig(
-        { anchorDate: view.anchor, days: view.days }, templates,
-      );
+      valid = validateScheduleConfig({ anchorDate: view.anchor, days: view.days }, templates);
     } catch (reason) {
       Alert.alert(t('invalidSchedule'), reason instanceof Error ? reason.message : '');
       return;
@@ -124,31 +138,58 @@ export default function SettingsScreen() {
 
   return (
     <Page title={t('settings')} settings={false} subtitle={t('setupSubtitle')}>
-      {loading ? <Muted>{t('loading')}</Muted> : error ? (
-        <Muted>{t('databaseError')} ({error})</Muted>
+      {loading ? (
+        <Muted>{t('loading')}</Muted>
+      ) : error ? (
+        <Muted>
+          {t('databaseError')} ({error})
+        </Muted>
       ) : (
         <>
           <Panel>
             <Heading>{t('anchorDate')}</Heading>
             <TextInput
-              value={view.anchor} onChangeText={(anchor) => edit((before) => ({ ...before, anchor }))}
-              maxLength={10} autoCapitalize="none" accessibilityLabel={t('anchorDate')}
-              placeholder="2026-11-15" placeholderTextColor={c.muted}
-              style={{ color: c.text, fontSize: 17, backgroundColor: c.cardAlt, borderRadius: 12,
-                padding: 14, borderWidth: 1, borderColor: c.border }}
+              value={view.anchor}
+              onChangeText={(anchor) => edit((before) => ({ ...before, anchor }))}
+              maxLength={10}
+              autoCapitalize="none"
+              accessibilityLabel={t('anchorDate')}
+              placeholder="2026-11-15"
+              placeholderTextColor={c.muted}
+              style={{
+                color: c.text,
+                fontSize: 17,
+                backgroundColor: c.cardAlt,
+                borderRadius: 12,
+                padding: 14,
+                borderWidth: 1,
+                borderColor: c.border,
+              }}
             />
             <Muted>{t('scheduleZone', { zone: schedule.timeZone })}</Muted>
-            <Heading>{t('cycle')} ({view.days.length})</Heading>
+            <Heading>
+              {t('cycle')} ({view.days.length})
+            </Heading>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 9 }}>
               {view.days.map((id, index) => {
                 const template = view.templates.find((item) => item.id === id);
                 return (
-                  <Pressable key={index} onPress={() => cycleDay(index)}
+                  <Pressable
+                    key={index}
+                    onPress={() => cycleDay(index)}
                     accessibilityRole="button"
                     accessibilityLabel={`${index + 1}. ${t('day')}: ${template?.name ?? id}`}
-                    style={{ backgroundColor: c.cardAlt, borderRadius: 14, padding: 12,
-                      borderBottomWidth: 3, borderBottomColor: template?.color ?? c.accent }}>
-                    <Text style={{ color: c.muted, fontSize: 11 }}>{index + 1}. {t('day')}</Text>
+                    style={{
+                      backgroundColor: c.cardAlt,
+                      borderRadius: 14,
+                      padding: 12,
+                      borderBottomWidth: 3,
+                      borderBottomColor: template?.color ?? c.accent,
+                    }}
+                  >
+                    <Text style={{ color: c.muted, fontSize: 11 }}>
+                      {index + 1}. {t('day')}
+                    </Text>
                     <Text style={{ color: c.text, fontSize: 15, fontWeight: '700' }}>
                       {template?.name ?? id}
                     </Text>
@@ -157,52 +198,100 @@ export default function SettingsScreen() {
               })}
             </View>
             <View style={{ flexDirection: 'row', gap: 12 }}>
-              <Pressable accessibilityRole="button" accessibilityLabel={t('addDay')}
-                onPress={() => edit((before) => ({ ...before, days: [
-                  ...before.days, before.templates.find((item) => item.isRestDay)?.id ??
-                    before.templates[0].id,
-                ] }))} disabled={view.days.length >= 366}
-                style={{ backgroundColor: c.cardAlt, padding: 12, borderRadius: 10, flex: 1 }}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('addDay')}
+                onPress={() =>
+                  edit((before) => ({
+                    ...before,
+                    days: [
+                      ...before.days,
+                      before.templates.find((item) => item.isRestDay)?.id ??
+                        before.templates[0].id,
+                    ],
+                  }))
+                }
+                disabled={view.days.length >= 366}
+                style={{ backgroundColor: c.cardAlt, padding: 12, borderRadius: 10, flex: 1 }}
+              >
                 <Text style={{ color: c.text, textAlign: 'center' }}>+ {t('addDay')}</Text>
               </Pressable>
-              <Pressable accessibilityRole="button" accessibilityLabel={t('removeDay')}
-                onPress={() => edit((before) => ({ ...before, days: before.days.slice(0, -1) }))}
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('removeDay')}
+                onPress={() =>
+                  edit((before) => ({ ...before, days: before.days.slice(0, -1) }))
+                }
                 disabled={view.days.length <= 1}
-                style={{ backgroundColor: c.cardAlt, padding: 12, borderRadius: 10, flex: 1 }}>
+                style={{ backgroundColor: c.cardAlt, padding: 12, borderRadius: 10, flex: 1 }}
+              >
                 <Text style={{ color: c.text, textAlign: 'center' }}>− {t('removeDay')}</Text>
               </Pressable>
             </View>
-            <Action label={t('example')} onPress={() => edit((before) => ({
-              ...before, anchor: localDateString(), days: [...SAMPLE],
-            }))} />
+            <Action
+              label={t('example')}
+              onPress={() =>
+                edit((before) => ({
+                  ...before,
+                  anchor: localDateString(),
+                  days: [...SAMPLE],
+                }))
+              }
+            />
           </Panel>
 
           <Panel>
             <Heading>{t('shiftTypes')}</Heading>
             <Muted>{t('shiftTypesHint')}</Muted>
             {view.templates.map((template) => (
-              <View key={template.id}
-                style={{ backgroundColor: c.cardAlt, borderRadius: 14, padding: 14, gap: 9,
-                  borderLeftWidth: 4, borderLeftColor: template.color }}>
-                <TextInput accessibilityLabel={t('shiftName')} value={template.name}
+              <View
+                key={template.id}
+                style={{
+                  backgroundColor: c.cardAlt,
+                  borderRadius: 14,
+                  padding: 14,
+                  gap: 9,
+                  borderLeftWidth: 4,
+                  borderLeftColor: template.color,
+                }}
+              >
+                <TextInput
+                  accessibilityLabel={t('shiftName')}
+                  value={template.name}
                   onChangeText={(name) => changeTemplate(template.id, { name })}
-                  placeholder={t('shiftName')} placeholderTextColor={c.muted} maxLength={40}
-                  style={{ color: c.text, fontSize: 17, fontWeight: '700' }} />
+                  placeholder={t('shiftName')}
+                  placeholderTextColor={c.muted}
+                  maxLength={40}
+                  style={{ color: c.text, fontSize: 17, fontWeight: '700' }}
+                />
                 {!template.isRestDay && (
                   <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
-                    {([
-                      ['startsAt', t('startTime')],
-                      ['endsAt', t('endTime')],
-                      ['breakText', t('breakMinutes')],
-                    ] as const).map(([field, label]) => (
+                    {(
+                      [
+                        ['startsAt', t('startTime')],
+                        ['endsAt', t('endTime')],
+                        ['breakText', t('breakMinutes')],
+                      ] as const
+                    ).map(([field, label]) => (
                       <View key={field} style={{ flex: 1, gap: 3 }}>
                         <Text style={{ color: c.muted, fontSize: 12 }}>{label}</Text>
-                        <TextInput accessibilityLabel={label} value={template[field]}
-                          autoCorrect={false} placeholderTextColor={c.muted}
-                          onChangeText={(value) => changeTemplate(template.id, { [field]: value })}
+                        <TextInput
+                          accessibilityLabel={label}
+                          value={template[field]}
+                          autoCorrect={false}
+                          placeholderTextColor={c.muted}
+                          onChangeText={(value) =>
+                            changeTemplate(template.id, { [field]: value })
+                          }
                           maxLength={field === 'breakText' ? 4 : 5}
-                          style={{ color: c.text, padding: 9, borderWidth: 1,
-                            borderColor: c.border, borderRadius: 9 }} />
+                          style={{
+                            color: c.text,
+                            padding: 9,
+                            borderWidth: 1,
+                            borderColor: c.border,
+                            borderRadius: 9,
+                          }}
+                        />
                       </View>
                     ))}
                   </View>
@@ -211,10 +300,20 @@ export default function SettingsScreen() {
               </View>
             ))}
             <View style={{ flexDirection: 'row', gap: 10 }}>
-              <View style={{ flex: 1 }}><Action label={t('addShift')}
-                onPress={() => addTemplate(false)} disabled={view.templates.length >= 100} /></View>
-              <View style={{ flex: 1 }}><Action label={t('addRest')}
-                onPress={() => addTemplate(true)} disabled={view.templates.length >= 100} /></View>
+              <View style={{ flex: 1 }}>
+                <Action
+                  label={t('addShift')}
+                  onPress={() => addTemplate(false)}
+                  disabled={view.templates.length >= 100}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Action
+                  label={t('addRest')}
+                  onPress={() => addTemplate(true)}
+                  disabled={view.templates.length >= 100}
+                />
+              </View>
             </View>
             <Muted>{t('overnightHint')}</Muted>
           </Panel>

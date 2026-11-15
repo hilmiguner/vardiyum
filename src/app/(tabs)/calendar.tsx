@@ -4,7 +4,11 @@ import { useTranslation } from 'react-i18next';
 
 import { Action, Heading, Muted, Page, Panel } from '../../components/ui';
 import {
-  addCalendarDays, calendarDateInZone, calendarOrdinal, moveMonth, resolveShift,
+  addCalendarDays,
+  calendarDateInZone,
+  calendarOrdinal,
+  moveMonth,
+  resolveShift,
   type ShiftTemplate,
 } from '../../domain/shift-engine';
 import { useAppState } from '../../state/app-state';
@@ -32,8 +36,10 @@ export default function CalendarScreen() {
     index < firstWeekday ? null : addCalendarDays(visibleMonth, index - firstWeekday),
   );
   const chosen = resolveShift(selectedDate, schedule);
-  const note = noteDraft?.date === selectedDate
-    ? noteDraft.value : schedule.overrides[selectedDate]?.note ?? '';
+  const note =
+    noteDraft?.date === selectedDate
+      ? noteDraft.value
+      : (schedule.overrides[selectedDate]?.note ?? '');
 
   const goMonth = (amount: number) => {
     const next = moveMonth(visibleMonth, amount);
@@ -53,32 +59,55 @@ export default function CalendarScreen() {
     }
   };
 
-  const weekdays = [
-    t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat'), t('sun'),
-  ];
+  const weekdays = [t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat'), t('sun')];
   return (
     <Page title={t('calendar')} subtitle={t('monthView')}>
-      {loading ? <Muted>{t('loading')}</Muted> : error ? (
-        <Panel><Muted>{t('databaseError')} ({error})</Muted></Panel>
+      {loading ? (
+        <Muted>{t('loading')}</Muted>
+      ) : error ? (
+        <Panel>
+          <Muted>
+            {t('databaseError')} ({error})
+          </Muted>
+        </Panel>
       ) : !schedule.pattern ? (
-        <Panel><Muted>{t('noPattern')}</Muted></Panel>
+        <Panel>
+          <Muted>{t('noPattern')}</Muted>
+        </Panel>
       ) : (
         <>
           <Panel>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Pressable accessibilityRole="button" accessibilityLabel={t('previousMonth')}
-                onPress={() => goMonth(-1)} style={{ padding: 10 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('previousMonth')}
+                onPress={() => goMonth(-1)}
+                style={{ padding: 10 }}
+              >
                 <Text style={{ color: c.text, fontSize: 22 }}>‹</Text>
               </Pressable>
               <Heading>{visibleMonth.slice(0, 7)}</Heading>
-              <Pressable accessibilityRole="button" accessibilityLabel={t('nextMonth')}
-                onPress={() => goMonth(1)} style={{ padding: 10 }}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('nextMonth')}
+                onPress={() => goMonth(1)}
+                style={{ padding: 10 }}
+              >
                 <Text style={{ color: c.text, fontSize: 22 }}>›</Text>
               </Pressable>
             </View>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
               {weekdays.map((day, index) => (
-                <View key={index} style={{ width: '14.2857%', alignItems: 'center', paddingVertical: 6 }}>
+                <View
+                  key={index}
+                  style={{ width: '14.2857%', alignItems: 'center', paddingVertical: 6 }}
+                >
                   <Text style={{ color: c.muted, fontSize: 11 }}>{day}</Text>
                 </View>
               ))}
@@ -86,25 +115,48 @@ export default function CalendarScreen() {
                 const shift = date ? resolveShift(date, schedule) : null;
                 const active = date === selectedDate;
                 return (
-                  <View key={date ?? `empty-${index}`} style={{ width: '14.2857%', padding: 2 }}>
+                  <View
+                    key={date ?? `empty-${index}`}
+                    style={{ width: '14.2857%', padding: 2 }}
+                  >
                     {date ? (
-                      <Pressable accessibilityRole="button"
+                      <Pressable
+                        accessibilityRole="button"
                         accessibilityLabel={`${date} ${shift?.template.name ?? ''}`}
-                        onPress={() => { setSelectedDate(date); setNoteDraft(null); }}
-                        style={{ minHeight: 57, padding: 5, borderRadius: 10,
-                          borderWidth: active ? 2 : 1, borderColor: active ? c.accent : c.border,
-                          backgroundColor: active ? c.cardAlt : c.card, alignItems: 'center',
-                          justifyContent: 'center', gap: 3 }}>
+                        onPress={() => {
+                          setSelectedDate(date);
+                          setNoteDraft(null);
+                        }}
+                        style={{
+                          minHeight: 57,
+                          padding: 5,
+                          borderRadius: 10,
+                          borderWidth: active ? 2 : 1,
+                          borderColor: active ? c.accent : c.border,
+                          backgroundColor: active ? c.cardAlt : c.card,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: 3,
+                        }}
+                      >
                         <Text style={{ color: c.text, fontWeight: active ? '800' : '500' }}>
                           {Number(date.slice(8))}
                         </Text>
-                        <View style={{ width: 7, height: 7, borderRadius: 4,
-                          backgroundColor: shift?.template.color ?? c.muted }} />
+                        <View
+                          style={{
+                            width: 7,
+                            height: 7,
+                            borderRadius: 4,
+                            backgroundColor: shift?.template.color ?? c.muted,
+                          }}
+                        />
                         {shift?.source === 'override' ? (
                           <Text style={{ fontSize: 9, color: c.accent }}>*</Text>
                         ) : null}
                       </Pressable>
-                    ) : <View style={{ minHeight: 57 }} />}
+                    ) : (
+                      <View style={{ minHeight: 57 }} />
+                    )}
                   </View>
                 );
               })}
@@ -112,35 +164,63 @@ export default function CalendarScreen() {
           </Panel>
           <Panel>
             <Heading>{selectedDate}</Heading>
-            {chosen && <>
-              <Text style={{ color: c.text, fontSize: 18, fontWeight: '700' }}>
-                {chosen.template.name}
-              </Text>
-              <Muted>{timeLabel(chosen.template)}</Muted>
-              {chosen.source === 'override' ? <Muted>{t('editedDay')}</Muted> : null}
-            </>}
+            {chosen && (
+              <>
+                <Text style={{ color: c.text, fontSize: 18, fontWeight: '700' }}>
+                  {chosen.template.name}
+                </Text>
+                <Muted>{timeLabel(chosen.template)}</Muted>
+                {chosen.source === 'override' ? <Muted>{t('editedDay')}</Muted> : null}
+              </>
+            )}
             <Heading>{t('changeDay')}</Heading>
             <Muted>{t('overrideHint')}</Muted>
-            <TextInput value={note} onChangeText={(value) => setNoteDraft({
-              date: selectedDate, value,
-            })} accessibilityLabel={t('dayNote')} maxLength={120}
-              placeholder={t('dayNote')} placeholderTextColor={c.muted}
-              style={{ color: c.text, padding: 12, borderRadius: 12, borderWidth: 1,
-                borderColor: c.border }} />
+            <TextInput
+              value={note}
+              onChangeText={(value) =>
+                setNoteDraft({
+                  date: selectedDate,
+                  value,
+                })
+              }
+              accessibilityLabel={t('dayNote')}
+              maxLength={120}
+              placeholder={t('dayNote')}
+              placeholderTextColor={c.muted}
+              style={{
+                color: c.text,
+                padding: 12,
+                borderRadius: 12,
+                borderWidth: 1,
+                borderColor: c.border,
+              }}
+            />
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 9 }}>
               {schedule.templates.map((template) => (
-                <Pressable key={template.id} accessibilityRole="button" disabled={saving}
+                <Pressable
+                  key={template.id}
+                  accessibilityRole="button"
+                  disabled={saving}
                   accessibilityLabel={`${selectedDate} ${template.name}`}
                   onPress={() => void setOverride(template.id)}
-                  style={{ padding: 12, borderRadius: 12, backgroundColor: c.cardAlt,
-                    borderBottomWidth: 3, borderBottomColor: template.color }}>
+                  style={{
+                    padding: 12,
+                    borderRadius: 12,
+                    backgroundColor: c.cardAlt,
+                    borderBottomWidth: 3,
+                    borderBottomColor: template.color,
+                  }}
+                >
                   <Text style={{ color: c.text, fontWeight: '700' }}>{template.name}</Text>
                 </Pressable>
               ))}
             </View>
             {chosen?.source === 'override' ? (
-              <Action label={t('restoreCycle')} onPress={() => void setOverride(null)}
-                disabled={saving} />
+              <Action
+                label={t('restoreCycle')}
+                onPress={() => void setOverride(null)}
+                disabled={saving}
+              />
             ) : null}
           </Panel>
         </>
