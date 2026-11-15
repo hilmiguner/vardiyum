@@ -10,7 +10,7 @@
 - [x] GitHub deposu var: hilmiguner/vardiyum (erişim/metadata doğrulandı).
 - [x] Depo başlangıçta boştu; başlangıç README.md kaydı eklendi (commit: 42239462fb9a21d7a642ddc30d04657c2cd86a96).
 - [x] Ürün hedefi, kapsam, mimari, yol haritası, test planı, karar kayıtları ve devir dokümantasyonu yazıldı (bu dokümantasyon değişikliği).
-- [ ] Dokümantasyon PR'ının merge durumu / son main commit doğrulaması: GitHub üzerinden kontrol edilmeli.
+- [x] PR #1 (https://github.com/hilmiguner/vardiyum/pull/1) squash merge edildi; main commit: 8a29a3a6f908d234326c53307ce6b18ae16223a5.
 
 ## Henüz yapılmayanlar
 
@@ -36,4 +36,4 @@ Bir iş, konuşmada “hazır” denildiği için tamamlanmış sayılmaz. Dosya
 
 ## Değişiklik geçmişi
 
-- **2026-11-15:** Başlangıç ürün ve teknik planı kabul edildi. Kullanıcının açtığı GitHub deposuna proje hafızası aktarımı başlatıldı. README oluşturuldu; ayrıntılı dokümantasyon PR akışında hazırlanıyor.
+- **2026-11-15:** Başlangıç ürün ve teknik planı kabul edildi. Kullanıcının açtığı GitHub deposuna proje hafızası aktarımı başlatıldı. README oluşturuldu; PR #1 ile yedi ayrıntılı doküman main dalına birleştirildi. Uygulama kodu henüz yok.

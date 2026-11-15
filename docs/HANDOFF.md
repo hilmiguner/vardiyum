@@ -40,13 +40,13 @@ Marka sloganı adayı: “Vardiyanı bil. Gününü planla. Kazancını takip et
 
 ## Doğrulanmış ilerleme ve yapılmayanlar
 
-2026-11-15 tarihinde GitHub deposu **boş** olarak doğrulandı. README.md başlangıç commit'i **42239462fb9a21d7a642ddc30d04657c2cd86a96** ile oluşturuldu; ürün/mimari/devir dokümanları dokümantasyon değişikliğinde hazırlanıyor. **Mobil uygulama kodu, CI, test, native build veya mağaza yayını henüz yapılmış değil.**
+2026-11-15 tarihinde GitHub deposu **boş** olarak doğrulandı. README.md başlangıç commit'i **42239462fb9a21d7a642ddc30d04657c2cd86a96** ile oluşturuldu; ürün/mimari/devir dokümanları **PR #1** ile main dalına squash merge edildi (**8a29a3a6f908d234326c53307ce6b18ae16223a5**). **Mobil uygulama kodu, CI, test, native build veya mağaza yayını henüz yapılmış değil.**
 
 **Bu dosya kalıcı bir durum kaydıdır ama eskimeye açıktır:** yeni oturumda mutlaka güncel main SHA, branch'ler, açık PR'lar ve CI sonuçlarına bakılmalı. [STATUS.md](STATUS.md) daha güncel ise onu esas al.
 
 ## Sıradaki en yararlı adım
 
-1. Dokümantasyon PR'ının birleştirildiğini doğrula.
+1. Repo main üzerinde PR #1 (dokümantasyon) durumunu ve varsa daha yeni commit/PR'ları doğrula.
 2. main üzerinde Expo + TS uygulama iskeletini başlat; platform uyumlu bağımlılıkları seç.
 3. Expo Router dört sekme, TR/EN ve temel tema, SQLite migrasyon altyapısı, test runner ve GitHub Actions CI'ı kur.
 4. Ayrı bir PR ile vardiya engine sözleşmesini, 8 günlük örnek döngü ve tarih/istisna sınır durumlarını testlerle uygula.

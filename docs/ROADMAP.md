@@ -4,7 +4,7 @@
 
 | Faz | Çıktı | Durum |
 | --- | --- | --- |
-| 0 | Ürün/mimari/karar/devir belgeleri | Bu başlangıç dokümantasyon değişikliğiyle hazırlanıyor |
+| 0 | Ürün/mimari/karar/devir belgeleri | Tamamlandı; PR #1 main dalına birleştirildi |
 | 1 | Çalışan Expo projesi, test ve CI altyapısı | Başlamadı |
 | 2 | Vardiya döngüsü motoru ve takvim | Başlamadı |
 | 3 | Rutin kuralları ve bildirimler | Başlamadı |
@@ -18,7 +18,7 @@
 - [x] Sektör bağımsız hedef kitle ve temel değer önerisi belirlendi.
 - [x] MVP / sonraki sürüm sınırları konuşuldu.
 - [x] Teknik yön ve offline-first ilkesi belirlendi.
-- [ ] Belgelerin main dalına birleştirilmesi ve commit/PR doğrulaması.
+- [x] Belgeler main dalına squash merge edildi: PR #1, commit 8a29a3a6f908d234326c53307ce6b18ae16223a5.
 - [ ] İsim / marka / domain / mağaza görünürlüğü kontrolü (yayın öncesi).
 
 ## Faz 1 — Temel uygulama

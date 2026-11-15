@@ -4,7 +4,7 @@
 
 Vardiyum, **tüm sektörlerdeki vardiyalı çalışanlar** için tasarlanan, iOS ve Android üzerinde çalışacak **çevrimdışı öncelikli (offline-first)** kişisel vardiya asistanıdır.
 
-> **Proje durumu (2026-11-15):** Ürün vizyonu, MVP kapsamı ve başlangıç teknik mimarisi planlandı. Henüz mobil uygulama kodu, test veya mağaza yayını oluşturulmadı. Repo başlangıç dokümantasyonu hazırlanıyor. Güncel ve doğrulanabilir durum için [docs/STATUS.md](docs/STATUS.md) dosyasını okuyun.
+> **Proje durumu (2026-11-15):** Ürün vizyonu, MVP kapsamı ve başlangıç teknik mimarisi planlandı. Henüz mobil uygulama kodu, test veya mağaza yayını oluşturulmadı. Başlangıç dokümantasyonu PR #1 ile main dalına eklendi; mobil uygulama geliştirmesi başlamadı. Güncel ve doğrulanabilir durum için [docs/STATUS.md](docs/STATUS.md) dosyasını okuyun.
 
 ## Neyi çözüyoruz?
 
