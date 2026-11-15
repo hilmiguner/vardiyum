@@ -35,3 +35,13 @@
 | Hata bağlantısı | GitHub Issue / kişisel veri içermeyen ekran görüntüsü |
 
 **Yayın/geliştirme sınırı:** Native test kaydı olmadan 'Android/iOS cihaz testleri tamamlandı' denmez.
+
+## Faz 2 için ek cihaz testleri — PR #5 (henüz yapılmadı)
+
+- [ ] V1'den yükselen telefonda eski döngü ve günlük değişiklik korunur; SQLite `user_version=2`.
+- [ ] Özel vardiya ekle: 19:00–07:00, mola 30 dk; kapat/aç, değerler aynı.
+- [ ] Aynı saat 07:00–07:00 gir: 24 saatlik planlı vardiya olarak görünmeli.
+- [ ] Aylık takvimde rastgele bir günü "izin" olarak değiştir, sonraki döngü günü bozulmamalı.
+- [ ] Değişiklik geri alınınca düzenli döngü görünür; kapat/aç sonrası kalıcıdır.
+- [ ] Türkçe ve İngilizce metinler; Android/iOS açık/koyu tema ve TalkBack/VoiceOver erişimi.
+- [ ] Kullanıcı geçersiz saat veya mola girince uygulama çökmemeli, kayıt reddedilmeli.
