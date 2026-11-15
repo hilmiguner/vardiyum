@@ -16,7 +16,13 @@ import { Action, Heading, Muted, Panel } from './ui';
  * Preparatory user declarations ONLY. This panel does not change existing
  * calendar-month estimates, monthly break allocations or CSV/JSON reports.
  */
-export function CustomPayBreakPanel({ periodKey }: { periodKey: string }) {
+export function CustomPayBreakPanel({
+  periodKey,
+  onSaved,
+}: {
+  periodKey: string;
+  onSaved?: () => void;
+}) {
   const { t } = useTranslation();
   const palette = usePalette();
   const [result, setResult] = useState<CustomPayBreakCandidateResult | null>(null);
@@ -80,6 +86,7 @@ export function CustomPayBreakPanel({ periodKey }: { periodKey: string }) {
         return next;
       });
       setReloadRevision((before) => before + 1);
+      onSaved?.();
       Alert.alert(t('earnCustomBreakSaved'));
     } catch (reason) {
       Alert.alert(
