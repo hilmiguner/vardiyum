@@ -395,7 +395,8 @@ const resources = {
       earnCustomBreakTitle: 'Custom-period break split (preparation)',
       earnCustomBreakExplanation:
         'For a period such as 26–25, you can declare how a break in actual work crossing the period boundary is split. These declarations do not automatically change existing monthly earnings.',
-      earnCustomBreakSelectedPeriod: 'Custom period: start day {{day}} · starting month {{period}}',
+      earnCustomBreakSelectedPeriod:
+        'Custom period: start day {{day}} · starting month {{period}}',
       earnCustomBreakNone: 'No break-bearing work crosses this custom period boundary.',
       earnCustomBreakTotal: 'Original reported break: {{minutes}} minutes',
       earnCustomBreakFirst: 'Break minutes assigned to the first part of {{period}}',
@@ -403,7 +404,8 @@ const resources = {
       earnCustomBreakReasonPlaceholder: 'Example: corrected the break duration',
       earnCustomBreakRevision: 'Saved revision: {{revision}} (0: not yet declared)',
       earnCustomBreakSave: 'Save custom-period break allocation',
-      earnCustomBreakSaved: 'Versioned break allocation saved. Prior corrections remain recorded.',
+      earnCustomBreakSaved:
+        'Versioned break allocation saved. Prior corrections remain recorded.',
       earnCustomBreakInvalid: 'Invalid or stale custom-period break allocation',
       earnCustomBreakNotEnabled:
         'Earnings reports, pay profiles and CSV/JSON exports do not yet use this custom-period declaration. Calendar-month reports and existing break history are unchanged.',

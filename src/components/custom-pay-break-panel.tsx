@@ -130,9 +130,7 @@ export function CustomPayBreakPanel({ periodKey }: { periodKey: string }) {
                 <Muted>
                   {t('earnCustomBreakTotal', { minutes: candidate.originalBreakMinutes })}
                 </Muted>
-                <Muted>
-                  {t('earnCustomBreakFirst', { period: candidate.startPeriodKey })}
-                </Muted>
+                <Muted>{t('earnCustomBreakFirst', { period: candidate.startPeriodKey })}</Muted>
                 <TextInput
                   accessibilityLabel={t('earnCustomBreakFirst', {
                     period: candidate.startPeriodKey,
@@ -176,9 +174,7 @@ export function CustomPayBreakPanel({ periodKey }: { periodKey: string }) {
                     padding: 12,
                   }}
                 />
-                <Muted>
-                  {t('earnCustomBreakRevision', { revision: candidate.revision })}
-                </Muted>
+                <Muted>{t('earnCustomBreakRevision', { revision: candidate.revision })}</Muted>
                 <Action
                   label={t('earnCustomBreakSave')}
                   disabled={busyId !== null}

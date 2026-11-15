@@ -115,10 +115,9 @@ function input(minutes = 10, expectedRevision = 0, recordedAt = FIRST_EVENT_TIME
 
 function countAuditRows(db, workId = WORK_ID, startDay = 26) {
   const prefix = customBreakPrefix(workId, startDay);
-  return db.prepare('SELECT COUNT(*) AS n FROM app_settings WHERE substr(key,1,?)=?').get(
-    prefix.length,
-    prefix,
-  ).n;
+  return db
+    .prepare('SELECT COUNT(*) AS n FROM app_settings WHERE substr(key,1,?)=?')
+    .get(prefix.length, prefix).n;
 }
 
 test('v8 native-shaped SQLite audit creates both keys and exact 26->25 seconds', async () => {
@@ -131,9 +130,9 @@ test('v8 native-shaped SQLite audit creates both keys and exact 26->25 seconds',
     assert.equal(first.startPeriodKey, '2026-10');
     assert.equal(countAuditRows(db), 2);
     assert.equal(
-      db.prepare('SELECT value FROM app_settings WHERE key=?').get(
-        customBreakHeadKey(WORK_ID, 26),
-      ).value,
+      db
+        .prepare('SELECT value FROM app_settings WHERE key=?')
+        .get(customBreakHeadKey(WORK_ID, 26)).value,
       '1',
     );
     const history = await readCustomPayBreakHistory(store(db), actualWork(db), 26);
@@ -147,12 +146,17 @@ test('v8 native-shaped SQLite audit creates both keys and exact 26->25 seconds',
     assert.equal(left.netSeconds + right.netSeconds, 7.5 * 3600);
     assert.equal(db.prepare('PRAGMA user_version').get().user_version, 8);
     assert.equal(
-      db.prepare(
-        "SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
-      ).get().n,
+      db
+        .prepare(
+          "SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+        )
+        .get().n,
       18,
     );
-    assert.equal(db.prepare('SELECT COUNT(*) AS n FROM earnings_month_break_allocations').get().n, 0);
+    assert.equal(
+      db.prepare('SELECT COUNT(*) AS n FROM earnings_month_break_allocations').get().n,
+      0,
+    );
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM actual_work_sessions').get().n, 1);
     assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(), []);
     assert.equal(db.prepare('PRAGMA integrity_check').get().integrity_check, 'ok');
@@ -166,22 +170,34 @@ test('second user correction is append-only; older event bytes stay identical', 
   try {
     await writePayPeriodStartDay(store(db), 26);
     await transact(db, input());
-    const oldPayload = db.prepare('SELECT value FROM app_settings WHERE key=?').get(
-      customBreakEventKey(WORK_ID, 26, 1),
-    ).value;
+    const oldPayload = db
+      .prepare('SELECT value FROM app_settings WHERE key=?')
+      .get(customBreakEventKey(WORK_ID, 26, 1)).value;
     const second = await transact(db, input(20, 1, SECOND_EVENT_TIME));
     assert.equal(second.revision, 2);
     assert.equal(second.startPeriodBreakMinutes, 20);
     assert.equal(countAuditRows(db), 3);
-    assert.equal(db.prepare('SELECT value FROM app_settings WHERE key=?').get(
-      customBreakEventKey(WORK_ID, 26, 1),
-    ).value, oldPayload);
-    assert.equal(db.prepare('SELECT value FROM app_settings WHERE key=?').get(
-      customBreakHeadKey(WORK_ID, 26),
-    ).value, '2');
+    assert.equal(
+      db
+        .prepare('SELECT value FROM app_settings WHERE key=?')
+        .get(customBreakEventKey(WORK_ID, 26, 1)).value,
+      oldPayload,
+    );
+    assert.equal(
+      db
+        .prepare('SELECT value FROM app_settings WHERE key=?')
+        .get(customBreakHeadKey(WORK_ID, 26)).value,
+      '2',
+    );
     const history = await readCustomPayBreakHistory(store(db), actualWork(db), 26);
-    assert.deepEqual(history.map((e) => e.revision), [1, 2]);
-    assert.deepEqual(history.map((e) => e.startPeriodBreakMinutes), [10, 20]);
+    assert.deepEqual(
+      history.map((e) => e.revision),
+      [1, 2],
+    );
+    assert.deepEqual(
+      history.map((e) => e.startPeriodBreakMinutes),
+      [10, 20],
+    );
   } finally {
     db.close();
   }
@@ -202,7 +218,10 @@ test('stale UI, unchanged revision, invalid break, invalid reason rollback compl
     ]) {
       await assert.rejects(() => transact(db, candidate));
     }
-    assert.deepEqual(db.prepare('SELECT key,value FROM app_settings ORDER BY key').all(), before);
+    assert.deepEqual(
+      db.prepare('SELECT key,value FROM app_settings ORDER BY key').all(),
+      before,
+    );
     assert.equal(countAuditRows(db), 2);
   } finally {
     db.close();
@@ -237,7 +256,10 @@ test('event insert followed by fault in head insert rolls back transaction', asy
     const broken = {
       ...base,
       async runAsync(sql, ...params) {
-        if (sql.includes('INSERT INTO app_settings') && params[0] === customBreakHeadKey(WORK_ID, 26))
+        if (
+          sql.includes('INSERT INTO app_settings') &&
+          params[0] === customBreakHeadKey(WORK_ID, 26)
+        )
           throw new Error('INJECTED_DISK_FAILURE');
         return base.runAsync(sql, ...params);
       },
@@ -257,29 +279,52 @@ test('corrupt head, missing event, revision gap and modified source are rejected
     await transact(db, input());
     await transact(db, input(20, 1, SECOND_EVENT_TIME));
     const work = actualWork(db);
-    const payload = db.prepare('SELECT key,value FROM app_settings WHERE substr(key,1,?)=? ORDER BY key')
+    const payload = db
+      .prepare('SELECT key,value FROM app_settings WHERE substr(key,1,?)=? ORDER BY key')
       .all(customBreakPrefix(WORK_ID, 26).length, customBreakPrefix(WORK_ID, 26));
     assert.equal(decodeCustomBreakHistory(work, 26, payload).length, 2);
     await assert.rejects(
-      async () => decodeCustomBreakHistory(work, 26, payload.filter((r) => r.key !== customBreakHeadKey(WORK_ID, 26))),
+      async () =>
+        decodeCustomBreakHistory(
+          work,
+          26,
+          payload.filter((r) => r.key !== customBreakHeadKey(WORK_ID, 26)),
+        ),
       /CUSTOM_BREAK_HEAD_MISSING/,
     );
     assert.throws(
-      () => decodeCustomBreakHistory(work, 26, payload.filter((r) => r.key !== customBreakEventKey(WORK_ID, 26, 1))),
+      () =>
+        decodeCustomBreakHistory(
+          work,
+          26,
+          payload.filter((r) => r.key !== customBreakEventKey(WORK_ID, 26, 1)),
+        ),
       /INVALID_CUSTOM_BREAK_HEAD|CUSTOM_BREAK_AUDIT_GAP/,
     );
     const changedHead = payload.map((r) =>
       r.key === customBreakHeadKey(WORK_ID, 26) ? { ...r, value: '3' } : r,
     );
-    assert.throws(() => decodeCustomBreakHistory(work, 26, changedHead), /INVALID_CUSTOM_BREAK_HEAD/);
+    assert.throws(
+      () => decodeCustomBreakHistory(work, 26, changedHead),
+      /INVALID_CUSTOM_BREAK_HEAD/,
+    );
     const staleWork = { ...work, endInstantUtc: '2026-11-26T03:00:00.000Z' };
-    assert.throws(() => decodeCustomBreakHistory(staleWork, 26, payload), /INVALID_CUSTOM_BREAK_EVENT/);
+    assert.throws(
+      () => decodeCustomBreakHistory(staleWork, 26, payload),
+      /INVALID_CUSTOM_BREAK_EVENT/,
+    );
     const changedPayload = payload.map((r) =>
       r.key === customBreakEventKey(WORK_ID, 26, 1)
-        ? { ...r, value: r.value.replace('"originalBreakMinutes":30', '"originalBreakMinutes":29') }
+        ? {
+            ...r,
+            value: r.value.replace('"originalBreakMinutes":30', '"originalBreakMinutes":29'),
+          }
         : r,
     );
-    assert.throws(() => decodeCustomBreakHistory(work, 26, changedPayload), /INVALID_CUSTOM_BREAK_EVENT/);
+    assert.throws(
+      () => decodeCustomBreakHistory(work, 26, changedPayload),
+      /INVALID_CUSTOM_BREAK_EVENT/,
+    );
   } finally {
     db.close();
   }
@@ -313,11 +358,33 @@ test('no period break allocation is allowed when day1, no break or invalid sourc
     breakMinutes: 30,
     source: 'user_entered',
   };
-  assert.throws(() => createCustomBreakEvent(work, 1, 10, 1, 'Explicit split', FIRST_EVENT_TIME),
-    /CUSTOM_BREAK_REQUIRES_NONCALENDAR_PERIOD/);
-  assert.throws(() => createCustomBreakEvent({ ...work, breakMinutes: 0 }, 26, 0, 1, 'Explicit split', FIRST_EVENT_TIME),
-    /WORK_NOT_CROSS_CUSTOM_PAY_PERIOD_BREAK/);
-  assert.throws(() => createCustomBreakEvent({ ...work, source: 'planned' }, 26, 10, 1, 'Explicit split', FIRST_EVENT_TIME),
-    /UNVERIFIED_WORK_SOURCE/);
+  assert.throws(
+    () => createCustomBreakEvent(work, 1, 10, 1, 'Explicit split', FIRST_EVENT_TIME),
+    /CUSTOM_BREAK_REQUIRES_NONCALENDAR_PERIOD/,
+  );
+  assert.throws(
+    () =>
+      createCustomBreakEvent(
+        { ...work, breakMinutes: 0 },
+        26,
+        0,
+        1,
+        'Explicit split',
+        FIRST_EVENT_TIME,
+      ),
+    /WORK_NOT_CROSS_CUSTOM_PAY_PERIOD_BREAK/,
+  );
+  assert.throws(
+    () =>
+      createCustomBreakEvent(
+        { ...work, source: 'planned' },
+        26,
+        10,
+        1,
+        'Explicit split',
+        FIRST_EVENT_TIME,
+      ),
+    /UNVERIFIED_WORK_SOURCE/,
+  );
   assert.throws(() => customBreakEventKey(WORK_ID, 26, 65), /CUSTOM_BREAK_REVISION_LIMIT/);
 });

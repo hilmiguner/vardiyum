@@ -1,6 +1,10 @@
 import { calendarDateInZone } from './shift-engine.ts';
 import { validateEarningsWork, type EarningsWork } from './earnings-engine.ts';
-import { payPeriodForDate, splitWorkForPayPeriod, type PayPeriodBreakAllocation } from './pay-period.ts';
+import {
+  payPeriodForDate,
+  splitWorkForPayPeriod,
+  type PayPeriodBreakAllocation,
+} from './pay-period.ts';
 
 /**
  * SQLite v8 app_settings event namespace. No new tables or incompatible
@@ -40,8 +44,16 @@ export function customBreakHeadKey(workId: string, startDay: number): string {
   return customBreakPrefix(workId, startDay) + 'head';
 }
 
-export function customBreakEventKey(workId: string, startDay: number, revision: number): string {
-  if (!Number.isSafeInteger(revision) || revision < 1 || revision > CUSTOM_PAY_BREAK_MAX_REVISIONS)
+export function customBreakEventKey(
+  workId: string,
+  startDay: number,
+  revision: number,
+): string {
+  if (
+    !Number.isSafeInteger(revision) ||
+    revision < 1 ||
+    revision > CUSTOM_PAY_BREAK_MAX_REVISIONS
+  )
     throw new Error('CUSTOM_BREAK_REVISION_LIMIT');
   return customBreakPrefix(workId, startDay) + 'event:' + String(revision).padStart(3, '0');
 }
@@ -181,8 +193,7 @@ export function decodeCustomBreakHistory(
     } catch {
       throw new Error('INVALID_CUSTOM_BREAK_EVENT');
     }
-    if (JSON.stringify(canonical) !== row.value)
-      throw new Error('INVALID_CUSTOM_BREAK_EVENT');
+    if (JSON.stringify(canonical) !== row.value) throw new Error('INVALID_CUSTOM_BREAK_EVENT');
     if (
       result.length &&
       (canonical.recordedAt < result[result.length - 1].recordedAt ||
