@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Offline vardiya/rutin/hatırlatma (PR #3/#5/#7/#9/#11/#13) ve **tahmini kazanç (PR #15)** main'e alındı. [Merge sonrası CI #43710791686](https://github.com/hilmiguner/vardiyum/actions/runs/43710791686) SUCCESS: 84/84 Node test ve Android/iOS JS export. Aylar arası gece vardiyası dağıtımı/rapor dışa aktarma [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) kapsamındadır. Native cihaz testleri ertelendi; resmî bordro/net maaş iddiası yok.
+> **Durum (2026-11-15):** Vardiya/DST/fiilî çalışma, offline rutinler ve tahmini kazanç (PR #3/#5/#7/#9/#11/#13/#15) main'de. Ay sınırını aşan vardiya, açık mola dağılımı, SQLite v7 ve kullanıcı onaylı CSV/JSON paylaşımı [PR #17](https://github.com/hilmiguner/vardiyum/pull/17) geliştirildi; [CI #43713024596](https://github.com/hilmiguner/vardiyum/actions/runs/43713024596) SUCCESS (98 test, Android/iOS JS export). PR merge son durumunu GitHub'dan kontrol et. Native cihaz testleri kullanıcı isteğiyle ertelendi; resmî bordro/net maaş iddiası yok.
 
 ## Geliştirme kurulumu
 
@@ -99,4 +99,13 @@ Lisans henüz seçilmedi. **Vardiyum** çalışma adıdır; marka, alan adı ve 
 - Manuel **prim, kesinti ve düzeltme** kayıtları kaynak id, zaman ve açıklamayla korunur; hata varsa yeni ters işaretli düzeltme girilir.
 - **Açıklanabilir rapor:** hangi ücret profili/sürümü, hangi çalışma kaydı, hangi tutar ve tahmin kalemi. Bir aya sarkan gece vardiyası veya çakışan/bozuk kayıt varsa **hesap bloklanır**: sessizce ayırma ya da uydurma yok.
 - **SQLite v6:** eski vardiya/rutin/gerçek çalışma ve eski finansal taslak tabloları korunur. Önceki `compensation_profiles`/`pay_adjustments` otomatik onaylı bordro veya yeni kazanç kabul edilmez.
-- **Eksik kalan:** saatleri rapor aylarına paylaştırma, işveren doğrulaması, ülke/sözleşme vergi kuralları, cihaz testleri ve PDF/CSV dışa aktarma.
+- **Güncel kapsam:** Aylar arası çalışma bölünmesi ve CSV/JSON **kullanıcı onaylı metin paylaşımı** PR #17 ile eklendi (alttaki açıklama). Eksik kalan: geçmiş ücret profili düzeltme/revizyonları, kontrollü içe alma, şifreli yedek, PDF dosyası, işveren doğrulaması, ülke/vergi kuralları ve cihaz testleri.
+
+## Faz 4 devam — Ay sınırı ve güvenli paylaşım / PR #17
+
+- Kullanıcının kaydettiği gerçek UTC giriş/çıkış, **o oturumun kendi IANA saat diliminde** ilgili takvim aylarının 00:00 sınırlarında ayrılır. Yaz/kış saati, 30/45 dakikalık UTC ofsetleri ve gece vardiyası gerçek geçen saniyeye göre işlenir. Aynı çalışma iki ayda **çifte sayılmaz**.
+- **Mola yoksa** bölme otomatik. Mola iki ayı kapsıyorsa zamanı bilinmediğinden otomatik paylaştırılmaz; kullanıcı **başlangıç ayına düşen mola dakikasını** girer. Kalanını sonraki ay kullanırız. Her iki UTC diliminin süresini aşan beyan reddedilir. Aynı dağılım kararı her iki aya uygulanır.
+- **SQLite v7** eski v1–v6 verisini değiştirmeden dağılım kararını ve sonraki düzeltmelerin **append-only olay/revizyon izini** tutar. Kazanç kaleminde orijinal `workId`, kesilen UTC alt dilim ve geçerli ücret profili izlenebilir.
+- Fazla mesai eşiği her ay baştan hesaplanır; Kasım ve Aralık farklı kullanıcı ücret profili kullanabilir. Saatlik para hesabı tam sayı kuruş ve BigInt ile sürer.
+- Hesap geçerliyse kullanıcı açık onay vererek **CSV/JSON metnini** iOS/Android paylaşım ekranına aktarabilir. Başka bir uygulamayı seçmek kullanıcıya aittir. **Otomatik ağ gönderimi, şifreli yedekleme, dosyaya yazma veya otomatik içe aktarma yoktur**. CSV'de formül gibi başlayabilecek hücreler korumalıdır.
+- Profil geçmişinde aynı ayı düzeltebilme/revizyonlama ve kontrollü güvenli içe alma bu PR'da **tamamlanmadı**; [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık kalacak. Cihaz testleri [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.

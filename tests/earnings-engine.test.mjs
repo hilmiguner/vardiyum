@@ -250,7 +250,7 @@ test('overlap, invalid break and nested overlapping intervals block entire repor
   assert.match(broken.reasons.join(), /INVALID_WORK_BREAK/);
 });
 
-test('overnight sessions crossing calendar-month boundary are not silently assigned', () => {
+test('cross-month zero-break work is split, with an independent threshold per month', () => {
   const edge = work(
     'edge',
     '2026-11-30',
@@ -266,10 +266,14 @@ test('overnight sessions crossing calendar-month boundary are not silently assig
     [edge],
     [],
   );
-  assert.equal(r1.status, 'blocked');
-  assert.equal(r2.status, 'blocked');
-  assert.match(r1.reasons.join(), /WORK_CROSSES_REPORT_PERIOD/);
-  assert.match(r2.reasons.join(), /WORK_CROSSES_REPORT_PERIOD/);
+  assert.equal(r1.status, 'estimated');
+  assert.equal(r2.status, 'estimated');
+  assert.equal(r1.loggedSeconds, 3600);
+  assert.equal(r2.loggedSeconds, 7 * 3600);
+  assert.equal(r1.totalMinorUnits, 15000);
+  assert.equal(r2.totalMinorUnits, 135000);
+  assert.equal(r1.lines[0].sourceId, 'edge');
+  assert.equal(r2.lines[0].sourceId, 'edge');
 });
 
 test('profile and adjustments validate explicit currency, rate, multiplier and provenance', () => {

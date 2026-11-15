@@ -114,3 +114,18 @@ Yeni sohbet prompt'u:
 Yeni sohbet komutu:
 
 > Vardiyum https://github.com/hilmiguner/vardiyum. Önce main SHA, açık PR/Issue, son Actions ve docs/STATUS.md, docs/HANDOFF.md, docs/ROADMAP.md, docs/DECISIONS.md kontrol et. Issue #14 / PR #15 gerçek UTC çalışma üzerinden BigInt/minor-unit ile açıklanabilir tahmini kazanç, saatlik/tam ay modeli ve SQLite v6 main'e merge edildi. Sonraki Issue #16: ay sonunu aşan vardiya, profil sürümleri ve dışa aktarma. Resmî bordro/net/vergi/SGK hesaplaması yok. Native cihaz testleri ertelendi (Issue #2). Kod/CI ve merge kanıtını doğrula; projeyi GitHub üzerinden sürdür.
+
+## 2026-11-15 — Issue #16 / PR #17 (en güncel devir)
+
+- **PR:** [#17](https://github.com/hilmiguner/vardiyum/pull/17), dal `feat/cross-month-earnings-v7`. Önce main SHA, PR merge ve Actions son durumunu GitHub'dan yeniden doğrula.
+- **Kod kanıtı:** [Actions #43713024596](https://github.com/hilmiguner/vardiyum/actions/runs/43713024596) SUCCESS — **98/98 Node test**, Expo package check, Prettier/ESLint/TypeScript ve iki platform JS export.
+- **Ana parçalar:** `src/domain/earnings-period.ts` saf UTC/IANA sivil ay bölme ve mola dağılımı, `earnings-engine.ts` döneme özgü üst sınır/para tahmini, `earnings-export.ts` CSV/JSON ve güvenli hücre; `earnings-repository.ts` iki ay için mola kaydı/yenileme ve kaynak iş, `src/components/earnings-break-allocation.tsx`, `src/app/(tabs)/earnings.tsx` paylaşım onay UI, SQLite v7 migrasyonu.
+- **Davranış:** Orijinal `actual_work_sessions` UTC uçları ve kaydedilen IANA `timezone_id` değiştirilmez. Mola yoksa aylar otomatik bölünür; mola varsa kullanıcı başlangıç ayına düşen dakika girer, kalan ikinci aya gider; iki ay da doğrulanır, v7 revizyon olayı tutulur. Her ay ayrı eşik/profil; çalışma saniyeleri çifte sayılmaz.
+- **Gizlilik:** CSV/JSON yalnızca kullanıcı açık onayıyla React Native paylaşım ekranına metin olarak iletilir. Bloke tahmin dışa aktarılamaz. Şifreli yedek, otomatik ağ gönderimi, dosya yazma veya kontrollü içe alma **yoktur**.
+- **Kalan Issue #16:** Geçmiş ücret profili düzeltme/revizyonlama, özel maaş dönemi ve güvenli içe alma/şifreli yedek hâlâ açık. PR #17 bu issue'yu **tamamen kapatmaz**.
+- **Cihazlar:** Native Android/iOS SQLite v7/Share/DST, çevrimdışı yeniden açılış ve erişilebilirlik testleri kullanıcı isteğiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi; JS export native PASS değildir.
+- **Sonraki:** PR #17 güncel CI'ı doğrula, squash merge et ve main CI'ı teyit et. STATUS/HANDOFF'a gerçek merge SHA/CI yaz. Issue #16 açık kalsın; ikinci PR geçmiş profil revizyonu için planlanabilir.
+
+Yeni sohbet başlangıcı:
+
+> Vardiyum https://github.com/hilmiguner/vardiyum projesinde kaldığımız yerden devam. Önce docs/STATUS.md, docs/HANDOFF.md, docs/ROADMAP.md, docs/DECISIONS.md; main SHA, açık Issue/PR ve Actions kontrol et. Issue #16/PR #17 UTC/IANA ay sınırı çalışma bölünmesi, kullanıcı onaylı mola dağılımı/SQLite v7 olay izi ve CSV/JSON paylaşım metni; henüz native cihaz testi yok, Issue #2 ertelendi. Issue #16'nın kalan profil sürümü/içe alma işlerini kapandı sanma. Kod/CI kanıtlarıyla GitHub üzerinden devam et.

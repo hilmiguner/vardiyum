@@ -107,3 +107,12 @@
 - DST gerçek UTC aralığı, mola sonrası net bildirilen süre; planlı vardiya üzerinden ücret üretmeme; ters/nested örtüşme, ay sonunu kesen veya önceki aydan gelen çalışma için **blocked**.
 - `tests/earnings-migration.test.mjs`: v1→v6 eski vardiya/rutin/notification/actual-work ve legacy finansal tabloların silinmemesi; yeni profil/adjustment CHECK/UNIQUE/source kısıtları.
 - Toplam test kanıtı [Actions #43710412387](https://github.com/hilmiguner/vardiyum/actions/runs/43710412387) **84/84 Node PASS**, Expo/lint/TS, Android&iOS JS export PASS. Native cihaz testi bunun kapsamında değil.
+
+## Issue #16 / PR #17 — Ay bölme/rapor güvenliği testleri
+
+- `tests/cross-month-earnings.test.mjs`: 0 molayla **iki aya net saniye toplamı** (tek iş kimliği), aynı kaydın farklı ay ücret profili, **ay başında mesai eşiğinin yeniden başlaması**.
+- Mola toplamı sıfır değilse her ayda `BREAK_ALLOCATION_REQUIRED` bloklama; kullanıcı seçimi ile başlangıç/sonraki ay net saniyelerinin orijinal net toplamına eşitliği; her iki aya sığmayan veya kaynak UTC uçları değişmiş seçim reddi.
+- New York 2026-11 DST geriye geçişi, Nepal +05:45, Adelaide +10:30 ve UTC oturum bitişinin tam ay sınırında olması; sivil zamanın kaydedilmiş timezone ile çapraz doğrulanması; çakışma.
+- `tests/earnings-period-migration.test.mjs`: SQLite v1–v6 veri korunumu; v7 mola dağılımı ve append-only revizyon, CHECK/UNIQUE/source kısıtları.
+- `earnings-export.ts`: yalnızca estimated rapor, deterministik JSON ve CSV, kullanıcı açıklamalarında CSV formula guard; blocked raporu paylaşmama.
+- **Kanıt:** [Actions #43713024596](https://github.com/hilmiguner/vardiyum/actions/runs/43713024596) SUCCESS, **98/98 Node testi**, Android&iOS JavaScript export. Native Share ve SQLite testleri yapılmadı.

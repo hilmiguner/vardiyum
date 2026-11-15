@@ -2,7 +2,7 @@
  * Versioned SQLite schema. Static SQL only: never interpolate user-controlled data.
  * Schema versions are tracked by PRAGMA user_version.
  */
-export const SCHEMA_VERSION = 6;
+export const SCHEMA_VERSION = 7;
 
 export const INITIAL_SCHEMA = `
 CREATE TABLE IF NOT EXISTS shift_templates (
@@ -217,4 +217,40 @@ CREATE INDEX IF NOT EXISTS idx_earnings_profiles_effective
 CREATE INDEX IF NOT EXISTS idx_earnings_adjustments_period
   ON earnings_adjustments(period_key, created_at, id);
 PRAGMA user_version = 6;
+`;
+
+/**
+ * V7: an explicit, amendable choice for breaks inside a session crossing
+ * two calendar months. Allocation edits leave an append-only audit record.
+ * No existing work, profile, reminder, or adjustment rows are modified.
+ */
+export const MIGRATION_7_SQL = `
+CREATE TABLE earnings_month_break_allocations (
+  work_id TEXT PRIMARY KEY NOT NULL,
+  start_period_key TEXT NOT NULL,
+  start_month_break_minutes INTEGER NOT NULL CHECK(start_month_break_minutes >= 0),
+  original_break_minutes INTEGER NOT NULL CHECK(original_break_minutes > 0),
+  original_start_utc TEXT NOT NULL,
+  original_end_utc TEXT NOT NULL,
+  source TEXT NOT NULL DEFAULT 'user_entered' CHECK(source = 'user_entered'),
+  revision INTEGER NOT NULL DEFAULT 1 CHECK(revision >= 1),
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CHECK(start_month_break_minutes <= original_break_minutes)
+);
+CREATE TABLE earnings_month_break_allocation_events (
+  id TEXT PRIMARY KEY NOT NULL,
+  work_id TEXT NOT NULL,
+  revision INTEGER NOT NULL CHECK(revision >= 1),
+  start_period_key TEXT NOT NULL,
+  start_month_break_minutes INTEGER NOT NULL CHECK(start_month_break_minutes >= 0),
+  original_break_minutes INTEGER NOT NULL CHECK(original_break_minutes > 0),
+  original_start_utc TEXT NOT NULL,
+  original_end_utc TEXT NOT NULL,
+  source TEXT NOT NULL DEFAULT 'user_entered' CHECK(source = 'user_entered'),
+  recorded_at TEXT NOT NULL,
+  UNIQUE(work_id, revision)
+);
+CREATE INDEX idx_earnings_break_event_work
+  ON earnings_month_break_allocation_events(work_id, revision);
+PRAGMA user_version = 7;
 `;

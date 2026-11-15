@@ -1,11 +1,15 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
-import { Alert, Pressable, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, Share, Text, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Action, Heading, Muted, Page, Panel } from '../../components/ui';
+import { EarningsBreakAllocationPanel } from '../../components/earnings-break-allocation';
+import { createEarningsExport, type EarningsExportFormat } from '../../domain/earnings-export';
 import {
   loadEarningsReport,
+  loadBreakAllocationCandidates,
+  type BreakAllocationCandidate,
   saveEarningsProfile,
   addEarningsAdjustment,
 } from '../../data/earnings-repository';
@@ -309,6 +313,7 @@ export default function EarningsScreen() {
   );
   const [month, setMonth] = useState(monthInput);
   const [report, setReport] = useState<EarningsReport | null>(null);
+  const [breakCandidates, setBreakCandidates] = useState<BreakAllocationCandidate[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [showEditor, setShowEditor] = useState(false);
   const [revision, setRevision] = useState(0);
@@ -316,8 +321,12 @@ export default function EarningsScreen() {
 
   const refresh = useCallback(async () => {
     try {
-      const next = await loadEarningsReport(month);
+      const [next, candidates] = await Promise.all([
+        loadEarningsReport(month),
+        loadBreakAllocationCandidates(month),
+      ]);
       setReport(next);
+      setBreakCandidates(candidates);
       setError(null);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'EARNINGS_REPORT_ERROR');
@@ -328,10 +337,11 @@ export default function EarningsScreen() {
   useFocusEffect(
     useCallback(() => {
       let active = true;
-      void loadEarningsReport(month)
-        .then((next) => {
+      void Promise.all([loadEarningsReport(month), loadBreakAllocationCandidates(month)])
+        .then(([next, candidates]) => {
           if (active) {
             setReport(next);
+            setBreakCandidates(candidates);
             setError(null);
           }
         })
@@ -360,6 +370,30 @@ export default function EarningsScreen() {
   };
   const format = (amount: number, currency: string) =>
     formatMoneyMinor(amount, currency, locale);
+  const exportReport = (formatType: EarningsExportFormat) => {
+    if (report?.status !== 'estimated') return;
+    Alert.alert(t('earnExportPrivacyTitle'), t('earnExportPrivacyBody'), [
+      { text: t('cancel'), style: 'cancel' },
+      {
+        text: t('earnExportConfirm'),
+        onPress: () => {
+          try {
+            const result = createEarningsExport(report, formatType);
+            void Share.share({ title: result.name, message: result.content }).catch(
+              (reason: unknown) => {
+                Alert.alert(
+                  t('earnExportFailed'),
+                  reason instanceof Error ? reason.message : '',
+                );
+              },
+            );
+          } catch (reason) {
+            Alert.alert(t('earnExportFailed'), reason instanceof Error ? reason.message : '');
+          }
+        },
+      },
+    ]);
+  };
   return (
     <Page title={t('earnings')} subtitle={t('earnSubtitle')}>
       <Panel>
@@ -401,6 +435,9 @@ export default function EarningsScreen() {
           ))}
         </Panel>
       ) : null}
+      {breakCandidates.length > 0 ? (
+        <EarningsBreakAllocationPanel candidates={breakCandidates} onSaved={onSaved} />
+      ) : null}
       {report?.status === 'estimated' ? (
         <>
           <Panel>
@@ -433,6 +470,9 @@ export default function EarningsScreen() {
             </Muted>
             {report.profile.model === 'monthly_fixed' ? (
               <Muted>{t('earnFullMonthAssumption')}</Muted>
+            ) : null}
+            {report.splitAcrossMonthsCount > 0 ? (
+              <Muted>{t('earnSplitCount', { count: report.splitAcrossMonthsCount })}</Muted>
             ) : null}
             <Muted>{t('earnNotPayslip')}</Muted>
           </Panel>
@@ -467,6 +507,12 @@ export default function EarningsScreen() {
             ) : (
               <Muted>{t('earnNoWork')}</Muted>
             )}
+          </Panel>
+          <Panel>
+            <Heading>{t('earnExportHeading')}</Heading>
+            <Muted>{t('earnExportConsentHint')}</Muted>
+            <Action label={t('earnShareCsv')} onPress={() => exportReport('csv')} />
+            <Action label={t('earnShareJson')} onPress={() => exportReport('json')} />
           </Panel>
           <AdjustmentEditor
             month={month}
