@@ -2,7 +2,9 @@ import { getDatabase } from './database';
 import { calendarDateInZone } from '../domain/shift-engine';
 import { splitWorkForMonth, type MonthBreakAllocation } from '../domain/earnings-period';
 import {
-  prepareNextProfileRevision, profileVersionHistory, resolvePayProfileRevisions,
+  prepareNextProfileRevision,
+  profileVersionHistory,
+  resolvePayProfileRevisions,
   type PayProfileRevision,
 } from '../domain/earnings-profile-revisions';
 import {
@@ -38,8 +40,11 @@ interface PayProfileRevisionRow extends Omit<ProfileRow, 'id'> {
 }
 function toProfile(row: ProfileRow): EarningsProfile {
   return {
-    id: row.id, effectiveFrom: row.effective_from, model: row.model,
-    currency: row.currency, baseMinorUnits: row.base_minor_units,
+    id: row.id,
+    effectiveFrom: row.effective_from,
+    model: row.model,
+    currency: row.currency,
+    baseMinorUnits: row.base_minor_units,
     overtimeHourlyMinorUnits: row.overtime_hourly_minor_units,
     overtimeAfterMinutes: row.overtime_after_minutes,
     overtimeMultiplierNumerator: row.overtime_multiplier_numerator,
@@ -50,7 +55,9 @@ function toProfile(row: ProfileRow): EarningsProfile {
 function toRevision(row: PayProfileRevisionRow): PayProfileRevision {
   return {
     profile: toProfile({ ...row, id: row.profile_id }),
-    reason: row.reason, recordedAt: row.recorded_at, source: row.source,
+    reason: row.reason,
+    recordedAt: row.recorded_at,
+    source: row.source,
   };
 }
 
@@ -111,7 +118,8 @@ interface AdjustmentRow {
 }
 
 export async function loadEarningsReport(
-  periodKey: string, selectedProfileRevision?: number,
+  periodKey: string,
+  selectedProfileRevision?: number,
 ): Promise<EarningsReport> {
   const { first, last } = periodBounds(periodKey);
   const db = await getDatabase();
@@ -154,9 +162,12 @@ export async function loadEarningsReport(
   const resolved = resolvePayProfileRevisions(baseProfiles, revisionItems);
   if (selectedProfileRevision !== undefined && resolved.length) {
     const active = resolved[0];
-    const base = baseProfiles.find(x=>x.id === active.id)!;
-    const history = profileVersionHistory(base, revisionItems.filter(x=>x.profile.id === base.id));
-    const requested = history.find(x=>x.revision === selectedProfileRevision);
+    const base = baseProfiles.find((x) => x.id === active.id)!;
+    const history = profileVersionHistory(
+      base,
+      revisionItems.filter((x) => x.profile.id === base.id),
+    );
+    const requested = history.find((x) => x.revision === selectedProfileRevision);
     if (!requested) throw new Error('PROFILE_REVISION_UNAVAILABLE');
     resolved[0] = requested;
   }
@@ -365,7 +376,9 @@ export interface PayProfileHistoryRow {
   recordedAt: string | null;
   original: boolean;
 }
-export async function loadPayProfileHistory(periodKey: string): Promise<PayProfileHistoryRow[]> {
+export async function loadPayProfileHistory(
+  periodKey: string,
+): Promise<PayProfileHistoryRow[]> {
   const { first } = periodBounds(periodKey);
   const db = await getDatabase();
   const base = await db.getFirstAsync<ProfileRow>(
@@ -381,8 +394,11 @@ export async function loadPayProfileHistory(periodKey: string): Promise<PayProfi
   profileVersionHistory(toProfile(base), entries);
   return [
     { profile: toProfile(base), reason: '', recordedAt: null, original: true },
-    ...entries.map(x=>({
-      profile: x.profile, reason: x.reason, recordedAt: x.recordedAt, original: false,
+    ...entries.map((x) => ({
+      profile: x.profile,
+      reason: x.reason,
+      recordedAt: x.recordedAt,
+      original: false,
     })),
   ];
 }
@@ -401,7 +417,8 @@ export async function appendPayProfileCorrection(
   let saved: EarningsProfile | null = null;
   await db.withExclusiveTransactionAsync(async (tx) => {
     const base = await tx.getFirstAsync<ProfileRow>(
-      'SELECT * FROM earnings_profiles WHERE id = ?', expected.id,
+      'SELECT * FROM earnings_profiles WHERE id = ?',
+      expected.id,
     );
     if (!base || base.effective_from !== expected.effectiveFrom)
       throw new Error('PROFILE_NOT_FOUND');
@@ -411,8 +428,7 @@ export async function appendPayProfileCorrection(
     );
     const originals = profileVersionHistory(toProfile(base), historyRows.map(toRevision));
     const latest = originals[originals.length - 1];
-    if (latest.revision !== expected.revision)
-      throw new Error('STALE_PROFILE_REVISION');
+    if (latest.revision !== expected.revision) throw new Error('STALE_PROFILE_REVISION');
     // Do not accept silently editing another profile using a stale UI snapshot.
     if (JSON.stringify(latest) !== JSON.stringify(expected))
       throw new Error('STALE_PROFILE_REVISION');
@@ -425,10 +441,19 @@ export async function appendPayProfileCorrection(
        overtime_multiplier_numerator,overtime_multiplier_denominator,
        reason,recorded_at,source
        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-      row.id, row.revision, row.effectiveFrom, row.model, row.currency,
-      row.baseMinorUnits, row.overtimeHourlyMinorUnits, row.overtimeAfterMinutes,
-      row.overtimeMultiplierNumerator, row.overtimeMultiplierDenominator,
-      next.reason, next.recordedAt, next.source,
+      row.id,
+      row.revision,
+      row.effectiveFrom,
+      row.model,
+      row.currency,
+      row.baseMinorUnits,
+      row.overtimeHourlyMinorUnits,
+      row.overtimeAfterMinutes,
+      row.overtimeMultiplierNumerator,
+      row.overtimeMultiplierDenominator,
+      next.reason,
+      next.recordedAt,
+      next.source,
     );
     saved = row;
   });

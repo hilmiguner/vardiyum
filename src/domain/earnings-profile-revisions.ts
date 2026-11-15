@@ -1,7 +1,4 @@
-import {
-  validateEarningsProfile,
-  type EarningsProfile,
-} from './earnings-engine.ts';
+import { validateEarningsProfile, type EarningsProfile } from './earnings-engine.ts';
 
 /**
  * Version 1 remains the original earnings_profiles row. Versions 2+ are
@@ -20,15 +17,26 @@ export function validateProfileRevision(value: PayProfileRevision): PayProfileRe
   const profile = validateEarningsProfile(value.profile);
   if (profile.revision < 2) throw new Error('REVISION_MUST_EXCEED_BASE');
   if (value.source !== 'user_entered') throw new Error('UNVERIFIED_PROFILE_REVISION');
-  if (typeof value.reason !== 'string' || value.reason.trim().length < 3 ||
-      value.reason.trim().length > 160)
+  if (
+    typeof value.reason !== 'string' ||
+    value.reason.trim().length < 3 ||
+    value.reason.trim().length > 160
+  )
     throw new Error('PROFILE_REVISION_REASON_REQUIRED');
   const time = Date.parse(value.recordedAt);
-  if (typeof value.recordedAt !== 'string' || !ISO_UTC.test(value.recordedAt) ||
-      !Number.isFinite(time) || new Date(time).toISOString() !== value.recordedAt)
+  if (
+    typeof value.recordedAt !== 'string' ||
+    !ISO_UTC.test(value.recordedAt) ||
+    !Number.isFinite(time) ||
+    new Date(time).toISOString() !== value.recordedAt
+  )
     throw new Error('INVALID_PROFILE_REVISION_TIMESTAMP');
-  return { profile, reason: value.reason.trim(), recordedAt: value.recordedAt,
-    source: 'user_entered' };
+  return {
+    profile,
+    reason: value.reason.trim(),
+    recordedAt: value.recordedAt,
+    source: 'user_entered',
+  };
 }
 
 export function profileVersionHistory(
@@ -37,13 +45,13 @@ export function profileVersionHistory(
 ): readonly EarningsProfile[] {
   const original = validateEarningsProfile(base);
   if (original.revision !== 1) throw new Error('INVALID_BASE_PROFILE_REVISION');
-  const sorted = revisions.map(validateProfileRevision)
-    .sort((a,b) => a.profile.revision - b.profile.revision);
+  const sorted = revisions
+    .map(validateProfileRevision)
+    .sort((a, b) => a.profile.revision - b.profile.revision);
   const history: EarningsProfile[] = [original];
   let previousStamp = '';
   for (const row of sorted) {
-    if (row.profile.id !== original.id ||
-        row.profile.effectiveFrom !== original.effectiveFrom)
+    if (row.profile.id !== original.id || row.profile.effectiveFrom !== original.effectiveFrom)
       throw new Error('PROFILE_IDENTITY_CHANGED');
     if (row.profile.revision !== history.length + 1)
       throw new Error('MISSING_OR_DUPLICATE_PROFILE_REVISION');
@@ -59,7 +67,7 @@ export function resolvePayProfileRevisions(
   originals: readonly EarningsProfile[],
   revisions: readonly PayProfileRevision[],
 ): EarningsProfile[] {
-  const ids = new Set(originals.map(x=>x.id));
+  const ids = new Set(originals.map((x) => x.id));
   for (const row of revisions) {
     if (!ids.has(row.profile.id)) throw new Error('ORPHAN_PAY_PROFILE_REVISION');
   }
@@ -69,7 +77,7 @@ export function resolvePayProfileRevisions(
     dates.add(original.effectiveFrom);
     const history = profileVersionHistory(
       original,
-      revisions.filter(x=>x.profile.id === original.id),
+      revisions.filter((x) => x.profile.id === original.id),
     );
     return history[history.length - 1];
   });

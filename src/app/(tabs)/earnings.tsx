@@ -105,24 +105,35 @@ function Choice({
 }
 
 function ProfileEditor({
-  selectedMonth, initial, onSaved,
+  selectedMonth,
+  initial,
+  onSaved,
 }: {
   selectedMonth: string;
   initial?: EarningsProfile;
   onSaved: () => Promise<void>;
 }) {
   const { t } = useTranslation();
-  const [effectiveFrom, setEffectiveFrom] = useState(initial?.effectiveFrom ?? selectedMonth + '-01');
+  const [effectiveFrom, setEffectiveFrom] = useState(
+    initial?.effectiveFrom ?? selectedMonth + '-01',
+  );
   const [model, setModel] = useState<EarningsModel>(initial?.model ?? 'hourly');
   const [currency, setCurrency] = useState(initial?.currency ?? 'TRY');
-  const [baseAmount, setBaseAmount] = useState(initial ?
-    (initial.baseMinorUnits / 100).toFixed(2) : '');
-  const [threshold, setThreshold] = useState(initial?.overtimeAfterMinutes === null ||
-    initial?.overtimeAfterMinutes === undefined ? '' : String(initial.overtimeAfterMinutes));
-  const [overtimeHourly, setOvertimeHourly] = useState(initial ?
-    (initial.overtimeHourlyMinorUnits / 100).toFixed(2) : '');
+  const [baseAmount, setBaseAmount] = useState(
+    initial ? (initial.baseMinorUnits / 100).toFixed(2) : '',
+  );
+  const [threshold, setThreshold] = useState(
+    initial?.overtimeAfterMinutes === null || initial?.overtimeAfterMinutes === undefined
+      ? ''
+      : String(initial.overtimeAfterMinutes),
+  );
+  const [overtimeHourly, setOvertimeHourly] = useState(
+    initial ? (initial.overtimeHourlyMinorUnits / 100).toFixed(2) : '',
+  );
   const [numerator, setNumerator] = useState(String(initial?.overtimeMultiplierNumerator ?? 1));
-  const [denominator, setDenominator] = useState(String(initial?.overtimeMultiplierDenominator ?? 1));
+  const [denominator, setDenominator] = useState(
+    String(initial?.overtimeMultiplierDenominator ?? 1),
+  );
   const [correctionReason, setCorrectionReason] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -133,7 +144,10 @@ function ProfileEditor({
       const overtimeHourlyMinorUnits =
         model === 'monthly_fixed' && threshold.trim() ? parseMoneyMinor(overtimeHourly) : 0;
       const details = {
-        model, currency, baseMinorUnits, overtimeHourlyMinorUnits,
+        model,
+        currency,
+        baseMinorUnits,
+        overtimeHourlyMinorUnits,
         overtimeAfterMinutes,
         overtimeMultiplierNumerator: Number(numerator),
         overtimeMultiplierDenominator: Number(denominator),
@@ -143,7 +157,10 @@ function ProfileEditor({
         await appendPayProfileCorrection(initial, details, correctionReason);
       } else {
         await saveEarningsProfile({
-          ...details, id: entryId('pay'), effectiveFrom: effectiveFrom.trim(), revision: 1,
+          ...details,
+          id: entryId('pay'),
+          effectiveFrom: effectiveFrom.trim(),
+          revision: 1,
         });
       }
       await onSaved();
@@ -160,10 +177,14 @@ function ProfileEditor({
       <Heading>{t(initial ? 'earnCorrectProfile' : 'earnNewProfile')}</Heading>
       <Muted>{t(initial ? 'earnCorrectionWarning' : 'earnImmutableProfileHint')}</Muted>
       {initial ? (
-        <Muted>{t('earnProfileDescription', {
-          id: initial.id, revision: initial.revision,
-          effectiveFrom: initial.effectiveFrom, model: initial.model,
-        })}</Muted>
+        <Muted>
+          {t('earnProfileDescription', {
+            id: initial.id,
+            revision: initial.revision,
+            effectiveFrom: initial.effectiveFrom,
+            model: initial.model,
+          })}
+        </Muted>
       ) : (
         <InputField
           label={t('earnEffectiveFrom')}
@@ -241,11 +262,18 @@ function ProfileEditor({
         </View>
       ) : null}
       {initial ? (
-        <InputField label={t('earnRevisionReason')} value={correctionReason}
-          onChange={setCorrectionReason} maxLength={160} />
+        <InputField
+          label={t('earnRevisionReason')}
+          value={correctionReason}
+          onChange={setCorrectionReason}
+          maxLength={160}
+        />
       ) : null}
-      <Action label={t(initial ? 'earnSaveRevision' : 'earnSaveProfile')}
-        disabled={busy} onPress={() => void save()} />
+      <Action
+        label={t(initial ? 'earnSaveRevision' : 'earnSaveProfile')}
+        disabled={busy}
+        onPress={() => void save()}
+      />
     </Panel>
   );
 }
@@ -474,31 +502,43 @@ export default function EarningsScreen() {
         <Panel>
           <Heading>{t('earnHistoryTitle')}</Heading>
           <Muted>{t('earnHistoryWarning')}</Muted>
-          <Action label={t('earnShowLatest')}
-            onPress={() => setSelectedRevision(null)} />
+          <Action label={t('earnShowLatest')} onPress={() => setSelectedRevision(null)} />
           {profileHistory.map((record) => (
             <View key={record.profile.revision} style={{ gap: 5 }}>
               <Text style={{ color: c.text }}>
                 {t('earnHistoryRow', {
                   revision: record.profile.revision,
-                  rate: formatMoneyMinor(record.profile.baseMinorUnits, record.profile.currency, locale),
+                  rate: formatMoneyMinor(
+                    record.profile.baseMinorUnits,
+                    record.profile.currency,
+                    locale,
+                  ),
                   reason: record.original ? t('earnOriginal') : record.reason,
                 })}
               </Text>
               {record.recordedAt ? <Muted>{record.recordedAt}</Muted> : null}
               <Action
                 label={t('earnPreviewRevision', { revision: record.profile.revision })}
-                onPress={() => setSelectedRevision(record.profile.revision)} />
+                onPress={() => setSelectedRevision(record.profile.revision)}
+              />
             </View>
           ))}
-          <Action label={t(showCorrection ? 'earnHideCorrection' : 'earnCorrectProfile')}
-            onPress={() => { setShowCorrection(!showCorrection); setShowEditor(false); }} />
+          <Action
+            label={t(showCorrection ? 'earnHideCorrection' : 'earnCorrectProfile')}
+            onPress={() => {
+              setShowCorrection(!showCorrection);
+              setShowEditor(false);
+            }}
+          />
         </Panel>
       ) : null}
       {showCorrection && profileHistory.length ? (
         <ProfileEditor
-          key={profileHistory[profileHistory.length - 1].profile.id + ':' +
-            profileHistory[profileHistory.length - 1].profile.revision}
+          key={
+            profileHistory[profileHistory.length - 1].profile.id +
+            ':' +
+            profileHistory[profileHistory.length - 1].profile.revision
+          }
           selectedMonth={month}
           initial={profileHistory[profileHistory.length - 1].profile}
           onSaved={async () => {
