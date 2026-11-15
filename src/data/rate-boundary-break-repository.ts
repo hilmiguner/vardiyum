@@ -2,6 +2,7 @@ import { getDatabase } from './database';
 import {
   appendRateBreakRevision,
   loadRateBreakCandidatesFromStore,
+  type RateBreakCandidateResult,
   type RateBreakSave,
 } from '../domain/rate-boundary-break-store';
 
@@ -18,12 +19,12 @@ export async function saveRateBoundaryBreakRevision(
 export async function loadRateBoundaryBreakCandidates(
   periodKey: string,
   scheduleTimeZone: string,
-) {
+): Promise<RateBreakCandidateResult> {
   const db = await getDatabase();
-  let result: Awaited<ReturnType<typeof loadRateBreakCandidatesFromStore>> | null = null;
+  const snapshot: { current: RateBreakCandidateResult | null } = { current: null };
   await db.withExclusiveTransactionAsync(async (tx) => {
-    result = await loadRateBreakCandidatesFromStore(tx, periodKey, scheduleTimeZone);
+    snapshot.current = await loadRateBreakCandidatesFromStore(tx, periodKey, scheduleTimeZone);
   });
-  if (!result) throw new Error('RATE_BREAK_CANDIDATE_READ_DID_NOT_FINISH');
-  return result;
+  if (snapshot.current === null) throw new Error('RATE_BREAK_CANDIDATE_READ_DID_NOT_FINISH');
+  return snapshot.current;
 }
