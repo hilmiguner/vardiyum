@@ -92,3 +92,10 @@
 V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyon, bordro karşılaştırma, arkadaş takvimi. İlk 10–16 hafta varsayımı teslim garantisi değildir.
 
 **Takip açıldı:** [Issue #22](https://github.com/hilmiguner/vardiyum/issues/22) — kullanıcıya göre maaş dönemi başlangıcı/kapanışı, farklı aylar ve IANA/DST çalışmayı iki dönemde çift saymama; Node/JS testleri gereklidir. Önceki takvim-ayına göre kazanç motoru geriye uyumlu kalacak. Native cihaz testleri [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ertelendi.
+
+## 2026-11-15 — Issue #22 özel maaş dönemine hazırlık (kısmi)
+
+- [x] **İlk saf domain dilimi feature branch'te:** 1–28 başlangıç günü, 26→25 period key, tarih/UTC/IANA sınırları, manuel mola doğrulama, DST/Şubat ve yıl geçişi test senaryoları. [Tasarım](./PAY-PERIOD-DESIGN.md).
+- [ ] CI onayı ve PR merge doğrulaması; yeni branch kodu otomatik olarak main değildir.
+- [ ] Persisted seçim, migration ve AES v8 backup/restore uyumu, karışık ücret profili politikası, sabit özel dönem ücreti, dönem bazlı adjustments, TR/EN ekran ve CSV/JSON özel dönem raporu.
+- [ ] Native cihaz kabulü: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2), restore [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20). Issue #22 bu adımda kapanmaz.
