@@ -1,0 +1,32 @@
+name: Temporary formatter for rate-break audit
+on:
+  push:
+    branches:
+      - feat/custom-rate-boundary-break-audit
+permissions:
+  contents: write
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    if: github.repository == 'hilmiguner/vardiyum'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Apply canonical formatting
+        run: |
+          npx prettier --write src/domain/rate-boundary-break-audit.ts src/domain/rate-boundary-break-store.ts src/domain/custom-hourly-work-estimate.ts src/domain/custom-mixed-hourly-work.ts src/domain/custom-hourly-work-store.ts src/data/rate-boundary-break-repository.ts src/components/rate-boundary-break-panel.tsx 'src/app/(tabs)/earnings.tsx' src/i18n/index.ts tests/rate-boundary-break-audit.test.mjs
+      - name: Commit format changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/domain/rate-boundary-break-audit.ts src/domain/rate-boundary-break-store.ts src/domain/custom-hourly-work-estimate.ts src/domain/custom-mixed-hourly-work.ts src/domain/custom-hourly-work-store.ts src/data/rate-boundary-break-repository.ts src/components/rate-boundary-break-panel.tsx 'src/app/(tabs)/earnings.tsx' src/i18n/index.ts tests/rate-boundary-break-audit.test.mjs
+          if ! git diff --cached --quiet; then
+            git commit -m "style: format rate-midnight audit and integration sources"
+            git push
+          fi
