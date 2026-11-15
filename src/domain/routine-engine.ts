@@ -100,7 +100,7 @@ export function validateRoutine(input: RoutineRule): RoutineRule {
     throw new Error('INVALID_ROUTINE_REVISION');
   const clock = input.reminderClock ?? null;
   const zone = input.reminderTimeZone ?? null;
-  if (clock !== null && !/^([01]\\d|2[0-3]):[0-5]\\d$/.test(clock))
+  if (clock !== null && !/^([01]\d|2[0-3]):[0-5]\d$/.test(clock))
     throw new Error('INVALID_REMINDER_CLOCK');
   if (clock !== null && (!zone || typeof zone !== 'string'))
     throw new Error('INVALID_REMINDER_TIME_ZONE');

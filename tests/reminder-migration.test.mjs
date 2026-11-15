@@ -69,7 +69,8 @@ test('valid reminder values are persisted and invalid hours are blocked by SQL c
     const row = db
       .prepare("SELECT reminder_clock,reminder_timezone_id FROM routine_rules WHERE id='r1'")
       .get();
-    assert.deepEqual(row, { reminder_clock: '09:30', reminder_timezone_id: 'Europe/Istanbul' });
+    assert.equal(row.reminder_clock, '09:30');
+    assert.equal(row.reminder_timezone_id, 'Europe/Istanbul');
     assert.throws(
       () => db.prepare("UPDATE routine_rules SET reminder_clock=? WHERE id='r1'").run('24:30'),
       /CHECK constraint failed/,
