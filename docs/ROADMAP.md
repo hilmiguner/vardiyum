@@ -166,3 +166,10 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 - [ ] Ayrı **ücret değişimi sınırındaki mola** kullanıcının pozitif dakika beyanı ve append-only kaynağa bağlı audit; PR #25 period audit'i bu ayrımı içermez. Mixed currency/threshold/fixed otomatik hesaplanmaz.
 - [ ] Full/partial fixed monthly custom pay assumption + period-keyed manual bonus/deduction/correction attribution + source-linked custom CSV/JSON. Issue #22/#16 açık.
 - [ ] Native iOS/Android SQLite/AES/restore/process kill/low disk QA #2/#20 erteli.
+
+## 2026-11-15 — PR #29 rate-midnight mola beyanı MERGED
+
+- [x] [PR #29](https://github.com/hilmiguner/vardiyum/pull/29) merged main code `3ecfe1701e5cfef6e0ad836d8809923f3077354b`, [main CI #43754910798](https://github.com/hilmiguner/vardiyum/actions/runs/43754910798) **SUCCESS 204/204 Node** + Android/iOS JS. Kullanıcı tarafından ücret değişim sınırındaki pozitif molanın eski/yeni rate tarafına explicit paylaştırılması, source-bound UTC/IANA, revizyon, reason, exclusive SQLite v8 atomic head+event ve TR/EN UI; uygun iki hourly oranlı özel dönemin work-only tahmini artık bu beyanı kullanır.
+- [ ] Aynı kaynak vardiya hem custom **pay period** sınırı hem **effective rate** midnight aşıyorsa iki farklı mola atfı arasındaki bağıntı/uzlaştırma tasarımı ve fail-closed testleri.
+- [ ] `monthly_fixed` special period full/partial user assumption ve overtime koşulları; `earnings_adjustments` için ayrı custom-period atıf ve kaynaklı CSV/JSON. Issue #22 ve üst #16 açık.
+- [ ] Native iOS/Android gerçek SQLite/backup/clean restore/low disk/process crash/DST QA Issue #2/#20 erteli; JS export native QA sayılmaz.
