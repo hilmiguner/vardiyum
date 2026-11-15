@@ -14,6 +14,10 @@ import {
   type PayPeriodWorkPortion,
 } from './pay-period.ts';
 import { resolveLocalBoundary } from './zoned-shift-time.ts';
+import {
+  createRateBreakEvent,
+  type RateBoundaryBreakEvent,
+} from './rate-boundary-break-audit.ts';
 import type {
   CustomHourlyEstimate,
   CustomHourlyLine,
@@ -38,6 +42,7 @@ type RatePart = {
   netSeconds: number;
   breakMinutes: number;
   auditRevision: number | null;
+  rateBreakAuditRevision: number | null;
   profile: EarningsProfile;
 };
 
@@ -90,8 +95,11 @@ function resolveMixedPlan(plan: CustomPayProfilePlan): {
 }
 
 function rateParts(
+  work: CustomHourlySource['work'],
   portion: PayPeriodWorkPortion,
   auditRevision: number | null,
+  rateBreakAudit: RateBoundaryBreakEvent | undefined,
+  startDay: number,
   profiles: [EarningsProfile, EarningsProfile],
   boundaryLocalDate: string,
 ): RatePart[] {
@@ -106,10 +114,27 @@ function rateParts(
     throw new Error('INVALID_CUSTOM_RATE_PORTION');
 
   const crosses = start < border && border < end;
-  // We cannot know whether the break was taken before/after the rate change
-  // from a work total alone, even if a separate PAY-PERIOD audit exists.
-  if (crosses && portion.breakMinutes > 0)
-    throw new Error('CUSTOM_RATE_BREAK_ALLOCATION_REQUIRED');
+  // A rate-boundary split is a separate, explicitly user-entered revision.
+  // The older pay-period break allocation never resolves rate attribution.
+  if ((!crosses || portion.breakMinutes === 0) && rateBreakAudit)
+    throw new Error('UNEXPECTED_RATE_BREAK_AUDIT');
+  let beforeBreak = 0;
+  if (crosses && portion.breakMinutes > 0) {
+    if (!rateBreakAudit) throw new Error('CUSTOM_RATE_BREAK_ALLOCATION_REQUIRED');
+    const canonical = createRateBreakEvent(
+      work,
+      startDay,
+      portion.periodKey,
+      boundaryLocalDate,
+      rateBreakAudit.beforeRateBreakMinutes,
+      rateBreakAudit.revision,
+      rateBreakAudit.reason,
+      rateBreakAudit.recordedAt,
+    );
+    if (JSON.stringify(canonical) !== JSON.stringify(rateBreakAudit))
+      throw new Error('INVALID_RATE_BREAK_AUDIT_SOURCE');
+    beforeBreak = canonical.beforeRateBreakMinutes;
+  }
 
   const ranges: { start: number; end: number; profile: EarningsProfile }[] = [
     { start, end: Math.min(end, border), profile: profiles[0] },
@@ -119,7 +144,11 @@ function rateParts(
   for (const range of ranges) {
     if (range.start >= range.end) continue;
     const seconds = (range.end - range.start) / 1000;
-    const breaks = crosses ? 0 : portion.breakMinutes;
+    const breaks = crosses
+      ? range.profile.id === profiles[0].id
+        ? beforeBreak
+        : portion.breakMinutes - beforeBreak
+      : portion.breakMinutes;
     if (!Number.isSafeInteger(seconds) || breaks * 60 > seconds)
       throw new Error('CUSTOM_RATE_BREAK_EXCEEDS_SEGMENT');
     result.push({
@@ -129,6 +158,7 @@ function rateParts(
       netSeconds: seconds - breaks * 60,
       breakMinutes: breaks,
       auditRevision,
+      rateBreakAuditRevision: rateBreakAudit?.revision ?? null,
       profile: range.profile,
     });
   }
@@ -167,7 +197,12 @@ export function estimateCustomMixedHourlyWork(
     );
   }
 
-  const original: { portion: PayPeriodWorkPortion; auditRevision: number | null }[] = [];
+  const original: {
+    work: CustomHourlySource['work'];
+    portion: PayPeriodWorkPortion;
+    auditRevision: number | null;
+    rateBreakAudit?: RateBoundaryBreakEvent;
+  }[] = [];
   const ids = new Set<string>();
   for (const item of sources) {
     try {
@@ -196,7 +231,12 @@ export function estimateCustomMixedHourlyWork(
       } else if (item.allocation || item.auditRevision !== undefined) {
         throw new Error('UNEXPECTED_CUSTOM_BREAK_AUDIT');
       }
-      original.push({ portion, auditRevision: item.auditRevision ?? null });
+      original.push({
+        work,
+        portion,
+        auditRevision: item.auditRevision ?? null,
+        rateBreakAudit: item.rateBreakAudit,
+      });
     } catch (error) {
       return blocked(
         plan,
@@ -231,8 +271,11 @@ export function estimateCustomMixedHourlyWork(
     for (const item of original) {
       parts.push(
         ...rateParts(
+          item.work,
           item.portion,
           item.auditRevision,
+          item.rateBreakAudit,
+          plan.startDay,
           policy.profiles,
           policy.boundaryLocalDate,
         ),
@@ -304,6 +347,7 @@ export function estimateCustomMixedHourlyWork(
           timeZone: part.portion.timeZone,
           sourceBreakMinutes: part.breakMinutes,
           breakAuditRevision: part.auditRevision,
+          rateBreakAuditRevision: part.rateBreakAuditRevision,
           seconds,
           amountMinorUnits: Number(delta),
           profileId: part.profile.id,
