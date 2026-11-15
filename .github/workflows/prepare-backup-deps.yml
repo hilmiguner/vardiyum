@@ -1,0 +1,32 @@
+name: Prepare offline backup dependencies and formatting (temporary)
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  prepare:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'feat/encrypted-backup-readonly-restore-preview'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Install SDK 57 compatible Expo modules
+        run: npx expo install --npm expo-crypto expo-file-system expo-document-picker expo-sharing
+      - run: npm run format:write
+      - name: Commit package lock and formatted source
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add package.json package-lock.json src tests
+          if ! git diff --cached --quiet; then
+            git commit -m 'build: add SDK 57 backup modules and format sources'
+            git push origin HEAD:refs/heads/feat/encrypted-backup-readonly-restore-preview
+          fi
