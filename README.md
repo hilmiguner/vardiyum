@@ -34,11 +34,11 @@ npm run format
 - Expo Router: Bugün / Takvim / Rutinler / Kazanç sekmeleri ve Ayarlar
 - Sistem dilinden TR/EN seçimi ve açık/koyu tema renkleri
 - SQLite açılış migrasyonu ve yerel vardiya döngüsü kalıcılığı
-- Ayarlardan döngü günü ekleme/çıkarma, vardiya türü seçimi ve 8 günlük örnek düzen
-- Bugünkü vardiya ve önümüzdeki 14 gün görünümü
+- Ayarlardan döngü günü ekleme/çıkarma, özel vardiya türü/saat/mola tanımlama ve 8 günlük örnek düzen
+- Bugünkü vardiya ve aylık takvim; bir güne özel değişiklik yapma ve normal döngüye döndürme
 - Saf, çevrimdışı test edilebilir takvim günü hesaplama motoru
 
-**Kısıt:** Faz 1'deki vardiya türleri sabit örneklerdir; özel vardiya saatleri, izin istisnaları ve gece vardiyası zaman aralıklarının detaylı yönetimi Faz 2'de geliştirilecek. Rutin ve kazanç ekranları yol haritası açıklaması içerir, henüz işlevsel değildir.
+**Kısıt:** Faz 2'de özel şablon, aylık takvim ve günlük istisna kodu PR #5 ile eklenmiştir. Şablon silme/gerçekleşmiş çalışma kaydı, DST'de gerçek geçen süre ve native cihaz kabulü açık. Rutin ve kazanç ekranları henüz işlevsel değildir.
 
 ## Temel prensipler
 

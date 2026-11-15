@@ -112,3 +112,13 @@ Bu tablo isimleri öneridir; gerçek SQLite migrasyonu ile kesinleşecek. Foreig
 - Local-only yedekleme şifrelemesi ve paylaşım/ithalat akışı
 - Maaş dönem başlangıcı ve açık katsayı editörü
 - Expo SDK, native test ve EAS sürüm uyumluluğu
+
+## Uygulanan Faz 2 değişiklikleri — PR #5 (2026-11-15)
+
+- SQLite sürüm 1'den **2'ye** geçiş, `shift_templates.break_minutes` sütununu ekler, mevcut satırları `INSERT OR IGNORE` ile koruyarak varsayılan sabah/akşam/gece/izin türlerini gerektiğinde tohumlar; önceki pattern/override kayıtlarına dokunmaz.
+- `ShiftTemplate`: sabit tanımlayıcı, görünen ad, renk, yerel başlangıç/bitiş saati, `endDayOffset`, mola dakikası, izin bayrağı. Kullanıcı özel vardiya türü ekleyebilir ve var olanları düzenleyebilir; henüz silme UI'si yoktur.
+- `ShiftPattern.days` artık vardiya türü ID'leri dizisidir; sabit üçlü vardiya kuralı yoktur. Döngü, sabit 24 saat geçen süre değil sivil tarih indeksiyle hesaplanır.
+- `day_overrides` yalnızca seçilen gün için geçerlidir; sonraki düzenli döngü değişmeden hesaplanır.
+- `resolveShift` normal döngü veya istisna kaynağını ayırt eder. Aylık görünüm, bu birleşik sonucu gösterir.
+- `plannedWallMinutes`, saatin kadrandaki aralığıdır; **DST durumunda gerçek geçen çalışma dakikası değildir**. Ücret hesabında gerçek dakika kullanılacaksa saat dilimi geçişi ve birden fazla yerel saat eşleşmesi (fold/gap) ayrıca çözülmelidir.
+- Node `node:sqlite` testleri mevcut v1 kayıtlarının korunmasını ve v2 tohumlamasını sınar; **Expo'nun cihaz SQLite sürücüsü üzerinde gerçek mobil test henüz yapılmadı**.

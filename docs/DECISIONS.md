@@ -39,3 +39,10 @@ Kararlar 2026-11-15 itibarıyla konuşulan hedefleri belgeler. Geliştirme sıra
 
 - **D-015 (uygulandı):** İlk prototipte Expo SDK 57, React Native 0.86 ve React 19.2 kullanıldı. SDK 58 güncel kararlı sürüm; SDK 57 Expo Go ile erken test kolaylığı için seçildi. Yükseltme ayrı test/PR ile ele alınacak.
 - **D-016 (uygulandı):** Npm lock dosyası depoya eklendi, CI `npm ci` kullanır. İki platformun JS bundle sonucu gerçek native build veya cihaz testi değildir.
+
+## 2026-11-15 — Faz 2 uygulama kararları
+
+- **D-017 (uygulandı, PR #5):** Takvim günleri, ilk kurulumda kaydedilen IANA saat dilimine göre seçilir; gün/ay aritmetiğinde **sivil takvim günü** kullanılır. Seyahatte saat dilimini değiştirmeye yönelik ayar henüz yapılmadı.
+- **D-018 (uygulandı, PR #5):** Vardiya şablonunda `startsAt`, `endsAt` ve `endDayOffset` tutulur; planlı duvar saati süresi, **gerçek UTC geçen süre** değildir. DST üzerinden gerçek çalışma süresi ve maaş hesapları sonraki ayrı karardır.
+- **D-019 (uygulandı, PR #5):** `day_overrides` normal döngünün indeksini değiştirmez. `shift_templates` içindeki mevcut v1 satırları ve geçmiş döngü kayıtları v2 yükseltmesinde ezilmez.
+- **D-020 (açık):** Şablon silme, günlük değişikliklerin zaman çizelgesi sürümleme ve tarihsel vardiya düzeni değişimlerine dair geçmiş koruma politikası henüz tamamlanmadı.
