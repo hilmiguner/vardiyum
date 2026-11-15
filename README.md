@@ -27,7 +27,7 @@ npm test
 npm run format
 ```
 
-> **Bağımlılık kilidi:** `package-lock.json` GitHub Actions kullanılarak üretildi ve geliştirme dalına eklendi. CI artık `npm ci` ile tam bu kilit dosyasını kullanır. Gerçek cihaz ve paketleme kontrolleri ayrıca doğrulanmalıdır.
+> **Bağımlılık kilidi:** `package-lock.json` GitHub Actions kullanılarak üretildi ve geliştirme dalına eklendi. CI artık `npm ci` ile tam bu kilit dosyasını kullanır. Android ve iOS JavaScript paketleme kontrolleri [Actions #43697865419](https://github.com/hilmiguner/vardiyum/actions/runs/43697865419) ile başarılı; native cihaz doğrulaması açık.
 
 ## Şu anda uygulamada neler var?
 
@@ -56,6 +56,7 @@ npm run format
 - [Test planı](docs/TEST-PLAN.md)
 - [Durum](docs/STATUS.md)
 - [Yeni sohbet devir notu](docs/HANDOFF.md)
+- [Gerçek cihaz test listesi](docs/DEVICE-SMOKE.md)
 
 ## Lisans ve marka
 

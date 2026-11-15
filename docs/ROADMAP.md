@@ -21,8 +21,8 @@
 - [x] Saf vardiya döngüsü ve birim test senaryoları yazıldı.
 - [x] GitHub Actions lint/typecheck/test workflow dosyası yazıldı.
 - [x] npm bağımlılık kilidi GitHub Actions üzerinden üretildi ve branch'e eklendi.
-- [ ] Expo paket sürüm uyumluluk kontrolü başarılı.
-- [ ] CI yeşil; lint/typecheck/test sonuçları kanıtlandı.
+- [x] Expo paket sürüm kontrolü başarılı: Actions #43697865419.
+- [x] CI: lint/typecheck/test ve iki platform JS export PASS (#43697865419).
 - [ ] Android ve iOS smoke testlerinin kaydı.
 - [ ] Yerel veri persistansının cihaz test kanıtı.
 - [ ] Faz 1 PR merge + final main SHA.

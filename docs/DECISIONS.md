@@ -34,3 +34,8 @@ Kararlar 2026-11-15 itibarıyla konuşulan hedefleri belgeler. Geliştirme sıra
 ## Değişiklik süreci
 
 Önemli karar değişikliğinde yeni tarihli kayıt ve PR bağlantısı eklenir. Önceki karar sessizce silinmez. Dosyalar ve GitHub PR geçmişi birlikte izlenir.
+
+## 2026-11-15 — Uygulama tercihleri
+
+- **D-015 (uygulandı):** İlk prototipte Expo SDK 57, React Native 0.86 ve React 19.2 kullanıldı. SDK 58 güncel kararlı sürüm; SDK 57 Expo Go ile erken test kolaylığı için seçildi. Yükseltme ayrı test/PR ile ele alınacak.
+- **D-016 (uygulandı):** Npm lock dosyası depoya eklendi, CI `npm ci` kullanır. İki platformun JS bundle sonucu gerçek native build veya cihaz testi değildir.

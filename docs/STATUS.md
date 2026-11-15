@@ -24,10 +24,10 @@
 
 ## Açık doğrulama / engeller
 
-- [ ] `npm install` ve `npx expo install --check` ile bağımlılık uyumluluğunu doğrula.
+- [x] `npm ci` ve `npx expo install --check`: Actions #43697865419 SUCCESS.
 - [x] `package-lock.json` GitHub Actions ile oluşturulup PR'a eklendi; CI yapılandırması `npm ci` kullanacak şekilde güncellendi. Yeni çalışmanın sonucu ayrıca kontrol edilmeli.
-- [ ] CI sonucunu kontrol et: lint, typecheck, domain test; başarısızsa düzelt.
-- [ ] Android/iOS gerçek cihaz veya emülatör smoke test yap.
+- [x] Lint, TypeScript, domain testleri, Android+iOS JS export: [Actions #43697865419](https://github.com/hilmiguner/vardiyum/actions/runs/43697865419) SUCCESS, commit 595c3430213c903a84bf1487d332a751a202b602.
+- [ ] Android/iOS gerçek cihaz veya emülatör smoke test yap: [DEVICE-SMOKE.md](DEVICE-SMOKE.md).
 - [ ] Yerel veritabanı kalıcılığını yeniden başlatma/migrasyon testleriyle kanıtla.
 - [ ] Rutin ve kazanç ekranları gerçek işlevselliğe henüz sahip değil.
 - [ ] Faz 2: özelleştirilebilir saatler, izin/değişiklik istisnaları, gece vardiyası süreleri ve takvim.

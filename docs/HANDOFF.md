@@ -18,7 +18,7 @@ Türkçe/İngilizce, kullanıcı hesabı zorunlu değil, ileride isteğe bağlı
 - PR #1: Ürün planı, mimari, yol haritası ve devir dosyaları; **main'e merge edildi**.
 - [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2): Faz 1 Expo uygulama temeli.
 - Faz 1 dalı: `feat/expo-mobile-foundation` — uygulama iskeleti, dört sekme, dil/tema, SQLite, basit döngü düzenleme, saf takvim motoru, GitHub Actions CI.
-- **Henüz doğrulanmamış:** Bağımlılıkların kurulumu, CI pass, gerçek iOS/Android build, SQLite cihaz persistans testi. `package-lock.json` GitHub Actions tarafından üretildi ve PR'a eklendi; CI `npm ci` kullanıyor (son test sonucu kontrol edilmeli).
+- **Doğrulanan:** Actions #43697865419 SUCCESS: npm ci, Expo check, lint, TypeScript, domain testleri, Android/iOS JS paketleme. **Henüz doğrulanmayan:** native derleme ve gerçek cihaz üzerinde SQLite persistans. `package-lock.json` GitHub Actions tarafından üretildi ve PR'a eklendi; CI `npm ci` kullanıyor (son test sonucu kontrol edilmeli).
 - **Henüz geliştirilmemiş:** tam vardiya istisnaları, özel saatler, rutin/mesai/kazanç motorları, yedek alma/geri yükleme ve yayın.
 
 ## Mimari kurallar
