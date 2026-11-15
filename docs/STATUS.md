@@ -1,45 +1,48 @@
 # Vardiyum — Güncel Durum / Kanıt Kaydı
 
-**Güncelleme:** 2026-11-15  
+**Güncelleme tarihi:** 2026-11-15  
 **Repo:** https://github.com/hilmiguner/vardiyum  
 **Ana dal:** main  
-**Geliştirme:** [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2), `feat/expo-mobile-foundation` dalı.
+**Ürün:** Sektör bağımsız offline-first iOS/Android vardiya + rutin + tahmini kazanç asistanı.
 
-## Main dalında daha önce doğrulananlar
+## GitHub üzerinde tamamlananlar
 
-- [x] Ürün ve teknik kapsam dokümanları PR #1 ile birleştirildi.
-- [x] En son dokümantasyon commit'i: 43dd9e4c54ef6c9d1725326a1ca98cd509b56304 (Faz 1 başlamadan önceki referans).
+- [x] PR #1: ürün/mimari/yol haritası/karar/handoff belgeleri main'e birleştirildi.
+- [x] PR #3: Expo SDK 57 + React Native 0.86 + TypeScript mobil temel; **squash merge main SHA** `84afe3dfb9bc112af47f084f85717bf2a44744e1`.
+- [x] Expo Router ile Bugün, Takvim, Rutinler, Kazanç ve Ayarlar ekranları.
+- [x] Türkçe/İngilizce metinler, açık/koyu sistem teması.
+- [x] SQLite v1 şema ve ilk migrasyon; döngü okuma/yazma repository.
+- [x] Yerel örnek döngü editörü, bugünkü vardiya ve önümüzdeki 14 gün.
+- [x] Saf takvim gününe dayalı döngü motoru ve Node test senaryoları.
+- [x] `package-lock.json`, `npm ci` ve GitHub Actions kalite kapısı.
+- [x] GitHub Actions **#43698347742** PR commit `ec9137d77ae5a1447c4b0ceea0047be5ce946db0`: format, npm ci, Expo dependency check, lint, typecheck, unit test, Android ve iOS JS export — **SUCCESS**.
+- [x] Gerçek cihaz kontrol listesi: [DEVICE-SMOKE.md](DEVICE-SMOKE.md).
 
-## Faz 1 geliştirme dalında hazırlananlar — main'e merge edilmedi
+## Henüz kanıtlanmayanlar / sınırlamalar
 
-- [x] Expo SDK 57 / React Native / TypeScript proje konfigürasyonu
-- [x] Expo Router ile Bugün, Takvim, Rutinler, Kazanç, Ayarlar ekranları
-- [x] Türkçe/İngilizce çeviriler ve sistem teması
-- [x] SQLite şeması (sürüm 1) ve transactional başlangıç migrasyonu
-- [x] Vardiya döngüsü için yerel okuma/yazma, örnek döngü ve temel editör
-- [x] Takvim günü hesaplama motoru ve planlanan Node testleri
-- [x] GitHub Actions lint/typecheck/test iş akışı dosyası
+- [ ] **Gerçek Android ve iOS cihaz veya simülatör çalıştırması, native derleme** kanıtlanmadı.
+- [ ] SQLite'nın gerçek cihazda kapanıp açıldıktan sonra veri koruması test edilmedi.
+- [ ] Gerçek standalone pakette internet kapalıyken kullanım doğrulanmadı.
+- [ ] Kişisel vardiya saatleri, tek gün istisnaları, aylık takvim düzenleme henüz işlevsel değil (Faz 2).
+- [ ] Rutin, bildirim, mesai ve maaş ekranlarında gerçek işlevler henüz yok (Faz 3–4).
+- [ ] Yedek alma/geri yükleme, mağaza yayınları ve isim/marka araştırması yapılmadı.
 
-**Uyarı:** Yukarıdaki kutular `kod yazıldı` anlamındadır; `CI/test geçti`, `mobil cihazda çalıştı` veya `main'e merge edildi` anlamına gelmez. PR ve CI sonucu yeni oturumda doğrulanmalıdır.
+**Ayrım:** Android/iOS JS export başarısı, native build/gerçek telefon testi başarısı değildir.
 
-## Açık doğrulama / engeller
+## Açık işler
 
-- [x] `npm ci` ve `npx expo install --check`: Actions #43697865419 SUCCESS.
-- [x] `package-lock.json` GitHub Actions ile oluşturulup PR'a eklendi; CI yapılandırması `npm ci` kullanacak şekilde güncellendi. Yeni çalışmanın sonucu ayrıca kontrol edilmeli.
-- [x] Lint, TypeScript, domain testleri, Android+iOS JS export: [Actions #43697865419](https://github.com/hilmiguner/vardiyum/actions/runs/43697865419) SUCCESS, commit 595c3430213c903a84bf1487d332a751a202b602.
-- [ ] Android/iOS gerçek cihaz veya emülatör smoke test yap: [DEVICE-SMOKE.md](DEVICE-SMOKE.md).
-- [ ] Yerel veritabanı kalıcılığını yeniden başlatma/migrasyon testleriyle kanıtla.
-- [ ] Rutin ve kazanç ekranları gerçek işlevselliğe henüz sahip değil.
-- [ ] Faz 2: özelleştirilebilir saatler, izin/değişiklik istisnaları, gece vardiyası süreleri ve takvim.
+- [Issue #2 — Faz 1 gerçek cihaz / SQLite kalıcılık kabulü](https://github.com/hilmiguner/vardiyum/issues/2): altyapı kodu main'e eklendi, yalnızca native kabul kanıtları açık.
+- [Issue #4 — Faz 2 esnek vardiya motoru](https://github.com/hilmiguner/vardiyum/issues/4): henüz başlamadı.
+- Main dalına PR #3 merge sonrası otomatik push CI doğrulamasını güncel Actions ekranından ayrıca kontrol et.
 
-## Sıradaki eylem
+## Sıradaki adımlar
 
-1. Faz 1 PR'ı ve GitHub Actions kontrol sonuçlarını incele.
-2. Bağımlılık kilidini ve uyumluluk sorunlarını gider; çalışır geliştirme sürümü doğrula.
-3. Faz 1 kabul kriterleri sağlanınca merge et; main SHA/CI bilgilerini bu dosyaya işle.
-4. Faz 2 için tarih/istisna/gece vardiyası kabul testleriyle vardiya motorunu genişlet.
+1. GitHub main SHA/Actions sonucunu doğrula; bu belge eskiyse düzelt.
+2. Android ve iOS cihazlarda [DEVICE-SMOKE.md](DEVICE-SMOKE.md) testlerini uygulayıp bulguları Issue #2'ye ekle.
+3. Issue #4 için yeni branch/PR aç: özel vardiya türleri ve zamanları, günlük istisnalar, gece geçişleri.
+4. Her değişimde ROADMAP, HANDOFF, DECISIONS ve STATUS dosyalarını gerçek commit/CI kanıtına göre güncelle.
 
-## Geçmiş
+## Kanıt geçmişi
 
-- **2026-11-15:** Başlangıç proje hafızası ve yol haritası PR #1 ile main'e eklendi.
-- **2026-11-15:** Faz 1 için Expo mobil iskeleti, SQLite ve kalite kapısı geliştirme dalında hazırlandı; derleme ve test doğrulaması bekliyor.
+- **2026-11-15:** Başlangıç dokümantasyonu PR #1 tamamlandı.
+- **2026-11-15:** İlk mobil temel PR #3 squash merge edildi; son PR kalite kontrolü SUCCESS. Native testler bekliyor.

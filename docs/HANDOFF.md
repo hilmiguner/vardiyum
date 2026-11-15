@@ -1,39 +1,47 @@
-# Vardiyum — Yeni Sohbete Devir Notu
+# Vardiyum — Yeni Sohbet / Geliştirici Devir Notu
 
 **Repo:** https://github.com/hilmiguner/vardiyum  
-**Tarih:** 2026-11-15  
-**Önce `docs/STATUS.md`, `docs/ROADMAP.md`, açık PR'lar ve Actions sonuçlarını oku.**
+**Güncelleme:** 2026-11-15  
+**Ana dal:** main
 
-## Amacımız
+## Önce kontrol edilecekler
 
-Tüm sektörlerdeki vardiyalı çalışanlar için **offline-first** bir iOS/Android kişisel asistan:
-1. Özel/tekrar eden vardiya düzeni, takvim ve günlük istisnalar.
-2. Vardiya türüne ve günlere göre rutinler, bildirimler, tamamlama geçmişi.
-3. Mesai, ücret, prim ve kesintilerden resmi bordro olmayan **tahmini** kazanç.
+1. GitHub'daki main commit, açık PR/Issue'lar ve son Actions CI sonucunu oku.
+2. [STATUS.md](STATUS.md) ve [ROADMAP.md](ROADMAP.md) dosyalarını oku.
+3. [PRODUCT.md](PRODUCT.md), [ARCHITECTURE.md](ARCHITECTURE.md), [DECISIONS.md](DECISIONS.md) dosyalarını karar kaynağı olarak al. İddia yerine gerçek commit/CI kanıtı kullan.
 
-Türkçe/İngilizce, kullanıcı hesabı zorunlu değil, ileride isteğe bağlı Supabase senkronizasyonu mümkün. Çalışma adı **Vardiyum**, marka uygunluğu kontrol edilmedi.
+## Ürünün amacı
 
-## Bilinen GitHub geçmişi
+**Vardiyum**, başlangıçtan itibaren tüm sektörlerdeki vardiyalı çalışanlar için iOS/Android kişisel vardiya asistanıdır:
+- Özel/periyodik vardiya döngüleri, tek gün istisnaları, izin ve takvim.
+- Vardiyaya/güne bağlı iş ve kişisel rutinler ile bildirimler.
+- Mesai, ücret ve primlerden **tahmini** dönem kazanç dökümü; resmi bordro değil.
 
-- PR #1: Ürün planı, mimari, yol haritası ve devir dosyaları; **main'e merge edildi**.
-- [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2): Faz 1 Expo uygulama temeli.
-- Faz 1 dalı: `feat/expo-mobile-foundation` — uygulama iskeleti, dört sekme, dil/tema, SQLite, basit döngü düzenleme, saf takvim motoru, GitHub Actions CI.
-- **Doğrulanan:** Actions #43697865419 SUCCESS: npm ci, Expo check, lint, TypeScript, domain testleri, Android/iOS JS paketleme. **Henüz doğrulanmayan:** native derleme ve gerçek cihaz üzerinde SQLite persistans. `package-lock.json` GitHub Actions tarafından üretildi ve PR'a eklendi; CI `npm ci` kullanıyor (son test sonucu kontrol edilmeli).
-- **Henüz geliştirilmemiş:** tam vardiya istisnaları, özel saatler, rutin/mesai/kazanç motorları, yedek alma/geri yükleme ve yayın.
+Offline-first, Türkçe/İngilizce, ilk sürümde zorunlu üyelik ve backend yok. İleride isteğe bağlı senkronizasyon için Supabase aday. Marka adı **Vardiyum**, marka/mağaza/domain kullanılabilirliği henüz teyit edilmedi.
 
-## Mimari kurallar
+## Doğrulanan GitHub ilerlemesi
 
-- Döngü indeksi takvim günleriyle hesaplanır; DST zamanı milisaniyeye bölerek gün sayılmaz.
-- Tek günlük değişiklik normal döngünün sırasını kaydırmaz.
-- Gece yarısını geçen vardiyanın zaman aralığı ayrı modellenir.
-- Planlanan vardiya ile gerçekleşen mesai ayrıdır.
-- Tahmini kazanç parasal hassasiyet ve tarihsel ücret kurallarıyla hesaplanmalı.
-- Tasarımdaki tablo / ekranların varlığı bitmiş özellik kanıtı değildir.
+- **PR #1** ürün planı, mimari, kararlar ve devir belgeleri main'e merge edildi.
+- **PR #3** Expo SDK 57 / React Native 0.86 / TypeScript; Expo Router dört sekme + ayarlar; sistem tema ve TR/EN; SQLite şema v1 ve kalıcı döngü repository; basit döngü editörü ve 14 gün görünümü; saf takvim motoru. **Main merge SHA:** `84afe3dfb9bc112af47f084f85717bf2a44744e1`.
+- **CI kanıtı:** [Actions #43698347742](https://github.com/hilmiguner/vardiyum/actions/runs/43698347742) PR head `ec9137d...` için SUCCESS (Prettier, npm ci, Expo sürüm kontrolü, lint, typecheck, Node test, Android ve iOS JS export).
+- `package-lock.json` repoda. Bir sonraki geliştirici `npm ci` kullanmalı.
 
-## Sıradaki adım
+## Açık riskler / hazır olmayan özellikler
 
-**Önce GitHub'da güncel PR/CI kontrol et.** Faz 1 PR'ındaki bağımlılık hatalarını düzelt; Expo paket sürümlerini kontrol et; eklenen lockfile ile `npm ci` çalıştığını doğrula; lint/typecheck/unit testleri ve iki platformun JS bundle kontrolünü yeşil hale getir. Ardından iOS/Android smoke testlerini doğrula ve ancak kabul kriterleri karşılanınca merge et. Her gelişme sonrası STATUS, HANDOFF, ROADMAP ve gerekiyorsa DECISIONS dosyalarını güncelle.
+- **Native iOS/Android build ve gerçek cihaz testleri yapılmadı.** JavaScript bundle PASS, native doğrulamanın yerini tutmaz.
+- Gerçek cihaz SQLite persistansı, standalone çevrimdışı kullanım ve erişilebilirlik cihaz testleri: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2), [DEVICE-SMOKE.md](DEVICE-SMOKE.md).
+- İlk editörde vardiya saatleri sabit örnektir; özel saatler, izin/değişiklik override'ları ve ay görünümü **henüz uygulanmadı**.
+- Rutin ve kazanç ekranları yer tutucudur; bu modüllerin veri tabloları hazırlanmış olsa da motorları yoktur.
+- Yedekleme, bildirim planlaması, ücretin hukuki hesap kuralları ve mağaza yayını sonraki fazlardadır.
 
-### Yeni sohbet için mesaj
+## Sıradaki çalışma
 
-> Vardiyum'a kaldığımız yerden devam edelim: https://github.com/hilmiguner/vardiyum. Önce main ve açık PR/Issue/Actions durumunu kontrol et, docs/HANDOFF.md, docs/STATUS.md ve docs/ROADMAP.md'yi oku. Faz 1 uygulama iskeletinin doğrulanmamış CI ve native build durumlarını gerçek kanıtlarla kontrol ederek ilerle. Kapsam: tüm sektörler için offline-first iOS/Android vardiya döngüsü, rutinler ve tahmini kazanç. Yaptığın işleri test/commit/PR ile belgeleyerek GitHub'a işle.
+1. Güncel main ve CI durumunu kontrol et.
+2. Native cihaz testini planla, eldeki imkanlarla doğrula; mümkün değilse bu sınırı açık bırak.
+3. **[Issue #4 — Faz 2: esnek vardiya motoru](https://github.com/hilmiguner/vardiyum/issues/4)** için branch/PR aç.
+4. Serbest vardiya tanımı, istisnalar, gece aralıkları, timezone/DST ve SQLite migration testlerine odaklan. Tüm değişiklikler için CI + dokümantasyon.
+5. Faz 2'yi, test edilen mevcut yerel verileri kaybettirmeden uygula.
+
+## Yeni sohbet için önerilen mesaj
+
+> Vardiyum'a kaldığımız yerden devam edelim. https://github.com/hilmiguner/vardiyum deposunda docs/HANDOFF.md, docs/STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md dosyalarını ve güncel PR/CI/Issue durumunu kontrol et. PR #3 ile Expo mobil altyapısı main'e alındı; native cihaz testi hâlâ açık (Issue #2). Sıradaki kod işi Issue #4: esnek vardiya şablonları, saatler, istisnalar ve güvenilir takvim motoru. Kanıtlanmayan işleri tamamlandı diye işaretleme. Yeni değişiklikleri ve kararları GitHub'a yaz.

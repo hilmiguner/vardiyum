@@ -5,7 +5,7 @@
 | Faz | İçerik | Durum |
 | --- | --- | --- |
 | 0 | Ürün, mimari ve proje hafızası belgeleri | ✅ PR #1 ile tamamlandı |
-| 1 | Expo iskeleti, SQLite, i18n, tema, CI | 🚧 Issue #2 geliştirme dalında; doğrulama açık |
+| 1 | Expo iskeleti, SQLite, i18n, tema, CI | PR #3 main'e alındı; Issue #2 native test açık |
 | 2 | Esnek vardiya motoru, istisnalar ve takvim | Planlandı |
 | 3 | Rutinler, görev geçmişi, bildirimler | Planlandı |
 | 4 | Mesai ve tahmini kazanç | Planlandı |
@@ -13,6 +13,8 @@
 | 6 | App Store ve Google Play yayını | Planlandı |
 
 ## Faz 1 — [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)
+
+**Kod durumu:** PR #3 main'e squash merge edildi (`84afe3dfb9bc112af47f084f85717bf2a44744e1`); fiziksel cihaz kabulü açık.
 
 - [x] Expo SDK 57 / TypeScript proje dosyaları yazıldı.
 - [x] Dört ana ekran + Ayarlar ekranı yazıldı.
@@ -25,11 +27,13 @@
 - [x] CI: lint/typecheck/test ve iki platform JS export PASS (#43697865419).
 - [ ] Android ve iOS smoke testlerinin kaydı.
 - [ ] Yerel veri persistansının cihaz test kanıtı.
-- [ ] Faz 1 PR merge + final main SHA.
+- [x] Faz 1 PR #3 merge edildi; main başlangıç SHA: `84afe3dfb9bc112af47f084f85717bf2a44744e1`.
 
 **Kod var ≠ test geçti / yayınlandı.** Gerçek doğrulama olmadan üstteki kabul kutuları kapatılmaz.
 
 ## Faz 2 — Gerçek vardiya esnekliği
+
+**Takip:** [GitHub Issue #4](https://github.com/hilmiguner/vardiyum/issues/4) (açık, henüz geliştirme başlamadı).
 
 - [ ] Kullanıcı tanımlı saatler, vardiya türleri, 12/24 saat çalışma
 - [ ] Döngüden bağımsız tek gün izin/mesai/shift override
