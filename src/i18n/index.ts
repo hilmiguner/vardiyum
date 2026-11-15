@@ -12,6 +12,39 @@ const resources = {
       routines: 'Rutinler',
       earnings: 'Kazanç',
       settings: 'Ayarlar',
+      earnAttribTitle: 'Özel maaş dönemi: prim, kesinti ve düzeltme atfı',
+      earnAttribExplanation:
+        'Takvim ayına kayıtlı her prim, kesinti veya düzeltmeyi hangi özel maaş dönemine ait olduğunu SEN belirleyerek ayır. İlk dönem tutarını tam kuruş olarak yaz; kalan tutar otomatik olarak ikinci döneme aktarılır. Gün sayısına göre bölme yapılmaz ve aynı kaynak iki kez sayılmaz.',
+      earnAttribPeriod: 'Seçilen maaş dönemi: {{start}} – {{end}}',
+      earnAttribEmpty:
+        'Bu özel maaş dönemini ilgilendiren takvim aylık prim, kesinti veya düzeltme yok.',
+      earnAttribPending:
+        '{{count}} kaynak için kullanıcı beyanı eksik veya kaynak değişmiş. Güvenilir dönem toplamı gösterilmez.',
+      earnAttribVerified:
+        'Açıkça atanmış prim/kesinti/düzeltme toplamları (para birimleri ayrı):',
+      earnAttribSource: '{{kind}} · kaynak tutarı {{amount}}',
+      earnAttribKind_bonus: 'Prim',
+      earnAttribKind_deduction: 'Kesinti',
+      earnAttribKind_correction: 'Düzeltme',
+      earnAttribPeriods: 'Kaynağın iki olası özel dönemi: {{earlier}} ve {{later}}',
+      earnAttribSavedAmounts:
+        'Önceki dönem {{earlier}} · sonraki dönem {{later}} · seçili dönemde {{current}}',
+      earnAttribEarlierAmount:
+        '{{period}} başlangıçlı ilk özel döneme ayırdığın tutar ({{currency}})',
+      earnAttribRemainder:
+        '{{period}} başlangıçlı ikinci özel döneme kalan tutar kendiliğinden atanır. Kesinti veya negatif düzeltme için pozitif büyüklük de girebilirsin; uygulama kaynak kaydın eksi işaretini korur.',
+      earnAttribReason: 'Atıf veya düzeltme nedeni (3–160 karakter)',
+      earnAttribReasonPlaceholder:
+        'Örneğin: Kasım priminin hangi maaş dönemine ait olduğunu doğruladım',
+      earnAttribRevision: 'Kaynağın atıf revizyonu: {{revision}}',
+      earnAttribSave: 'İki dönem arasındaki atfı sürümlü kaydet',
+      earnAttribSaved:
+        'Atıf kaydedildi; her iki maaş döneminde aynı kaynak bölüşümü kullanılacak.',
+      earnAttribInvalid: 'Atıf geçersiz veya kayıt sürümü eskimiş',
+      earnAttribStale:
+        'Takvim aylık kaynak kaydı değişmiş. Önceki atıf kullanılamaz; veri tutarlılığını kontrol et.',
+      earnAttribSeparate:
+        'Bu toplam yalnız açıkça atanan takvim aylık ek kalemlerdir. Mevcut aylık rapor da aynı orijinal kaynakları gösterir; aylık ve özel dönem raporlarını BİRBİRİNE EKLEME. Sabit/saatlik ana kazanca henüz eklenmez. Vergi öncesi kullanıcı bildirimidir, resmi bordro değildir.',
       earnFixedOtTitle: 'Özel dönem: sabit ücrete ek kayıtlı fazla mesai',
       earnFixedOtExplanation:
         'Önce sabit ücret ana tutarını beyan et. Ardından ücret profilindeki kendi belirlediğin fazla mesai eşiğini, saatlik ek ücret ve çarpanı kullanarak yalnız kayıtlı gerçek çalışmanın eşik üzerindeki süresini hesaplamaya açıkça izin verebilirsin. Normal saatler sabit ücrete tekrar eklenmez.',
@@ -550,6 +583,39 @@ const resources = {
       routines: 'Routines',
       earnings: 'Earnings',
       settings: 'Settings',
+      earnAttribTitle: 'Custom pay period: bonus, deduction and correction allocation',
+      earnAttribExplanation:
+        'You explicitly assign each calendar-month bonus, deduction or correction between its two eligible custom pay periods. Enter the earlier period amount in exact minor currency units; the remainder belongs to the later period. No day-based proration and no double allocation of a source.',
+      earnAttribPeriod: 'Selected pay period: {{start}} – {{end}}',
+      earnAttribEmpty:
+        'There are no calendar-month adjustments relevant to this custom pay period.',
+      earnAttribPending:
+        '{{count}} source allocations are missing or their source changed. No verified period total is shown.',
+      earnAttribVerified:
+        'Explicitly allocated bonus/deduction/correction subtotals, by currency:',
+      earnAttribSource: '{{kind}} · source amount {{amount}}',
+      earnAttribKind_bonus: 'Bonus',
+      earnAttribKind_deduction: 'Deduction',
+      earnAttribKind_correction: 'Correction',
+      earnAttribPeriods:
+        'Two eligible custom periods for this source: {{earlier}} and {{later}}',
+      earnAttribSavedAmounts:
+        'Earlier {{earlier}} · later {{later}} · selected period {{current}}',
+      earnAttribEarlierAmount:
+        'Amount assigned to earlier custom period {{period}} ({{currency}})',
+      earnAttribRemainder:
+        'The rest is assigned to later custom period {{period}}. For a negative deduction or correction, you may enter its positive magnitude; the app preserves the original negative sign.',
+      earnAttribReason: 'Allocation or correction reason (3–160 characters)',
+      earnAttribReasonPlaceholder:
+        'Example: I verified which custom period this November bonus belongs to',
+      earnAttribRevision: 'Source allocation revision: {{revision}}',
+      earnAttribSave: 'Save versioned allocation across two periods',
+      earnAttribSaved: 'Allocation saved; both custom periods share the same source split.',
+      earnAttribInvalid: 'Invalid, inconsistent or stale allocation',
+      earnAttribStale:
+        'The calendar-month source record changed. Previous allocation cannot be used; verify the source.',
+      earnAttribSeparate:
+        'This total contains only explicitly allocated calendar-month adjustments. The original monthly report still shows the SAME source records: NEVER add monthly and custom reports together. Not yet added to fixed or hourly base earnings. This is user-reported pre-tax information, not an official payslip.',
       earnFixedOtTitle: 'Custom period: logged overtime on top of fixed base',
       earnFixedOtExplanation:
         'First declare the fixed salary base. You can then explicitly authorize adding overtime only for recorded actual work above your own selected threshold, using the saved profile overtime hourly rate and multiplier. Regular hours are not paid a second time.',
