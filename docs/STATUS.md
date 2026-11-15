@@ -54,7 +54,7 @@
 
 **Branch:** `feat/zoned-shift-elapsed-time`  
 **PR:** [#7](https://github.com/hilmiguner/vardiyum/pull/7)  
-**Kod yazıldı; merge durumu yeni oturumda doğrulanacak.**
+**Main'e merge edildi:** [PR #7](https://github.com/hilmiguner/vardiyum/pull/7), merge commit `5d4e1f9fd5f0bdffdefe8b1281c74da4e25760fb`.
 
 - [x] IANA saat dilimi ve vardiya sınırlarından UTC `startInstantUtc` / `endInstantUtc`.
 - [x] `wallMinutes` ile `elapsedSeconds` ayrımı; planlanan mola/ücret hesabı ile karıştırılmıyor.
@@ -62,8 +62,9 @@
 - [x] Bugün ve aylık takvimde süre karşılaştırması veya uyarı; TR/EN.
 - [x] ABD, Avrupa/İstanbul, Avustralya Sydney/Lord Howe, Nepal, Samoa, yıl sonu, 24 saat, gap/fold örnekleri dahil 16 ek otomatik test senaryosu.
 - [x] PR head commit `f233ec544a4ccadfdc7d839e2f836c21c42132c6`: [Actions #43702389590](https://github.com/hilmiguner/vardiyum/actions/runs/43702389590) **SUCCESS** (npm ci, Expo check, format, lint, typecheck, Node test, Android/iOS JS export).
-- [ ] PR #7 main'e merge ve merge sonrası main CI onayı.
+- [x] **PR #7 squash merge edildi:** main SHA `5d4e1f9fd5f0bdffdefe8b1281c74da4e25760fb`.
+- [x] **Merge sonrası main CI:** [Actions #43702715736](https://github.com/hilmiguner/vardiyum/actions/runs/43702715736) SUCCESS.
 - [ ] Android/iOS **native** çalıştırma ve timezone/ICU doğrulaması: kullanıcı isteğiyle sonraya bırakıldı, [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) açık.
-- [ ] Fold kararını gerçek kullanıcı tarihi/mesai kaydıyla kalıcı bağlama; resmî maaş motoru henüz yok.
+- [ ] Fold kararını gerçek kullanıcı tarihi/mesai kaydıyla kalıcı bağlama: [Issue #8](https://github.com/hilmiguner/vardiyum/issues/8). Resmî maaş motoru henüz yok.
 
-**Takip:** [Issue #6](https://github.com/hilmiguner/vardiyum/issues/6) için PR #7 sonrası durum kaydedilecek. Bu iş bitse bile Faz 2 / [Issue #4](https://github.com/hilmiguner/vardiyum/issues/4) diğer açık maddeler nedeniyle devam eder.
+**Takip:** [Issue #6](https://github.com/hilmiguner/vardiyum/issues/6) çekirdek UTC/DST çözümleyicisi tamamlandı; kalıcı fold tercihi ve gerçek mesai kaydı [Issue #8](https://github.com/hilmiguner/vardiyum/issues/8) üzerinden takip edilecek. Bu iş bitse bile Faz 2 / [Issue #4](https://github.com/hilmiguner/vardiyum/issues/4) diğer açık maddeler nedeniyle devam eder.

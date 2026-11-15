@@ -50,9 +50,9 @@
 
 ## 2026-11-15 — Issue #6 / PR #7 devralma
 
-- **PR:** [#7](https://github.com/hilmiguner/vardiyum/pull/7), branch `feat/zoned-shift-elapsed-time`. Başlangıç kodu: `src/domain/zoned-shift-time.ts`, UI: `src/components/scheduled-duration.tsx`, testler: `tests/zoned-shift-time.test.mjs`.
+- **PR:** [#7](https://github.com/hilmiguner/vardiyum/pull/7), **main'e squash merge edildi**; geliştirme branch'i `feat/zoned-shift-elapsed-time`. Başlangıç kodu: `src/domain/zoned-shift-time.ts`, UI: `src/components/scheduled-duration.tsx`, testler: `tests/zoned-shift-time.test.mjs`.
 - **CI:** [Actions #43702389590](https://github.com/hilmiguner/vardiyum/actions/runs/43702389590) `SUCCESS` — Expo check, format, lint, tsc, Node testleri, Android+iOS JS export.
 - **Kural:** Belirsiz/olmayan saatlerde varsayılan `reject`; `earlier/later` sadece açıkça verilirse. Kesin UTC aralığı varsa bile `elapsedSeconds` **fiilî çalışma veya bordro süresi değil**, yalnızca planlı aralığın gerçek geçen süresidir; mola otomatik düşülmez.
 - **Seyahat:** Kaydedilmiş program IANA zaman dilimi sabit kalır; cihazın geçerli bölgesi hesaplamayı sessizce değiştirmez.
 - **Açık:** Native cihazlarda Intl/tzdb farklılıkları, fold kararlarının kalıcı kaydı ve gerçek mesai/bordro bağlama. Kullanıcı, cihaz testlerinin sonraya kalmasını açıkça istedi. [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) açık.
-- **Sıradaki:** PR #7 merged mi ve main CI sonucu ne kontrol et; main üzerinden STATUS/HANDOFF'u güncelle. Ardından Faz 2 kalan serbest vardiya sürümlemesi/fiilî çalışma kaydı veya Faz 3 rutin motoru için yeni Issue/PR seç. Asla native cihaz testini yapılmış olarak gösterme.
+- **PR #7 merged:** main commit `5d4e1f9fd5f0bdffdefe8b1281c74da4e25760fb`, main [Actions #43702715736](https://github.com/hilmiguner/vardiyum/actions/runs/43702715736) SUCCESS. Sıradaki teknik konu [Issue #8](https://github.com/hilmiguner/vardiyum/issues/8): kalıcı fold tercihi, fiilî çalışma/saat dilimi seçimleri. Faz 2 şablon sürümleme ve Faz 3 rutin motoru da açık. Asla native cihaz testini yapılmış olarak gösterme.

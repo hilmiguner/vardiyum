@@ -39,8 +39,9 @@
 - [x] Döngüden bağımsız tek gün vardiya/izin override ve geri alma PR #5.
 - [ ] Gerçekleşmiş mesai ayrı kayıt akışı (planlanan vardiyadan bağımsız).
 - [x] Döngü indeksi ve takvim günü için DST / IANA tarih senaryoları test edildi.
-- [x] IANA saat dilimiyle gerçek UTC aralığı ve geçen saniye; DST gap/fold fail-closed kuralı, otomatik testler **PR #7**.
-- [ ] Gerçek cihaz ICU/tzdb sınır durumları, kullanıcı fold seçimlerinin kalıcı tutulması ve fiilî çalışma kayıtlarıyla bağlama: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ve sonraki Faz 2 işleri.
+- [x] IANA saat dilimiyle gerçek UTC aralığı ve geçen saniye; DST gap/fold fail-closed kuralı, otomatik testler **PR #7 main'e merge edildi** (`5d4e1f9f`), main CI [#43702715736](https://github.com/hilmiguner/vardiyum/actions/runs/43702715736) SUCCESS.
+- [ ] Gerçek cihaz ICU/tzdb sınır durumları: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) (kullanıcı isteğiyle ertelendi).
+- [ ] Kullanıcı fold seçimlerinin kalıcı tutulması, saat dilimi değişim UX'i ve fiilî çalışma kayıtlarıyla bağlama: [Issue #8](https://github.com/hilmiguner/vardiyum/issues/8).
 - [x] Aylık takvim, ay gezinme, gün seçimi ve günlük override PR #5.
 - [ ] İleri düzey filtreleme.
 - [x] SQLite v1→v2 ve eski kayıt koruma Node testleri PR #5.
