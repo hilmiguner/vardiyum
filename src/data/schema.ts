@@ -2,7 +2,7 @@
  * Versioned SQLite schema. Static SQL only: never interpolate user-controlled data.
  * Schema versions are tracked by PRAGMA user_version.
  */
-export const SCHEMA_VERSION = 7;
+export const SCHEMA_VERSION = 8;
 
 export const INITIAL_SCHEMA = `
 CREATE TABLE IF NOT EXISTS shift_templates (
@@ -253,4 +253,43 @@ CREATE TABLE earnings_month_break_allocation_events (
 CREATE INDEX idx_earnings_break_event_work
   ON earnings_month_break_allocation_events(work_id, revision);
 PRAGMA user_version = 7;
+`;
+/**
+ * V8: original month-effective profile is immutable revision 1; all corrections
+ * are complete append-only snapshots. Triggers reject updates and deletions.
+ * Historical reports can be recalculated with explicit revision identity, but
+ * a recalculation is not a frozen screenshot of earlier work/adjustment data.
+ */
+export const MIGRATION_8_SQL = `
+CREATE TABLE earnings_profile_revisions (
+  profile_id TEXT NOT NULL REFERENCES earnings_profiles(id) ON DELETE RESTRICT,
+  revision INTEGER NOT NULL CHECK(revision >= 2),
+  effective_from TEXT NOT NULL,
+  model TEXT NOT NULL CHECK(model IN ('hourly','monthly_fixed')),
+  currency TEXT NOT NULL CHECK(currency IN ('TRY','USD','EUR','GBP')),
+  base_minor_units INTEGER NOT NULL CHECK(base_minor_units > 0),
+  overtime_hourly_minor_units INTEGER NOT NULL CHECK(overtime_hourly_minor_units >= 0),
+  overtime_after_minutes INTEGER,
+  overtime_multiplier_numerator INTEGER NOT NULL,
+  overtime_multiplier_denominator INTEGER NOT NULL,
+  reason TEXT NOT NULL CHECK(length(trim(reason)) BETWEEN 3 AND 160),
+  recorded_at TEXT NOT NULL,
+  source TEXT NOT NULL DEFAULT 'user_entered' CHECK(source = 'user_entered'),
+  PRIMARY KEY(profile_id, revision),
+  CHECK(overtime_after_minutes IS NULL OR
+    (overtime_after_minutes >= 0 AND overtime_after_minutes <= 44640)),
+  CHECK(overtime_multiplier_numerator >= overtime_multiplier_denominator
+    AND overtime_multiplier_denominator >= 1),
+  CHECK(overtime_after_minutes IS NULL OR model <> 'monthly_fixed' OR
+    overtime_hourly_minor_units > 0)
+);
+CREATE INDEX idx_pay_profile_revision_effective
+  ON earnings_profile_revisions(effective_from, profile_id, revision);
+CREATE TRIGGER earnings_profile_revision_no_update
+  BEFORE UPDATE ON earnings_profile_revisions
+  BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_PROFILE_REVISION'); END;
+CREATE TRIGGER earnings_profile_revision_no_delete
+  BEFORE DELETE ON earnings_profile_revisions
+  BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_PROFILE_REVISION'); END;
+PRAGMA user_version = 8;
 `;
