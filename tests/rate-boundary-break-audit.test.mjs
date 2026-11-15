@@ -330,9 +330,12 @@ test('source IANA rate boundary is Kathmandu offset, not the schedule preview zo
 });
 
 test('profile transitions in other currencies and fixed salary do not permit saving a break audit', async () => {
-  const db=await fixture();
+  const db=createDb();
   try {
-    db.prepare("UPDATE earnings_profiles SET currency='USD' WHERE id='new'").run();
+    await writePayPeriodStartDay(store(db),26);
+    addProfile(db,oct);
+    addProfile(db,{...nov,currency:'USD'});
+    addWork(db);
     await assert.rejects(
       ()=>append(db,10,0,STAMP_1),
       /RATE_BREAK_PROFILES_UNSUPPORTED/,
