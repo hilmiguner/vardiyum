@@ -1,7 +1,5 @@
 import { getDatabase } from './database';
-import {
-  loadCustomHourlyEstimateFromStore,
-} from '../domain/custom-hourly-work-store';
+import { loadCustomHourlyEstimateFromStore } from '../domain/custom-hourly-work-store';
 import type { CustomHourlyEstimate } from '../domain/custom-hourly-work-estimate';
 
 /** All custom-period pay reads share one exclusive, consistent SQLite snapshot. */
