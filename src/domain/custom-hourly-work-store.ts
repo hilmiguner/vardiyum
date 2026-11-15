@@ -1,20 +1,20 @@
-import { customBreakSourcePeriods } from './custom-pay-break-audit';
+import { customBreakSourcePeriods } from './custom-pay-break-audit.ts';
 import {
   CUSTOM_BREAK_WORK_SQL,
   readCustomPayBreakHistory,
   workFromCustomBreakRow,
   type CustomBreakWorkRow,
-} from './custom-pay-break-store';
+} from './custom-pay-break-store.ts';
 import {
   estimateCustomHourlyWork,
   type CustomHourlyEstimate,
   type CustomHourlySource,
-} from './custom-hourly-work-estimate';
-import { loadCustomPayProfilePreviewFromStore } from './custom-pay-profile-preview-store';
-import { validateEarningsWork } from './earnings-engine';
-import { customPayPeriodBounds, payPeriodForDate } from './pay-period';
-import { readPayPeriodStartDay } from './pay-period-settings';
-import { calendarDateInZone } from './shift-engine';
+} from './custom-hourly-work-estimate.ts';
+import { loadCustomPayProfilePreviewFromStore } from './custom-pay-profile-preview-store.ts';
+import { validateEarningsWork } from './earnings-engine.ts';
+import { customPayPeriodBounds, payPeriodForDate } from './pay-period.ts';
+import { readPayPeriodStartDay } from './pay-period-settings.ts';
+import { calendarDateInZone } from './shift-engine.ts';
 
 export interface CustomHourlyReportStore {
   getFirstAsync<T>(sql: string, ...params: string[]): Promise<T | null>;
