@@ -193,3 +193,20 @@
 - [ ] Gerçek Android/iOS cihazda AES/file picker/Share sheet/anahtar UI/SQLite tutarlı kopya ve restore testleri kullanıcı tercihiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.
 
 **Sıradaki:** [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) — temiz hedefte atomik, onaylı ve veri kayıpsız SQLite restore/rollback; [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık kalır. Native AES/Share/SQLite veri geri dönüşü [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.
+
+## Issue #20 / PR #21 — Temiz kurulumda atomik restore (kodlandı, native cihaz doğrulanmadı)
+
+**PR:** [#21](https://github.com/hilmiguner/vardiyum/pull/21) · `feat/clean-target-atomic-backup-restore`  
+**Kod CI:** [#43724855020](https://github.com/hilmiguner/vardiyum/actions/runs/43724855020) SUCCESS (**127/127 Node testi**, Prettier/ESLint/TS, Expo paket check, Android/iOS **JS** export).
+
+- [x] Kaynak şifreli dosya **AES-GCM/AAD, SHA-256, SQLite v8 18 tablo trusted schema** ile doğrulanmadan geri yükleme adayı değil.
+- [x] UI: önce read-only tablo/row önizlemesi, sonra `RESTORE` metni ve ikinci risk onayı; TR/EN *deneysel/native test edilmedi* ibaresi.
+- [x] Tek transaction içinde hedef `PRAGMA user_version=8`, exact 18 tablo, dört **değişmemiş** seed şablonu ve diğer tabloların **boşluğu** kontrol edilir. Dolu DB ve özelleştirilmiş şablonlar **reddedilir**.
+- [x] Transaction: statik v8 tablo/kolon INSERT, readback exact, `PRAGMA foreign_key_check` + `PRAGMA integrity_check`, hata durumunda rollback.
+- [x] Sistem bildirim opt-in'i restore sırasında **0** olarak resetlenir; ikinci restore'u önlemek için marker; source user data geri kalan birebir.
+- [x] SQLite v8 Node regresyonu: dolu hedef reddi, seed özelleştirme reddi, mükerrer restore, fault injection/UNIQUE rollback, FK OFF bağlantısında FK postcheck rollback, schema mismatch.
+- [ ] PR #21 belge commit sonrası merge ve main CI doğrulanacak.
+- [ ] **Gerçek native Android/iOS cihaz testleri yapılmadı:** kayıt kalıcılığı, AES interoperability, düşük disk, crash/relaunch, SQLite exclusive tx, Share/Picker ve OS bildirimleri [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelenmiş. [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) bu kabul olmadan **kapatılmayacak**.
+- [ ] Mevcut dolu DB ile merge/overwrite veya özel maaş dönemi yok; [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık.
+
+**Sıradaki:** PR #21 merge/main CI; gerçek cihaz kabulü için Issue #2/#20 ve sonraki MVP seçenekleri. Restore tam cihaz kanıtı olmadığından 'cihaz kurtarma doğrulandı' denmeyecek.

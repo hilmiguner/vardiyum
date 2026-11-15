@@ -130,3 +130,16 @@
 - [ ] **Gerçek atomik restore / temiz hedef üzerinden tüm kullanıcı verilerini geri getirme henüz mevcut değil**; ayrı tasarım, geliştirme ve QA ister.
 
 **Durum:** Kullanıcı gerçek cihaz QA'yı [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de erteledi; JS bundle AES native çalışma, dosya paylaşımları veya data restore kanıtı değildir.
+
+## Issue #20 / PR #21 — Native temiz kurulum restore kabulü (ertelendi)
+
+- [ ] Gerçek iOS ve Android'de birinci cihazdan v8 AES-GCM .vdb dosyası oluştur, 64-char recovery key'i ayrı tut, dosyayı ikinci temiz cihazda DocumentPicker'dan al, doğru/yanlış key ve bozuk dosyayı doğrula.
+- [ ] Önizleme hiçbir SQLite yazımı yapmamalı. `RESTORE` metni yazılmadan veya ikinci Alert onaylanmadan restore gerçekleşmemeli.
+- [ ] Gerçek temiz hedef: sadece 4 dokunulmamış seed şablonu + diğer 17 tablo boş; kayıplı güncelleme olmadan 18 tablo yeniden yükleniyor; profil revizyonu/UTC sessions/rutin/mola event satırları korunuyor.
+- [ ] İkinci import, değiştirilmiş seed template, geçmiş çalışma/rutin, var olan `app_settings` içeren cihazda işlemi reddet, hedef verileri başlangıçla karşılaştır.
+- [ ] Kesilen yazma, düşük disk/space, uygulamayı zorla öldürme/cihaz yeniden başlatma sırasında rollback veya tam restore; SQLite `PRAGMA integrity_check` ve `foreign_key_check`, WAL dosyaları ile tekrar açılış.
+- [ ] `routine_reminders_opted_in`=0 olmalı, OS bildirim izni/eski bildirim trigger'ları otomatik etkinleşmemeli; kullanıcı yeniden bilinçli onay vermeli.
+- [ ] TR/EN, TalkBack/VoiceOver, büyük font, uzun key, açılan/kapanan ekranlarda secret clear, offline ve cache lifecycle QA.
+- [ ] Çok büyük >4M/8M backup, unsupported v7/v9, FK bozuk tarihsel snapshot, farklı IANA timezone ve kopya profil verisi fail-closed.
+
+**Durum:** kullanıcı isteğiyle gerçek cihaz QA [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi. JS export/Node SQLite testleri **native restore kanıtı değildir**; [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) açık.

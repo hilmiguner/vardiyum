@@ -8,27 +8,34 @@ import {
   createBackupSnapshot,
   getCurrentSchemaForReadOnlyPreview,
 } from '../data/backup-repository';
-import { createEncryptedBackup, verifyEncryptedBackup } from '../services/encrypted-backup';
+import { createEncryptedBackup, openEncryptedBackup } from '../services/encrypted-backup';
+import { commitCleanInstallRestore } from '../data/backup-restore-repository';
+import { useAppState } from '../state/app-state';
 import {
   pickEncryptedFile,
   shareEncryptedFile,
   writeEncryptedFileToCache,
 } from '../services/encrypted-backup-files';
-import type { BackupPreview } from '../domain/backup-archive';
+import type { BackupPreview, BackupSnapshot } from '../domain/backup-archive';
 
 /**
- * No auto-share, key logging or restore writes. The key is never in the file.
- * This is an opt-in encrypted export and authenticated, read-only import preview.
+ * No auto-share or key logging. Restore only after authenticated preview,
+ * explicit typed confirmation, pristine-target checks and atomic transaction.
  */
 export function EncryptedBackupPanel() {
   const { t } = useTranslation();
   const c = usePalette();
+  const { reload, refreshReminders } = useAppState();
   const [fileUri, setFileUri] = useState<string | null>(null);
   const [recoveryKey, setRecoveryKey] = useState<string | null>(null);
   const [keySaved, setKeySaved] = useState(false);
   const [selectedEncrypted, setSelectedEncrypted] = useState<string | null>(null);
   const [enteredKey, setEnteredKey] = useState('');
   const [preview, setPreview] = useState<BackupPreview | null>(null);
+  const [authenticatedSnapshot, setAuthenticatedSnapshot] = useState<BackupSnapshot | null>(
+    null,
+  );
+  const [restoreText, setRestoreText] = useState('');
   const [busy, setBusy] = useState(false);
 
   async function generate() {
@@ -64,6 +71,9 @@ export function EncryptedBackupPanel() {
   async function selectFile() {
     setBusy(true);
     setPreview(null);
+    setAuthenticatedSnapshot(null);
+    setRestoreText('');
+    setEnteredKey('');
     setSelectedEncrypted(null);
     try {
       const encrypted = await pickEncryptedFile();
@@ -79,10 +89,13 @@ export function EncryptedBackupPanel() {
     if (!selectedEncrypted || !enteredKey.trim() || busy) return;
     setBusy(true);
     setPreview(null);
+    setAuthenticatedSnapshot(null);
+    setRestoreText('');
     try {
       const localSchema = await getCurrentSchemaForReadOnlyPreview();
-      const result = await verifyEncryptedBackup(selectedEncrypted, enteredKey, localSchema);
-      setPreview(result);
+      const result = await openEncryptedBackup(selectedEncrypted, enteredKey, localSchema);
+      setPreview(result.preview);
+      setAuthenticatedSnapshot(result.snapshot);
       // The typed key should not remain displayed after validation.
       setEnteredKey('');
     } catch (reason) {
@@ -90,6 +103,44 @@ export function EncryptedBackupPanel() {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function executeRestore() {
+    if (!authenticatedSnapshot || busy) return;
+    setBusy(true);
+    try {
+      const receipt = await commitCleanInstallRestore(authenticatedSnapshot);
+      setAuthenticatedSnapshot(null);
+      setSelectedEncrypted(null);
+      setPreview(null);
+      setEnteredKey('');
+      setRestoreText('');
+      await reload();
+      refreshReminders();
+      Alert.alert(
+        t('backupRestoreSuccess'),
+        t('backupRestoreRows', {
+          count: receipt.restoredRows,
+        }),
+      );
+    } catch (reason) {
+      const message = reason instanceof Error ? reason.message : 'RESTORE_UNAVAILABLE';
+      Alert.alert(t('backupRestoreRejected'), message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function confirmRestore() {
+    if (!authenticatedSnapshot || restoreText.trim() !== 'RESTORE' || busy) return;
+    Alert.alert(t('backupRestoreConfirmTitle'), t('backupRestoreConfirmBody'), [
+      { text: t('cancel'), style: 'cancel' },
+      {
+        text: t('backupRestoreConfirmAction'),
+        style: 'destructive',
+        onPress: () => void executeRestore(),
+      },
+    ]);
   }
 
   return (
@@ -188,7 +239,35 @@ export function EncryptedBackupPanel() {
                 {item.table}: {item.count}
               </Text>
             ))}
-            <Muted>{t('backupNoRestore')}</Muted>
+            <Muted>{t('backupRestoreLimitedWarning')}</Muted>
+            {authenticatedSnapshot ? (
+              <View style={{ gap: 9, paddingTop: 12 }}>
+                <Heading>{t('backupRestoreTitle')}</Heading>
+                <Muted>{t('backupRestoreNotice')}</Muted>
+                <TextInput
+                  accessibilityLabel={t('backupRestoreTypeToConfirm')}
+                  value={restoreText}
+                  onChangeText={setRestoreText}
+                  placeholder="RESTORE"
+                  maxLength={12}
+                  autoCorrect={false}
+                  autoCapitalize="characters"
+                  placeholderTextColor={c.muted}
+                  style={{
+                    borderWidth: 1,
+                    borderColor: c.border,
+                    color: c.text,
+                    borderRadius: 10,
+                    padding: 12,
+                  }}
+                />
+                <Action
+                  label={t('backupRestoreConfirmAction')}
+                  onPress={confirmRestore}
+                  disabled={busy || restoreText.trim() !== 'RESTORE'}
+                />
+              </View>
+            ) : null}
           </View>
         ) : null}
       </Panel>

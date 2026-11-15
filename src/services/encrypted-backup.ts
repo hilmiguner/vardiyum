@@ -43,8 +43,8 @@ export async function createEncryptedBackup(
   };
 }
 
-/** Authenticated preview only: there is deliberately NO restore/write path. */
-export async function verifyEncryptedBackup(
+/** Authenticated plaintext stays in memory, never written to the file/cache. */
+export async function openEncryptedBackup(
   ciphertextFileContents: string,
   recoveryKeyInput: string,
   expectedColumns: ExpectedColumns,
@@ -56,9 +56,19 @@ export async function verifyEncryptedBackup(
     const sealed = AESSealedData.fromCombined(encoded);
     const bytes = await aesDecryptAsync(sealed, key, { output: 'bytes', additionalData: AAD });
     if (!(bytes instanceof Uint8Array)) throw new Error('BACKUP_DECRYPTION_FAILED');
-    return (await readAuthenticatedPayload(utf8String(bytes), expectedColumns, sha256)).preview;
+    return readAuthenticatedPayload(utf8String(bytes), expectedColumns, sha256);
   } catch {
     // Never include raw content or the entered secret in exception messages.
     throw new Error('BACKUP_DECRYPTION_OR_VALIDATION_FAILED');
   }
+}
+
+/** Compatibility with earlier verification-only consumers. */
+export async function verifyEncryptedBackup(
+  ciphertextFileContents: string,
+  recoveryKeyInput: string,
+  expectedColumns: ExpectedColumns,
+) {
+  return (await openEncryptedBackup(ciphertextFileContents, recoveryKeyInput, expectedColumns))
+    .preview;
 }

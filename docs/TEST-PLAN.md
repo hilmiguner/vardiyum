@@ -131,3 +131,12 @@
 - Node native crypto ile **AES-256-GCM** nonce+ciphertext+tag formatının round-trip'i, yanlış key ve değiştirilmiş ciphertext/AAD doğrulamasının fail olması; Expo native kripto adapteri Node testi **değildir**.
 - Dosya doğrulandıktan sonra `BackupPreview.canRestore=false` garanti; hiçbir domain import/writer API'ı sunulmaz. Yanlış-key ve bozuk dosya gerçek cihaz testi **henüz yapılmadı**.
 - **CI:** [#43721507257](https://github.com/hilmiguner/vardiyum/actions/runs/43721507257) SUCCESS, **119/119 Node test**, npm ci/Expo/Prettier/ESLint/TypeScript, Android+iOS JS export.
+
+## Issue #20 / PR #21 — Atomik temiz hedef restore regresyonu
+
+- `tests/backup-restore.test.mjs`: gerçek SQLite v1–v8 schema üzerinde **18 tablo roundtrip**, gerçek UTC çalışma, rutin completion/event, legacy kayıt, `earnings_profile_revisions` v1/v2, month break audit, app_settings. Kaynakla satır-satır eşleşme, sadece reminder consent 0 reset + restore marker farkı.
+- **Temiz hedef kabulü:** tam dört ilk migration seed template, diğer 17 tablo boş. Mevcut kullanıcı rutin kaydı, değiştirilmiş seed template, app_settings opt-out ve önceki restore marker hepsi restore öncesi reddedilir.
+- **Fault injection:** birkaç INSERT sonrası hata → tam rollback, orijinal dört template/snapshot birebir korunur; PK çakışması → rollback; FK enforcement **OFF** olduğunda orphan import → explicit `PRAGMA foreign_key_check` ile commit öncesi hata/rollback; schema/SQL identifier mismatch → DB mutasyon yok.
+- Uygulama UI iki ayrı kullanıcı onayını, doğrulanmış payload dışında restore'a girmemeyi; crypto anahtarının app_settings/log/cache'e alınmamasını şart koşar.
+- [CI #43724855020](https://github.com/hilmiguner/vardiyum/actions/runs/43724855020) **127/127 Node PASS**, Expo dep/prettier/ESLint/TypeScript, Android+iOS JS export.
+- **Native backlog:** gerçek iOS/Android AES file Share/Picker, SQLite exclusive txn/reboot/low disk/process-kill ve bildirim izni tekrar onayı henüz yapılmadı. [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) / [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2).
