@@ -2,7 +2,7 @@
  * Versioned SQLite schema. Static SQL only: never interpolate user-controlled data.
  * Schema versions are tracked by PRAGMA user_version.
  */
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export const INITIAL_SCHEMA = `
 CREATE TABLE IF NOT EXISTS shift_templates (
@@ -72,4 +72,20 @@ CREATE TABLE IF NOT EXISTS app_settings (
 CREATE INDEX IF NOT EXISTS idx_work_entries_date ON work_entries(local_date);
 CREATE INDEX IF NOT EXISTS idx_completions_date ON task_completions(local_date);
 PRAGMA user_version = 1;
+`;
+
+/**
+ * V2 is additive: v1 rows and existing pattern references remain intact.
+ * The four defaults are seeded only when their IDs do not already exist.
+ */
+export const MIGRATION_2_SQL = `
+ALTER TABLE shift_templates ADD COLUMN break_minutes INTEGER NOT NULL DEFAULT 0
+  CHECK(break_minutes >= 0);
+INSERT OR IGNORE INTO shift_templates (id, name, color, starts_at_local, ends_at_local, end_day_offset, is_rest_day, break_minutes)
+VALUES
+  ('morning', 'Sabah', '#56A3FF', '07:00', '15:00', 0, 0, 0),
+  ('evening', 'Akşam', '#E8A86E', '15:00', '23:00', 0, 0, 0),
+  ('night', 'Gece', '#A18CF6', '23:00', '07:00', 1, 0, 0),
+  ('off', 'İzin', '#5EC59C', NULL, NULL, 0, 1, 0);
+PRAGMA user_version = 2;
 `;

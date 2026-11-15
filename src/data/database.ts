@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-import { INITIAL_SCHEMA, SCHEMA_VERSION } from './schema';
+import { INITIAL_SCHEMA, MIGRATION_2_SQL, SCHEMA_VERSION } from './schema';
 
 let databasePromise: Promise<SQLite.SQLiteDatabase> | null = null;
 
@@ -10,15 +10,17 @@ async function openAndMigrate(): Promise<SQLite.SQLiteDatabase> {
   const row = await db.getFirstAsync<{ user_version: number }>('PRAGMA user_version');
   const version = row?.user_version ?? 0;
   if (version > SCHEMA_VERSION) throw new Error('UNSUPPORTED_DATABASE_VERSION');
-  if (version === 0) {
-    // These statements and the migration version change are all-or-nothing.
+  // A migration must either complete with its version stamp or roll back.
+  const apply = async (sql: string) => {
     try {
-      await db.execAsync(`BEGIN IMMEDIATE; ${INITIAL_SCHEMA} COMMIT;`);
+      await db.execAsync(`BEGIN IMMEDIATE; ${sql} COMMIT;`);
     } catch (error) {
       await db.execAsync('ROLLBACK;').catch(() => undefined);
       throw error;
     }
-  }
+  };
+  if (version === 0) await apply(INITIAL_SCHEMA);
+  if (version < 2) await apply(MIGRATION_2_SQL);
   return db;
 }
 
