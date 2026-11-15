@@ -65,9 +65,10 @@ export async function openEncryptedBackup(
 
 /** Compatibility with earlier verification-only consumers. */
 export async function verifyEncryptedBackup(
-  ciphertextFileContents:string,
-  recoveryKeyInput:string,
-  expectedColumns:ExpectedColumns,
+  ciphertextFileContents: string,
+  recoveryKeyInput: string,
+  expectedColumns: ExpectedColumns,
 ) {
-  return (await openEncryptedBackup(ciphertextFileContents,recoveryKeyInput,expectedColumns)).preview;
+  return (await openEncryptedBackup(ciphertextFileContents, recoveryKeyInput, expectedColumns))
+    .preview;
 }

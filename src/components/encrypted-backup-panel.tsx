@@ -32,7 +32,9 @@ export function EncryptedBackupPanel() {
   const [selectedEncrypted, setSelectedEncrypted] = useState<string | null>(null);
   const [enteredKey, setEnteredKey] = useState('');
   const [preview, setPreview] = useState<BackupPreview | null>(null);
-  const [authenticatedSnapshot, setAuthenticatedSnapshot] = useState<BackupSnapshot | null>(null);
+  const [authenticatedSnapshot, setAuthenticatedSnapshot] = useState<BackupSnapshot | null>(
+    null,
+  );
   const [restoreText, setRestoreText] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -115,9 +117,12 @@ export function EncryptedBackupPanel() {
       setRestoreText('');
       await reload();
       refreshReminders();
-      Alert.alert(t('backupRestoreSuccess'), t('backupRestoreRows', {
-        count: receipt.restoredRows,
-      }));
+      Alert.alert(
+        t('backupRestoreSuccess'),
+        t('backupRestoreRows', {
+          count: receipt.restoredRows,
+        }),
+      );
     } catch (reason) {
       const message = reason instanceof Error ? reason.message : 'RESTORE_UNAVAILABLE';
       Alert.alert(t('backupRestoreRejected'), message);
@@ -130,8 +135,11 @@ export function EncryptedBackupPanel() {
     if (!authenticatedSnapshot || restoreText.trim() !== 'RESTORE' || busy) return;
     Alert.alert(t('backupRestoreConfirmTitle'), t('backupRestoreConfirmBody'), [
       { text: t('cancel'), style: 'cancel' },
-      { text: t('backupRestoreConfirmAction'), style: 'destructive',
-        onPress: () => void executeRestore() },
+      {
+        text: t('backupRestoreConfirmAction'),
+        style: 'destructive',
+        onPress: () => void executeRestore(),
+      },
     ]);
   }
 
@@ -245,8 +253,13 @@ export function EncryptedBackupPanel() {
                   autoCorrect={false}
                   autoCapitalize="characters"
                   placeholderTextColor={c.muted}
-                  style={{ borderWidth: 1, borderColor: c.border, color: c.text,
-                    borderRadius: 10, padding: 12 }}
+                  style={{
+                    borderWidth: 1,
+                    borderColor: c.border,
+                    color: c.text,
+                    borderRadius: 10,
+                    padding: 12,
+                  }}
                 />
                 <Action
                   label={t('backupRestoreConfirmAction')}
