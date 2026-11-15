@@ -99,3 +99,10 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 - [ ] CI onayı ve PR merge doğrulaması; yeni branch kodu otomatik olarak main değildir.
 - [ ] Persisted seçim, migration ve AES v8 backup/restore uyumu, karışık ücret profili politikası, sabit özel dönem ücreti, dönem bazlı adjustments, TR/EN ekran ve CSV/JSON özel dönem raporu.
 - [ ] Native cihaz kabulü: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2), restore [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20). Issue #22 bu adımda kapanmaz.
+
+## 2026-11-15 — Issue #22 uygulama tercihi ve v8 yedek uyumu
+
+- [x] [PR #23](https://github.com/hilmiguner/vardiyum/pull/23) domain foundation main; [CI #43728968056](https://github.com/hilmiguner/vardiyum/actions/runs/43728968056) SUCCESS.
+- [ ] `feat/pay-period-persisted-setting`: şemayı v8'de tutarak `app_settings` içinde kayıtlı 1–28 başlangıç günü, TR/EN ayar ekranı ve 26→25 tarih önizlemesi, bozuk değerde fail closed, Node SQLite schema/backup uyumluluk testleri. PR / CI / merge bekleniyor.
+- [ ] Özel dönemi etkin Kazanç raporuna bağlamak, karşılıklı dönem mola/audit, effective profile geçiş politikası, sabit ücret ve manuel düzeltme kararı, CSV/JSON gerçek dönem raporu; çalışma/dönem çifte sayımı olmaz.
+- [ ] Native QA halen [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) / [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20).
