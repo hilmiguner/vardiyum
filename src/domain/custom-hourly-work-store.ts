@@ -14,6 +14,8 @@ import { loadCustomPayProfilePreviewFromStore } from './custom-pay-profile-previ
 import { validateEarningsWork } from './earnings-engine.ts';
 import { customPayPeriodBounds, payPeriodForDate } from './pay-period.ts';
 import { readPayPeriodStartDay } from './pay-period-settings.ts';
+import { rateBreakSource } from './rate-boundary-break-audit.ts';
+import { readRateBreakHistory } from './rate-boundary-break-store.ts';
 import { calendarDateInZone } from './shift-engine.ts';
 
 export interface CustomHourlyReportStore {
@@ -73,6 +75,32 @@ export async function loadCustomHourlyEstimateFromStore(
       });
     } else {
       sources.push({ work });
+    }
+
+    // Only fully-contained work segments may acquire a rate-break audit.
+    // Crossing the pay period as well needs an independent product decision.
+    if (
+      plan.status === 'profile_transition_review_required' &&
+      plan.segments.length === 2 &&
+      work.breakMinutes > 0
+    ) {
+      const rateDate = plan.segments[1].startDate;
+      try {
+        rateBreakSource(work, plan.startDay, periodKey, rateDate);
+        const history = await readRateBreakHistory(
+          store, work, plan.startDay, periodKey, rateDate,
+        );
+        sources[sources.length - 1].rateBreakAudit = history[history.length - 1];
+      } catch (error) {
+        if (
+          !(error instanceof Error) ||
+          ![
+            'RATE_BREAK_REQUIRES_SINGLE_PAY_PERIOD_WORK',
+            'PAY_PERIOD_BREAK_ALLOCATION_REQUIRED',
+            'WORK_NOT_CROSS_RATE_BOUNDARY',
+          ].includes(error.message)
+        ) throw error;
+      }
     }
   }
 
