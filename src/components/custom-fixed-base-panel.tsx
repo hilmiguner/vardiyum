@@ -58,9 +58,8 @@ export function CustomFixedBasePanel({
     }, [periodKey, timeZone, refreshRevision, reload]),
   );
 
-  const eligible = report?.status === 'estimated' || report?.status === 'requires_choice';
   const save = async () => {
-    if (!eligible || !report || !choice) {
+    if (!report || (report.status !== 'estimated' && report.status !== 'requires_choice') || !choice) {
       Alert.alert(t('earnFixedInvalid'));
       return;
     }
@@ -109,7 +108,7 @@ export function CustomFixedBasePanel({
           </Text>
           {report.reasons.map(code => <Muted key={code}>{code}</Muted>)}
         </>
-      ) : eligible ? (
+      ) : report.status === 'estimated' || report.status === 'requires_choice' ? (
         <>
           <Muted>{t('earnFixedPeriod', { start: report.startDate, end: report.endDateInclusive })}</Muted>
           <Muted>{t('earnFixedProfile', {
