@@ -82,12 +82,13 @@ const resources = {
       scheduledTimeZone: 'Vardiyanın saat dilimi: {{timeZone}}',
       nonexistentStart: 'Başlangıç saati bu tarihte mevcut değil. Otomatik hesap yapılmadı.',
       nonexistentEnd: 'Bitiş saati bu tarihte mevcut değil. Otomatik hesap yapılmadı.',
-      ambiguousStart: 'Başlangıç saati iki farklı ana denk geliyor. Seçim yapılmadan hesaplanmaz.',
+      ambiguousStart:
+        'Başlangıç saati iki farklı ana denk geliyor. Seçim yapılmadan hesaplanmaz.',
       ambiguousEnd: 'Bitiş saati iki farklı ana denk geliyor. Seçim yapılmadan hesaplanmaz.',
       invalidElapsedInterval: 'Bitiş, başlangıçtan sonra değil. Süre doğrulanamadı.',
       invalidScheduleTimeZone: 'Saat dilimi veya vardiya saati geçersiz; süre hesaplanamadı.',
-      notActualWorkRecord: 'Bu yalnızca planlanan zamanın karşılığıdır; fiilî çalışma/bordro kaydı değildir.',
-
+      notActualWorkRecord:
+        'Bu yalnızca planlanan zamanın karşılığıdır; fiilî çalışma/bordro kaydı değildir.',
     },
   },
   en: {
@@ -169,9 +170,10 @@ const resources = {
       ambiguousStart: 'Start time occurs twice. Choose an instant before calculating.',
       ambiguousEnd: 'End time occurs twice. Choose an instant before calculating.',
       invalidElapsedInterval: 'End is not after start. Duration cannot be confirmed.',
-      invalidScheduleTimeZone: 'Invalid time zone or shift time; duration cannot be calculated.',
-      notActualWorkRecord: 'Scheduled time only, not an actual work record or a payroll result.',
-
+      invalidScheduleTimeZone:
+        'Invalid time zone or shift time; duration cannot be calculated.',
+      notActualWorkRecord:
+        'Scheduled time only, not an actual work record or a payroll result.',
     },
   },
 };

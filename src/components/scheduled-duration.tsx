@@ -76,9 +76,7 @@ export function ScheduledDuration({ date, template, timeZone }: Props) {
       <Text style={{ color: c.muted, fontSize: 12 }}>
         {t('scheduledTimeZone', { timeZone })}
       </Text>
-      <Text style={{ color: c.muted, fontSize: 12 }}>
-        {t('notActualWorkRecord')}
-      </Text>
+      <Text style={{ color: c.muted, fontSize: 12 }}>{t('notActualWorkRecord')}</Text>
     </View>
   );
 }

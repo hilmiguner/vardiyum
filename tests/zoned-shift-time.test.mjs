@@ -10,9 +10,14 @@ import {
 } from '../src/domain/zoned-shift-time.ts';
 
 const overnight = {
-  id: 'night_custom', name: 'Night', color: '#123ABC',
-  startsAt: '23:00', endsAt: '07:00', endDayOffset: 1,
-  breakMinutes: 30, isRestDay: false,
+  id: 'night_custom',
+  name: 'Night',
+  color: '#123ABC',
+  startsAt: '23:00',
+  endsAt: '07:00',
+  endDayOffset: 1,
+  breakMinutes: 30,
+  isRestDay: false,
 };
 
 test('spring-forward night is 7 actual hours, not 8 wall-clock hours', () => {
@@ -64,16 +69,19 @@ test('fall-back local start is ambiguous and rejected unless explicitly resolved
   const options = possibleUtcInstants('2026-11-01', '01:30', 'America/New_York');
   assert.deepEqual(options, ['2026-11-01T05:30:00.000Z', '2026-11-01T06:30:00.000Z']);
   assert.deepEqual(resolveLocalBoundary('2026-11-01', '01:30', 'America/New_York'), {
-    status: 'ambiguous', optionsUtc: options,
+    status: 'ambiguous',
+    optionsUtc: options,
   });
-  assert.deepEqual(
-    resolveLocalBoundary('2026-11-01', '01:30', 'America/New_York', 'earlier'),
-    { status: 'resolved', instantUtc: options[0], interpretation: 'earlier' },
-  );
-  assert.deepEqual(
-    resolveLocalBoundary('2026-11-01', '01:30', 'America/New_York', 'later'),
-    { status: 'resolved', instantUtc: options[1], interpretation: 'later' },
-  );
+  assert.deepEqual(resolveLocalBoundary('2026-11-01', '01:30', 'America/New_York', 'earlier'), {
+    status: 'resolved',
+    instantUtc: options[0],
+    interpretation: 'earlier',
+  });
+  assert.deepEqual(resolveLocalBoundary('2026-11-01', '01:30', 'America/New_York', 'later'), {
+    status: 'resolved',
+    instantUtc: options[1],
+    interpretation: 'later',
+  });
 });
 
 test('fall-back boundary policy changes elapsed time only with explicit choice', () => {
@@ -83,10 +91,12 @@ test('fall-back boundary policy changes elapsed time only with explicit choice',
     'AMBIGUOUS_START',
   );
   const earlier = resolveShiftInterval('2026-11-01', shift, 'America/New_York', {
-    start: 'earlier', end: 'reject',
+    start: 'earlier',
+    end: 'reject',
   });
   const later = resolveShiftInterval('2026-11-01', shift, 'America/New_York', {
-    start: 'later', end: 'reject',
+    start: 'later',
+    end: 'reject',
   });
   assert.equal(earlier.status, 'resolved');
   assert.equal(later.status, 'resolved');
@@ -103,15 +113,18 @@ test('fall-back end can be ambiguous independently from start', () => {
 });
 
 test('spring-forward gap is rejected even if earlier/later is requested', () => {
-  assert.deepEqual(
-    resolveLocalBoundary('2026-03-08', '02:30', 'America/New_York'),
-    { status: 'nonexistent' },
-  );
-  assert.deepEqual(
-    resolveLocalBoundary('2026-03-08', '02:30', 'America/New_York', 'later'),
-    { status: 'nonexistent' },
-  );
-  const nonexistentStart = { ...overnight, startsAt: '02:30', endsAt: '03:30', endDayOffset: 0 };
+  assert.deepEqual(resolveLocalBoundary('2026-03-08', '02:30', 'America/New_York'), {
+    status: 'nonexistent',
+  });
+  assert.deepEqual(resolveLocalBoundary('2026-03-08', '02:30', 'America/New_York', 'later'), {
+    status: 'nonexistent',
+  });
+  const nonexistentStart = {
+    ...overnight,
+    startsAt: '02:30',
+    endsAt: '03:30',
+    endDayOffset: 0,
+  };
   const nonexistentEnd = { ...overnight, startsAt: '01:30', endsAt: '02:30', endDayOffset: 0 };
   assert.equal(
     resolveShiftInterval('2026-03-08', nonexistentStart, 'America/New_York').reason,
@@ -124,10 +137,7 @@ test('spring-forward gap is rejected even if earlier/later is requested', () => 
 });
 
 test('skipped civil day is detected rather than inventing a time', () => {
-  assert.deepEqual(
-    possibleUtcInstants('2011-12-30', '09:00', 'Pacific/Apia'),
-    [],
-  );
+  assert.deepEqual(possibleUtcInstants('2011-12-30', '09:00', 'Pacific/Apia'), []);
 });
 
 test('24-hour wall-clock shifts may have 23 or 25 actual hours', () => {
@@ -143,14 +153,19 @@ test('24-hour wall-clock shifts may have 23 or 25 actual hours', () => {
 
 test('rest days return zero, no inferred payable minutes', () => {
   assert.deepEqual(resolveShiftInterval('2026-11-01', DEFAULT_TEMPLATES[3], 'UTC'), {
-    status: 'rest', wallMinutes: 0, elapsedSeconds: 0,
+    status: 'rest',
+    wallMinutes: 0,
+    elapsedSeconds: 0,
   });
 });
 
 test('invalid local clock, date, IANA timezone and policies are rejected', () => {
   assert.throws(() => possibleUtcInstants('2026-02-29', '08:00', 'UTC'), /INVALID_DATE/);
   assert.throws(() => possibleUtcInstants('2026-01-01', '24:00', 'UTC'), /INVALID_SHIFT_TIME/);
-  assert.throws(() => possibleUtcInstants('2026-01-01', '08:00', '+03:00'), /INVALID_TIME_ZONE/);
+  assert.throws(
+    () => possibleUtcInstants('2026-01-01', '08:00', '+03:00'),
+    /INVALID_TIME_ZONE/,
+  );
   assert.throws(
     () => possibleUtcInstants('2026-01-01', '08:00', 'Not_A_Real/Zone'),
     /INVALID_TIME_ZONE/,

@@ -68,7 +68,11 @@ export default function TodayScreen() {
                 <Text style={{ color: c.muted, fontSize: 15 }}>{timeLabel(current)}</Text>
               </View>
             </View>
-            <ScheduledDuration date={today} template={current.template} timeZone={schedule.timeZone} />
+            <ScheduledDuration
+              date={today}
+              template={current.template}
+              timeZone={schedule.timeZone}
+            />
             {current.source === 'override' && <Muted>{t('editedDay')}</Muted>}
           </Panel>
           <Panel>

@@ -229,8 +229,7 @@ export function resolveShiftInterval(
       ...(end.status === 'ambiguous' ? { boundaryOptionsUtc: end.optionsUtc } : {}),
     };
   }
-  const elapsedSeconds =
-    (Date.parse(end.instantUtc) - Date.parse(start.instantUtc)) / 1_000;
+  const elapsedSeconds = (Date.parse(end.instantUtc) - Date.parse(start.instantUtc)) / 1_000;
   if (elapsedSeconds <= 0 || !Number.isSafeInteger(elapsedSeconds)) {
     return { status: 'unresolved', reason: 'END_NOT_AFTER_START', wallMinutes };
   }

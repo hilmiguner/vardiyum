@@ -171,7 +171,11 @@ export default function CalendarScreen() {
                   {chosen.template.name}
                 </Text>
                 <Muted>{timeLabel(chosen.template)}</Muted>
-                <ScheduledDuration date={selectedDate} template={chosen.template} timeZone={schedule.timeZone} />
+                <ScheduledDuration
+                  date={selectedDate}
+                  template={chosen.template}
+                  timeZone={schedule.timeZone}
+                />
                 {chosen.source === 'override' ? <Muted>{t('editedDay')}</Muted> : null}
               </>
             )}
