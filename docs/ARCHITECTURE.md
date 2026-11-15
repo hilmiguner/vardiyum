@@ -137,3 +137,26 @@ Bu tablo isimleri öneridir; gerçek SQLite migrasyonu ile kesinleşecek. Foreig
 - **UI:** Bugün ve Takvim seçilen vardiya detaylarında planlanan duvar saati aralığı ile saat dilimine göre geçen süre ayrıdır. Çift anlamlı/var olmayan saatlerde uyarı görünür; hesaplama sessizce tahmin edilmez.
 - **Veri tabanı:** Bu değişiklik yeni SQLite migrasyonu gerektirmez; mevcut v2 kayıtları aynen kullanılır.
 - **Ücret sınırı:** İleride bordroya aktarım için gerçekleşen başlangıç/bitiş zamanları, mola fiiliyatı, fold kararı ve iş sözleşmesi kuralları ayrıca doğrulanmalı. `elapsedSeconds` tek başına ücret hesaplama için kanıt değildir.
+
+## Faz 2 devam — PR #9 / Issue #8: kalıcı DST seçimi ve fiilî çalışma (2026-11-15)
+
+### Yeni SQLite v3 tabloları
+
+- `shift_boundary_choices(local_date PRIMARY KEY, schedule_signature, start_choice, end_choice, updated_at)`: Bir yerel tarih için iki sınırın `reject|earlier|later` kararları. `schedule_signature` vardiya kimliği, başlangıç/bitiş saatleri, `endDayOffset`, izin durumu ve IANA saat diliminden deterministik üretilir. Şablon saatleri, vardiya kimliği veya saat dilimi değişirse önceki karar **eşleşmez ve katı reddetme politikasına dönülür**. Ad/renk değişikliği kararı etkilemez.
+- `actual_work_sessions`: `id`, `local_date`, yerel giriş/çıkış saatleri ve çıkış tarihi, kaydedildiği andaki `timezone_id`, giriş/çıkış fold seçimleri, `start_instant_utc`/`end_instant_utc`, fiilî olarak kullanıcının beyan ettiği `break_minutes`, `note` ve `source='user_entered'`. Ayrı tabloda tutulur, eski `work_entries` kayıtları **otomatik dönüştürülmez veya silinmez**.
+- İki yeni tablo + indeksler tek transaction ile `PRAGMA user_version=3` olur. V1/v2 verilerinin korunması Node SQLite migration testleriyle doğrulanır; native SQLite güncelleme testi ertelendi.
+
+### Saat sınırı ve kayıt sözleşmeleri
+
+- `prepareBoundaryChoice(date, template, timezone, policy)` yalnızca **her iki uç çözümlü ve pozitif** planlı UTC aralığına sahip olduğunda kayda izin verir. Kullanıcı önce ekrandan geçerli fold seçimlerini yapar, ardından **bu güne özel** kaydeder.
+- `effectiveBoundaryPolicy` yalnızca gün ve şablon/saat dilimi imzası eşleşiyorsa saklanan kararı uygular; diğer günlere veya değiştirilmiş saatlere yayılamaz.
+- `prepareActualWork` planlanan DST kararını **asla miras almaz**; gerçek giriş/çıkış saatinde fold varsa kullanıcı tekrar açık seçim yapar. Gap zaman reddedilir. Kaydedilen UTC aralığı pozitif ve en fazla 72 saat, mola tam dakika ve aralıktan kısa olmalıdır. Günler arası kayıt için çıkış tarihi girişi bulunur.
+- UTC olarak kesişen iki kullanıcının beyan ettiği çalışma kaydının oluşturulması SQLite exclusive transaction içinde reddedilir. Aynı takvim gününde kesişmeyen birden fazla kayıt mümkün; silme kullanıcı onayıyla yapılır.
+- `elapsedSeconds` ve `netLoggedSeconds` yalnızca **beyan edilmiş zaman** ölçümleridir; doğrulanmış ücret, fazla mesai katsayısı veya bordro verisi değildir. Geçmiş kayıtların UTC başlangıç/bitişi farklı program saat dilimine göre yeniden yazılmaz.
+- `changeScheduleTimeZone` yalnızca mevcut programa uygulanan açık bir UI onayı ile kayıtlı `shift_patterns.timezone_id` değerini günceller. Döngü başlangıç tarihi, şablon saatleri ve tarihe özel vardiya istisnaları aynı kalır. Eski fold seçimi imzası uyuşmadığı için uygulanmaz. Kullanıcıya önce/sonra UTC başlangıç örneği gösterilir.
+
+### Kısıtlar ve doğrulama
+
+- Kayda girilen **başlangıç yerel tarihi seçilen takvim günüdür**; çıkış 0–3 takvim günü ileride olabilir, UTC süresi en fazla 72 saat. Girişin önceki takvim gününde olması veya farklı saat diliminde çıkış yapma gelişmiş UX'i henüz yoktur.
+- SQLite sürücüsü, iOS/Android gerçek cihazdaki `Intl`/ICU/tzdb eşlemesi, uçak modunda kalıcılık ve migrasyon henüz test edilmedi; kullanıcı bu testleri erteledi ([Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)).
+- **Sürümleme açık:** Şablon geçmişi ve işveren onayı henüz uygulanmadı; kullanıcı beyanına dayalı kayıtlar ücret motoruna otomatik aktarılmamalıdır.

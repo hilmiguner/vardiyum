@@ -53,3 +53,12 @@ Kararlar 2026-11-15 itibarıyla konuşulan hedefleri belgeler. Geliştirme sıra
 - **D-022 (uygulandı):** DST geçişinde mevcut olmayan yerel saatler `nonexistent` olarak **reddedilir**. Tekrarlanan yerel saatte varsayılan `reject` kullanılır; başlangıç ve bitişe ayrı, açık `earlier/later` seçimi mümkündür. Bu seçimlerin cihazda kalıcı kaydı/fiilî mesai ile bağlanması henüz yapılmadığı için belirsiz zamanlar ücret hesabına otomatik katılmaz.
 - **D-023 (uygulandı):** `plannedWallMinutes` (yerel saat aralığı) ve `elapsedSeconds` (anlar arasındaki geçen saniye) ayrıdır. Planlanan mola, gerçekleşmiş çalışma ve ödeme hesabı olarak sunulmaz; bu PR bordro motorunu etkinleştirmez.
 - **D-024 (açık):** Farklı mobil işletim sistemleri ve tzdb/ICU sürümleri için gerçek cihaz zaman dilimi kabul testi, fold seçimlerinin kalıcı saklanması ve gerçek bordroya bağlanması sonraki aşamada çözülür. Cihaz testleri kullanıcı tercihiyle ertelendi.
+
+## 2026-11-15 — Issue #8 / PR #9 (planlanan ürün uygulaması)
+
+- **D-025 (uygulandı):** DST katlanmasında `earlier/later` tercihi yalnızca **bir gün + vardiya kimliği/saatleri + kaydedilmiş IANA saat dilimi** imzasıyla geçerli olur. Şablonun saati/kimliği veya saat dilimi değiştiğinde önceki seçim uygulanmaz; yanlış süreyi sessiz aktarmayı önler.
+- **D-026 (uygulandı):** Planlanan vardiya ile **kullanıcı tarafından girilen fiilî çalışma aralığı** ayrı SQLite tablolarında tutulur. Gerçek giriş/çıkış UTC olarak saklanır, mola beyanı ayrıca tutulur; tekrar eden veya kesişen gerçek kayıt reddedilir. Veri kaynağı `user_entered`; işveren doğrulaması yoktur.
+- **D-027 (uygulandı):** Saat dilimi değişikliği, kullanıcının serbest metin IANA kimliği ve UTC önizlemesinden sonra onayıyla yapılır. Döngünün yerel tarih ve saatleri sabit kalır, geçmiş gerçek UTC kayıtları değişmez.
+- **D-028 (uygulandı):** V2 `work_entries` satırları v3 ile silinmez veya otomatik “doğrulanmış” çalışma sayılmaz. Yeni gerçek kayıtlar `actual_work_sessions` tablosunda açık kullanıcı girdisidir; ücret motoruna otomatik bağlanmaz.
+- **D-029 (açık):** Birden fazla iş/işverenin aynı saatte çalışılması, geçmiş vardiya şablonlarının zaman sürümü, işveren puantaj doğrulaması ve ülkeye özgü ücret hesaplama politikası ayrı tasarlanacak. Çakışan fiilî saatler bu MVP'de reddedilir.
+- **D-030 (ertelendi):** iOS/Android gerçek cihazda SQLite v3 migrasyonu, arayüz ve tzdb testi kullanıcı tercihiyle ertelendi; Issue #2 açık.

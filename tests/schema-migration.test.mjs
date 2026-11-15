@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { DatabaseSync } from 'node:sqlite';
 
-import { INITIAL_SCHEMA, MIGRATION_2_SQL, SCHEMA_VERSION } from '../src/data/schema.ts';
+import { INITIAL_SCHEMA, MIGRATION_2_SQL } from '../src/data/schema.ts';
 
 function freshV1() {
   const db = new DatabaseSync(':memory:');
@@ -15,7 +15,7 @@ test('new database migrates to v2 and seeds default templates', () => {
   try {
     assert.equal(db.prepare('PRAGMA user_version').get().user_version, 1);
     db.exec(`BEGIN IMMEDIATE; ${MIGRATION_2_SQL} COMMIT;`);
-    assert.equal(db.prepare('PRAGMA user_version').get().user_version, SCHEMA_VERSION);
+    assert.equal(db.prepare('PRAGMA user_version').get().user_version, 2);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM shift_templates').get().n, 4);
     assert.equal(
       db.prepare("SELECT break_minutes FROM shift_templates WHERE id = 'night'").get()
