@@ -13,8 +13,29 @@ const resources = {
       earnings: 'Kazanç',
       settings: 'Ayarlar',
       earnCustomHourlyTitle: 'Özel dönem: kaydedilmiş gerçek çalışma kazancı',
+      earnRateBreakTitle: 'Ücret değişimi sınırındaki mola beyanı',
+      earnRateBreakExplanation:
+        'Ayın 1’inde saatlik ücret değişirken iki ücret aralığını aşan gerçek çalışmanın molasını eski ve yeni orana açıkça dağıtabilirsin. Bu ayrı, kaynaklı ve sürümlü beyan yalnız özel dönem saatlik tahmininde kullanılır.',
+      earnRateBreakNone:
+        'Bu özel dönemde ayrı beyan gerektiren, ücret değişimini aşan molalı çalışma yok.',
+      earnRateBreakCrossPeriodUnavailable:
+        '{{count}} çalışma aynı anda hem özel dönem hem ücret değişim sınırını aşıyor. Bu karma senaryo henüz desteklenmiyor; tutar hesaplanmaz.',
+      earnRateBreakMidnight: 'Ücret değişimi: {{date}} · UTC sınırı: {{utc}}',
+      earnRateBreakTotal: 'Orijinal toplam mola: {{minutes}} dakika',
+      earnRateBreakLimits:
+        'Eski oran tarafının kapasitesi en fazla {{before}} dk; yeni oran tarafı en fazla {{after}} dk.',
+      earnRateBreakBefore: 'Eski saatlik ücret tarafında kullanılan mola dakikası',
+      earnRateBreakReason: 'Beyan veya düzeltme nedeni (3–160 karakter)',
+      earnRateBreakReasonPlaceholder: 'Örnek: molamın ilk kısmı eski ücret saatindeydi',
+      earnRateBreakRevision: 'Beyan sürümü: {{revision}} (0: kayıt yok)',
+      earnRateBreakSave: 'Ücret geçişi mola dağılımını sürümlü kaydet',
+      earnRateBreakSaved: 'Beyan sürümlü kaydedildi ve özel dönem tahmini güncellendi.',
+      earnRateBreakInvalid: 'Ücret değişimi mola beyanı hatalı veya eskimiş',
+      earnRateBreakNotPayslip:
+        'Beyan edemediğin veya iki sınırı aynı anda aşan molalar otomatik dağıtılmaz. Bu hesap resmî bordro değildir; önceki beyanlar uygulama düzeyinde korunur.',
+
       earnCustomHourlyScope:
-        'Kullanıcının kaydettiği gerçek saatlik çalışma üzerinden hesaplanır. Ücret değişiminde her iş parçasına kendi kayıtlı IANA saat dilimindeki geçerli oran uygulanır; dönemlik fazla mesai eşiği değişmeden kalmalıdır. Mola ücret değişimi anını aşıyorsa, farklı para birimi/eşik veya aylık prim/kesinti varsa hesap durur. Sabit maaş, vergi, SGK ve net ücret dahil değildir.',
+        'Kullanıcının kaydettiği gerçek saatlik çalışma üzerinden hesaplanır. Ücret değişiminde her iş parçasına kendi kayıtlı IANA saat dilimindeki geçerli oran uygulanır; dönemlik fazla mesai eşiği değişmeden kalmalıdır. Ücret geçişindeki molalar yalnız ayrı sürümlü beyanla dağıtılır; farklı para birimi/eşik veya aylık prim/kesinti varsa hesap durur. Sabit maaş, vergi, SGK ve net ücret dahil değildir.',
       earnCustomHourlyPeriod: 'Özel dönem: {{start}} – {{end}} (iki tarih dahil)',
       earnCustomHourlyTotals:
         'Kaydedilmiş net çalışma: {{minutes}} dakika · Döneme özel eşik üzeri: {{overtime}} dakika',
@@ -438,8 +459,29 @@ const resources = {
       earnings: 'Earnings',
       settings: 'Settings',
       earnCustomHourlyTitle: 'Custom period: logged actual-work earnings',
+      earnRateBreakTitle: 'Break allocation at an hourly rate change',
+      earnRateBreakExplanation:
+        'When hourly pay changes on the 1st, you can declare how a break spanning both rates is allocated to the old and new rate intervals. This is a separate source-linked, versioned statement used only for custom-period work-only estimates.',
+      earnRateBreakNone:
+        'No work with a break crossing an hourly rate-change midnight needs attribution in this period.',
+      earnRateBreakCrossPeriodUnavailable:
+        '{{count}} sessions also cross a custom pay-period boundary. This combined scenario is not yet supported and cannot be priced.',
+      earnRateBreakMidnight: 'Rate change: {{date}} · UTC boundary: {{utc}}',
+      earnRateBreakTotal: 'Original reported break: {{minutes}} minutes',
+      earnRateBreakLimits:
+        'Old-rate portion can hold at most {{before}} min; new-rate portion at most {{after}} min.',
+      earnRateBreakBefore: 'Break minutes taken before the new hourly rate began',
+      earnRateBreakReason: 'Statement or correction reason (3–160 characters)',
+      earnRateBreakReasonPlaceholder: 'Example: first portion of my break was at the old rate',
+      earnRateBreakRevision: 'Statement revision: {{revision}} (0: not recorded)',
+      earnRateBreakSave: 'Save versioned rate-change break allocation',
+      earnRateBreakSaved: 'Statement saved with revision history. Custom estimate refreshed.',
+      earnRateBreakInvalid: 'Invalid or stale rate-boundary break statement',
+      earnRateBreakNotPayslip:
+        'Breaks without an explicit statement and sessions crossing both boundaries are never allocated automatically. This is not an official payslip; previous revisions remain in app-level history.',
+
       earnCustomHourlyScope:
-        'Computed from self-reported actual hourly work. When hourly rates change, each portion uses the rate effective in the saved IANA zone of the actual work record, with one unchanged period-wide overtime threshold. A break across a rate-change midnight, mixed currencies/thresholds, or existing monthly adjustments blocks the estimate. Fixed salary, tax, social security and net pay are excluded.',
+        'Computed from self-reported actual hourly work. When hourly rates change, each portion uses the rate effective in the saved IANA zone of the actual work record, with one unchanged period-wide overtime threshold. A break spanning a rate-change midnight requires a separate versioned statement; mixed currencies/thresholds or existing monthly adjustments block the estimate. Fixed salary, tax, social security and net pay are excluded.',
       earnCustomHourlyPeriod: 'Custom period: {{start}} – {{end}} (inclusive)',
       earnCustomHourlyTotals:
         'Net logged work: {{minutes}} minutes · Above custom-period threshold: {{overtime}} minutes',
