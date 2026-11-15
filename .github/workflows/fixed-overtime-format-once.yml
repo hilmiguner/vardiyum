@@ -1,0 +1,32 @@
+name: Temporary fixed-overtime formatter
+on:
+  push:
+    branches:
+      - feat/custom-fixed-actual-overtime-policy
+permissions:
+  contents: write
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    if: github.repository == 'hilmiguner/vardiyum'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Format changed fixed-overtime code
+        run: |
+          npx prettier --write src/domain/custom-fixed-overtime-policy.ts src/domain/custom-fixed-overtime-engine.ts src/domain/custom-fixed-overtime-store.ts src/data/custom-fixed-overtime-repository.ts src/components/custom-fixed-overtime-panel.tsx 'src/app/(tabs)/earnings.tsx' src/i18n/index.ts tests/custom-fixed-overtime.test.mjs
+      - name: Commit normalized formatting
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/domain/custom-fixed-overtime-policy.ts src/domain/custom-fixed-overtime-engine.ts src/domain/custom-fixed-overtime-store.ts src/data/custom-fixed-overtime-repository.ts src/components/custom-fixed-overtime-panel.tsx 'src/app/(tabs)/earnings.tsx' src/i18n/index.ts tests/custom-fixed-overtime.test.mjs
+          if ! git diff --cached --quiet; then
+            git commit -m "style: format user-confirmed fixed overtime policy"
+            git push
+          fi
