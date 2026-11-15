@@ -9,6 +9,7 @@ import { CustomPayBreakPanel } from '../../components/custom-pay-break-panel';
 import { CustomPayProfilePreviewPanel } from '../../components/custom-pay-profile-preview-panel';
 import { CustomHourlyEstimatePanel } from '../../components/custom-hourly-estimate-panel';
 import { RateBoundaryBreakPanel } from '../../components/rate-boundary-break-panel';
+import { DualBoundaryBreakPanel } from '../../components/dual-boundary-break-panel';
 import { createEarningsExport, type EarningsExportFormat } from '../../domain/earnings-export';
 import {
   loadEarningsReport,
@@ -505,6 +506,12 @@ export default function EarningsScreen() {
       ) : null}
       <CustomPayBreakPanel
         periodKey={month}
+        onSaved={() => setRevision((before) => before + 1)}
+      />
+      <DualBoundaryBreakPanel
+        periodKey={month}
+        timeZone={schedule.timeZone}
+        refreshRevision={revision}
         onSaved={() => setRevision((before) => before + 1)}
       />
       <RateBoundaryBreakPanel
