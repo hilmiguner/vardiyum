@@ -10,7 +10,6 @@ import {
   MIGRATION_5_SQL,
   MIGRATION_6_SQL,
   MIGRATION_7_SQL,
-  SCHEMA_VERSION,
 } from '../src/data/schema.ts';
 
 function dbV6() {
@@ -47,7 +46,7 @@ test('SQLite v1–v6 business data is unchanged and empty v7 allocation tables a
       "INSERT INTO actual_work_sessions(id,local_date,start_clock,end_date,end_clock,timezone_id,start_choice,end_choice,start_instant_utc,end_instant_utc,break_minutes,note) VALUES('work_1','2026-11-30','23:00','2026-12-01','07:00','Europe/Istanbul','reject','reject','2026-11-30T20:00:00.000Z','2026-12-01T04:00:00.000Z',30,'self-reported');",
     );
     db.exec('BEGIN IMMEDIATE;' + MIGRATION_7_SQL + 'COMMIT;');
-    assert.equal(db.prepare('PRAGMA user_version').get().user_version, SCHEMA_VERSION);
+    assert.equal(db.prepare('PRAGMA user_version').get().user_version, 7);
     for (const table of [
       'shift_patterns',
       'pattern_days',

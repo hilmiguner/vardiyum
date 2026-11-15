@@ -2,6 +2,12 @@ import { getDatabase } from './database';
 import { calendarDateInZone } from '../domain/shift-engine';
 import { splitWorkForMonth, type MonthBreakAllocation } from '../domain/earnings-period';
 import {
+  prepareNextProfileRevision,
+  profileVersionHistory,
+  resolvePayProfileRevisions,
+  type PayProfileRevision,
+} from '../domain/earnings-profile-revisions';
+import {
   estimateEarnings,
   periodBounds,
   validateEarningsWork,
@@ -24,6 +30,35 @@ interface ProfileRow {
   overtime_multiplier_numerator: number;
   overtime_multiplier_denominator: number;
   revision: number;
+}
+
+interface PayProfileRevisionRow extends Omit<ProfileRow, 'id'> {
+  profile_id: string;
+  reason: string;
+  recorded_at: string;
+  source: 'user_entered';
+}
+function toProfile(row: ProfileRow): EarningsProfile {
+  return {
+    id: row.id,
+    effectiveFrom: row.effective_from,
+    model: row.model,
+    currency: row.currency,
+    baseMinorUnits: row.base_minor_units,
+    overtimeHourlyMinorUnits: row.overtime_hourly_minor_units,
+    overtimeAfterMinutes: row.overtime_after_minutes,
+    overtimeMultiplierNumerator: row.overtime_multiplier_numerator,
+    overtimeMultiplierDenominator: row.overtime_multiplier_denominator,
+    revision: row.revision,
+  };
+}
+function toRevision(row: PayProfileRevisionRow): PayProfileRevision {
+  return {
+    profile: toProfile({ ...row, id: row.profile_id }),
+    reason: row.reason,
+    recordedAt: row.recorded_at,
+    source: row.source,
+  };
 }
 
 interface WorkRow {
@@ -82,10 +117,13 @@ interface AdjustmentRow {
   created_at: string;
 }
 
-export async function loadEarningsReport(periodKey: string): Promise<EarningsReport> {
+export async function loadEarningsReport(
+  periodKey: string,
+  selectedProfileRevision?: number,
+): Promise<EarningsReport> {
   const { first, last } = periodBounds(periodKey);
   const db = await getDatabase();
-  const [profiles, work, adjustments, allocations] = await Promise.all([
+  const [profiles, work, adjustments, allocations, revisions] = await Promise.all([
     db.getAllAsync<ProfileRow>(
       'SELECT * FROM earnings_profiles WHERE effective_from <= ? ORDER BY effective_from DESC',
       first,
@@ -114,21 +152,28 @@ export async function loadEarningsReport(periodKey: string): Promise<EarningsRep
       last,
       first,
     ),
+    db.getAllAsync<PayProfileRevisionRow>(
+      'SELECT * FROM earnings_profile_revisions WHERE effective_from <= ? ORDER BY effective_from,profile_id,revision',
+      first,
+    ),
   ]);
+  const baseProfiles = profiles.map(toProfile);
+  const revisionItems = revisions.map(toRevision);
+  const resolved = resolvePayProfileRevisions(baseProfiles, revisionItems);
+  if (selectedProfileRevision !== undefined && resolved.length) {
+    const active = resolved[0];
+    const base = baseProfiles.find((x) => x.id === active.id)!;
+    const history = profileVersionHistory(
+      base,
+      revisionItems.filter((x) => x.profile.id === base.id),
+    );
+    const requested = history.find((x) => x.revision === selectedProfileRevision);
+    if (!requested) throw new Error('PROFILE_REVISION_UNAVAILABLE');
+    resolved[0] = requested;
+  }
   return estimateEarnings(
     periodKey,
-    profiles.map((row) => ({
-      id: row.id,
-      effectiveFrom: row.effective_from,
-      model: row.model,
-      currency: row.currency,
-      baseMinorUnits: row.base_minor_units,
-      overtimeHourlyMinorUnits: row.overtime_hourly_minor_units,
-      overtimeAfterMinutes: row.overtime_after_minutes,
-      overtimeMultiplierNumerator: row.overtime_multiplier_numerator,
-      overtimeMultiplierDenominator: row.overtime_multiplier_denominator,
-      revision: row.revision,
-    })),
+    resolved,
     work.map(toWork),
     adjustments.map((row) => ({
       id: row.id,
@@ -146,6 +191,7 @@ export async function loadEarningsReport(periodKey: string): Promise<EarningsRep
 
 export async function saveEarningsProfile(input: EarningsProfile): Promise<void> {
   const profile = validateEarningsProfile(input);
+  if (profile.revision !== 1) throw new Error('BASE_PROFILE_MUST_BE_V1');
   const db = await getDatabase();
   await db.runAsync(
     `INSERT INTO earnings_profiles (
@@ -322,4 +368,108 @@ export async function saveBreakAllocation(
       new Date().toISOString(),
     );
   });
+}
+
+/** Read-only snapshots: v1 is in earnings_profiles, v2+ in immutable rows. */
+export interface PayProfileHistoryRow {
+  profile: EarningsProfile;
+  reason: string;
+  recordedAt: string | null;
+  original: boolean;
+}
+export async function loadPayProfileHistory(
+  periodKey: string,
+): Promise<PayProfileHistoryRow[]> {
+  const { first } = periodBounds(periodKey);
+  const db = await getDatabase();
+  const base = await db.getFirstAsync<ProfileRow>(
+    'SELECT * FROM earnings_profiles WHERE effective_from <= ? ORDER BY effective_from DESC LIMIT 1',
+    first,
+  );
+  if (!base) return [];
+  const rows = await db.getAllAsync<PayProfileRevisionRow>(
+    'SELECT * FROM earnings_profile_revisions WHERE profile_id = ? ORDER BY revision',
+    base.id,
+  );
+  const entries = rows.map(toRevision);
+  profileVersionHistory(toProfile(base), entries);
+  return [
+    { profile: toProfile(base), reason: '', recordedAt: null, original: true },
+    ...entries.map((x) => ({
+      profile: x.profile,
+      reason: x.reason,
+      recordedAt: x.recordedAt,
+      original: false,
+    })),
+  ];
+}
+
+/**
+ * Optimistic concurrent revision check inside one SQLite transaction.
+ * No UPDATE to the v1 base and no UPDATE/DELETE on historical revisions.
+ */
+export async function appendPayProfileCorrection(
+  expectedCurrent: EarningsProfile,
+  changes: Omit<EarningsProfile, 'id' | 'effectiveFrom' | 'revision'>,
+  reason: string,
+): Promise<EarningsProfile> {
+  const expected = validateEarningsProfile(expectedCurrent);
+  const db = await getDatabase();
+  let saved: EarningsProfile | null = null;
+  await db.withExclusiveTransactionAsync(async (tx) => {
+    const base = await tx.getFirstAsync<ProfileRow>(
+      'SELECT * FROM earnings_profiles WHERE id = ?',
+      expected.id,
+    );
+    if (!base || base.effective_from !== expected.effectiveFrom)
+      throw new Error('PROFILE_NOT_FOUND');
+    const historyRows = await tx.getAllAsync<PayProfileRevisionRow>(
+      'SELECT * FROM earnings_profile_revisions WHERE profile_id = ? ORDER BY revision',
+      expected.id,
+    );
+    const originals = profileVersionHistory(toProfile(base), historyRows.map(toRevision));
+    const latest = originals[originals.length - 1];
+    if (latest.revision !== expected.revision) throw new Error('STALE_PROFILE_REVISION');
+    // Do not accept silently editing another profile using a stale UI snapshot.
+    const fields: (keyof EarningsProfile)[] = [
+      'id',
+      'effectiveFrom',
+      'model',
+      'currency',
+      'baseMinorUnits',
+      'overtimeHourlyMinorUnits',
+      'overtimeAfterMinutes',
+      'overtimeMultiplierNumerator',
+      'overtimeMultiplierDenominator',
+      'revision',
+    ];
+    if (fields.some((field) => latest[field] !== expected[field]))
+      throw new Error('STALE_PROFILE_REVISION');
+    const next = prepareNextProfileRevision(latest, changes, reason, new Date().toISOString());
+    const row = next.profile;
+    await tx.runAsync(
+      `INSERT INTO earnings_profile_revisions (
+       profile_id, revision, effective_from,model,currency,base_minor_units,
+       overtime_hourly_minor_units,overtime_after_minutes,
+       overtime_multiplier_numerator,overtime_multiplier_denominator,
+       reason,recorded_at,source
+       ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      row.id,
+      row.revision,
+      row.effectiveFrom,
+      row.model,
+      row.currency,
+      row.baseMinorUnits,
+      row.overtimeHourlyMinorUnits,
+      row.overtimeAfterMinutes,
+      row.overtimeMultiplierNumerator,
+      row.overtimeMultiplierDenominator,
+      next.reason,
+      next.recordedAt,
+      next.source,
+    );
+    saved = row;
+  });
+  if (!saved) throw new Error('PROFILE_REVISION_NOT_SAVED');
+  return saved;
 }

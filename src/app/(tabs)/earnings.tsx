@@ -8,6 +8,9 @@ import { EarningsBreakAllocationPanel } from '../../components/earnings-break-al
 import { createEarningsExport, type EarningsExportFormat } from '../../domain/earnings-export';
 import {
   loadEarningsReport,
+  loadPayProfileHistory,
+  appendPayProfileCorrection,
+  type PayProfileHistoryRow,
   loadBreakAllocationCandidates,
   type BreakAllocationCandidate,
   saveEarningsProfile,
@@ -23,6 +26,7 @@ import {
 } from '../../domain/earnings-engine';
 import {
   formatMoneyMinor,
+  minorUnitsToInput,
   parseMoneyMinor,
   SUPPORTED_EARNINGS_CURRENCIES,
 } from '../../domain/money-text';
@@ -103,20 +107,35 @@ function Choice({
 
 function ProfileEditor({
   selectedMonth,
+  initial,
   onSaved,
 }: {
   selectedMonth: string;
+  initial?: EarningsProfile;
   onSaved: () => Promise<void>;
 }) {
   const { t } = useTranslation();
-  const [effectiveFrom, setEffectiveFrom] = useState(selectedMonth + '-01');
-  const [model, setModel] = useState<EarningsModel>('hourly');
-  const [currency, setCurrency] = useState('TRY');
-  const [baseAmount, setBaseAmount] = useState('');
-  const [threshold, setThreshold] = useState('');
-  const [overtimeHourly, setOvertimeHourly] = useState('');
-  const [numerator, setNumerator] = useState('1');
-  const [denominator, setDenominator] = useState('1');
+  const [effectiveFrom, setEffectiveFrom] = useState(
+    initial?.effectiveFrom ?? selectedMonth + '-01',
+  );
+  const [model, setModel] = useState<EarningsModel>(initial?.model ?? 'hourly');
+  const [currency, setCurrency] = useState(initial?.currency ?? 'TRY');
+  const [baseAmount, setBaseAmount] = useState(
+    initial ? minorUnitsToInput(initial.baseMinorUnits) : '',
+  );
+  const [threshold, setThreshold] = useState(
+    initial?.overtimeAfterMinutes === null || initial?.overtimeAfterMinutes === undefined
+      ? ''
+      : String(initial.overtimeAfterMinutes),
+  );
+  const [overtimeHourly, setOvertimeHourly] = useState(
+    initial ? minorUnitsToInput(initial.overtimeHourlyMinorUnits) : '',
+  );
+  const [numerator, setNumerator] = useState(String(initial?.overtimeMultiplierNumerator ?? 1));
+  const [denominator, setDenominator] = useState(
+    String(initial?.overtimeMultiplierDenominator ?? 1),
+  );
+  const [correctionReason, setCorrectionReason] = useState('');
   const [busy, setBusy] = useState(false);
 
   const save = async () => {
@@ -125,9 +144,7 @@ function ProfileEditor({
       const overtimeAfterMinutes = threshold.trim() ? Number(threshold) : null;
       const overtimeHourlyMinorUnits =
         model === 'monthly_fixed' && threshold.trim() ? parseMoneyMinor(overtimeHourly) : 0;
-      const profile: EarningsProfile = {
-        id: entryId('pay'),
-        effectiveFrom: effectiveFrom.trim(),
+      const details = {
         model,
         currency,
         baseMinorUnits,
@@ -135,12 +152,20 @@ function ProfileEditor({
         overtimeAfterMinutes,
         overtimeMultiplierNumerator: Number(numerator),
         overtimeMultiplierDenominator: Number(denominator),
-        revision: 1,
       };
       setBusy(true);
-      await saveEarningsProfile(profile);
+      if (initial) {
+        await appendPayProfileCorrection(initial, details, correctionReason);
+      } else {
+        await saveEarningsProfile({
+          ...details,
+          id: entryId('pay'),
+          effectiveFrom: effectiveFrom.trim(),
+          revision: 1,
+        });
+      }
       await onSaved();
-      Alert.alert(t('earnProfileSaved'));
+      Alert.alert(t(initial ? 'earnRevisionSaved' : 'earnProfileSaved'));
     } catch (error) {
       Alert.alert(t('earnProfileError'), error instanceof Error ? error.message : '');
     } finally {
@@ -150,15 +175,26 @@ function ProfileEditor({
 
   return (
     <Panel>
-      <Heading>{t('earnNewProfile')}</Heading>
-      <Muted>{t('earnImmutableProfileHint')}</Muted>
-      <InputField
-        label={t('earnEffectiveFrom')}
-        value={effectiveFrom}
-        onChange={setEffectiveFrom}
-        placeholder="2026-11-01"
-        maxLength={10}
-      />
+      <Heading>{t(initial ? 'earnCorrectProfile' : 'earnNewProfile')}</Heading>
+      <Muted>{t(initial ? 'earnCorrectionWarning' : 'earnImmutableProfileHint')}</Muted>
+      {initial ? (
+        <Muted>
+          {t('earnProfileDescription', {
+            id: initial.id,
+            revision: initial.revision,
+            effectiveFrom: initial.effectiveFrom,
+            model: initial.model,
+          })}
+        </Muted>
+      ) : (
+        <InputField
+          label={t('earnEffectiveFrom')}
+          value={effectiveFrom}
+          onChange={setEffectiveFrom}
+          placeholder="2026-11-01"
+          maxLength={10}
+        />
+      )}
       <Heading>{t('earnModel')}</Heading>
       <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
         <Choice
@@ -226,7 +262,19 @@ function ProfileEditor({
           </View>
         </View>
       ) : null}
-      <Action label={t('earnSaveProfile')} disabled={busy} onPress={() => void save()} />
+      {initial ? (
+        <InputField
+          label={t('earnRevisionReason')}
+          value={correctionReason}
+          onChange={setCorrectionReason}
+          maxLength={160}
+        />
+      ) : null}
+      <Action
+        label={t(initial ? 'earnSaveRevision' : 'earnSaveProfile')}
+        disabled={busy}
+        onPress={() => void save()}
+      />
     </Panel>
   );
 }
@@ -313,6 +361,9 @@ export default function EarningsScreen() {
   );
   const [month, setMonth] = useState(monthInput);
   const [report, setReport] = useState<EarningsReport | null>(null);
+  const [profileHistory, setProfileHistory] = useState<PayProfileHistoryRow[]>([]);
+  const [selectedRevision, setSelectedRevision] = useState<number | null>(null);
+  const [showCorrection, setShowCorrection] = useState(false);
   const [breakCandidates, setBreakCandidates] = useState<BreakAllocationCandidate[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [showEditor, setShowEditor] = useState(false);
@@ -321,12 +372,15 @@ export default function EarningsScreen() {
 
   const refresh = useCallback(async () => {
     try {
-      const [next, candidates] = await Promise.all([
+      const [next, candidates, history] = await Promise.all([
         loadEarningsReport(month),
         loadBreakAllocationCandidates(month),
+        loadPayProfileHistory(month),
       ]);
       setReport(next);
       setBreakCandidates(candidates);
+      setProfileHistory(history);
+      setSelectedRevision(null);
       setError(null);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'EARNINGS_REPORT_ERROR');
@@ -337,11 +391,16 @@ export default function EarningsScreen() {
   useFocusEffect(
     useCallback(() => {
       let active = true;
-      void Promise.all([loadEarningsReport(month), loadBreakAllocationCandidates(month)])
-        .then(([next, candidates]) => {
+      void Promise.all([
+        loadEarningsReport(month, selectedRevision ?? undefined),
+        loadBreakAllocationCandidates(month),
+        loadPayProfileHistory(month),
+      ])
+        .then(([next, candidates, history]) => {
           if (active) {
             setReport(next);
             setBreakCandidates(candidates);
+            setProfileHistory(history);
             setError(null);
           }
         })
@@ -352,14 +411,16 @@ export default function EarningsScreen() {
       return () => {
         active = false;
       };
-    }, [month, revision]),
+    }, [month, revision, selectedRevision]),
   );
 
   const chooseMonth = () => {
     try {
       periodBounds(monthInput.trim());
       setMonth(monthInput.trim());
+      setSelectedRevision(null);
       setShowEditor(false);
+      setShowCorrection(false);
     } catch {
       Alert.alert(t('earnInvalidMonth'));
     }
@@ -438,6 +499,55 @@ export default function EarningsScreen() {
       {breakCandidates.length > 0 ? (
         <EarningsBreakAllocationPanel candidates={breakCandidates} onSaved={onSaved} />
       ) : null}
+      {profileHistory.length ? (
+        <Panel>
+          <Heading>{t('earnHistoryTitle')}</Heading>
+          <Muted>{t('earnHistoryWarning')}</Muted>
+          <Action label={t('earnShowLatest')} onPress={() => setSelectedRevision(null)} />
+          {profileHistory.map((record) => (
+            <View key={record.profile.revision} style={{ gap: 5 }}>
+              <Text style={{ color: c.text }}>
+                {t('earnHistoryRow', {
+                  revision: record.profile.revision,
+                  rate: formatMoneyMinor(
+                    record.profile.baseMinorUnits,
+                    record.profile.currency,
+                    locale,
+                  ),
+                  reason: record.original ? t('earnOriginal') : record.reason,
+                })}
+              </Text>
+              {record.recordedAt ? <Muted>{record.recordedAt}</Muted> : null}
+              <Action
+                label={t('earnPreviewRevision', { revision: record.profile.revision })}
+                onPress={() => setSelectedRevision(record.profile.revision)}
+              />
+            </View>
+          ))}
+          <Action
+            label={t(showCorrection ? 'earnHideCorrection' : 'earnCorrectProfile')}
+            onPress={() => {
+              setShowCorrection(!showCorrection);
+              setShowEditor(false);
+            }}
+          />
+        </Panel>
+      ) : null}
+      {showCorrection && profileHistory.length ? (
+        <ProfileEditor
+          key={
+            profileHistory[profileHistory.length - 1].profile.id +
+            ':' +
+            profileHistory[profileHistory.length - 1].profile.revision
+          }
+          selectedMonth={month}
+          initial={profileHistory[profileHistory.length - 1].profile}
+          onSaved={async () => {
+            await onSaved();
+            setShowCorrection(false);
+          }}
+        />
+      ) : null}
       {report?.status === 'estimated' ? (
         <>
           <Panel>
@@ -473,6 +583,9 @@ export default function EarningsScreen() {
             ) : null}
             {report.splitAcrossMonthsCount > 0 ? (
               <Muted>{t('earnSplitCount', { count: report.splitAcrossMonthsCount })}</Muted>
+            ) : null}
+            {selectedRevision !== null ? (
+              <Muted>{t('earnHistoricalPreview', { revision: selectedRevision })}</Muted>
             ) : null}
             <Muted>{t('earnNotPayslip')}</Muted>
           </Panel>

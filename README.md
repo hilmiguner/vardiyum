@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Vardiya/DST/gerçek çalışma/rutin ve tahmini kazanç (PR #3/#5/#7/#9/#11/#13/#15) ile **aylar arası çalışma bölünmesi ve kullanıcı onaylı CSV/JSON paylaşımı PR #17 main'de**. PR merge SHA `07deee632090f823713226ad7abe92845ff6699f`; [merge sonrası CI #43713571844](https://github.com/hilmiguner/vardiyum/actions/runs/43713571844) SUCCESS: 98 test, Android/iOS JS export. Native cihaz testleri ertelendi. Issue #16 profil geçmişi revizyonu/içe alma için açık; resmî bordro/net maaş hesabı yok.
+> **Durum (2026-11-15):** Vardiya/rutinler, yerel hatırlatmalar ve gerçek UTC çalışmadan tahmini kazanç (PR #3/#5/#7/#9/#11/#13/#15/#17) main'de. **PR #18:** aynı efektif ay için gerekçeli, değiştirilemez ücret profili revizyonları, SQLite v8, önceki oranlarla açıklamalı yeniden hesaplama. [CI #43717238275](https://github.com/hilmiguner/vardiyum/actions/runs/43717238275) SUCCESS; merge sonrası main SHA/CI'yi [STATUS](docs/STATUS.md)'dan doğrula. Kontrollü içe alma ve şifreli yedek Issue #16'da açık, cihaz testleri Issue #2'de ertelendi. Net/resmî bordro hesabı yok.
 
 ## Geliştirme kurulumu
 
@@ -108,4 +108,12 @@ Lisans henüz seçilmedi. **Vardiyum** çalışma adıdır; marka, alan adı ve 
 - **SQLite v7** eski v1–v6 verisini değiştirmeden dağılım kararını ve sonraki düzeltmelerin **append-only olay/revizyon izini** tutar. Kazanç kaleminde orijinal `workId`, kesilen UTC alt dilim ve geçerli ücret profili izlenebilir.
 - Fazla mesai eşiği her ay baştan hesaplanır; Kasım ve Aralık farklı kullanıcı ücret profili kullanabilir. Saatlik para hesabı tam sayı kuruş ve BigInt ile sürer.
 - Hesap geçerliyse kullanıcı açık onay vererek **CSV/JSON metnini** iOS/Android paylaşım ekranına aktarabilir. Başka bir uygulamayı seçmek kullanıcıya aittir. **Otomatik ağ gönderimi, şifreli yedekleme, dosyaya yazma veya otomatik içe aktarma yoktur**. CSV'de formül gibi başlayabilecek hücreler korumalıdır.
-- Profil geçmişinde aynı ayı düzeltebilme/revizyonlama ve kontrollü güvenli içe alma bu PR'da **tamamlanmadı**; [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık kalacak. Cihaz testleri [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.
+- **Güncel:** Aynı ay için düzeltme ve sürüm geçmişi PR #18 ile eklendi; kontrollü güvenli içe alma ve şifreli yedek [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16)'da henüz yapılmadı. Cihaz testleri [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.
+
+## Faz 4 devam — Düzeltilebilir fakat silinmeyen ücret profili / PR #18
+
+- Yeni ücret profili **ilk kayıt (v1)** `earnings_profiles` tablosunda kalır. Kullanıcı aynı efektif ayın ücretinde hata fark ederse mevcut kaydı değiştirmez; bir **düzeltme gerekçesi (3–160 karakter)** ile yeni `v2,v3,...` tam kopya yazar.
+- **SQLite v8** `earnings_profile_revisions` tablosunu ekler. Eski profil ve önceki düzeltmeler **değiştirilmez/silinmez** (SQLite UPDATE/DELETE engelleyen trigger'lar). Aynı profil kimliği ve efektif ay korunur; başka ayda yeni profil açma işlemi ayrı kalır.
+- Bir aylık tahmin en yeni geçerli ücret profil sürümünü kullanır. Kazanç ekranında **sürüm geçmişi ve eski bir sürümün ücretiyle yeniden hesaplama** bulunur; CSV/JSON çıktısı kullanılan profil kimliği ve sürümünü belirtir.
+- **Önemli:** Eski sürüme dönerek yapılan hesap, ***bugünkü*** gerçek çalışma ve prim/kesinti kayıtlarını kullanır. Geçmişte ekranda görülmüş tahminin birebir dondurulmuş kaydı, işveren bordrosu veya net ödeme garantisi değildir.
+- Çok eski uygulama kayıtları SQLite v1–v7 korunur; native cihaz kabulü [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi. Kontrollü içe alma/şifreli yedek [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16)'da açık.

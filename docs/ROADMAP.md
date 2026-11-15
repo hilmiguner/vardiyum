@@ -8,7 +8,7 @@
 | 1 | Expo iskeleti, SQLite, i18n, tema, CI | PR #3 main'e alındı; Issue #2 native test açık |
 | 2 | Esnek vardiya motoru, istisnalar ve takvim | PR #5/#7/#9 main'de; cihaz testleri/sürümleme açık |
 | 3 | Rutinler, görev geçmişi, bildirimler | PR #11/#13 main'de; native bildirim teslimi/QA açık |
-| 4 | Mesai ve tahmini kazanç | PR #15/#17 main'de; geçmiş profil revizyonu ve içe alma Issue #16 açık |
+| 4 | Mesai ve tahmini kazanç | PR #15/#17 main; PR #18 ücret profili revizyonu, içe alma/şifreli yedek açık |
 | 5 | Yedekleme, gerçek cihazlar, beta | Planlandı |
 | 6 | App Store ve Google Play yayını | Planlandı |
 
@@ -68,7 +68,8 @@
 - [x] Sabit tam ay/saatlik ücret, kullanıcı eşiği/mesai katsayısı, prim-kesinti-düzeltme PR #15.
 - [x] Integer/BigInt para hesabı, kalem kalem kaynaklı dönem raporu, geçersiz kayıtta bloklama PR #15.
 - [x] UTC/IANA ay sınırında gece vardiyası bölünmesi, açık mola dağılımı/revizyon izi ve kullanıcı onaylı CSV/JSON metin paylaşımı: [PR #17](https://github.com/hilmiguner/vardiyum/pull/17) main merge `07deee63`; [main CI #43713571844](https://github.com/hilmiguner/vardiyum/actions/runs/43713571844) SUCCESS.
-- [ ] Geçmiş ücret profili düzeltme/revizyonlama, özel maaş dönemi, kontrollü içe alma/şifreli yedek: [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık kalır.
+- [x] Aynı efektif ay için gerekçeli, silinmeyen ücret profil sürümleri ve eski sürümle yeniden hesaplama: [PR #18](https://github.com/hilmiguner/vardiyum/pull/18), SQLite v8.
+- [ ] Özel maaş dönemi, kontrollü içe alma ve şifreli yedek: [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) açık kalır.
 - [ ] Native Android/iOS SQLite v7, kazanç paylaşım ekranı ve çevrimdışı kalıcılık: [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) (kullanıcı isteğiyle ertelendi).
 
 ## Faz 5 — Beta
