@@ -113,7 +113,9 @@ export function estimateCustomHourlyWork(
   if (!Number.isSafeInteger(calendarAdjustmentCount) || calendarAdjustmentCount < 0)
     return result('blocked', periodKey, startDay, ['INVALID_CUSTOM_ADJUSTMENT_COUNT']);
   if (plan.status === 'needs_profile')
-    return result('needs_profile', periodKey, startDay, ['CUSTOM_PAY_OPENING_PROFILE_REQUIRED']);
+    return result('needs_profile', periodKey, startDay, [
+      'CUSTOM_PAY_OPENING_PROFILE_REQUIRED',
+    ]);
   if (plan.status !== 'single_hourly_profile')
     return result('blocked', periodKey, startDay, ['CUSTOM_PAY_PROFILE_POLICY_UNRESOLVED']);
   if (calendarAdjustmentCount !== 0)
@@ -135,7 +137,8 @@ export function estimateCustomHourlyWork(
     auditRevision: number | null;
   }[] = [];
   const workIds = new Set<string>();
-  if (!Array.isArray(sources)) return result('blocked', periodKey, startDay, ['INVALID_WORK_SET']);
+  if (!Array.isArray(sources))
+    return result('blocked', periodKey, startDay, ['INVALID_WORK_SET']);
 
   for (const { work, allocation, auditRevision } of sources) {
     try {
@@ -153,7 +156,8 @@ export function estimateCustomHourlyWork(
           !allocation ||
           !Number.isSafeInteger(auditRevision) ||
           (auditRevision as number) < 1
-        ) throw new Error('UNVERIFIED_CUSTOM_BREAK_AUDIT');
+        )
+          throw new Error('UNVERIFIED_CUSTOM_BREAK_AUDIT');
       } else if (allocation || auditRevision !== undefined) {
         throw new Error('UNEXPECTED_CUSTOM_BREAK_AUDIT');
       }
@@ -176,8 +180,7 @@ export function estimateCustomHourlyWork(
   for (const item of portions) {
     if (item.portion.startInstantUtc < previousEnd)
       reasons.push('OVERLAPPING_CUSTOM_WORK:' + item.portion.workId);
-    if (item.portion.endInstantUtc > previousEnd)
-      previousEnd = item.portion.endInstantUtc;
+    if (item.portion.endInstantUtc > previousEnd) previousEnd = item.portion.endInstantUtc;
   }
   if (reasons.length) return result('blocked', periodKey, startDay, reasons);
 
@@ -218,7 +221,8 @@ export function estimateCustomHourlyWork(
         roundRational(BigInt(profile.baseMinorUnits) * BigInt(regularSeconds), 3600n),
       );
       const delta = minor - lastRegularMinor;
-      if (delta > MAX_MINOR_UNITS) return result('blocked', periodKey, startDay, ['CUSTOM_PAY_MONEY_LIMIT']);
+      if (delta > MAX_MINOR_UNITS)
+        return result('blocked', periodKey, startDay, ['CUSTOM_PAY_MONEY_LIMIT']);
       lines.push({
         ...shared,
         kind: 'regular',
@@ -237,7 +241,8 @@ export function estimateCustomHourlyWork(
         ),
       );
       const delta = minor - lastOvertimeMinor;
-      if (delta > MAX_MINOR_UNITS) return result('blocked', periodKey, startDay, ['CUSTOM_PAY_MONEY_LIMIT']);
+      if (delta > MAX_MINOR_UNITS)
+        return result('blocked', periodKey, startDay, ['CUSTOM_PAY_MONEY_LIMIT']);
       lines.push({
         ...shared,
         kind: 'overtime',

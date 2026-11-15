@@ -450,7 +450,8 @@ const resources = {
         'Custom-period estimate blocked: profile, break, work or calendar-month adjustment requires an explicit policy.',
       earnCustomHourlyStatus_needs_profile:
         'An active hourly pay profile is required at the beginning of the custom period.',
-      earnCustomHourlyStatus_no_work: 'No self-reported actual work exists in this custom period.',
+      earnCustomHourlyStatus_no_work:
+        'No self-reported actual work exists in this custom period.',
       earnCustomHourlyStatus_disabled: 'Start day 1: use the existing calendar-month report.',
       earnCustomHourlyNotPayslip:
         'This is a user-reported pre-tax estimate of WORK ONLY, not full pay, a payslip or a payment commitment. An existing calendar-month bonus, deduction or correction blocks the estimate. Custom-period CSV/JSON exports are not yet enabled.',

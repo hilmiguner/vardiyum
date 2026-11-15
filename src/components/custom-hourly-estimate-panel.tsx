@@ -39,7 +39,9 @@ export function CustomHourlyEstimatePanel({
         })
         .catch((reason: unknown) => {
           if (active)
-            setError(reason instanceof Error ? reason.message : 'CUSTOM_HOURLY_ESTIMATE_FAILED');
+            setError(
+              reason instanceof Error ? reason.message : 'CUSTOM_HOURLY_ESTIMATE_FAILED',
+            );
         });
       return () => {
         active = false;
