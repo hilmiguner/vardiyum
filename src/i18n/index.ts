@@ -16,7 +16,8 @@ const resources = {
       earnAttribExplanation:
         'Takvim ayına kayıtlı her prim, kesinti veya düzeltmeyi hangi özel maaş dönemine ait olduğunu SEN belirleyerek ayır. İlk dönem tutarını tam kuruş olarak yaz; kalan tutar otomatik olarak ikinci döneme aktarılır. Gün sayısına göre bölme yapılmaz ve aynı kaynak iki kez sayılmaz.',
       earnAttribPeriod: 'Seçilen maaş dönemi: {{start}} – {{end}}',
-      earnAttribEmpty: 'Bu özel maaş dönemini ilgilendiren takvim aylık prim, kesinti veya düzeltme yok.',
+      earnAttribEmpty:
+        'Bu özel maaş dönemini ilgilendiren takvim aylık prim, kesinti veya düzeltme yok.',
       earnAttribPending:
         '{{count}} kaynak için kullanıcı beyanı eksik veya kaynak değişmiş. Güvenilir dönem toplamı gösterilmez.',
       earnAttribVerified:
@@ -25,8 +26,7 @@ const resources = {
       earnAttribKind_bonus: 'Prim',
       earnAttribKind_deduction: 'Kesinti',
       earnAttribKind_correction: 'Düzeltme',
-      earnAttribPeriods:
-        'Kaynağın iki olası özel dönemi: {{earlier}} ve {{later}}',
+      earnAttribPeriods: 'Kaynağın iki olası özel dönemi: {{earlier}} ve {{later}}',
       earnAttribSavedAmounts:
         'Önceki dönem {{earlier}} · sonraki dönem {{later}} · seçili dönemde {{current}}',
       earnAttribEarlierAmount:
@@ -38,7 +38,8 @@ const resources = {
         'Örneğin: Kasım priminin hangi maaş dönemine ait olduğunu doğruladım',
       earnAttribRevision: 'Kaynağın atıf revizyonu: {{revision}}',
       earnAttribSave: 'İki dönem arasındaki atfı sürümlü kaydet',
-      earnAttribSaved: 'Atıf kaydedildi; her iki maaş döneminde aynı kaynak bölüşümü kullanılacak.',
+      earnAttribSaved:
+        'Atıf kaydedildi; her iki maaş döneminde aynı kaynak bölüşümü kullanılacak.',
       earnAttribInvalid: 'Atıf geçersiz veya kayıt sürümü eskimiş',
       earnAttribStale:
         'Takvim aylık kaynak kaydı değişmiş. Önceki atıf kullanılamaz; veri tutarlılığını kontrol et.',
@@ -586,7 +587,8 @@ const resources = {
       earnAttribExplanation:
         'You explicitly assign each calendar-month bonus, deduction or correction between its two eligible custom pay periods. Enter the earlier period amount in exact minor currency units; the remainder belongs to the later period. No day-based proration and no double allocation of a source.',
       earnAttribPeriod: 'Selected pay period: {{start}} – {{end}}',
-      earnAttribEmpty: 'There are no calendar-month adjustments relevant to this custom pay period.',
+      earnAttribEmpty:
+        'There are no calendar-month adjustments relevant to this custom pay period.',
       earnAttribPending:
         '{{count}} source allocations are missing or their source changed. No verified period total is shown.',
       earnAttribVerified:

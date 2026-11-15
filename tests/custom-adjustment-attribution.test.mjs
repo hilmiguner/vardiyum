@@ -3,11 +3,19 @@ import test from 'node:test';
 import { DatabaseSync } from 'node:sqlite';
 
 import {
-  INITIAL_SCHEMA, MIGRATION_2_SQL, MIGRATION_3_SQL, MIGRATION_4_SQL,
-  MIGRATION_5_SQL, MIGRATION_6_SQL, MIGRATION_7_SQL, MIGRATION_8_SQL,
+  INITIAL_SCHEMA,
+  MIGRATION_2_SQL,
+  MIGRATION_3_SQL,
+  MIGRATION_4_SQL,
+  MIGRATION_5_SQL,
+  MIGRATION_6_SQL,
+  MIGRATION_7_SQL,
+  MIGRATION_8_SQL,
 } from '../src/data/schema.ts';
 import {
-  attributionEventKey, attributionHeadKey, attributionPrefix,
+  attributionEventKey,
+  attributionHeadKey,
+  attributionPrefix,
   createCustomAdjustmentAttributionEvent,
   customAdjustmentCandidatePeriods,
   decodeCustomAdjustmentAttributionHistory,
@@ -42,9 +50,16 @@ function dbV8() {
   const db = new DatabaseSync(':memory:');
   db.exec('PRAGMA foreign_keys=ON');
   for (const sql of [
-    INITIAL_SCHEMA, MIGRATION_2_SQL, MIGRATION_3_SQL, MIGRATION_4_SQL,
-    MIGRATION_5_SQL, MIGRATION_6_SQL, MIGRATION_7_SQL, MIGRATION_8_SQL,
-  ]) db.exec('BEGIN IMMEDIATE;' + sql + 'COMMIT;');
+    INITIAL_SCHEMA,
+    MIGRATION_2_SQL,
+    MIGRATION_3_SQL,
+    MIGRATION_4_SQL,
+    MIGRATION_5_SQL,
+    MIGRATION_6_SQL,
+    MIGRATION_7_SQL,
+    MIGRATION_8_SQL,
+  ])
+    db.exec('BEGIN IMMEDIATE;' + sql + 'COMMIT;');
   return db;
 }
 function store(db) {
@@ -68,17 +83,26 @@ async function fixture() {
 function insertAdjustment(db, row) {
   db.prepare(
     'INSERT INTO earnings_adjustments(id,period_key,kind,currency,amount_minor_units,' +
-    "note,source,created_at) VALUES(?,?,?,?,?,?,'user_entered',?)",
+      "note,source,created_at) VALUES(?,?,?,?,?,?,'user_entered',?)",
   ).run(
-    row.id, row.periodKey, row.kind, row.currency, row.amountMinorUnits,
-    row.note, row.createdAt,
+    row.id,
+    row.periodKey,
+    row.kind,
+    row.currency,
+    row.amountMinorUnits,
+    row.note,
+    row.createdAt,
   );
 }
 function saveInput(id, first, expected = 0, stamp = STAMP1, extra = {}) {
   return {
-    adjustmentId: id, startDay: DAY, earlierMinorUnits: first,
-    expectedRevision: expected, reason: 'Explicit user attribution across payroll periods',
-    recordedAt: stamp, ...extra,
+    adjustmentId: id,
+    startDay: DAY,
+    earlierMinorUnits: first,
+    expectedRevision: expected,
+    reason: 'Explicit user attribution across payroll periods',
+    recordedAt: stamp,
+    ...extra,
   };
 }
 async function transaction(db, fn, adapter = store(db)) {
@@ -93,17 +117,14 @@ async function transaction(db, fn, adapter = store(db)) {
   }
 }
 async function save(db, id, first, expected = 0, stamp = STAMP1, extra = {}) {
-  return transaction(db, adapter => appendCustomAdjustmentAttribution(
-    adapter, saveInput(id, first, expected, stamp, extra),
-  ));
+  return transaction(db, (adapter) =>
+    appendCustomAdjustmentAttribution(adapter, saveInput(id, first, expected, stamp, extra)),
+  );
 }
 function auditRows(db) {
-  return db.prepare(
-    'SELECT key,value FROM app_settings WHERE substr(key,1,?)=? ORDER BY key',
-  ).all(
-    attributionPrefix(DAY, 'bonus_nov').length,
-    attributionPrefix(DAY, 'bonus_nov'),
-  );
+  return db
+    .prepare('SELECT key,value FROM app_settings WHERE substr(key,1,?)=? ORDER BY key')
+    .all(attributionPrefix(DAY, 'bonus_nov').length, attributionPrefix(DAY, 'bonus_nov'));
 }
 
 test('civil month source gives exactly two adjacent custom periods, never day-based proration', () => {
@@ -113,7 +134,12 @@ test('civil month source gives exactly two adjacent custom periods, never day-ba
     laterPeriodKey: LATER,
   });
   const event = createCustomAdjustmentAttributionEvent(
-    source, DAY, 43_211, 1, 'Actual user allocation', STAMP1,
+    source,
+    DAY,
+    43_211,
+    1,
+    'Actual user allocation',
+    STAMP1,
   );
   assert.equal(event.earlierMinorUnits, 43_211);
   assert.equal(event.laterMinorUnits, 80_245);
@@ -133,27 +159,54 @@ test('negative deductions and signed corrections are partitioned without sign in
   ]) {
     const first = Math.trunc(source.amountMinorUnits / 3);
     const event = createCustomAdjustmentAttributionEvent(
-      source, DAY, first, 1, 'Explicit signed adjustment division', STAMP1,
+      source,
+      DAY,
+      first,
+      1,
+      'Explicit signed adjustment division',
+      STAMP1,
     );
     assert.equal(event.earlierMinorUnits + event.laterMinorUnits, source.amountMinorUnits);
     assert.equal(Math.sign(event.earlierMinorUnits), Math.sign(source.amountMinorUnits));
     assert.equal(Math.sign(event.laterMinorUnits), Math.sign(source.amountMinorUnits));
   }
   for (const first of [12_346, -1, -20_000]) {
-    assert.throws(() => createCustomAdjustmentAttributionEvent(
-      adjustment(), DAY, first, 1, 'Invalid source over-allocation', STAMP1,
-    ), /CUSTOM_ADJUSTMENT_SPLIT_EXCEEDS_SOURCE/);
+    assert.throws(
+      () =>
+        createCustomAdjustmentAttributionEvent(
+          adjustment(),
+          DAY,
+          first,
+          1,
+          'Invalid source over-allocation',
+          STAMP1,
+        ),
+      /CUSTOM_ADJUSTMENT_SPLIT_EXCEEDS_SOURCE/,
+    );
   }
-  assert.throws(() => createCustomAdjustmentAttributionEvent(
-    adjustment({ kind: 'deduction', amountMinorUnits: -5_000 }),
-    DAY, 1, 1, 'Sign inversion', STAMP1,
-  ), /CUSTOM_ADJUSTMENT_SPLIT_EXCEEDS_SOURCE/);
+  assert.throws(
+    () =>
+      createCustomAdjustmentAttributionEvent(
+        adjustment({ kind: 'deduction', amountMinorUnits: -5_000 }),
+        DAY,
+        1,
+        1,
+        'Sign inversion',
+        STAMP1,
+      ),
+    /CUSTOM_ADJUSTMENT_SPLIT_EXCEEDS_SOURCE/,
+  );
 });
 
 test('zero to full source assigned to exactly one sibling period are both explicit valid choices', () => {
   for (const first of [0, 123_456]) {
     const split = createCustomAdjustmentAttributionEvent(
-      adjustment(), DAY, first, 1, 'Explicit all-or-nothing allocation', STAMP1,
+      adjustment(),
+      DAY,
+      first,
+      1,
+      'Explicit all-or-nothing allocation',
+      STAMP1,
     );
     assert.equal(split.earlierMinorUnits, first);
     assert.equal(split.laterMinorUnits, 123_456 - first);
@@ -164,10 +217,15 @@ test('missing source attribution blocks all verified subtotals, even with anothe
   const db = await fixture();
   try {
     insertAdjustment(db, adjustment());
-    insertAdjustment(db, adjustment({
-      id: 'deduction_oct', periodKey: '2026-10', kind: 'deduction',
-      amountMinorUnits: -10_000,
-    }));
+    insertAdjustment(
+      db,
+      adjustment({
+        id: 'deduction_oct',
+        periodKey: '2026-10',
+        kind: 'deduction',
+        amountMinorUnits: -10_000,
+      }),
+    );
     const missing = await loadCustomAdjustmentReportFromStore(store(db), EARLIER);
     assert.equal(missing.status, 'requires_attribution');
     assert.equal(missing.pendingCount, 2);
@@ -180,7 +238,9 @@ test('missing source attribution blocks all verified subtotals, even with anothe
     assert.equal(half.pendingCount, 1);
     assert.deepEqual(half.totals, []);
     assert.equal(half.status, 'requires_attribution');
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('one source decision is read identically from two adjacent custom periods; neither duplicates source', async () => {
@@ -207,17 +267,27 @@ test('one source decision is read identically from two adjacent custom periods; 
     assert.equal(older.candidates[0].revision, 1);
     assert.equal(newer.candidates[0].revision, 1);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM earnings_adjustments').get().n, 1);
-    assert.equal(db.prepare('SELECT amount_minor_units FROM earnings_adjustments').get().amount_minor_units, 123_456);
-  } finally { db.close(); }
+    assert.equal(
+      db.prepare('SELECT amount_minor_units FROM earnings_adjustments').get()
+        .amount_minor_units,
+      123_456,
+    );
+  } finally {
+    db.close();
+  }
 });
 
 test('two source calendar months overlap one special pay period without double counting', async () => {
   const db = await fixture();
   try {
-    insertAdjustment(db, adjustment({
-      id: 'oct_bonus', periodKey: '2026-10',
-      amountMinorUnits: 50_000,
-    }));
+    insertAdjustment(
+      db,
+      adjustment({
+        id: 'oct_bonus',
+        periodKey: '2026-10',
+        amountMinorUnits: 50_000,
+      }),
+    );
     insertAdjustment(db, adjustment());
     await save(db, 'oct_bonus', 10_000); // Oct source: 10,000 in Sep, 40,000 in Oct
     await save(db, 'bonus_nov', 43_211); // Nov source: 43,211 in Oct, 80,245 in Nov
@@ -233,21 +303,31 @@ test('two source calendar months overlap one special pay period without double c
       sep.totals[0].minorUnits + oct.totals[0].minorUnits + nov.totals[0].minorUnits,
       173_456,
     );
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('negative bonus/deduction/correction results net exact signed minor units', async () => {
   const db = await fixture();
   try {
     insertAdjustment(db, adjustment());
-    insertAdjustment(db, adjustment({
-      id: 'deduct_nov', kind: 'deduction',
-      amountMinorUnits: -25_000,
-    }));
-    insertAdjustment(db, adjustment({
-      id: 'corr_nov', kind: 'correction',
-      amountMinorUnits: -2_001,
-    }));
+    insertAdjustment(
+      db,
+      adjustment({
+        id: 'deduct_nov',
+        kind: 'deduction',
+        amountMinorUnits: -25_000,
+      }),
+    );
+    insertAdjustment(
+      db,
+      adjustment({
+        id: 'corr_nov',
+        kind: 'correction',
+        amountMinorUnits: -2_001,
+      }),
+    );
     await save(db, 'bonus_nov', 40_000);
     await save(db, 'deduct_nov', -10_000);
     await save(db, 'corr_nov', -501);
@@ -257,16 +337,23 @@ test('negative bonus/deduction/correction results net exact signed minor units',
     assert.deepEqual(second.totals, [{ currency: 'TRY', minorUnits: 66_956 }]);
     assert.equal(first.totals[0].minorUnits + second.totals[0].minorUnits, 96_455);
     assert.equal(123_456 - 25_000 - 2_001, 96_455);
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('different currencies show separate subtotals without inferred FX', async () => {
   const db = await fixture();
   try {
     insertAdjustment(db, adjustment());
-    insertAdjustment(db, adjustment({
-      id: 'usd_nov', currency: 'USD', amountMinorUnits: 30_000,
-    }));
+    insertAdjustment(
+      db,
+      adjustment({
+        id: 'usd_nov',
+        currency: 'USD',
+        amountMinorUnits: 30_000,
+      }),
+    );
     await save(db, 'bonus_nov', 23_456);
     await save(db, 'usd_nov', 10_000);
     const report = await loadCustomAdjustmentReportFromStore(store(db), EARLIER);
@@ -276,7 +363,9 @@ test('different currencies show separate subtotals without inferred FX', async (
       { currency: 'USD', minorUnits: 10_000 },
     ]);
     assert.equal('totalMinorUnits' in report, false);
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('corrected split appends immutable revision, atomically updates BOTH period reports', async () => {
@@ -284,7 +373,8 @@ test('corrected split appends immutable revision, atomically updates BOTH period
   try {
     insertAdjustment(db, adjustment());
     const old = await save(db, 'bonus_nov', 43_211);
-    const previousBytes = db.prepare('SELECT value FROM app_settings WHERE key=?')
+    const previousBytes = db
+      .prepare('SELECT value FROM app_settings WHERE key=?')
       .get(attributionEventKey(DAY, 'bonus_nov', 1)).value;
     const update = await save(db, 'bonus_nov', 50_000, 1, STAMP2);
     assert.equal(old.revision, 1);
@@ -292,27 +382,32 @@ test('corrected split appends immutable revision, atomically updates BOTH period
     assert.equal(update.earlierMinorUnits, 50_000);
     assert.equal(update.laterMinorUnits, 73_456);
     const history = await readCustomAdjustmentHistory(store(db), 'bonus_nov', DAY);
-    assert.deepEqual(history.map(item => item.earlierMinorUnits), [43_211, 50_000]);
+    assert.deepEqual(
+      history.map((item) => item.earlierMinorUnits),
+      [43_211, 50_000],
+    );
     assert.equal(
-      db.prepare('SELECT value FROM app_settings WHERE key=?')
+      db
+        .prepare('SELECT value FROM app_settings WHERE key=?')
         .get(attributionEventKey(DAY, 'bonus_nov', 1)).value,
       previousBytes,
     );
     assert.equal(previousBytes, JSON.stringify(old));
-    assert.deepEqual(
-      (await loadCustomAdjustmentReportFromStore(store(db), EARLIER)).totals,
-      [{ currency: 'TRY', minorUnits: 50_000 }],
-    );
-    assert.deepEqual(
-      (await loadCustomAdjustmentReportFromStore(store(db), LATER)).totals,
-      [{ currency: 'TRY', minorUnits: 73_456 }],
-    );
+    assert.deepEqual((await loadCustomAdjustmentReportFromStore(store(db), EARLIER)).totals, [
+      { currency: 'TRY', minorUnits: 50_000 },
+    ]);
+    assert.deepEqual((await loadCustomAdjustmentReportFromStore(store(db), LATER)).totals, [
+      { currency: 'TRY', minorUnits: 73_456 },
+    ]);
     assert.equal(
-      db.prepare('SELECT value FROM app_settings WHERE key=?')
+      db
+        .prepare('SELECT value FROM app_settings WHERE key=?')
         .get(attributionHeadKey(DAY, 'bonus_nov')).value,
       '2',
     );
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('stale revision, unchanged allocation and invalid input are rejected without partial writes', async () => {
@@ -333,14 +428,15 @@ test('stale revision, unchanged allocation and invalid input are rejected withou
     ];
     for (const bad of invalid) {
       await assert.rejects(() =>
-        transaction(db, store =>
-          appendCustomAdjustmentAttribution(store, bad)),
+        transaction(db, (store) => appendCustomAdjustmentAttribution(store, bad)),
       );
     }
     assert.equal((await readCustomAdjustmentHistory(store(db), 'bonus_nov', DAY)).length, 1);
     assert.equal(auditRows(db).length, 2);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM earnings_adjustments').get().n, 1);
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('direct source edit creates an untrusted stale source, not a newly approved allocation', async () => {
@@ -348,8 +444,10 @@ test('direct source edit creates an untrusted stale source, not a newly approved
   try {
     insertAdjustment(db, adjustment());
     await save(db, 'bonus_nov', 40_000);
-    db.prepare('UPDATE earnings_adjustments SET amount_minor_units=? WHERE id=?')
-      .run(200_000, 'bonus_nov');
+    db.prepare('UPDATE earnings_adjustments SET amount_minor_units=? WHERE id=?').run(
+      200_000,
+      'bonus_nov',
+    );
     const report = await loadCustomAdjustmentReportFromStore(store(db), EARLIER);
     assert.equal(report.status, 'requires_attribution');
     assert.equal(report.pendingCount, 1);
@@ -360,10 +458,13 @@ test('direct source edit creates an untrusted stale source, not a newly approved
       /CUSTOM_ADJUSTMENT_SOURCE_CHANGED/,
     );
     assert.equal(
-      db.prepare('SELECT amount_minor_units FROM earnings_adjustments').get().amount_minor_units,
+      db.prepare('SELECT amount_minor_units FROM earnings_adjustments').get()
+        .amount_minor_units,
       200_000,
     );
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('missing head, tampered source snapshot and event gap fail closed on readback', async () => {
@@ -374,7 +475,8 @@ test('missing head, tampered source snapshot and event gap fail closed on readba
     const key = attributionEventKey(DAY, 'bonus_nov', 1);
     const sourceBytes = db.prepare('SELECT value FROM app_settings WHERE key=?').get(key).value;
     db.prepare('UPDATE app_settings SET value=? WHERE key=?').run(
-      sourceBytes.replace('"amountMinorUnits":123456', '"amountMinorUnits":123457'), key,
+      sourceBytes.replace('"amountMinorUnits":123456', '"amountMinorUnits":123457'),
+      key,
     );
     await assert.rejects(
       () => readCustomAdjustmentHistory(store(db), 'bonus_nov', DAY),
@@ -389,12 +491,16 @@ test('missing head, tampered source snapshot and event gap fail closed on readba
       /INVALID_CUSTOM_ADJUSTMENT_HEAD/,
     );
     assert.throws(
-      () => decodeCustomAdjustmentAttributionHistory(DAY, 'bonus_nov', [
-        { key: attributionHeadKey(DAY, 'bonus_nov'), value: '1' },
-        { key: attributionEventKey(DAY, 'bonus_nov', 2), value: sourceBytes },
-      ]), /CUSTOM_ADJUSTMENT_EVENT_GAP/,
+      () =>
+        decodeCustomAdjustmentAttributionHistory(DAY, 'bonus_nov', [
+          { key: attributionHeadKey(DAY, 'bonus_nov'), value: '1' },
+          { key: attributionEventKey(DAY, 'bonus_nov', 2), value: sourceBytes },
+        ]),
+      /CUSTOM_ADJUSTMENT_EVENT_GAP/,
     );
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('simulated event/head write failure rolls back all changes atomically', async () => {
@@ -410,13 +516,12 @@ test('simulated event/head write failure rolls back all changes atomically', asy
       },
     };
     await assert.rejects(
-      () => transaction(
-        db,
-        store => appendCustomAdjustmentAttribution(
-          store, saveInput('bonus_nov', 40_000),
+      () =>
+        transaction(
+          db,
+          (store) => appendCustomAdjustmentAttribution(store, saveInput('bonus_nov', 40_000)),
+          broken,
         ),
-        broken,
-      ),
       /SIMULATED_WRITE_INTERRUPTION/,
     );
     assert.equal(auditRows(db).length, 0);
@@ -424,7 +529,9 @@ test('simulated event/head write failure rolls back all changes atomically', asy
       (await loadCustomAdjustmentReportFromStore(store(db), EARLIER)).status,
       'requires_attribution',
     );
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('literal underscore source IDs are isolated from wildcard and adjacent startDay streams', async () => {
@@ -435,10 +542,13 @@ test('literal underscore source IDs are isolated from wildcard and adjacent star
     assert.notEqual(attributionPrefix(DAY, 'bonus_nov'), attributionPrefix(DAY, 'bonusXnov'));
     assert.notEqual(attributionPrefix(DAY, 'bonus_nov'), attributionPrefix(25, 'bonus_nov'));
     db.prepare('INSERT INTO app_settings(key,value) VALUES(?,?)').run(
-      attributionHeadKey(DAY, 'bonusXnov'), '99',
+      attributionHeadKey(DAY, 'bonusXnov'),
+      '99',
     );
     assert.equal((await readCustomAdjustmentHistory(store(db), 'bonus_nov', DAY)).length, 1);
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('day1 retains the legacy calendar monthly adjustment report untouched', async () => {
@@ -454,7 +564,9 @@ test('day1 retains the legacy calendar monthly adjustment report untouched', asy
     );
     assert.equal(auditRows(db).length, 0);
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM earnings_adjustments').get().n, 1);
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });
 
 test('v1 to v8 SQLite schema and encrypted backup-compatible 18-table contract unchanged', async () => {
@@ -464,7 +576,11 @@ test('v1 to v8 SQLite schema and encrypted backup-compatible 18-table contract u
     await save(db, 'bonus_nov', 43_211);
     assert.equal(db.prepare('PRAGMA user_version').get().user_version, 8);
     assert.equal(
-      db.prepare("SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").get().n,
+      db
+        .prepare(
+          "SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+        )
+        .get().n,
       18,
     );
     assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(), []);
@@ -474,5 +590,7 @@ test('v1 to v8 SQLite schema and encrypted backup-compatible 18-table contract u
       db.prepare('SELECT COUNT(*) AS n FROM earnings_month_break_allocation_events').get().n,
       0,
     );
-  } finally { db.close(); }
+  } finally {
+    db.close();
+  }
 });

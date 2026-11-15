@@ -11,7 +11,7 @@ export async function saveCustomAdjustmentSplit(
   input: Omit<CustomAdjustmentSave, 'recordedAt'>,
 ): Promise<void> {
   const db = await getDatabase();
-  await db.withExclusiveTransactionAsync(async tx => {
+  await db.withExclusiveTransactionAsync(async (tx) => {
     await appendCustomAdjustmentAttribution(tx, {
       ...input,
       recordedAt: new Date().toISOString(),
@@ -25,7 +25,7 @@ export async function loadCustomAdjustmentReport(
 ): Promise<CustomAdjustmentReport> {
   const db = await getDatabase();
   const result: { current: CustomAdjustmentReport | null } = { current: null };
-  await db.withExclusiveTransactionAsync(async tx => {
+  await db.withExclusiveTransactionAsync(async (tx) => {
     result.current = await loadCustomAdjustmentReportFromStore(tx, periodKey);
   });
   if (result.current === null) throw new Error('CUSTOM_ADJUSTMENT_READ_NOT_COMPLETED');

@@ -86,7 +86,8 @@ export async function readCustomAdjustmentHistory(
   const prefix = attributionPrefix(startDay, adjustmentId);
   const rows = await store.getAllAsync<{ key: string; value: string }>(
     'SELECT key,value FROM app_settings WHERE substr(key,1,?)=? ORDER BY key',
-    prefix.length, prefix,
+    prefix.length,
+    prefix,
   );
   return decodeCustomAdjustmentAttributionHistory(startDay, adjustmentId, rows);
 }
@@ -101,19 +102,21 @@ export async function appendCustomAdjustmentAttribution(
   input: CustomAdjustmentSave,
 ): Promise<CustomAdjustmentAttributionEvent> {
   attributionPrefix(input.startDay, input.adjustmentId);
-  if (!Number.isSafeInteger(input.expectedRevision) ||
-      input.expectedRevision < 0 || input.expectedRevision >= 64)
+  if (
+    !Number.isSafeInteger(input.expectedRevision) ||
+    input.expectedRevision < 0 ||
+    input.expectedRevision >= 64
+  )
     throw new Error('INVALID_CUSTOM_ADJUSTMENT_EXPECTED_REVISION');
   if ((await readPayPeriodStartDay(store)) !== input.startDay)
     throw new Error('CUSTOM_ADJUSTMENT_SETTING_CHANGED');
   const row = await store.getFirstAsync<AdjustmentRow>(
-    SOURCE_SQL + ' WHERE id=?', input.adjustmentId,
+    SOURCE_SQL + ' WHERE id=?',
+    input.adjustmentId,
   );
   if (!row) throw new Error('CUSTOM_ADJUSTMENT_SOURCE_NOT_FOUND');
   const original = fromAdjustmentRow(row);
-  const history = await readCustomAdjustmentHistory(
-    store, input.adjustmentId, input.startDay,
-  );
+  const history = await readCustomAdjustmentHistory(store, input.adjustmentId, input.startDay);
   if (history.length !== input.expectedRevision)
     throw new Error('STALE_CUSTOM_ADJUSTMENT_REVISION');
   if (history.length) {
@@ -126,8 +129,12 @@ export async function appendCustomAdjustmentAttribution(
       throw new Error('INVALID_CUSTOM_ADJUSTMENT_REVISION');
   }
   const event = createCustomAdjustmentAttributionEvent(
-    original, input.startDay, input.earlierMinorUnits,
-    history.length + 1, input.reason, input.recordedAt,
+    original,
+    input.startDay,
+    input.earlierMinorUnits,
+    history.length + 1,
+    input.reason,
+    input.recordedAt,
   );
   await store.runAsync(
     'INSERT INTO app_settings(key,value) VALUES (?,?)',
@@ -140,16 +147,17 @@ export async function appendCustomAdjustmentAttribution(
   } else {
     const updated = await store.runAsync(
       'UPDATE app_settings SET value=? WHERE key=? AND value=?',
-      String(event.revision), head, String(history.length),
+      String(event.revision),
+      head,
+      String(history.length),
     );
-    if (updated.changes !== 1)
-      throw new Error('STALE_CUSTOM_ADJUSTMENT_REVISION');
+    if (updated.changes !== 1) throw new Error('STALE_CUSTOM_ADJUSTMENT_REVISION');
   }
-  const readback = await readCustomAdjustmentHistory(
-    store, input.adjustmentId, input.startDay,
-  );
-  if (readback.length !== event.revision ||
-      JSON.stringify(readback[readback.length - 1]) !== JSON.stringify(event))
+  const readback = await readCustomAdjustmentHistory(store, input.adjustmentId, input.startDay);
+  if (
+    readback.length !== event.revision ||
+    JSON.stringify(readback[readback.length - 1]) !== JSON.stringify(event)
+  )
     throw new Error('CUSTOM_ADJUSTMENT_READBACK_MISMATCH');
   return event;
 }
@@ -166,7 +174,8 @@ export async function loadCustomAdjustmentReportFromStore(
   const bounds = customPayPeriodBounds(periodKey, startDay);
   const rows = await store.getAllAsync<AdjustmentRow>(
     SOURCE_SQL + ' WHERE period_key IN (?,?) ORDER BY created_at,id',
-    bounds.startDate.slice(0, 7), bounds.endDateInclusive.slice(0, 7),
+    bounds.startDate.slice(0, 7),
+    bounds.endDateInclusive.slice(0, 7),
   );
   const candidates: CustomAdjustmentCandidate[] = [];
   const seen = new Set<string>();
@@ -177,19 +186,17 @@ export async function loadCustomAdjustmentReportFromStore(
     if (seen.has(original.id)) throw new Error('DUPLICATE_CUSTOM_ADJUSTMENT_SOURCE');
     seen.add(original.id);
     const periods = customAdjustmentCandidatePeriods(original, startDay);
-    if (periodKey !== periods.earlierPeriodKey &&
-        periodKey !== periods.laterPeriodKey)
+    if (periodKey !== periods.earlierPeriodKey && periodKey !== periods.laterPeriodKey)
       throw new Error('CUSTOM_ADJUSTMENT_OUTSIDE_PERIOD');
     const history = await readCustomAdjustmentHistory(store, original.id, startDay);
     const latest = history[history.length - 1];
-    const stale = latest !== undefined &&
-      JSON.stringify(latest.original) !== JSON.stringify(original);
+    const stale =
+      latest !== undefined && JSON.stringify(latest.original) !== JSON.stringify(original);
     const pending = latest === undefined || stale;
     if (pending) pendingCount++;
     const earlier = pending ? null : latest.earlierMinorUnits;
     const later = pending ? null : latest.laterMinorUnits;
-    const amount = pending ? null :
-      periodKey === periods.earlierPeriodKey ? earlier : later;
+    const amount = pending ? null : periodKey === periods.earlierPeriodKey ? earlier : later;
     candidates.push({
       adjustmentId: original.id,
       sourceCalendarMonth: original.periodKey,
@@ -218,12 +225,17 @@ export async function loadCustomAdjustmentReportFromStore(
   const ready = pendingCount === 0;
   return {
     status: rows.length === 0 ? 'empty' : ready ? 'verified' : 'requires_attribution',
-    periodKey, startDay, startDate: bounds.startDate,
-    endDateInclusive: bounds.endDateInclusive, pendingCount, candidates,
-    totals: ready ?
-      [...totals.entries()].sort(([a], [b]) => a.localeCompare(b)).map(
-        ([currency, minorUnits]) => ({ currency, minorUnits }),
-      ) : [],
+    periodKey,
+    startDay,
+    startDate: bounds.startDate,
+    endDateInclusive: bounds.endDateInclusive,
+    pendingCount,
+    candidates,
+    totals: ready
+      ? [...totals.entries()]
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([currency, minorUnits]) => ({ currency, minorUnits }))
+      : [],
     scope: 'ATTRIBUTED_CALENDAR_ADJUSTMENTS_ONLY_NOT_COMBINED',
   };
 }

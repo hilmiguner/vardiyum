@@ -8,11 +8,7 @@ import {
   saveCustomAdjustmentSplit,
 } from '../data/custom-adjustment-attribution-repository';
 import type { CustomAdjustmentCandidate } from '../domain/custom-adjustment-attribution-store';
-import {
-  formatMoneyMinor,
-  minorUnitsToInput,
-  parseMoneyMinor,
-} from '../domain/money-text';
+import { formatMoneyMinor, minorUnitsToInput, parseMoneyMinor } from '../domain/money-text';
 import { usePalette } from '../theme/colors';
 import { Action, Heading, Muted, Panel } from './ui';
 
@@ -31,9 +27,9 @@ export function CustomAdjustmentAttributionPanel({
   const { t, i18n } = useTranslation();
   const locale = i18n.language.startsWith('tr') ? 'tr' : 'en';
   const palette = usePalette();
-  const [report, setReport] = useState<
-    Awaited<ReturnType<typeof loadCustomAdjustmentReport>> | null
-  >(null);
+  const [report, setReport] = useState<Awaited<
+    ReturnType<typeof loadCustomAdjustmentReport>
+  > | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [amounts, setAmounts] = useState<Record<string, string>>({});
   const [reasons, setReasons] = useState<Record<string, string>>({});
@@ -63,7 +59,8 @@ export function CustomAdjustmentAttributionPanel({
 
   const save = async (candidate: CustomAdjustmentCandidate) => {
     if (report?.status === 'disabled' || !report) return;
-    const entered = amounts[candidate.adjustmentId] ??
+    const entered =
+      amounts[candidate.adjustmentId] ??
       (candidate.earlierMinorUnits === null
         ? ''
         : minorUnitsToInput(candidate.earlierMinorUnits));
@@ -72,11 +69,15 @@ export function CustomAdjustmentAttributionPanel({
       if (!entered || reason.trim().length < 3 || reason.trim().length > 160)
         throw new Error('CUSTOM_ADJUSTMENT_INPUT_REQUIRED');
       const earlierMinorUnits = parseMoneyMinor(entered);
-      if (candidate.originalMinorUnits > 0 &&
-          (earlierMinorUnits < 0 || earlierMinorUnits > candidate.originalMinorUnits))
+      if (
+        candidate.originalMinorUnits > 0 &&
+        (earlierMinorUnits < 0 || earlierMinorUnits > candidate.originalMinorUnits)
+      )
         throw new Error('CUSTOM_ADJUSTMENT_SPLIT_EXCEEDS_SOURCE');
-      if (candidate.originalMinorUnits < 0 &&
-          (earlierMinorUnits > 0 || earlierMinorUnits < candidate.originalMinorUnits))
+      if (
+        candidate.originalMinorUnits < 0 &&
+        (earlierMinorUnits > 0 || earlierMinorUnits < candidate.originalMinorUnits)
+      )
         throw new Error('CUSTOM_ADJUSTMENT_SPLIT_EXCEEDS_SOURCE');
       setSavingId(candidate.adjustmentId);
       await saveCustomAdjustmentSplit({
@@ -100,10 +101,7 @@ export function CustomAdjustmentAttributionPanel({
       onSaved?.();
       Alert.alert(t('earnAttribSaved'));
     } catch (failure) {
-      Alert.alert(
-        t('earnAttribInvalid'),
-        failure instanceof Error ? failure.message : '',
-      );
+      Alert.alert(t('earnAttribInvalid'), failure instanceof Error ? failure.message : '');
     } finally {
       setSavingId(null);
     }
@@ -178,9 +176,7 @@ export function CustomAdjustmentAttributionPanel({
                     })}
                   </Muted>
                   {candidate.stale ? (
-                    <Text style={{ color: palette.danger }}>
-                      {t('earnAttribStale')}
-                    </Text>
+                    <Text style={{ color: palette.danger }}>{t('earnAttribStale')}</Text>
                   ) : candidate.earlierMinorUnits !== null &&
                     candidate.laterMinorUnits !== null ? (
                     <Muted>
@@ -256,9 +252,7 @@ export function CustomAdjustmentAttributionPanel({
                       color: palette.text,
                     }}
                   />
-                  <Muted>
-                    {t('earnAttribRevision', { revision: candidate.revision })}
-                  </Muted>
+                  <Muted>{t('earnAttribRevision', { revision: candidate.revision })}</Muted>
                   <Action
                     label={t('earnAttribSave')}
                     disabled={savingId !== null}
