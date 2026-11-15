@@ -79,10 +79,12 @@ export function CustomHourlyEstimatePanel({
             })}
           </Muted>
           <Muted>
-            {t('earnCustomHourlyProfile', {
-              profile: report.profileId,
-              revision: report.profileRevision,
-            })}
+            {report.profileCount === 1
+              ? t('earnCustomHourlyProfile', {
+                  profile: report.profileId,
+                  revision: report.profileRevision,
+                })
+              : t('earnCustomHourlyMixedRates', { count: report.profileCount })}
           </Muted>
           <Heading>{t('earnCustomHourlySources')}</Heading>
           {report.lines.map((line, index) => (
@@ -99,6 +101,12 @@ export function CustomHourlyEstimatePanel({
                 {t('earnCustomHourlyKind_' + line.kind)} ·{' '}
                 {formatMoneyMinor(line.amountMinorUnits, report.currency, locale)}
               </Text>
+              <Muted>
+                {t('earnCustomHourlyLineProfile', {
+                  profile: line.profileId,
+                  revision: line.profileRevision,
+                })}
+              </Muted>
               <Muted>
                 {t('earnCustomHourlyLine', {
                   work: line.workId,
