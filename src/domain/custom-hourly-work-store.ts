@@ -1,0 +1,83 @@
+import { customBreakSourcePeriods } from './custom-pay-break-audit';
+import {
+  CUSTOM_BREAK_WORK_SQL,
+  readCustomPayBreakHistory,
+  workFromCustomBreakRow,
+  type CustomBreakWorkRow,
+} from './custom-pay-break-store';
+import {
+  estimateCustomHourlyWork,
+  type CustomHourlyEstimate,
+  type CustomHourlySource,
+} from './custom-hourly-work-estimate';
+import { loadCustomPayProfilePreviewFromStore } from './custom-pay-profile-preview-store';
+import { validateEarningsWork } from './earnings-engine';
+import { customPayPeriodBounds, payPeriodForDate } from './pay-period';
+import { readPayPeriodStartDay } from './pay-period-settings';
+import { calendarDateInZone } from './shift-engine';
+
+export interface CustomHourlyReportStore {
+  getFirstAsync<T>(sql: string, ...params: string[]): Promise<T | null>;
+  getAllAsync<T>(sql: string, ...params: (string | number)[]): Promise<T[]>;
+}
+
+/**
+ * Snapshot-consistent, read-only report of USER-REPORTED ACTUAL WORK ONLY.
+ * All reads use the same exclusive SQLite transaction connection. No new
+ * database schema, adjustment attribution or automatic mixed-rate policy.
+ */
+export async function loadCustomHourlyEstimateFromStore(
+  store: CustomHourlyReportStore,
+  periodKey: string,
+  scheduleTimeZone: string,
+): Promise<CustomHourlyEstimate> {
+  const plan = await loadCustomPayProfilePreviewFromStore(store, periodKey, scheduleTimeZone);
+  if (plan.startDay === 1) {
+    return { status: 'disabled', periodKey, startDay: 1, reasons: [] };
+  }
+  const bounds = customPayPeriodBounds(periodKey, plan.startDay);
+  const [workRows, adjustments] = await Promise.all([
+    store.getAllAsync<CustomBreakWorkRow>(
+      CUSTOM_BREAK_WORK_SQL +
+        ' WHERE local_date <= ? AND end_date >= ? ORDER BY start_instant_utc,id',
+      bounds.endDateInclusive,
+      bounds.startDate,
+    ),
+    store.getFirstAsync<{ n: number }>(
+      'SELECT COUNT(*) AS n FROM earnings_adjustments WHERE period_key IN (?, ?)',
+      bounds.startDate.slice(0, 7),
+      bounds.endDateInclusive.slice(0, 7),
+    ),
+  ]);
+
+  const sources: CustomHourlySource[] = [];
+  for (const raw of workRows) {
+    const work = validateEarningsWork(workFromCustomBreakRow(raw));
+    const firstDate = calendarDateInZone(work.timeZone, new Date(work.startInstantUtc));
+    const lastDate = calendarDateInZone(
+      work.timeZone,
+      new Date(Date.parse(work.endInstantUtc) - 1),
+    );
+    if (
+      payPeriodForDate(firstDate, plan.startDay) !==
+        payPeriodForDate(lastDate, plan.startDay) &&
+      work.breakMinutes > 0
+    ) {
+      customBreakSourcePeriods(work, plan.startDay);
+      const history = await readCustomPayBreakHistory(store, work, plan.startDay);
+      const latest = history[history.length - 1];
+      sources.push({
+        work,
+        allocation: latest,
+        auditRevision: latest?.revision,
+      });
+    } else {
+      sources.push({ work });
+    }
+  }
+
+  // Protect against a changed preference while a report is being assembled.
+  if ((await readPayPeriodStartDay(store)) !== plan.startDay)
+    throw new Error('CUSTOM_PAY_SETTING_CHANGED_DURING_REPORT');
+  return estimateCustomHourlyWork(plan, sources, adjustments?.n ?? -1);
+}
