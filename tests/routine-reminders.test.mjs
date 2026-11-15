@@ -93,14 +93,15 @@ test('disabled and archived tasks do not schedule, and removed reminder clocks d
 test('new program zone requires a fresh rule zone and produces different UTC instants', () => {
   const oldRule = rule('a');
   const schedule = { ...plan, timeZone: 'America/New_York' };
-  const stale = planRoutineReminders(schedule, [oldRule], new Set(), now, 1);
+  const nyNow = new Date('2026-11-15T12:00:00.000Z'); // 07:00 in New York
+  const stale = planRoutineReminders(schedule, [oldRule], new Set(), nyNow, 1);
   assert.equal(stale.items.length, 0);
   assert.equal(stale.skippedStaleTimeZone, 1);
   const current = planRoutineReminders(
     schedule,
     [rule('a', { reminderTimeZone: 'America/New_York', revision: 2 })],
     new Set(),
-    now,
+    nyNow,
     1,
   );
   assert.equal(current.items[0].whenUtc, '2026-11-15T14:00:00.000Z');
