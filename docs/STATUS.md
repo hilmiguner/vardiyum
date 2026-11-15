@@ -145,8 +145,7 @@
 
 ## Issue #16 / PR #17 — UTC/IANA ay bölme ve açık mola dağılımı
 
-**Dal:** `feat/cross-month-earnings-v7`  
-**PR:** [#17](https://github.com/hilmiguner/vardiyum/pull/17)  
+**[PR #17](https://github.com/hilmiguner/vardiyum/pull/17):** squash-merge ile main'de (`07deee632090f823713226ad7abe92845ff6699f`).  
 **Kanıt:** [Actions #43713024596](https://github.com/hilmiguner/vardiyum/actions/runs/43713024596) **SUCCESS** (npm ci/Expo check/Prettier/ESLint/TypeScript, **98/98 Node testi**, Android/iOS JavaScript export).
 
 - [x] Gece vardiyalarını **orijinal kaydedilmiş IANA timezone + UTC anları** üzerinden ayın 00:00 sınırında bölme. DST bitişi, +05:45 Nepal, +10:30 Adelaide, tam sınır anı, geçmiş UTC kimliği testleri.
@@ -154,8 +153,9 @@
 - [x] SQLite v6→v7 eklemeli ve önceki karar değişikliklerini append-only audit ile saklama, v1–v6 korunumu.
 - [x] Her ayın kendi mesai eşiği/profiliyle kullanıcı tahmini; çakışmalar ve geçersiz kaynaklarda fail-closed.
 - [x] Açık finansal veri paylaşım onayından sonra CSV/JSON metnini sistem paylaşım ekranına aktarma; tehlikeli CSV hücresi koruma ve bloke raporu paylaşmama.
-- [ ] Son doküman commit'i sonrası PR #17 merge ve main CI doğrulaması.
+- [x] **PR #17 squash merge:** `07deee632090f823713226ad7abe92845ff6699f`.
+- [x] **Merge sonrası main CI:** [Actions #43713571844](https://github.com/hilmiguner/vardiyum/actions/runs/43713571844) SUCCESS (98/98 Node, Android+iOS JS export).
 - [ ] Issue #16 **açık**: tarihi ücret profilini revizyonlama, özel maaş dönemi, kontrollü içe alma/şifreli yedek, dosya temelli ihracat henüz yok.
 - [ ] Native Android/iOS SQLite v7, sistem paylaşım ekranı, DST/ICU/erişilebilirlik testleri kullanıcı isteğiyle [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.
 
-**Sıradaki:** PR #17 kod ve belge commit'i için CI green → merge → main CI; ardından Issue #16'nın kalan tarihsel profil revizyonu/içe alma tasarımına ilerle.
+**Sıradaki:** [Issue #16](https://github.com/hilmiguner/vardiyum/issues/16) kapsamında tarihsel ücret profili düzeltme/revizyonlama, kontrollü içe alma ve şifreli yedek tasarımı. PR #17 kodu/CI main'de; Issue #16 **açık kalıyor**. Native QA [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2)'de ertelendi.

@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Vardiya/DST/fiilî çalışma, offline rutinler ve tahmini kazanç (PR #3/#5/#7/#9/#11/#13/#15) main'de. Ay sınırını aşan vardiya, açık mola dağılımı, SQLite v7 ve kullanıcı onaylı CSV/JSON paylaşımı [PR #17](https://github.com/hilmiguner/vardiyum/pull/17) geliştirildi; [CI #43713024596](https://github.com/hilmiguner/vardiyum/actions/runs/43713024596) SUCCESS (98 test, Android/iOS JS export). PR merge son durumunu GitHub'dan kontrol et. Native cihaz testleri kullanıcı isteğiyle ertelendi; resmî bordro/net maaş iddiası yok.
+> **Durum (2026-11-15):** Vardiya/DST/gerçek çalışma/rutin ve tahmini kazanç (PR #3/#5/#7/#9/#11/#13/#15) ile **aylar arası çalışma bölünmesi ve kullanıcı onaylı CSV/JSON paylaşımı PR #17 main'de**. PR merge SHA `07deee632090f823713226ad7abe92845ff6699f`; [merge sonrası CI #43713571844](https://github.com/hilmiguner/vardiyum/actions/runs/43713571844) SUCCESS: 98 test, Android/iOS JS export. Native cihaz testleri ertelendi. Issue #16 profil geçmişi revizyonu/içe alma için açık; resmî bordro/net maaş hesabı yok.
 
 ## Geliştirme kurulumu
 
