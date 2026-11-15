@@ -26,6 +26,7 @@ import {
 } from '../../domain/earnings-engine';
 import {
   formatMoneyMinor,
+  minorUnitsToInput,
   parseMoneyMinor,
   SUPPORTED_EARNINGS_CURRENCIES,
 } from '../../domain/money-text';
@@ -120,7 +121,7 @@ function ProfileEditor({
   const [model, setModel] = useState<EarningsModel>(initial?.model ?? 'hourly');
   const [currency, setCurrency] = useState(initial?.currency ?? 'TRY');
   const [baseAmount, setBaseAmount] = useState(
-    initial ? (initial.baseMinorUnits / 100).toFixed(2) : '',
+    initial ? minorUnitsToInput(initial.baseMinorUnits) : '',
   );
   const [threshold, setThreshold] = useState(
     initial?.overtimeAfterMinutes === null || initial?.overtimeAfterMinutes === undefined
@@ -128,7 +129,7 @@ function ProfileEditor({
       : String(initial.overtimeAfterMinutes),
   );
   const [overtimeHourly, setOvertimeHourly] = useState(
-    initial ? (initial.overtimeHourlyMinorUnits / 100).toFixed(2) : '',
+    initial ? minorUnitsToInput(initial.overtimeHourlyMinorUnits) : '',
   );
   const [numerator, setNumerator] = useState(String(initial?.overtimeMultiplierNumerator ?? 1));
   const [denominator, setDenominator] = useState(

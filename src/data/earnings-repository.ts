@@ -191,6 +191,7 @@ export async function loadEarningsReport(
 
 export async function saveEarningsProfile(input: EarningsProfile): Promise<void> {
   const profile = validateEarningsProfile(input);
+  if (profile.revision !== 1) throw new Error('BASE_PROFILE_MUST_BE_V1');
   const db = await getDatabase();
   await db.runAsync(
     `INSERT INTO earnings_profiles (
@@ -430,7 +431,12 @@ export async function appendPayProfileCorrection(
     const latest = originals[originals.length - 1];
     if (latest.revision !== expected.revision) throw new Error('STALE_PROFILE_REVISION');
     // Do not accept silently editing another profile using a stale UI snapshot.
-    if (JSON.stringify(latest) !== JSON.stringify(expected))
+    const fields: (keyof EarningsProfile)[] = [
+      'id','effectiveFrom','model','currency','baseMinorUnits',
+      'overtimeHourlyMinorUnits','overtimeAfterMinutes',
+      'overtimeMultiplierNumerator','overtimeMultiplierDenominator','revision',
+    ];
+    if (fields.some((field) => latest[field] !== expected[field]))
       throw new Error('STALE_PROFILE_REVISION');
     const next = prepareNextProfileRevision(latest, changes, reason, new Date().toISOString());
     const row = next.profile;

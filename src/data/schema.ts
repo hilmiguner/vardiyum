@@ -285,6 +285,12 @@ CREATE TABLE earnings_profile_revisions (
 );
 CREATE INDEX idx_pay_profile_revision_effective
   ON earnings_profile_revisions(effective_from, profile_id, revision);
+CREATE TRIGGER earnings_profile_base_no_update
+  BEFORE UPDATE ON earnings_profiles
+  BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_BASE_PROFILE'); END;
+CREATE TRIGGER earnings_profile_base_no_delete
+  BEFORE DELETE ON earnings_profiles
+  BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_BASE_PROFILE'); END;
 CREATE TRIGGER earnings_profile_revision_no_update
   BEFORE UPDATE ON earnings_profile_revisions
   BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_PROFILE_REVISION'); END;

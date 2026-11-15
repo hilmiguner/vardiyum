@@ -9,6 +9,7 @@ import {
 } from '../src/domain/earnings-profile-revisions.ts';
 import { estimateEarnings } from '../src/domain/earnings-engine.ts';
 import { createEarningsExport } from '../src/domain/earnings-export.ts';
+import { minorUnitsToInput, parseMoneyMinor } from '../src/domain/money-text.ts';
 
 const base = {
   id: 'pay_nov',
@@ -241,4 +242,11 @@ test('same-month profile collisions remain impossible when base versions differ'
     () => resolvePayProfileRevisions([base, { ...base, id: 'different' }], []),
     /DUPLICATE_EFFECTIVE_MONTH/,
   );
+});
+
+test('revision form converts integer cents to editable money without floating error',()=>{
+  assert.equal(minorUnitsToInput(12345),'123.45');
+  assert.equal(minorUnitsToInput(1000000000000),'10000000000.00');
+  assert.equal(minorUnitsToInput(-105),'-1.05');
+  assert.equal(parseMoneyMinor(minorUnitsToInput(12345)),12345);
 });
