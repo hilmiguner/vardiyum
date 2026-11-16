@@ -1,6 +1,9 @@
 # Vardiyum — Test ve Kabul Stratejisi
 
-**Durum:** Henüz testler yazılmadı; aşağıdakiler **planlanan** doğrulamalardır.
+> **2026-11-16 GÜNCEL ÖNCELİK — MVP KAPSAMI DONDURULDU.** [Kesin MVP çıkış/teslim kapıları](MVP-SCOPE-FREEZE.md) ve [Issue #38](https://github.com/hilmiguner/vardiyum/issues/38) önce okunmalı. **Kapalı beta için 3 teslim aşaması; App Store + Google Play yayını dahil toplam 4 aşama.** Eski aşağıdaki “NEXT” başlıkları tarihsel bağlamdır; fixed→fixed gerçek OT motoru, fixed↔hourly ve benzeri detaylı maaş senaryoları artık **v1.1+**. Beta öncesi gerçek Android/iOS cihaz QA atlanamaz. `main` kod PR #37 ile `a246dba2b500edc039ac04c86f4e220a59a5921d`, [main CI](https://github.com/hilmiguner/vardiyum/actions/runs/43844467382) SUCCESS 319/319 Node; **native QA değil**.
+
+
+**Durum:** 319/319 Node regresyonu ve iki platform JS paketlemesi başarılı; native telefon, kapalı beta, yayın kabulü henüz YAPILMADI. Aşağıdaki ilk plan tarihsel; güncel exit-gate [MVP-SCOPE-FREEZE.md](MVP-SCOPE-FREEZE.md).
 
 ## 1. Birim testleri — saf motorlar
 
@@ -274,3 +277,14 @@
 - [x] New Node+real SQLite v8 test file `tests/two-fixed-overtime-policy.test.mjs`: exact two-profile source/base/rev/UTC+IANA propagation, exclude/null and include+carry/reset decisions, invalid mode/reason/time/revision, missing source rate/fixed↔hourly/FX, event head/gap/modified base/threshold rejection, base required, stale expectedRevision/unchanged, base correction/zone change/new consent, CAS failure rollback, day1 isolation, year turnover 45-minute zone, combined source-verified estimate remains BLOCKED.
 - [x] [PR #37 Actions #43836021172](https://github.com/hilmiguner/vardiyum/actions/runs/43836021172): **SUCCESS, 319/319 Node, 0 fail**, Prettier/ESLint/TS/Expo dependency, Android+iOS JS export. Docs-only final head check follows; **not native** acceptance.
 - [ ] Native device iOS/Android SQLite persistence, OS sharing privacy temporary plaintext cleanup, AES restore, DST/fold/low disk/crash/notifications Issue #2/#20 deferred.
+
+## 2026-11-16 — MVP release-gate test stratejisi (önceki planlara göre ÖNCELİKLİ)
+
+**Bağlayıcı karar:** [MVP-SCOPE-FREEZE.md](MVP-SCOPE-FREEZE.md), [Issue #38](https://github.com/hilmiguner/vardiyum/issues/38). Önceki feature-granular test maddeleri tarihsel; MVP ilk **3** kabul kapısı ve **4. mağaza yayın kapısı** dışında yeni ücret edge-case motoru testi P0 değildir.
+
+1. **Aşama 1 P0:** Bugün/Takvim/Rutinler/Kazanç/Ayarlar ilk kurulum ve ana akışların uçtan uca kontrolü, TR/EN, erişilebilirlik, privacy, offline/boş veri ve güvensiz kazanç `blocked` mesajları. Kanıt: otomasyon CI + gerekirse UI kontrolü.
+2. **Aşama 2 ZORUNLU native Android/iOS:** gerçek açılış/yeniden başlatma, SQLite v1→v8 ve veri kalıcılığı, yerel bildirim izin/teslim/yeniden planlama, gerçek IANA/DST, offline, encrypted backup/clean-target restore, OS temp CSV/JSON share+cleanup, low disk/process kill, veri kaybı. Issue #2/#20. JS bundle başarı tek başına native PASS değildir.
+3. **Aşama 3 kapalı beta:** gerçek kullanıcı senaryoları (20 tester hedef), P0 veri kaybı/yanlış vardiya/yanlış kazanç/çökme/kritik gizlilik = 0; sürüm adayı ve beta dağıtımı.
+4. **Aşama 4 mağaza:** release build, store listeleri/gizlilik izin ve hukuki kontroller, App Store+Google Play submission/approval.
+
+**CI kaydı:** PR #37 merged main `a246dba2b500edc039ac04c86f4e220a59a5921d`, [main #43844467382](https://github.com/hilmiguner/vardiyum/actions/runs/43844467382) SUCCESS **319/319 Node**, 0 fail; **henüz native / beta / store değil**.

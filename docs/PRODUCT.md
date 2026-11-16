@@ -1,7 +1,10 @@
 # Vardiyum — Ürün Tanımı (MVP)
 
-**Son gözden geçirme:** 2026-11-15  
-**Durum:** Planlama, ürün kapsamı mutabık; geliştirme başlamadı.
+> **2026-11-16 GÜNCEL ÖNCELİK — MVP KAPSAMI DONDURULDU.** [Kesin MVP çıkış/teslim kapıları](MVP-SCOPE-FREEZE.md) ve [Issue #38](https://github.com/hilmiguner/vardiyum/issues/38) önce okunmalı. **Kapalı beta için 3 teslim aşaması; App Store + Google Play yayını dahil toplam 4 aşama.** Eski aşağıdaki “NEXT” başlıkları tarihsel bağlamdır; fixed→fixed gerçek OT motoru, fixed↔hourly ve benzeri detaylı maaş senaryoları artık **v1.1+**. Beta öncesi gerçek Android/iOS cihaz QA atlanamaz. `main` kod PR #37 ile `a246dba2b500edc039ac04c86f4e220a59a5921d`, [main CI](https://github.com/hilmiguner/vardiyum/actions/runs/43844467382) SUCCESS 319/319 Node; **native QA değil**.
+
+
+**Son gözden geçirme:** 2026-11-16  
+**Durum:** Çekirdek kod geliştirmeleri main'de; kapsam donduruldu. **Gerçek Android/iOS cihaz QA, kapalı beta ve mağaza yayını henüz tamamlanmadı.** Önce [MVP-SCOPE-FREEZE.md](MVP-SCOPE-FREEZE.md) ve [Issue #38](https://github.com/hilmiguner/vardiyum/issues/38) oku.
 
 ## 1. Vizyon ve konumlandırma
 

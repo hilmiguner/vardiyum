@@ -1,7 +1,10 @@
 # Vardiyum — Yeni Sohbette Devam Notu
 
+> **2026-11-16 GÜNCEL ÖNCELİK — MVP KAPSAMI DONDURULDU.** [Kesin MVP çıkış/teslim kapıları](MVP-SCOPE-FREEZE.md) ve [Issue #38](https://github.com/hilmiguner/vardiyum/issues/38) önce okunmalı. **Kapalı beta için 3 teslim aşaması; App Store + Google Play yayını dahil toplam 4 aşama.** Eski aşağıdaki “NEXT” başlıkları tarihsel bağlamdır; fixed→fixed gerçek OT motoru, fixed↔hourly ve benzeri detaylı maaş senaryoları artık **v1.1+**. Beta öncesi gerçek Android/iOS cihaz QA atlanamaz. `main` kod PR #37 ile `a246dba2b500edc039ac04c86f4e220a59a5921d`, [main CI](https://github.com/hilmiguner/vardiyum/actions/runs/43844467382) SUCCESS 319/319 Node; **native QA değil**.
+
+
 **Repo:** https://github.com/hilmiguner/vardiyum  
-**Tarih:** 2026-11-15
+**Tarih:** 2026-11-16
 
 ## Her zaman önce doğrula
 
@@ -413,3 +416,13 @@ Yeni sohbet:
 - `src/domain/two-fixed-overtime-policy.ts`, `two-fixed-overtime-store.ts`, `src/data/two-fixed-overtime-repository.ts`, `src/components/two-fixed-overtime-policy-panel.tsx`, TR/EN translations, `tests/two-fixed-overtime-policy.test.mjs`. SQLite v8 existing app_settings namespace `earnings_custom_two_fixed_overtime_policy_v1:<day>:<period>`, source BASE + immutable salary profile snapshots, IANA timezone, reason/time/revision, historical canonical replay, exclusive transaction optimistic head CAS, readback; BASE change, source profile revision or zone causes **STALE** consent, requiring fresh explicit user choice. Day1/legacy unaffected, no DB migration, app-level audit NOT cryptographically tamper-proof.
 - **CRITICAL SAFETY:** This is **POLICY/CONSENT ONLY**, NOT an actual logged overtime price. Even if include approved, fixed→fixed custom combined estimate and CSV/JSON remain BLOCKED; work/source UTC, pay-period and rate-boundary break audits, OT threshold and rate allocation, adjustment provenance must first be implemented/tested in separate PR. Fixed→hourly/FX remains BLOCKED. Issue #22/#16 remain OPEN, native physical device QA #2/#20 deferred.
 - PR #37 code [Actions #43836021172](https://github.com/hilmiguner/vardiyum/actions/runs/43836021172) **SUCCESS 319/319 Node, 0 fail; format/lint/TypeScript/Expo, Android+iOS JS** (non-native). Docs-only final HEAD CI recheck after documentation commit, comment Issues #22/#16, wait user merge approval. Then build source-bound audited real-work OT engine and full joined estimate with separate issue gates. See STATUS/ROADMAP/DECISIONS/TEST-PLAN/PAY-PERIOD-DESIGN before continuing.
+
+## 2026-11-16 — GÜNCEL KURAL: MVP kapsamı donduruldu (önce bunu oku)
+
+**Bağlayıcı kullanıcı kararı:** [MVP-SCOPE-FREEZE.md](MVP-SCOPE-FREEZE.md) ve [Issue #38](https://github.com/hilmiguner/vardiyum/issues/38). Önceki aşağıdaki “NEXT: mixed fixed overtime engine” notları artık **tarihsel ve v1.1+**. Kullanıcı açık yeni kapsam onayı olmadan iki-fixed work+OT fiyatlandırma, fixed↔hourly/FX, net/tax/SGK, gelişmiş bordro, yeni extra feature/refactor geliştirme PR'ına devam **ETME**. Yanlış rakam gösterme; explicit BLOCKED tut.
+
+**Son kanıt:** [PR #37](https://github.com/hilmiguner/vardiyum/pull/37) **MERGED** main `a246dba2b500edc039ac04c86f4e220a59a5921d` ve [main CI #43844467382](https://github.com/hilmiguner/vardiyum/actions/runs/43844467382) **SUCCESS, 319/319 Node** + format/lint/tsc/Expo, Android/iOS JS (native değil). PR #37 yalnız iki fixed profilli explicit OT consent; fixed→fixed gerçek OT tutarı, combined CSV/JSON hala BLOCKED.
+
+**Aşama sayısı:** **3** aşama MVP kapalı beta; **4** aşama iki mağazada üretim sürüm. Aşama 1 mevcut Bugün/Takvim/Rutinler/Kazanç/Ayarlar, onboarding/P0 hata/erişilebilirlik/kritik gizlilik kapat; Aşama 2 [#2](https://github.com/hilmiguner/vardiyum/issues/2)/[#20](https://github.com/hilmiguner/vardiyum/issues/20) gerçek Android/iOS native cihaz, SQLite/backup/restore/bildirim/DST/offline/paylaşım/low-disk/crash; Aşama 3 gerçek kullanıcı kapalı beta/P0=0; Aşama 4 App Store+Google Play üretim build/policy/listing/review/approved. Gerçek cihaz QA daha önce kullanıcıca ertelenmişti, **beta öncesi atlanmaz**.
+
+**Yeni sohbet işlem sırası:** main SHA/Actions/PR/Issue, **MVP-SCOPE-FREEZE**, Issue #38, HANDOFF/STATUS/ROADMAP/DECISIONS/PRODUCT/TEST-PLAN oku; ilk tamamlanmayan **Issue #38** kapısından ilerle. **Bitmeyen özellik döngüsüne dönme**. PR'ları gerekiyorsa P0 teknik düzeltmeleriyle sınırla; kullanıcı yeni merge onayı olmadan PR merge etme (belge değişikliği kararı doğrudan kaydedildi). 

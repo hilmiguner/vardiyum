@@ -1,6 +1,9 @@
 # Vardiyum — Güncel Durum / Kanıt Kaydı
 
-**Güncelleme:** 2026-11-15  
+> **2026-11-16 GÜNCEL ÖNCELİK — MVP KAPSAMI DONDURULDU.** [Kesin MVP çıkış/teslim kapıları](MVP-SCOPE-FREEZE.md) ve [Issue #38](https://github.com/hilmiguner/vardiyum/issues/38) önce okunmalı. **Kapalı beta için 3 teslim aşaması; App Store + Google Play yayını dahil toplam 4 aşama.** Eski aşağıdaki “NEXT” başlıkları tarihsel bağlamdır; fixed→fixed gerçek OT motoru, fixed↔hourly ve benzeri detaylı maaş senaryoları artık **v1.1+**. Beta öncesi gerçek Android/iOS cihaz QA atlanamaz. `main` kod PR #37 ile `a246dba2b500edc039ac04c86f4e220a59a5921d`, [main CI](https://github.com/hilmiguner/vardiyum/actions/runs/43844467382) SUCCESS 319/319 Node; **native QA değil**.
+
+
+**Güncelleme:** 2026-11-16  
 **Repo:** https://github.com/hilmiguner/vardiyum  
 **Ürün:** Her sektörden vardiyalı çalışanlara offline-first iOS/Android takvim + rutin + tahmini kazanç asistanı.
 
@@ -384,3 +387,10 @@
 - [PR #37](https://github.com/hilmiguner/vardiyum/pull/37) **OPEN**: exact two fixed salary profiles custom period with user-explicit, BASE source-bound OT consent: `exclude_logged_overtime` + null threshold OR `include_logged_overtime` + `carry_worked_time` / `restart_at_transition` explicit. Both fixed profiles same currency, current BASE choice, include needs both sources OT threshold+additional hourly rate. Immutable source profile/BASE snapshots, IANA schedule and effective date UTC boundary preserved. No implicit choice or legal threshold.
 - SQLite **v8 app_settings** append-only `earnings_custom_two_fixed_overtime_policy_v1` history, transaction head CAS + canonical readback, optimistic expectedRevision and stale reapproval after fixed base/zone/profile changes; TR/EN Earnings screen and Node/SQLite tests. **No OT amounts are generated**. Combined custom-period wages and CSV/JSON stay BLOCKED for fixed→fixed, fixed→hourly or FX. Existing day1/calendar, single fixed, hourly, 18-table schema and encrypted backup untouched.
 - PR #37 code [Actions #43836021172](https://github.com/hilmiguner/vardiyum/actions/runs/43836021172) **SUCCESS: 319/319 Node, 0 fail**, Prettier/ESLint/TypeScript/Expo, Android+iOS JS bundle. Docs-only HEAD CI check after update; merge still needs user approval. Issues #22/#16 OPEN. Native Android/iOS SQLite/restore/share/crash/DST/notifications QA #2/#20 postponed by user.
+
+## 2026-11-16 — ÜRÜN ÇIKIŞINA GEÇİŞ: KAPSAM DONDURMA (güncel karar)
+
+- **Kullanıcı kararı:** [MVP-SCOPE-FREEZE.md](MVP-SCOPE-FREEZE.md), [Issue #38](https://github.com/hilmiguner/vardiyum/issues/38). Beta için **3 sonlu teslim aşaması**: (1) P0 ürün akışları/ilk kurulum/temel UX, (2) gerçek Android+iOS native cihaz kabulü, (3) kapalı beta; her iki mağazada yayın için **+1** mağaza sürümü/inceleme aşaması. **Bunlar PR sayısı veya teslim tarihi değildir.**
+- **Kod:** [PR #37](https://github.com/hilmiguner/vardiyum/pull/37) kullanıcı onayıyla **MERGED**, main `a246dba2b500edc039ac04c86f4e220a59a5921d`; [main Actions #43844467382](https://github.com/hilmiguner/vardiyum/actions/runs/43844467382) **SUCCESS**, 319/319 Node, Prettier/lint/TS/Expo, Android+iOS **JS**, native cihaz PASS değil. Açık feature PR yoktu; önceki PR #36 da merge edilmişti.
+- **MVP'den v1.1+'a ertelendi:** fixed→fixed özel dönemde gerçek work/OT fiyatlandırma ve birleşik CSV/JSON, fixed↔hourly, FX, ilave bordro istisnaları, gelişmiş şablon/refactor. [#16](https://github.com/hilmiguner/vardiyum/issues/16)/[#22](https://github.com/hilmiguner/vardiyum/issues/22) açık tarihsel epic olarak tutulur; tek başına P0 blokajı değil. Güvensiz hesabı açma: **iki fixed BASE + OT onayı var, buna rağmen gerçek combined money ve export BLOCKED**.
+- **Ürün hâlâ beta / mağaza hazır DEĞİL.** Native cihaz, SQLite/AES restore, bildirim, DST, OS share/temp cleanup, low-disk/crash [#2](https://github.com/hilmiguner/vardiyum/issues/2) / [#20](https://github.com/hilmiguner/vardiyum/issues/20) kullanıcı tarafından ertelenmişti; yayından önce tamamlanacak. Sıradaki iş yeni maaş profili hesaplama PR'ı değil **Issue #38 aşama 1 P0 ürün bitirme denetimi**.
