@@ -33,6 +33,15 @@ export interface SaveTwoFixedOvertimePolicy {
   recordedAt: string;
 }
 
+interface TwoFixedOvertimeReviewSegment {
+  profileId: string;
+  profileRevision: number;
+  thresholdMinutes: number | null;
+  overtimeHourlyMinorUnits: number;
+  multiplierNumerator: number;
+  multiplierDenominator: number;
+}
+
 export type TwoFixedOvertimePolicyReview =
   | { status: 'not_applicable' | 'requires_base'; periodKey: string; startDay: number }
   | { status: 'blocked'; periodKey: string; startDay: number; reasons: string[] }
@@ -43,21 +52,7 @@ export type TwoFixedOvertimePolicyReview =
       currency: string;
       baseRevision: number;
       baseTotalMinorUnits: number;
-      segments: [{
-        profileId: string;
-        profileRevision: number;
-        thresholdMinutes: number | null;
-        overtimeHourlyMinorUnits: number;
-        multiplierNumerator: number;
-        multiplierDenominator: number;
-      }, {
-        profileId: string;
-        profileRevision: number;
-        thresholdMinutes: number | null;
-        overtimeHourlyMinorUnits: number;
-        multiplierNumerator: number;
-        multiplierDenominator: number;
-      }];
+      segments: [TwoFixedOvertimeReviewSegment, TwoFixedOvertimeReviewSegment];
       canInclude: boolean;
       latestRevision: number;
       stale: boolean;
@@ -216,7 +211,7 @@ export async function loadTwoFixedOvertimePolicyReviewFromStore(
       overtimeHourlyMinorUnits: segment.profile.overtimeHourlyMinorUnits,
       multiplierNumerator: segment.profile.overtimeMultiplierNumerator,
       multiplierDenominator: segment.profile.overtimeMultiplierDenominator,
-    })) as TwoFixedOvertimePolicyReview & never,
+    })) as [TwoFixedOvertimeReviewSegment, TwoFixedOvertimeReviewSegment],
     canInclude, latestRevision: history.length,
     stale: Boolean(stale),
     latestDecision: current && !stale ? current.decision : null,
