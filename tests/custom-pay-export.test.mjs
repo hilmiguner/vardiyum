@@ -118,7 +118,7 @@ test('CSV quotes every text field and neutralizes formulas, controls and embedde
   assert.match(csv.content, /"'@SUM\(1,2\)"/);
   assert.match(csv.content, /"ADJUSTMENT"/);
   assert.match(csv.content, /"TOTAL"/);
-  assert.match(csv.content, /"15500"/);
+  assert.match(csv.content, /,15500,/);
   assert.match(csv.content, /"2026-11-10T05:00:00.000Z"/);
   assert.match(csv.content, /"DO_NOT_ADD_TO_CALENDAR_MONTH_REPORT/);
   assert.equal(csv.content.trimEnd().split('\n').length, 5); // header, 2 work, adjustment, total
@@ -135,8 +135,8 @@ test('fixed monthly consent EXCLUDE is exported as explicit base only, never dou
   assert.equal(file.workSources.length, 0);
   const csv = createCustomPayCombinedExport(fixedExcluded(), 'csv').content;
   assert.match(csv, /"BASE"/);
-  assert.match(csv, /"3200000"/);
-  assert.match(csv, /"3200500"/);
+  assert.match(csv, /,3200000,/);
+  assert.match(csv, /,3200500,/);
 });
 
 test('new coherent data that matches reviewed report is exportable; changed audit needs fresh consent', () => {
