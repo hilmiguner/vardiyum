@@ -243,13 +243,13 @@ export default function CalendarScreen() {
           {chosen && (
             <>
               <BoundaryChoiceEditor
-                key={editorSourceKey}
+                key={editorSourceKey + ':boundary'}
                 date={selectedDate}
                 template={chosen.template}
                 timeZone={schedule.timeZone}
               />
               <ActualWorkEditor
-                key={editorSourceKey}
+                key={editorSourceKey + ':work'}
                 date={selectedDate}
                 template={chosen.template}
                 timeZone={schedule.timeZone}
