@@ -41,8 +41,7 @@ const resources = {
         'İkinci ücret profiline geçince fazla mesai eşik sayacı nasıl çalışsın?',
       earnTwoFixedOtCarry:
         'Sayaç DEVAM ETSİN: ilk dilimdeki çalışma ikinci profilin eşiğine sayılsın',
-      earnTwoFixedOtReset:
-        'Sayaç SIFIRLANSIN: ikinci dilim yeni eşikten başlasın',
+      earnTwoFixedOtReset: 'Sayaç SIFIRLANSIN: ikinci dilim yeni eşikten başlasın',
       earnTwoFixedOtReason: 'Bu kararın gerekçesi (3–160 karakter)',
       earnTwoFixedOtReasonPlaceholder: 'Örn. iş sözleşmemdeki fazla mesai uygulaması',
       earnTwoFixedOtSave: 'Kaynaklara bağlı fazla mesai politikasını kaydet',
@@ -723,8 +722,7 @@ const resources = {
         'When the second fixed salary source starts, what happens to the overtime counter?',
       earnTwoFixedOtCarry:
         'CARRY: prior logged time counts toward the second profile’s threshold',
-      earnTwoFixedOtReset:
-        'RESET: count starts anew for the second segment',
+      earnTwoFixedOtReset: 'RESET: count starts anew for the second segment',
       earnTwoFixedOtReason: 'Reason for your choice (3–160 characters)',
       earnTwoFixedOtReasonPlaceholder: 'E.g. overtime approach in my contract',
       earnTwoFixedOtSave: 'Save source-bound overtime policy',
