@@ -21,6 +21,12 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Check Expo dependency compatibility
         run: npx expo install --check
+      - name: Temporary Prettier diff diagnostic (remove after copying)
+        run: |
+          npm run format:write
+          echo BEGIN_PRETTIER_DIFF
+          git --no-pager diff -- src/components/today-earnings-panel.tsx src/i18n/index.ts
+          echo END_PRETTIER_DIFF
       - name: Code formatting
         run: npm run format
       - name: Lint
