@@ -150,7 +150,9 @@ test('new coherent data that matches reviewed report is exportable; changed audi
   );
   const modifiedProfile = structuredClone(displayed);
   modifiedProfile.profiles[0].revision = 2;
-  modifiedProfile.workLines.forEach((x) => { x.profileRevision = 2; });
+  modifiedProfile.workLines.forEach((x) => {
+    x.profileRevision = 2;
+  });
   assert.throws(
     () => requireUnchangedCustomPayEstimate(displayed, modifiedProfile),
     /CUSTOM_PAY_EXPORT_SOURCES_CHANGED_REVIEW_REQUIRED/,
@@ -188,11 +190,26 @@ test('financial inconsistencies, duplicate source IDs and foreign FX cannot leav
     { ...original, adjustmentMinorUnits: -500 },
     { ...original, currency: 'JPY' },
     { ...original, workLines: [original.workLines[0], original.workLines[0]] },
-    { ...original, workLines: [{ ...original.workLines[0], profileRevision: 3 }, original.workLines[1]] },
-    { ...original, adjustmentLines: original.adjustmentLines.map((x) => ({ ...x, sourceCurrency: 'EUR' })) },
-    { ...original, adjustmentLines: original.adjustmentLines.map((x) => ({ ...x, earlierMinorUnits: 700 })) },
-    { ...original, adjustmentLines: [original.adjustmentLines[0], original.adjustmentLines[0]] },
-    { ...original, adjustmentLines: original.adjustmentLines.map((x) => ({ ...x, selectedMinorUnits: 501 })) },
+    {
+      ...original,
+      workLines: [{ ...original.workLines[0], profileRevision: 3 }, original.workLines[1]],
+    },
+    {
+      ...original,
+      adjustmentLines: original.adjustmentLines.map((x) => ({ ...x, sourceCurrency: 'EUR' })),
+    },
+    {
+      ...original,
+      adjustmentLines: original.adjustmentLines.map((x) => ({ ...x, earlierMinorUnits: 700 })),
+    },
+    {
+      ...original,
+      adjustmentLines: [original.adjustmentLines[0], original.adjustmentLines[0]],
+    },
+    {
+      ...original,
+      adjustmentLines: original.adjustmentLines.map((x) => ({ ...x, selectedMinorUnits: 501 })),
+    },
   ]) {
     assert.throws(
       () => createCustomPayCombinedExport(invalid, 'csv'),
