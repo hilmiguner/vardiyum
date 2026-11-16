@@ -1,13 +1,19 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
-import { Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { loadCustomPayCombinedEstimate } from '../data/custom-pay-combined-repository';
 import type { CustomPayCombinedEstimate } from '../domain/custom-pay-combined';
 import { formatMoneyMinor } from '../domain/money-text';
+import {
+  createCustomPayCombinedExport,
+  requireUnchangedCustomPayEstimate,
+} from '../domain/custom-pay-export';
+import type { EarningsExportFormat } from '../domain/earnings-export';
+import { shareCustomPayExportFile } from '../services/custom-pay-export-files';
 import { usePalette } from '../theme/colors';
-import { Heading, Muted, Panel } from './ui';
+import { Action, Heading, Muted, Panel } from './ui';
 
 /**
  * One coherent, read-only SPECIAL-period estimate. No user-controlled
@@ -27,6 +33,7 @@ export function CustomPayCombinedPanel({
   const locale = i18n.language.startsWith('tr') ? 'tr' : 'en';
   const [report, setReport] = useState<CustomPayCombinedEstimate | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [exportBusy, setExportBusy] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -48,6 +55,46 @@ export function CustomPayCombinedPanel({
       };
     }, [periodKey, timeZone, refreshRevision]),
   );
+
+  const requestExport = (format: EarningsExportFormat) => {
+    if (exportBusy || report?.status !== 'estimated') return;
+    const reviewed = report;
+    Alert.alert(
+      t('earnCustomExportPrivacyTitle'),
+      t('earnCustomExportPrivacyBody', {
+        from: reviewed.startDate,
+        to: reviewed.endDateInclusive,
+        total: formatMoneyMinor(reviewed.totalMinorUnits, reviewed.currency, locale),
+        work: reviewed.workLines.length,
+        adjustments: reviewed.adjustmentLines.length,
+      }),
+      [
+        { text: t('cancel'), style: 'cancel' },
+        {
+          text: t('earnCustomExportConfirm'),
+          onPress: () => {
+            setExportBusy(true);
+            void (async () => {
+              // A new coherent SQLite snapshot is required AFTER confirmation.
+              // Never share an old display or a newly changed unreviewed total.
+              const fresh = await loadCustomPayCombinedEstimate(periodKey, timeZone);
+              if (fresh.status !== 'estimated' || JSON.stringify(fresh) !== JSON.stringify(reviewed))
+                setReport(fresh);
+              const verified = requireUnchangedCustomPayEstimate(reviewed, fresh);
+              await shareCustomPayExportFile(createCustomPayCombinedExport(verified, format));
+            })()
+              .catch((failure: unknown) => {
+                Alert.alert(
+                  t('earnCustomExportFailed'),
+                  failure instanceof Error ? failure.message : 'CUSTOM_PAY_EXPORT_FAILED',
+                );
+              })
+              .finally(() => setExportBusy(false));
+          },
+        },
+      ],
+    );
+  };
 
   if (report?.status === 'disabled' && !error) return null;
   const money = (value: number, currency: string) => formatMoneyMinor(value, currency, locale);
@@ -213,6 +260,18 @@ export function CustomPayCombinedPanel({
           ) : (
             <Muted>{t('earnCombinedNoAdjustmentRows')}</Muted>
           )}
+          <Heading>{t('earnCustomExportHeading')}</Heading>
+          <Muted>{t('earnCustomExportHint')}</Muted>
+          <Action
+            disabled={exportBusy}
+            label={t('earnCustomExportCsv')}
+            onPress={() => requestExport('csv')}
+          />
+          <Action
+            disabled={exportBusy}
+            label={t('earnCustomExportJson')}
+            onPress={() => requestExport('json')}
+          />
         </>
       ) : null}
       <Muted>{t('earnCombinedNotPayslip')}</Muted>
