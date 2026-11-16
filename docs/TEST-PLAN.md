@@ -288,3 +288,11 @@
 4. **Aşama 4 mağaza:** release build, store listeleri/gizlilik izin ve hukuki kontroller, App Store+Google Play submission/approval.
 
 **CI kaydı:** PR #37 merged main `a246dba2b500edc039ac04c86f4e220a59a5921d`, [main #43844467382](https://github.com/hilmiguner/vardiyum/actions/runs/43844467382) SUCCESS **319/319 Node**, 0 fail; **henüz native / beta / store değil**.
+
+## 2026-11-16 — PR #39 MVP P0 real-work editor source regression
+
+- [x] `tests/calendar-editor-source.test.mjs` dört yeni test: same-date night 23:00–07:00(+1)→morning 07:00–15:00 override, same template ID edited hours/break minutes, different date/IANA zone/rest, canonical JSON tuple.
+- [x] `calendar.tsx` exact date+source+zone keyed actual-work editor and DST boundary editor, original saved work untouched; first-time no pattern direct Settings CTA, DB error Retry. Source review [MVP-P0-AUDIT.md](MVP-P0-AUDIT.md).
+- [x] [PR #39 CI #43853928391](https://github.com/hilmiguner/vardiyum/actions/runs/43853928391) **SUCCESS: 323/323 Node, 0 fail; Prettier/ESLint/TypeScript/Expo, Android+iOS JS bundles** (native acceptance değildir).
+- [ ] Belgeleri içeren son commit CI, ardından kullanıcı merge onayı; native QA iddiası yok.
+- [ ] Stage #38/1 remaining Product 3.6 Today earnings summary with correct source/period and fail-closed, then P0 first-use workflow acceptance. Native device acceptance #2/#20 separate stage.
