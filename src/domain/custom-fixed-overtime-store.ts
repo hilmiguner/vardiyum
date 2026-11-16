@@ -278,7 +278,13 @@ export async function loadFixedOvertimeViewFromStore(
   // Once EVERY original monthly adjustment was allocated, pass the remaining
   // unknown count (zero), NOT the original count. The OT engine must never
   // silently include or re-price any allocated bonus/deduction itself.
-  const estimate = estimateCustomFixedOvertime(plan, base, current, sources, remainingUnattributed);
+  const estimate = estimateCustomFixedOvertime(
+    plan,
+    base,
+    current,
+    sources,
+    remainingUnattributed,
+  );
   return {
     status: 'review',
     periodKey,

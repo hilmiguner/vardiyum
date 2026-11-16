@@ -17,7 +17,8 @@ const resources = {
         'Yalnız doğrulanmış gerçek saatlik çalışma YA DA kullanıcı tarafından seçilmiş sabit ücret ile ayrı onaylı fazla mesai ve açıkça döneme atanmış prim/kesinti/düzeltme birleştirilir. Belirsiz kaynak, farklı para birimi veya geçersiz revizyon varsa toplam gösterilmez.',
       earnCombinedBlocked:
         'Kaynaklar doğrulanamadığı için birleşik özel dönem tutarı gösterilemiyor.',
-      earnCombinedPeriod: 'Özel dönem: {{from}} – {{to}} · başlangıç günü {{day}} · saat dilimi {{zone}}',
+      earnCombinedPeriod:
+        'Özel dönem: {{from}} – {{to}} · başlangıç günü {{day}} · saat dilimi {{zone}}',
       earnCombinedModel: 'Kazanç modeli: {{mode}}',
       earnCombinedHourly: 'Kaydedilmiş gerçek saatlik çalışma',
       earnCombinedFixed: 'Kullanıcının seçtiği sabit ana tutar',
@@ -37,7 +38,8 @@ const resources = {
       earnCombinedWorkLine:
         '{{kind}} · kayıt {{id}} · {{seconds}} sn · {{amount}} · profil {{profile}}/v{{revision}} · dönem mola beyanı {{audit}} · oran mola beyanı {{rateAudit}}',
       earnCombinedWorkOrigin: 'Orijinal UTC kaynak: {{from}} – {{to}}',
-      earnCombinedNoWorkRows: 'Bu birleşik modelde ek ücretlendirilen gerçek çalışma kalemi yok.',
+      earnCombinedNoWorkRows:
+        'Bu birleşik modelde ek ücretlendirilen gerçek çalışma kalemi yok.',
       earnCombinedAdjustmentSources: 'Prim, kesinti, düzeltme kaynakları',
       earnCombinedAdjustmentLine:
         '{{kind}} · kaynak {{id}} ({{month}}) · dönem payı {{amount}} · kaynak toplam {{sourceAmount}} · atıf sürümü {{revision}}',
@@ -623,7 +625,8 @@ const resources = {
         'Only verified logged hourly work OR an explicitly chosen fixed base plus separately approved overtime is combined with bonuses, deductions and corrections expressly assigned to this pay period. Missing provenance, currency mismatch or stale revisions block the total.',
       earnCombinedBlocked:
         'The combined custom-period amount is unavailable until all source records are verified.',
-      earnCombinedPeriod: 'Custom period: {{from}} – {{to}} · start day {{day}} · time zone {{zone}}',
+      earnCombinedPeriod:
+        'Custom period: {{from}} – {{to}} · start day {{day}} · time zone {{zone}}',
       earnCombinedModel: 'Earnings model: {{mode}}',
       earnCombinedHourly: 'Logged actual hourly work',
       earnCombinedFixed: 'Your expressly selected fixed salary base',
@@ -650,7 +653,8 @@ const resources = {
       earnCombinedAdjustmentPeriodSplit:
         'Earlier {{earlier}}: {{earlierAmount}} · later {{later}}: {{laterAmount}}',
       earnCombinedAuditReason: 'Allocation reason: {{reason}} · {{recordedAt}}',
-      earnCombinedNoAdjustmentRows: 'No additional allocated earning/deduction sources in this pay period.',
+      earnCombinedNoAdjustmentRows:
+        'No additional allocated earning/deduction sources in this pay period.',
       earnCombinedNotPayslip:
         'User-reported approximate PRE-TAX estimate ONLY: not official payroll, employer approval, net salary, tax/social insurance or a statutory overtime claim. This combines sources for THIS special pay period only. The calendar-month report includes the same underlying sources: do NOT ADD monthly and custom period totals. Custom CSV/JSON export is not available yet.',
       earnAttribTitle: 'Custom pay period: bonus, deduction and correction allocation',
