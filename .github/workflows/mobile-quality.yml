@@ -21,6 +21,10 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Check Expo dependency compatibility
         run: npx expo install --check
+      - name: Temporary format diagnosis
+        run: |
+          npm run format:write
+          node -e "const fs=require('fs'); for(const p of ['src/components/two-fixed-overtime-policy-panel.tsx','src/domain/two-fixed-overtime-policy.ts','src/domain/two-fixed-overtime-store.ts','src/i18n/index.ts','tests/two-fixed-overtime-policy.test.mjs'])console.log('FMTFILE:'+JSON.stringify({path:p,content:fs.readFileSync(p,'utf8')}));"
       - name: Code formatting
         run: npm run format
       - name: Lint
