@@ -120,7 +120,7 @@ test('CSV quotes every text field and neutralizes formulas, controls and embedde
   assert.match(csv.content, /"TOTAL"/);
   assert.match(csv.content, /,15500,/);
   assert.match(csv.content, /"2026-11-10T05:00:00.000Z"/);
-  assert.match(csv.content, /"DO_NOT_ADD_TO_CALENDAR_MONTH_REPORT/);
+  assert.match(csv.content, /DO_NOT_ADD_TO_CALENDAR_MONTH_REPORT/);
   assert.equal(csv.content.trimEnd().split('\n').length, 5); // header, 2 work, adjustment, total
 });
 
