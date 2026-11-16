@@ -30,7 +30,8 @@ const resources = {
         'İki dilimin beyan edilmiş sadece ANA ücret toplamı: {{amount}} · onay sürümü {{revision}}',
       earnFixedTransitionNeedsDecision:
         'Henüz geçerli beyan yok. Toplam üretilmez; iki dilim için ayrı tutar ve gerekçe gir.',
-      earnFixedTransitionReason: 'İki ücret tutarını bu şekilde belirleme gerekçen (3–160 karakter)',
+      earnFixedTransitionReason:
+        'İki ücret tutarını bu şekilde belirleme gerekçen (3–160 karakter)',
       earnFixedTransitionReasonPlaceholder: 'Örn. sözleşmede belirtilen ara dönem ana ücreti',
       earnFixedTransitionSave: 'İki ANA ücret beyanını kaydet',
       earnFixedTransitionSaved: 'Kaynaklara bağlı ANA ücret beyanı kaydedildi.',
@@ -658,8 +659,7 @@ const resources = {
       earnFixedTransitionTitle: 'Fixed salary change: two-source BASE declaration',
       earnFixedTransitionExplanation:
         'When your monthly fixed salary changes on the 1st within a custom pay period, YOU enter an explicit BASE amount for each old/new source segment (from zero up to its own source full monthly BASE). No day or hour prorating. This is NOT a complete earnings estimate.',
-      earnFixedTransitionPeriod:
-        'Period {{start}} – {{end}} · saved schedule zone {{zone}}',
+      earnFixedTransitionPeriod: 'Period {{start}} – {{end}} · saved schedule zone {{zone}}',
       earnFixedTransitionBlocked:
         'The change could not be validated as two fixed monthly profiles in the same currency. Fixed/hourly mixtures and currency conversion are not supported.',
       earnFixedTransitionStale:
