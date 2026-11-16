@@ -11,6 +11,7 @@ import { CustomHourlyEstimatePanel } from '../../components/custom-hourly-estima
 import { CustomFixedBasePanel } from '../../components/custom-fixed-base-panel';
 import { CustomFixedOvertimePanel } from '../../components/custom-fixed-overtime-panel';
 import { CustomAdjustmentAttributionPanel } from '../../components/custom-adjustment-attribution-panel';
+import { CustomPayCombinedPanel } from '../../components/custom-pay-combined-panel';
 import { RateBoundaryBreakPanel } from '../../components/rate-boundary-break-panel';
 import { DualBoundaryBreakPanel } from '../../components/dual-boundary-break-panel';
 import { createEarningsExport, type EarningsExportFormat } from '../../domain/earnings-export';
@@ -521,6 +522,11 @@ export default function EarningsScreen() {
         periodKey={month}
         timeZone={schedule.timeZone}
         onSaved={() => setRevision((before) => before + 1)}
+      />
+      <CustomPayCombinedPanel
+        periodKey={month}
+        timeZone={schedule.timeZone}
+        refreshRevision={revision}
       />
       <CustomAdjustmentAttributionPanel
         periodKey={month}
