@@ -81,45 +81,62 @@ export async function appendTwoFixedOvertimePolicyRevision(
   input: SaveTwoFixedOvertimePolicy,
 ): Promise<TwoFixedOvertimePolicyEvent> {
   twoFixedOvertimePrefix(input.periodKey, input.startDay);
-  if (!Number.isSafeInteger(input.expectedRevision) ||
+  if (
+    !Number.isSafeInteger(input.expectedRevision) ||
     input.expectedRevision < 0 ||
-    input.expectedRevision >= TWO_FIXED_OT_MAX_REVISIONS)
+    input.expectedRevision >= TWO_FIXED_OT_MAX_REVISIONS
+  )
     throw new Error('INVALID_TWO_FIXED_OT_EXPECTED_REVISION');
   const plan = await loadCustomPayProfilePreviewFromStore(
-    store, input.periodKey, input.scheduleTimeZone,
+    store,
+    input.periodKey,
+    input.scheduleTimeZone,
   );
-  if (plan.startDay !== input.startDay)
-    throw new Error('TWO_FIXED_OT_SETTING_CHANGED');
+  if (plan.startDay !== input.startDay) throw new Error('TWO_FIXED_OT_SETTING_CHANGED');
   eligibleFixedTransition(plan);
   const baseReport = await loadFixedTransitionBaseReviewFromStore(
-    store, input.periodKey, input.scheduleTimeZone,
+    store,
+    input.periodKey,
+    input.scheduleTimeZone,
   );
-  if (baseReport.status !== 'review' ||
+  if (
+    baseReport.status !== 'review' ||
     baseReport.declaredBaseTotalMinorUnits === null ||
-    baseReport.stale)
+    baseReport.stale
+  )
     throw new Error('TWO_FIXED_OT_CURRENT_BASE_REQUIRED');
   const bases = await readFixedTransitionHistory(store, input.periodKey, input.startDay);
   const base = bases[bases.length - 1];
-  if (!base || !fixedTransitionMatchesPlan(plan, base) ||
+  if (
+    !base ||
+    !fixedTransitionMatchesPlan(plan, base) ||
     base.revision !== baseReport.latestRevision ||
-    base.declaredBaseTotalMinorUnits !== baseReport.declaredBaseTotalMinorUnits)
+    base.declaredBaseTotalMinorUnits !== baseReport.declaredBaseTotalMinorUnits
+  )
     throw new Error('TWO_FIXED_OT_BASE_READBACK_MISMATCH');
   const history = await readTwoFixedOvertimePolicyHistory(
-    store, input.periodKey, input.startDay,
+    store,
+    input.periodKey,
+    input.startDay,
   );
-  if (history.length !== input.expectedRevision)
-    throw new Error('STALE_TWO_FIXED_OT_REVISION');
+  if (history.length !== input.expectedRevision) throw new Error('STALE_TWO_FIXED_OT_REVISION');
   const event = createTwoFixedOvertimePolicyEvent(
-    plan, base, input.decision, input.thresholdMode, history.length + 1,
-    input.reason, input.recordedAt,
+    plan,
+    base,
+    input.decision,
+    input.thresholdMode,
+    history.length + 1,
+    input.reason,
+    input.recordedAt,
   );
   const last = history[history.length - 1];
   if (last) {
-    if (event.recordedAt < last.recordedAt)
-      throw new Error('INVALID_TWO_FIXED_OT_REVISION');
-    if (event.decision === last.decision &&
+    if (event.recordedAt < last.recordedAt) throw new Error('INVALID_TWO_FIXED_OT_REVISION');
+    if (
+      event.decision === last.decision &&
       event.thresholdMode === last.thresholdMode &&
-      JSON.stringify(event.fixedTransitionBase) === JSON.stringify(last.fixedTransitionBase))
+      JSON.stringify(event.fixedTransitionBase) === JSON.stringify(last.fixedTransitionBase)
+    )
       throw new Error('UNCHANGED_TWO_FIXED_OT_DECISION');
   }
   await store.runAsync(
@@ -133,15 +150,21 @@ export async function appendTwoFixedOvertimePolicyRevision(
   } else {
     const change = await store.runAsync(
       'UPDATE app_settings SET value=? WHERE key=? AND value=?',
-      String(event.revision), head, String(history.length),
+      String(event.revision),
+      head,
+      String(history.length),
     );
     if (change.changes !== 1) throw new Error('STALE_TWO_FIXED_OT_REVISION');
   }
   const verify = await readTwoFixedOvertimePolicyHistory(
-    store, input.periodKey, input.startDay,
+    store,
+    input.periodKey,
+    input.startDay,
   );
-  if (verify.length !== event.revision ||
-    JSON.stringify(verify[verify.length - 1]) !== JSON.stringify(event))
+  if (
+    verify.length !== event.revision ||
+    JSON.stringify(verify[verify.length - 1]) !== JSON.stringify(event)
+  )
     throw new Error('TWO_FIXED_OT_READBACK_MISMATCH');
   if ((await readPayPeriodStartDay(store)) !== plan.startDay)
     throw new Error('TWO_FIXED_OT_SETTING_CHANGED_DURING_SAVE');
@@ -158,35 +181,45 @@ export async function loadTwoFixedOvertimePolicyReviewFromStore(
   timeZone: string,
 ): Promise<TwoFixedOvertimePolicyReview> {
   const plan = await loadCustomPayProfilePreviewFromStore(store, periodKey, timeZone);
-  if (plan.startDay === 1 ||
+  if (
+    plan.startDay === 1 ||
     plan.status === 'single_hourly_profile' ||
     plan.status === 'fixed_salary_assumption_required' ||
     plan.status === 'needs_profile' ||
     (plan.status === 'profile_transition_review_required' &&
-      plan.segments.every((segment) => segment.profile.model === 'hourly')))
+      plan.segments.every((segment) => segment.profile.model === 'hourly'))
+  )
     return { status: 'not_applicable', periodKey, startDay: plan.startDay };
   let segments: ReturnType<typeof eligibleFixedTransition>;
   try {
     segments = eligibleFixedTransition(plan);
   } catch (error) {
     return {
-      status: 'blocked', periodKey, startDay: plan.startDay,
+      status: 'blocked',
+      periodKey,
+      startDay: plan.startDay,
       reasons: [error instanceof Error ? error.message : 'TWO_FIXED_OT_UNSUPPORTED'],
     };
   }
-  const baseReport = await loadFixedTransitionBaseReviewFromStore(
-    store, periodKey, timeZone,
-  );
-  if (baseReport.status !== 'review' ||
-    baseReport.declaredBaseTotalMinorUnits === null || baseReport.stale)
+  const baseReport = await loadFixedTransitionBaseReviewFromStore(store, periodKey, timeZone);
+  if (
+    baseReport.status !== 'review' ||
+    baseReport.declaredBaseTotalMinorUnits === null ||
+    baseReport.stale
+  )
     return { status: 'requires_base', periodKey, startDay: plan.startDay };
   const bases = await readFixedTransitionHistory(store, periodKey, plan.startDay);
   const base = bases[bases.length - 1];
-  if (!base || !fixedTransitionMatchesPlan(plan, base) ||
+  if (
+    !base ||
+    !fixedTransitionMatchesPlan(plan, base) ||
     base.revision !== baseReport.latestRevision ||
-    base.declaredBaseTotalMinorUnits !== baseReport.declaredBaseTotalMinorUnits)
+    base.declaredBaseTotalMinorUnits !== baseReport.declaredBaseTotalMinorUnits
+  )
     return {
-      status: 'blocked', periodKey, startDay: plan.startDay,
+      status: 'blocked',
+      periodKey,
+      startDay: plan.startDay,
       reasons: ['TWO_FIXED_OT_BASE_READBACK_MISMATCH'],
     };
   const history = await readTwoFixedOvertimePolicyHistory(store, periodKey, plan.startDay);
@@ -200,7 +233,9 @@ export async function loadTwoFixedOvertimePolicyReviewFromStore(
   if ((await readPayPeriodStartDay(store)) !== plan.startDay)
     throw new Error('TWO_FIXED_OT_SETTING_CHANGED_DURING_READ');
   return {
-    status: 'review', periodKey, startDay: plan.startDay,
+    status: 'review',
+    periodKey,
+    startDay: plan.startDay,
     currency: segments[0].profile.currency,
     baseRevision: base.revision,
     baseTotalMinorUnits: base.declaredBaseTotalMinorUnits,
@@ -212,7 +247,8 @@ export async function loadTwoFixedOvertimePolicyReviewFromStore(
       multiplierNumerator: segment.profile.overtimeMultiplierNumerator,
       multiplierDenominator: segment.profile.overtimeMultiplierDenominator,
     })) as [TwoFixedOvertimeReviewSegment, TwoFixedOvertimeReviewSegment],
-    canInclude, latestRevision: history.length,
+    canInclude,
+    latestRevision: history.length,
     stale: Boolean(stale),
     latestDecision: current && !stale ? current.decision : null,
     latestThresholdMode: current && !stale ? current.thresholdMode : null,
