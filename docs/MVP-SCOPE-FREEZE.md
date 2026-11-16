@@ -9,8 +9,8 @@
 
 Vardiyum'un ilk ürünü tüm sektörlerden vardiyalı çalışanlar için TR/EN, iOS/Android, offline-first **kişisel vardiya + rutin + kullanıcı beyanına dayalı yaklaşık kazanç** uygulamasıdır. Amacımız yeni mikro-özellikler veya bitmeyen ücret hesaplama kuralları eklemek değil, çalışan çekirdeği güvenilir biçimde **kullanılabilir kapalı beta**ya, sonra **App Store ve Google Play üretim yayını**na ulaştırmaktır.
 
-- **Kapalı beta MVP için kalan: 3 teslim aşaması.**
-- **Her iki mağazada yayın dahil: toplam 4 teslim aşaması.**
+- **Kapalı beta için başlangıç planı 3 teslim aşaması; birinci aşamanın kaynak-kod/CI denetimi 2026-11-16 tamamlandı, ikinci aşama gerçek cihaz ve üçüncü aşama kapalı beta henüz yapılmadı.**
+- **Her iki mağazada yayın dahil başlangıç planı toplam 4 aşama (birinci aşama kod kabulü tamam; iki beta kapısı ve mağaza kapısı açık).**
 - Bu **PR sayısı / net süre / garantili teslim tarihi değildir**. Kritik hata ortaya çıkarsa ilgili aşamada düzeltilir; yeni aşama sayılmaz.
 - MVP kapsamında yeni bir özelliğe ancak **kanıtlanmış P0 kullanıcı akışı, güvenlik, veri kaybı veya hesaplama doğruluğu** problemi çözüyorsa girilebilir; diğerleri v1.1+.
 - Mevcut `blocked` / yeniden kaynak onayı gerektiren hesaplama korumalarını **gevşetme veya otomatik tahmin yapma**. Eksik destek kapsamını kullanıcıya net açıkla.
@@ -64,3 +64,8 @@ Vardiyum'un ilk ürünü tüm sektörlerden vardiyalı çalışanlar için TR/EN
 2. **#38'de ilk tamamlanmamış kapıdan ilerle**. Kullanıcı tekrar 'sonraki geliştirmeye geç' dese bile P1 maaş senaryosu PR'ı otomatik açma.
 3. **Sadece kullanıcı yeni bir açık karar verirse** kapsam dondurmayı aç veya mevcut P0 güvenlik/doğruluk sorunu kanıtlandıysa önceliklendir. Her aşama tamamlanmadan 'hazır', 'native geçti' veya 'mağazada' denmez.
 4. Her ilerlemede issue #38 checklist, bu kapsam kaydı, STATUS/HANDOFF, test kanıtı ve GitHub Actions sonucu güncel tut.
+
+## 2026-11-16 — Aşama 2 için kanıt sınırı
+
+- [PR #39](https://github.com/hilmiguner/vardiyum/pull/39), [PR #40](https://github.com/hilmiguner/vardiyum/pull/40), [PR #41](https://github.com/hilmiguner/vardiyum/pull/41) **main üzerinde merged**, `main=8b72b55625eee5c4f278f467a5d45df20dc3bfd0`, [main CI #43877499033](https://github.com/hilmiguner/vardiyum/actions/runs/43877499033) SUCCESS 338/338 Node; kaynak-kod P0 denetiminde açık bulgu bırakılmadı. Bu **gerçek iOS/Android UX/erişilebilirlik testinin tamamlandığı anlamına gelmez**.
+- **Sıradaki tek kapı:** [NATIVE-PREVIEW.md](NATIVE-PREVIEW.md) EAS Preview ve [DEVICE-SMOKE.md](DEVICE-SMOKE.md) D01–D10 × Android/iOS. Expo projesi, Apple hesabı/UDID, native build ve fiziksel test sonuçları henüz yok. Testte P0 çıkarsa yalnız düzeltme; yeni maaş özelliği yok.

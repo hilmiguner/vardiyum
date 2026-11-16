@@ -53,3 +53,10 @@
 **Kapatma kuralı:** PR #41 son HEAD CI + kullanıcı merge onayı + main CI doğrulanınca **kaynak düzeyinde ilk ekran/çekirdek P0 denetim döngüsünü kapat**. Yeni mikro-özellik arama. Issue #38 2. aşama, gerçek cihaz üzerinde objektif kayıt ve bug-fix triage; 3. kapalı beta, 4. store. Native testte P0 bulunursa aynı aşamada düzelt; stage sayısı artmaz.
 
 **PR kanıtı:** [#40 main CI #43865416364](https://github.com/hilmiguner/vardiyum/actions/runs/43865416364) 333/333 SUCCESS. [#41](https://github.com/hilmiguner/vardiyum/pull/41) rutin ilk kurulum + schedule/routine DB error gate + retry (5 yeni regresyon). **PR OPEN/CI ve merge ayrı kontrol edilir**.
+
+## 2026-11-16 — MVP #38: birinci aşama kaynak-kod kabulü KAPANDI, gerçek cihaz ikinci aşama AÇIK
+
+- [PR #41](https://github.com/hilmiguner/vardiyum/pull/41) **kullanıcı onayıyla MERGED**, `main=8b72b55625eee5c4f278f467a5d45df20dc3bfd0`, [main CI #43877499033](https://github.com/hilmiguner/vardiyum/actions/runs/43877499033) **SUCCESS: 338/338 Node**, Expo/Prettier/ESLint/TypeScript ve Android+iOS **JS** paketleri. PR #39/#40/#41 ile Bugün, Takvim, Rutinler, Kazanç, Ayarlar kaynak-kod P0 denetimi kapandı; **gerçek cihaz kullanıcı kabulü değil**.
+- **2. aşama:** `eas.json` Android **internal APK** ve iOS **physical ad hoc IPA** preview profili; yeni dört static config testi ve [NATIVE-PREVIEW.md](NATIVE-PREVIEW.md) kullanıcı işlemi yönergeleri. Expo login, `eas init`/gerçek projectId, signing, Apple Developer/UDID, native EAS build ID ve telefon kurulumu **henüz YOK**; hiçbir sonuç “PASS” değildir.
+- [DEVICE-SMOKE.md](DEVICE-SMOKE.md) **D01–D10 x Android/iOS = 20 NOT_TESTED**. Önce gerçek native build/install, sonra offline/SQLite v1→v8/OS bildirimleri/IANA DST/AES temiz restore/CSV-JSON temp dosyası/low disk/erişilebilirlik. Issue #38/#2/#20 açık. **Yeni özellik/ileri maaş edge-case PR döngüsü yok**. Fixed→fixed gerçek OT/combined, mixed fixed↔hourly/FX **v1.1+ BLOCKED**.
+- MVP kapalı beta için toplam 3 aşamalık başlangıç planının **1. aşamasında kod kabulü tamam**, gerçek cihaz 2. ve beta 3. aşamalar açık; mağaza yayını 4. aşama. Yeni PR merge onayı ayrıca gerekir.

@@ -4,7 +4,7 @@
 
 Vardiyum, tüm sektörlerdeki vardiyalı çalışanlar için tasarlanan iOS/Android kişisel vardiya asistanıdır. Hedefi kullanıcıya vardiyasını, o güne düşen rutinlerini ve dönemlik **tahmini** kazancını tek yerden göstermektir. Ürün planı için [docs/PRODUCT.md](docs/PRODUCT.md), teknik sınırlar için [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Durum (2026-11-15):** Offline vardiya/rutin/gerçek UTC çalışma, açıklanabilir tahmini kazanç ve şifreli yedek (PR #3/#5/#7/#9/#11/#13/#15/#17/#18/#19) ile **temiz kurulumda atomik geri yükleme PR #21** main'de. PR #21 merge `de110794d9f71c8bfa81e978b0141ead74fb3e35`, [main CI #43725429338](https://github.com/hilmiguner/vardiyum/actions/runs/43725429338) **SUCCESS** (**127 Node testi**, Android/iOS JS export). **Gerçek cihaz kabulü YAPILMADI**: [Issue #20](https://github.com/hilmiguner/vardiyum/issues/20) açık; [Issue #2](https://github.com/hilmiguner/vardiyum/issues/2) ertelendi. Dolu DB merge/overwrite veya resmî bordro/net/vergi hesabı yok.
+> **Güncel 2026-11-16:** MVP 1. aşama kaynak-kod denetimi PR #39–41 ile tamamlandı; [PR #41](https://github.com/hilmiguner/vardiyum/pull/41) MERGED `main=8b72b55625eee5c4f278f467a5d45df20dc3bfd0`, [main CI #43877499033](https://github.com/hilmiguner/vardiyum/actions/runs/43877499033) SUCCESS **338/338 Node + Android/iOS JavaScript**. **Fiziksel cihaz/native build testleri henüz yapılmadı.** [Expo EAS kurulabilir önizleme hazırlığı](docs/NATIVE-PREVIEW.md), [D01–D10 cihaz matrisi](docs/DEVICE-SMOKE.md), [MVP dört aşama](docs/MVP-SCOPE-FREEZE.md) ve [Issue #38](https://github.com/hilmiguner/vardiyum/issues/38). Yeni maaş senaryosu eklenmeyecek; ileri model kombinasyonları BLOCKED kalır.
 
 ## Geliştirme kurulumu
 
