@@ -208,3 +208,9 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 - [ ] **NEXT:** privacy-confirmed custom-period CSV/JSON (read-only fresh snapshot, full source provenance, signed exact minor units, source profile+work UTC+IANA+break/attribution revisions, CSV formula-injection protection, explicit sensitive-data sharing warning, not legal/net payroll). No auto-export/auto-email/background sharing.
 - [ ] Mixed fixed→fixed and fixed→hourly effective monthly transition in a special payroll period: separate **explicit user-confirmed amount/prorate** product policy, no silent assumptions (currently blocked).
 - [ ] Physical Android/iOS SQLite persist+notification, AES encrypted archive/restore clean target, DST/process kill/low disk QA #2/#20 user-deferred. Issue #22 and parent #16 OPEN until scope and native criteria resolved.
+
+## 2026-11-16 — Özel dönem CSV/JSON, PR #35 (inceleme / CI)
+
+- [ ] [PR #35](https://github.com/hilmiguner/vardiyum/pull/35): açık kullanıcının mahremiyet onayı + fresh validated combined custom report; JSON v1/CSV source audit/dönem UTC/IANA ve full minor unit, spreadsheet injection guard, ephemeral OS share + cache cleanup; Node regresyonu ve TR/EN. **PR CI/merge doğrulaması bekleniyor.**
+- [ ] Custom `monthly_fixed→monthly_fixed` ve `monthly_fixed↔hourly` efektif ay geçişi: kullanıcıya açık ayrı full/partial BASE+overtime attribution politikası, silent prorata ve double-count kesin yasak. Issue #22/#16 açık.
+- [ ] iOS/Android gerçek cihaz SQLite ve OS paylaşımı/temizliği, DST, AES clean restore, low-disk/crash QA Issue #2/#20; kullanıcı kararıyla erteli.
