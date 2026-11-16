@@ -289,7 +289,7 @@ test('history needs exact event/head, canonical sources and strict immutable rev
               ...one.segments[1],
               profile: {
                 ...one.segments[1].profile,
-                revision: 9,
+                baseMinorUnits: -1,
               },
             },
           ],
