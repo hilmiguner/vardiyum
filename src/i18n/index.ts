@@ -8,6 +8,22 @@ const resources = {
   tr: {
     translation: {
       today: 'Bugün',
+      todayEarningsTitle: 'Bu maaş döneminin tahmini kazancı',
+      todayEarningsCalendarPeriod: 'Takvim ayı: {{from}} – {{to}}',
+      todayEarningsCustomPeriod: 'Özel maaş dönemi: {{from}} – {{to}}',
+      todayEarningsNeedsProfile:
+        'Bu dönem için ücret profili bulunamadı. Kazanç ekranından bir profil oluştur.',
+      todayEarningsNoEntries:
+        'Bu dönem için henüz hesaplanabilecek gerçek çalışma veya ek kalem kaydı yok.',
+      todayEarningsBlocked:
+        'Tutar gösterilemiyor: mevcut ücret veya çalışma kayıtları açık doğrulama gerektiriyor. Kazanç ekranından incele.',
+      todayEarningsError:
+        'Tahmin şu anda okunamadı. Yanlış bir tutar göstermek yerine yeniden dene.',
+      todayEarningsFixedAssumption:
+        'Aylık sabit ana ücret, kaydettiğin tam ay tutarı üzerinden gösterilir; gerçekleşen çalışma süresiyle oranlanmaz.',
+      todayEarningsDisclaimer:
+        'Yalnız kullanıcı beyanına dayalı vergi öncesi tahmin. Resmî bordro veya net maaş değildir. Takvim ayı ve özel dönem tutarlarını toplama.',
+      todayEarningsViewDetails: 'Kazanç ayrıntılarını aç',
       calendar: 'Takvim',
       routines: 'Rutinler',
       earnings: 'Kazanç',
@@ -332,7 +348,7 @@ const resources = {
         'Henüz Kazanç raporu, ücret profilleri veya CSV/JSON bu özel dönem beyanını kullanmaz. Hesaplama ve eski aylık mola geçmişi değişmez.',
       payPeriodPreferenceTitle: 'Maaş dönemi başlangıcı (hazırlık)',
       payPeriodPreferenceExplanation:
-        'Maaş dönemin ayın 1’i dışında başlayabilir. Başlangıç gününü yerel olarak kaydedebilirsin; bu tercih henüz Kazanç raporlarının hesaplama dönemini değiştirmez.',
+        'Maaş dönemin ayın 1’i dışında başlayabilir. Başlangıç günü takvim ayı raporunu değiştirmez; doğrulanmış özel dönem tahminleri ayrı görüntülenir.',
       payPeriodPreferenceStartDay: 'Dönem başlangıç günü (1–28)',
       payPeriodPreferenceHint:
         'Örneğin 26 seçilirse dönem ayın 26’sında başlar ve sonraki ayın 25’inde biter. 29–31 Şubat ayı nedeniyle bu sürümde desteklenmiyor.',
@@ -343,7 +359,7 @@ const resources = {
       payPeriodPreferenceSaved: 'Maaş dönemi başlangıç tercihi cihazda kaydedildi.',
       payPeriodPreferenceError: 'Maaş dönemi tercihi okunamadı veya kaydedilemedi',
       payPeriodPreferenceNotEnabled:
-        'Önemli: Kazanç sekmesi hâlâ takvim ayına göre tahmin yapar. Özel dönem maaş/mesai hesabı, molalar ve ücret profili geçişleri güvenle bağlandıktan sonra etkinleşecek.',
+        'Takvim ayı raporu korunur. 2–28 seçersen özel dönem tahmini desteklenen ücret ve mola kaynakları doğrulanınca ayrıca gösterilir. Desteklenmeyen profil geçişlerinde tutar gösterilmez.',
       greeting: 'Bugünkü planın',
       nextShift: 'Sonraki gün',
       shiftToday: 'Bugünkü vardiya',
@@ -689,6 +705,21 @@ const resources = {
   en: {
     translation: {
       today: 'Today',
+      todayEarningsTitle: 'Estimated earnings for this pay period',
+      todayEarningsCalendarPeriod: 'Calendar month: {{from}} – {{to}}',
+      todayEarningsCustomPeriod: 'Custom pay period: {{from}} – {{to}}',
+      todayEarningsNeedsProfile: 'No pay profile for this period. Create one in Earnings.',
+      todayEarningsNoEntries:
+        'No logged actual work or adjustment is available to calculate this period yet.',
+      todayEarningsBlocked:
+        'No amount shown: your saved pay or work sources need explicit review. Check Earnings.',
+      todayEarningsError:
+        'The estimate could not be read. Retry instead of showing an unverified amount.',
+      todayEarningsFixedAssumption:
+        'Fixed monthly base uses your saved full-month amount; it is not prorated by logged work.',
+      todayEarningsDisclaimer:
+        'Self-reported PRE-TAX estimate only, not official payroll or take-home pay. Never add calendar and custom-period totals.',
+      todayEarningsViewDetails: 'Open earnings details',
       calendar: 'Calendar',
       routines: 'Routines',
       earnings: 'Earnings',
@@ -1015,7 +1046,7 @@ const resources = {
         'Earnings reports, pay profiles and CSV/JSON exports do not yet use this custom-period declaration. Calendar-month reports and existing break history are unchanged.',
       payPeriodPreferenceTitle: 'Pay period start (preparation)',
       payPeriodPreferenceExplanation:
-        'Your pay period may start on a day other than the 1st. You can save your preferred start day locally; this preference does not yet change the Earnings report period.',
+        'Your pay period can start after the 1st. Calendar-month reports stay unchanged; verified custom-period estimates are shown separately.',
       payPeriodPreferenceStartDay: 'Period start day (1–28)',
       payPeriodPreferenceHint:
         'For example, 26 means the period starts on the 26th and closes on the 25th of the following month. Days 29–31 are not supported yet because of February.',
@@ -1026,7 +1057,7 @@ const resources = {
       payPeriodPreferenceSaved: 'Your pay period start preference was saved on this device.',
       payPeriodPreferenceError: 'Could not read or save pay period preference',
       payPeriodPreferenceNotEnabled:
-        'Important: Earnings estimates still use calendar months. Custom-period pay and overtime calculations will be enabled only after break allocation and pay-profile changes are handled safely.',
+        'Calendar-month reports remain available. When you choose day 2–28, a separate custom-period estimate appears only with verified pay and break sources. Unsupported profile transitions never show an amount.',
       greeting: 'Your plan today',
       nextShift: 'Next day',
       shiftToday: "Today's shift",

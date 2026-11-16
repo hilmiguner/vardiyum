@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Action, Heading, Muted, Page, Panel } from '../../components/ui';
 import { ScheduledDuration } from '../../components/scheduled-duration';
 import { RoutineDayChecklist } from '../../components/routine-day-checklist';
+import { TodayEarningsPanel } from '../../components/today-earnings-panel';
 import {
   addCalendarDays,
   calendarDateInZone,
@@ -83,6 +84,7 @@ export default function TodayScreen() {
             </Text>
             {next && <Muted>{timeLabel(next)}</Muted>}
           </Panel>
+          <TodayEarningsPanel date={today} timeZone={schedule.timeZone} />
           <RoutineDayChecklist date={today} />
         </>
       )}
