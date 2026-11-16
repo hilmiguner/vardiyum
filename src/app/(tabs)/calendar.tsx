@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { Alert, Pressable, Text, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -6,6 +7,7 @@ import { Action, Heading, Muted, Page, Panel } from '../../components/ui';
 import { ScheduledDuration } from '../../components/scheduled-duration';
 import { BoundaryChoiceEditor } from '../../components/boundary-choice-editor';
 import { ActualWorkEditor } from '../../components/actual-work-editor';
+import { calendarEditorSourceKey } from '../../domain/calendar-editor-source';
 import {
   addCalendarDays,
   calendarDateInZone,
@@ -24,7 +26,8 @@ function timeLabel(template: ShiftTemplate): string {
 
 export default function CalendarScreen() {
   const { t } = useTranslation();
-  const { schedule, loading, error, changeDay } = useAppState();
+  const router = useRouter();
+  const { schedule, loading, error, changeDay, reload } = useAppState();
   const c = usePalette();
   const today = calendarDateInZone(schedule.timeZone);
   const [visibleMonth, setVisibleMonth] = useState(today.slice(0, 7) + '-01');
@@ -39,6 +42,9 @@ export default function CalendarScreen() {
     index < firstWeekday ? null : addCalendarDays(visibleMonth, index - firstWeekday),
   );
   const chosen = resolveShift(selectedDate, schedule);
+  const editorSourceKey = chosen
+    ? calendarEditorSourceKey(selectedDate, chosen.template, schedule.timeZone)
+    : null;
   const note =
     noteDraft?.date === selectedDate
       ? noteDraft.value
@@ -72,10 +78,13 @@ export default function CalendarScreen() {
           <Muted>
             {t('databaseError')} ({error})
           </Muted>
+          <Action label={t('retry')} onPress={() => void reload()} />
         </Panel>
       ) : !schedule.pattern ? (
         <Panel>
-          <Muted>{t('noPattern')}</Muted>
+          <Heading>{t('configure')}</Heading>
+          <Muted>{t('configureDescription')}</Muted>
+          <Action label={t('configure')} onPress={() => router.push('/settings')} />
         </Panel>
       ) : (
         <>
@@ -234,13 +243,13 @@ export default function CalendarScreen() {
           {chosen && (
             <>
               <BoundaryChoiceEditor
-                key={selectedDate + ':' + chosen.template.id}
+                key={editorSourceKey}
                 date={selectedDate}
                 template={chosen.template}
                 timeZone={schedule.timeZone}
               />
               <ActualWorkEditor
-                key={selectedDate}
+                key={editorSourceKey}
                 date={selectedDate}
                 template={chosen.template}
                 timeZone={schedule.timeZone}
