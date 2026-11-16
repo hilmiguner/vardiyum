@@ -55,7 +55,8 @@ function validate(report: CustomPayCombinedEstimate): asserts report is Verified
     report.profiles.length > 2 ||
     !Array.isArray(report.workLines) ||
     !Array.isArray(report.adjustmentLines)
-  ) fail();
+  )
+    fail();
 
   const profiles = new Set<string>();
   for (const profile of report.profiles) {
@@ -64,22 +65,30 @@ function validate(report: CustomPayCombinedEstimate): asserts report is Verified
       !Number.isSafeInteger(profile.revision) ||
       profile.revision < 1 ||
       profiles.has(profile.id + ':' + profile.revision)
-    ) fail();
+    )
+      fail();
     profiles.add(profile.id + ':' + profile.revision);
   }
 
   const fixed = report.model === 'monthly_fixed';
   if (
-    (fixed && (report.profiles.length !== 1 ||
-      !Number.isSafeInteger(report.baseRevision) || report.baseRevision < 1 ||
-      !Number.isSafeInteger(report.overtimeConsentRevision) ||
-      report.overtimeConsentRevision < 1 ||
-      !['include_logged_overtime', 'exclude_logged_overtime'].includes(report.overtimeDecision) ||
-      report.regularWorkMinorUnits !== 0)) ||
-    (!fixed && (report.fixedBaseMinorUnits !== 0 ||
-      report.baseRevision !== null || report.overtimeConsentRevision !== null ||
-      report.overtimeDecision !== 'not_applicable'))
-  ) fail();
+    (fixed &&
+      (report.profiles.length !== 1 ||
+        !Number.isSafeInteger(report.baseRevision) ||
+        report.baseRevision < 1 ||
+        !Number.isSafeInteger(report.overtimeConsentRevision) ||
+        report.overtimeConsentRevision < 1 ||
+        !['include_logged_overtime', 'exclude_logged_overtime'].includes(
+          report.overtimeDecision,
+        ) ||
+        report.regularWorkMinorUnits !== 0)) ||
+    (!fixed &&
+      (report.fixedBaseMinorUnits !== 0 ||
+        report.baseRevision !== null ||
+        report.overtimeConsentRevision !== null ||
+        report.overtimeDecision !== 'not_applicable'))
+  )
+    fail();
 
   const seenWork = new Set<string>();
   let workSeconds = 0;
@@ -88,18 +97,24 @@ function validate(report: CustomPayCombinedEstimate): asserts report is Verified
   const overtimeAmounts: number[] = [];
   for (const line of report.workLines) {
     const key = [
-      line.workId, line.kind, line.profileId, line.profileRevision,
-      line.segmentStartUtc, line.segmentEndUtc,
+      line.workId,
+      line.kind,
+      line.profileId,
+      line.profileRevision,
+      line.segmentStartUtc,
+      line.segmentEndUtc,
     ].join('|');
     if (
-      !line.workId || seenWork.has(key) ||
+      !line.workId ||
+      seenWork.has(key) ||
       !profiles.has(line.profileId + ':' + line.profileRevision) ||
       !line.timeZone ||
       !/^\d{4}-\d{2}-\d{2}T/.test(line.sourceStartUtc) ||
       line.sourceStartUtc > line.segmentStartUtc ||
       line.segmentStartUtc >= line.segmentEndUtc ||
       line.segmentEndUtc > line.sourceEndUtc ||
-      !Number.isSafeInteger(line.seconds) || line.seconds < 0 ||
+      !Number.isSafeInteger(line.seconds) ||
+      line.seconds < 0 ||
       minor(line.amountMinorUnits) < 0n ||
       (fixed && line.kind !== 'fixed_overtime') ||
       (!fixed && !['hourly_regular', 'hourly_overtime'].includes(line.kind)) ||
@@ -108,9 +123,9 @@ function validate(report: CustomPayCombinedEstimate): asserts report is Verified
       (line.rateBreakAuditRevision !== null &&
         (!Number.isSafeInteger(line.rateBreakAuditRevision) ||
           line.rateBreakAuditRevision < 1)) ||
-      (line.rateBreakAuditKind !== null &&
-        !['rate', 'dual'].includes(line.rateBreakAuditKind))
-    ) fail();
+      (line.rateBreakAuditKind !== null && !['rate', 'dual'].includes(line.rateBreakAuditKind))
+    )
+      fail();
     seenWork.add(key);
     if (line.kind === 'hourly_regular') regularAmounts.push(line.amountMinorUnits);
     else overtimeAmounts.push(line.amountMinorUnits);
@@ -122,7 +137,8 @@ function validate(report: CustomPayCombinedEstimate): asserts report is Verified
   const seenAdjustment = new Set<string>();
   for (const line of report.adjustmentLines) {
     if (
-      !line.sourceId || seenAdjustment.has(line.sourceId) ||
+      !line.sourceId ||
+      seenAdjustment.has(line.sourceId) ||
       line.sourceCurrency !== report.currency ||
       !['bonus', 'deduction', 'correction'].includes(line.sourceKind) ||
       !/^\d{4}-(0[1-9]|1[0-2])$/.test(line.sourceCalendarMonth) ||
@@ -136,9 +152,13 @@ function validate(report: CustomPayCombinedEstimate): asserts report is Verified
       minor(line.earlierMinorUnits) + minor(line.laterMinorUnits) !==
         minor(line.sourceAmountMinorUnits) ||
       minor(line.selectedMinorUnits) !==
-        minor(line.earlierPeriodKey === report.periodKey
-          ? line.earlierMinorUnits : line.laterMinorUnits)
-    ) fail();
+        minor(
+          line.earlierPeriodKey === report.periodKey
+            ? line.earlierMinorUnits
+            : line.laterMinorUnits,
+        )
+    )
+      fail();
     seenAdjustment.add(line.sourceId);
   }
 
@@ -153,21 +173,25 @@ function validate(report: CustomPayCombinedEstimate): asserts report is Verified
     sum(report.adjustmentLines.map((line) => line.selectedMinorUnits)) !==
       minor(report.adjustmentMinorUnits) ||
     expectedEarnings !== minor(report.earningsMinorUnits) ||
-    expectedEarnings + minor(report.adjustmentMinorUnits) !==
-      minor(report.totalMinorUnits) ||
+    expectedEarnings + minor(report.adjustmentMinorUnits) !== minor(report.totalMinorUnits) ||
     report.totalMinorUnits < 0 ||
     !Number.isSafeInteger(report.loggedSeconds) ||
     !Number.isSafeInteger(report.overtimeSeconds) ||
     report.overtimeSeconds < 0 ||
     report.loggedSeconds < report.overtimeSeconds ||
-    (!fixed && (workSeconds !== report.loggedSeconds ||
-      overtimeSeconds !== report.overtimeSeconds)) ||
-    (fixed && report.overtimeDecision === 'exclude_logged_overtime' &&
-      (report.overtimeMinorUnits !== 0 || report.overtimeSeconds !== 0 ||
-        report.loggedSeconds !== 0 || report.workLines.length !== 0)) ||
-    (fixed && report.overtimeDecision === 'include_logged_overtime' &&
+    (!fixed &&
+      (workSeconds !== report.loggedSeconds || overtimeSeconds !== report.overtimeSeconds)) ||
+    (fixed &&
+      report.overtimeDecision === 'exclude_logged_overtime' &&
+      (report.overtimeMinorUnits !== 0 ||
+        report.overtimeSeconds !== 0 ||
+        report.loggedSeconds !== 0 ||
+        report.workLines.length !== 0)) ||
+    (fixed &&
+      report.overtimeDecision === 'include_logged_overtime' &&
       overtimeSeconds !== report.overtimeSeconds)
-  ) fail();
+  )
+    fail();
 }
 
 /** A confirmation becomes invalid if ANY previously displayed source or audit changes. */
@@ -237,20 +261,49 @@ export function createCustomPayCombinedExport(
   }
 
   const headers = [
-    'rowType', 'periodKey', 'startDay', 'startDate', 'endDateInclusive',
-    'scheduleTimeZone', 'currency', 'kind', 'sourceId', 'profileId',
-    'profileRevision', 'sourceStartUtc', 'sourceEndUtc', 'segmentStartUtc',
-    'segmentEndUtc', 'seconds', 'amountMinorUnits', 'breakAuditRevision',
-    'rateBreakAuditKind', 'rateBreakAuditRevision', 'attributionRevision',
-    'sourceCalendarMonth', 'originalMinorUnits', 'earlierPeriodKey',
-    'earlierMinorUnits', 'laterPeriodKey', 'laterMinorUnits', 'sourceNote',
-    'auditReason', 'recordedAt', 'baseRevision', 'overtimeConsentRevision',
-    'overtimeDecision', 'disclaimer',
+    'rowType',
+    'periodKey',
+    'startDay',
+    'startDate',
+    'endDateInclusive',
+    'scheduleTimeZone',
+    'currency',
+    'kind',
+    'sourceId',
+    'profileId',
+    'profileRevision',
+    'sourceStartUtc',
+    'sourceEndUtc',
+    'segmentStartUtc',
+    'segmentEndUtc',
+    'seconds',
+    'amountMinorUnits',
+    'breakAuditRevision',
+    'rateBreakAuditKind',
+    'rateBreakAuditRevision',
+    'attributionRevision',
+    'sourceCalendarMonth',
+    'originalMinorUnits',
+    'earlierPeriodKey',
+    'earlierMinorUnits',
+    'laterPeriodKey',
+    'laterMinorUnits',
+    'sourceNote',
+    'auditReason',
+    'recordedAt',
+    'baseRevision',
+    'overtimeConsentRevision',
+    'overtimeDecision',
+    'disclaimer',
   ];
   const rows: (string | number | null)[][] = [];
   const common = [
-    report.periodKey, report.startDay, report.startDate, report.endDateInclusive,
-    report.scheduleTimeZone, report.currency,
+    report.periodKey,
+    report.startDay,
+    report.startDate,
+    report.endDateInclusive,
+    report.scheduleTimeZone,
+    report.currency,
   ];
   const push = (
     type: string,
@@ -302,8 +355,8 @@ export function createCustomPayCombinedExport(
     });
   }
   push('TOTAL', 'COMBINED_PRE_TAX_ESTIMATE', '', report.totalMinorUnits);
-  const content = headers.join(',') + '\n' +
-    rows.map((row) => row.map(csvCell).join(',')).join('\n') + '\n';
+  const content =
+    headers.join(',') + '\n' + rows.map((row) => row.map(csvCell).join(',')).join('\n') + '\n';
   if (content.length > MAX_EXPORT_CHARS) fail();
   return { name: fileStem + '.csv', mimeType: 'text/csv', content };
 }
