@@ -78,7 +78,10 @@ export function CustomPayCombinedPanel({
               // A new coherent SQLite snapshot is required AFTER confirmation.
               // Never share an old display or a newly changed unreviewed total.
               const fresh = await loadCustomPayCombinedEstimate(periodKey, timeZone);
-              if (fresh.status !== 'estimated' || JSON.stringify(fresh) !== JSON.stringify(reviewed))
+              if (
+                fresh.status !== 'estimated' ||
+                JSON.stringify(fresh) !== JSON.stringify(reviewed)
+              )
                 setReport(fresh);
               const verified = requireUnchangedCustomPayEstimate(reviewed, fresh);
               await shareCustomPayExportFile(createCustomPayCombinedExport(verified, format));
