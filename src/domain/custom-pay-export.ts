@@ -74,12 +74,12 @@ function validate(report: CustomPayCombinedEstimate): asserts report is Verified
   if (
     (fixed &&
       (report.profiles.length !== 1 ||
-        (report.baseRevision === null ||
-          !Number.isSafeInteger(report.baseRevision) ||
-          report.baseRevision < 1) ||
-        (report.overtimeConsentRevision === null ||
-          !Number.isSafeInteger(report.overtimeConsentRevision) ||
-          report.overtimeConsentRevision < 1) ||
+        report.baseRevision === null ||
+        !Number.isSafeInteger(report.baseRevision) ||
+        report.baseRevision < 1 ||
+        report.overtimeConsentRevision === null ||
+        !Number.isSafeInteger(report.overtimeConsentRevision) ||
+        report.overtimeConsentRevision < 1 ||
         !['include_logged_overtime', 'exclude_logged_overtime'].includes(
           report.overtimeDecision,
         ) ||
