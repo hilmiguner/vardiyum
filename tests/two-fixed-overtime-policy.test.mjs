@@ -234,7 +234,7 @@ test('v8 SQLite requires separate BASE, then saves real opt-in policy while comb
     assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(), []);
     assert.equal(db.prepare('PRAGMA integrity_check').get().integrity_check, 'ok');
     assert.equal(db.prepare('SELECT COUNT(*) AS n FROM earnings_profiles').get().n, 2);
-    assert.equal(db.prepare('SELECT COUNT(*) AS n FROM earnings_work').get().n, 0);
+    assert.equal(db.prepare('SELECT COUNT(*) AS n FROM actual_work_sessions').get().n, 0);
     const combined = await loadCustomPayCombinedFromStore(store(db), PERIOD, ZONE);
     assert.equal(combined.status, 'blocked');
     assert.ok(combined.reasons.some((reason) => /MIXED_FIXED/.test(reason)));
