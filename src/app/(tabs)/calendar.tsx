@@ -44,7 +44,7 @@ export default function CalendarScreen() {
   const chosen = resolveShift(selectedDate, schedule);
   const editorSourceKey = chosen
     ? calendarEditorSourceKey(selectedDate, chosen.template, schedule.timeZone)
-    : null;
+    : '';
   const note =
     noteDraft?.date === selectedDate
       ? noteDraft.value
