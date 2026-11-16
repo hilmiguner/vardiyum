@@ -23,6 +23,11 @@ function sum(values: readonly number[]): bigint {
 }
 
 function csvCell(input: string | number | null): string {
+  // Exact signed numeric cells remain numeric; only strings need neutralization.
+  if (typeof input === 'number') {
+    if (!Number.isSafeInteger(input)) fail();
+    return String(input);
+  }
   // Quotes cannot protect spreadsheet imports from leading formula characters.
   // Normalize embedded controls and neutralize dangerous prefixes in ALL text fields.
   const value = String(input ?? '').replace(/[\u0000-\u001f\u007f]/g, ' ');
