@@ -265,6 +265,6 @@
 
 ## 2026-11-16 — PR #36 fixed→fixed BASE-only kaynak/attribution regression
 
-- [ ] `tests/custom-fixed-transition.test.mjs`: exact two fixed sources/UTC-IANA & startDay26/year rollover/Kathmandu 45min; explicit zero/full/partial signed integer minor, >source/negative/fraction/invalid source/fixed↔hourly/FX/no implicit prorata; canonical event/head/gap/tamper/readback; 2 revision original byte-preserved; stale consent vs source profile revision correction/time zone; optimistic stale save/unchanged, injected SQL error transaction rollback; v1→v8 real SQLite 18 tablo/FK/integrity; original profiles/monthly/combined/export unchanged, combined for mixed fixed remains BLOCKED.
-- [ ] PR #36 Prettier/ESLint/tsc/Expo deps/Node tests/Android+iOS JS exports result to verify (not native).
+- [x] `tests/custom-fixed-transition.test.mjs`: exact two fixed sources/UTC-IANA & startDay26/year rollover/Kathmandu 45min; explicit zero/full/partial signed integer minor, >source/negative/fraction/invalid source/fixed↔hourly/FX/no implicit prorata; canonical event/head/gap/tamper/readback; 2 revision original byte-preserved; stale consent vs source profile revision correction/time zone; optimistic stale save/unchanged, injected SQL error transaction rollback; v1→v8 real SQLite 18 tablo/FK/integrity; original profiles/monthly/combined/export unchanged, combined for mixed fixed remains BLOCKED.
+- [x] [PR #36 Actions #43831061577](https://github.com/hilmiguner/vardiyum/actions/runs/43831061577) **SUCCESS: 309/309 Node, 0 fail**, Prettier, ESLint, TypeScript, Expo dependencies, Android+iOS **JS** exports; NOT native QA.
 - [ ] Native device source/work/relaunch/AES clean restore/DST/OS share cleanup/process kill/low disk QA Issue #2/#20 deferred by user.
