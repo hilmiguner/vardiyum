@@ -22,7 +22,8 @@
 - [x] **Düzeltme:** `calendarEditorSourceKey` date, source shift ID, başlangıç/bitiş, next-day offset, mola, izin flag ve kayıtlı IANA zone içeren kesin tuple key üretir. Takvim `BoundaryChoiceEditor` ve `ActualWorkEditor` bileşenlerini yalnız kaynak değiştiğinde yeniden mount eder; original `actual_work_sessions` geçmişi değişmez. Anahtarlar sibling UI için unique.
 - [x] **Düzeltme:** Takvim boş vardiya durumunda mevcut TR/EN `configure` kopyasını ve direkt `/settings` CTA'yı gösterir. SQLite açılış hatasında uygulamadan çıkmadan `reload` Retry.
 - [x] Node testleri: aynı gün override gece→sabah, aynı ID ile saat/mola değişimi, timezone/gün/rest değişimi, deterministik/çarpışmasız tuple.
-- [ ] GitHub CI (Prettier, lint, typecheck, Node, Android/iOS **JS** bundle) başarılı olmadan merge yok.
+- [x] [PR #39 CI #43853928391](https://github.com/hilmiguner/vardiyum/actions/runs/43853928391) **SUCCESS: 323/323 Node, 0 fail; Prettier/ESLint/TypeScript/Expo, Android+iOS JS bundles** (native acceptance değildir).
+- [ ] Son docs-only HEAD CI ve kullanıcı merge onayı bekleniyor.
 - [ ] Kullanıcı merge onayı ve sonra main CI; bu geliştirme **#38 aşama 1 tamamlandı** anlamına gelmez.
 
 ## Sıradaki P0 kabul faaliyeti
