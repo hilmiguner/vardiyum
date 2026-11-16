@@ -21,10 +21,6 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Check Expo dependency compatibility
         run: npx expo install --check
-      - name: Temporary format diagnosis
-        run: |
-          npm run format:write
-          node -e "const fs = require('fs'); for (const p of ['src/components/custom-fixed-transition-panel.tsx','src/domain/custom-fixed-transition-policy.ts','src/domain/custom-fixed-transition-store.ts','src/i18n/index.ts','tests/custom-fixed-transition.test.mjs']) console.log('FMTFILE:' + JSON.stringify({path:p,content:fs.readFileSync(p,'utf8')}));"
       - name: Code formatting
         run: npm run format
       - name: Lint
