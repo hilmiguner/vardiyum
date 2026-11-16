@@ -74,10 +74,12 @@ function validate(report: CustomPayCombinedEstimate): asserts report is Verified
   if (
     (fixed &&
       (report.profiles.length !== 1 ||
-        !Number.isSafeInteger(report.baseRevision) ||
-        report.baseRevision < 1 ||
-        !Number.isSafeInteger(report.overtimeConsentRevision) ||
-        report.overtimeConsentRevision < 1 ||
+        (report.baseRevision === null ||
+          !Number.isSafeInteger(report.baseRevision) ||
+          report.baseRevision < 1) ||
+        (report.overtimeConsentRevision === null ||
+          !Number.isSafeInteger(report.overtimeConsentRevision) ||
+          report.overtimeConsentRevision < 1) ||
         !['include_logged_overtime', 'exclude_logged_overtime'].includes(
           report.overtimeDecision,
         ) ||
@@ -321,7 +323,7 @@ export function createCustomPayCombinedExport(
     row[31] = report.overtimeConsentRevision;
     row[32] = report.overtimeDecision;
     row[33] = DISCLAIMER + '; ' + NON_ADDITIVE;
-    for (const [index, value] of Object.entries(extra)) row[Number(index)] = value;
+    for (const [index, value] of Object.entries(extra)) row[Number(index)] = value ?? null;
     rows.push(row);
   };
   if (report.model === 'monthly_fixed')
