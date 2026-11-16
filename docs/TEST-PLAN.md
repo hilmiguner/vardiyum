@@ -271,6 +271,6 @@
 
 ## 2026-11-16 — PR #37 two fixed overtime policy regression (final CI pending)
 
-- [ ] New Node+real SQLite v8 test file `tests/two-fixed-overtime-policy.test.mjs`: exact two-profile source/base/rev/UTC+IANA propagation, exclude/null and include+carry/reset decisions, invalid mode/reason/time/revision, missing source rate/fixed↔hourly/FX, event head/gap/modified base/threshold rejection, base required, stale expectedRevision/unchanged, base correction/zone change/new consent, CAS failure rollback, day1 isolation, year turnover 45-minute zone, combined source-verified estimate remains BLOCKED.
-- [ ] PR #37 final HEAD Prettier/ESLint/TS/Expo dependency, Node total, Android+iOS JS export; **not native** acceptance.
+- [x] New Node+real SQLite v8 test file `tests/two-fixed-overtime-policy.test.mjs`: exact two-profile source/base/rev/UTC+IANA propagation, exclude/null and include+carry/reset decisions, invalid mode/reason/time/revision, missing source rate/fixed↔hourly/FX, event head/gap/modified base/threshold rejection, base required, stale expectedRevision/unchanged, base correction/zone change/new consent, CAS failure rollback, day1 isolation, year turnover 45-minute zone, combined source-verified estimate remains BLOCKED.
+- [x] [PR #37 Actions #43836021172](https://github.com/hilmiguner/vardiyum/actions/runs/43836021172): **SUCCESS, 319/319 Node, 0 fail**, Prettier/ESLint/TS/Expo dependency, Android+iOS JS export. Docs-only final head check follows; **not native** acceptance.
 - [ ] Native device iOS/Android SQLite persistence, OS sharing privacy temporary plaintext cleanup, AES restore, DST/fold/low disk/crash/notifications Issue #2/#20 deferred.
