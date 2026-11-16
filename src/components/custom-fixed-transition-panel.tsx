@@ -49,9 +49,13 @@ export function CustomFixedTransitionPanel({
         })
         .catch((failure: unknown) => {
           if (active)
-            setError(failure instanceof Error ? failure.message : 'FIXED_TRANSITION_READ_FAILED');
+            setError(
+              failure instanceof Error ? failure.message : 'FIXED_TRANSITION_READ_FAILED',
+            );
         });
-      return () => { active = false; };
+      return () => {
+        active = false;
+      };
     }, [periodKey, timeZone, refreshRevision, reload]),
   );
 
@@ -60,9 +64,12 @@ export function CustomFixedTransitionPanel({
     try {
       const amounts = [parseMoneyMinor(first), parseMoneyMinor(second)] as [number, number];
       if (
-        amounts.some((amount, index) =>
-          amount < 0 || amount > report.segments[index].sourceFullBaseMinorUnits)
-      ) throw new Error('INVALID_FIXED_TRANSITION_SEGMENT_AMOUNT');
+        amounts.some(
+          (amount, index) =>
+            amount < 0 || amount > report.segments[index].sourceFullBaseMinorUnits,
+        )
+      )
+        throw new Error('INVALID_FIXED_TRANSITION_SEGMENT_AMOUNT');
       if (reason.trim().length < 3 || reason.trim().length > 160)
         throw new Error('INVALID_FIXED_TRANSITION_REASON');
       setBusy(true);
@@ -101,15 +108,19 @@ export function CustomFixedTransitionPanel({
           <Text style={{ color: c.danger, fontWeight: '700' }}>
             {t('earnFixedTransitionBlocked')}
           </Text>
-          {report.reasons.map((code) => <Muted key={code}>{code}</Muted>)}
+          {report.reasons.map((code) => (
+            <Muted key={code}>{code}</Muted>
+          ))}
         </>
       ) : (
         <>
-          <Muted>{t('earnFixedTransitionPeriod', {
-            start: report.startDate,
-            end: report.endDateInclusive,
-            zone: report.timeZone,
-          })}</Muted>
+          <Muted>
+            {t('earnFixedTransitionPeriod', {
+              start: report.startDate,
+              end: report.endDateInclusive,
+              zone: report.timeZone,
+            })}
+          </Muted>
           {report.stale ? (
             <Text style={{ color: c.danger, fontWeight: '700' }}>
               {t('earnFixedTransitionStale')}
@@ -117,29 +128,42 @@ export function CustomFixedTransitionPanel({
           ) : null}
           {report.segments.map((segment, index) => (
             <View key={segment.profileId + ':' + segment.startInstantUtc} style={{ gap: 5 }}>
-              <Heading>{t('earnFixedTransitionSegment', {
-                index: index + 1,
-                start: segment.startDate,
-                end: segment.endDateInclusive,
-              })}</Heading>
-              <Muted>{t('earnFixedTransitionProfile', {
-                id: segment.profileId,
-                revision: segment.profileRevision,
-                amount: formatMoneyMinor(
-                  segment.sourceFullBaseMinorUnits, report.currency, locale,
-                ),
-              })}</Muted>
-              <Muted>{segment.startInstantUtc} → {segment.endInstantUtc}</Muted>
-              {segment.declaredBaseMinorUnits !== null ? (
-                <Muted>{t('earnFixedTransitionPreviouslyDeclared', {
+              <Heading>
+                {t('earnFixedTransitionSegment', {
+                  index: index + 1,
+                  start: segment.startDate,
+                  end: segment.endDateInclusive,
+                })}
+              </Heading>
+              <Muted>
+                {t('earnFixedTransitionProfile', {
+                  id: segment.profileId,
+                  revision: segment.profileRevision,
                   amount: formatMoneyMinor(
-                    segment.declaredBaseMinorUnits, report.currency, locale,
+                    segment.sourceFullBaseMinorUnits,
+                    report.currency,
+                    locale,
                   ),
-                })}</Muted>
+                })}
+              </Muted>
+              <Muted>
+                {segment.startInstantUtc} → {segment.endInstantUtc}
+              </Muted>
+              {segment.declaredBaseMinorUnits !== null ? (
+                <Muted>
+                  {t('earnFixedTransitionPreviouslyDeclared', {
+                    amount: formatMoneyMinor(
+                      segment.declaredBaseMinorUnits,
+                      report.currency,
+                      locale,
+                    ),
+                  })}
+                </Muted>
               ) : null}
               <TextInput
                 accessibilityLabel={t('earnFixedTransitionInput', {
-                  index: index + 1, currency: report.currency,
+                  index: index + 1,
+                  currency: report.currency,
                 })}
                 value={index === 0 ? first : second}
                 onChangeText={index === 0 ? setFirst : setSecond}
@@ -149,8 +173,11 @@ export function CustomFixedTransitionPanel({
                 placeholder="0,00"
                 placeholderTextColor={c.muted}
                 style={{
-                  color: c.text, borderWidth: 1, borderColor: c.border,
-                  borderRadius: 12, padding: 12,
+                  color: c.text,
+                  borderWidth: 1,
+                  borderColor: c.border,
+                  borderRadius: 12,
+                  padding: 12,
                 }}
               />
             </View>
@@ -159,7 +186,9 @@ export function CustomFixedTransitionPanel({
             <Text style={{ color: c.text, fontWeight: '700', fontSize: 20 }}>
               {t('earnFixedTransitionDeclaredTotal', {
                 amount: formatMoneyMinor(
-                  report.declaredBaseTotalMinorUnits, report.currency, locale,
+                  report.declaredBaseTotalMinorUnits,
+                  report.currency,
+                  locale,
                 ),
                 revision: report.latestRevision,
               })}
@@ -176,8 +205,11 @@ export function CustomFixedTransitionPanel({
             placeholder={t('earnFixedTransitionReasonPlaceholder')}
             placeholderTextColor={c.muted}
             style={{
-              color: c.text, borderWidth: 1, borderColor: c.border,
-              borderRadius: 12, padding: 12,
+              color: c.text,
+              borderWidth: 1,
+              borderColor: c.border,
+              borderRadius: 12,
+              padding: 12,
             }}
           />
           <Action
