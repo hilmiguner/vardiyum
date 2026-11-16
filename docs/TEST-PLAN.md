@@ -259,6 +259,6 @@
 
 ## 2026-11-16 — PR #35 custom CSV/JSON mahremiyet/doğrulama regresyonu (CI bekleniyor)
 
-- [ ] `tests/custom-pay-export.test.mjs` Node: versioned JSON source IDs/UTC/IANA/pay/rate/audit revision + period bounds + integer signed money, fixed EXCLUDE consent, CSV quote/control/newline/formula injection, export `blocked`/`disabled`/day1/missing source/mismatched FX/revision/negative total/overflow/duplicate source fail-closed, immutable input, reviewed==fresh ve source changed→NO share.
-- [ ] Prettier/ESLint/TypeScript, `npm test`, Expo dependency check, Android+iOS JS export. PR #35 Actions kanıtını doğrula; sadece kod yazılmış olması PASS demek değil.
+- [x] `tests/custom-pay-export.test.mjs` Node: versioned JSON source IDs/UTC/IANA/pay/rate/audit revision + period bounds + integer signed money, fixed EXCLUDE consent, CSV quote/control/newline/formula injection, export `blocked`/`disabled`/day1/missing source/mismatched FX/revision/negative total/overflow/duplicate source fail-closed, immutable input, reviewed==fresh ve source changed→NO share.
+- [x] [PR #35 Actions #43826687695](https://github.com/hilmiguner/vardiyum/actions/runs/43826687695) **SUCCESS 298/298 Node, 0 fail**, Prettier, ESLint, TypeScript, Expo dependency check, Android+iOS JS export. Native cihaz QA DEĞİL.
 - [ ] Native Android/iOS gerçek OS share file mime/cleanup/permission, SQLite single-transaction source freshness, encrypted backup roundtrip/clean restore/process kill/low disk, DST: Issue #2/#20 kullanıcı isteğiyle erteli. JS export native PASS değildir.

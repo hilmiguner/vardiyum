@@ -363,7 +363,7 @@
 
 ## 2026-11-16 — PR #35 incelemede: özel maaş dönemi için açık onaylı CSV/JSON
 
-- [PR #35](https://github.com/hilmiguner/vardiyum/pull/35) `feat/custom-pay-privacy-export-v8` branch'inde; **main'e merge edilmedi, CI sonucu ayrıca kontrol edilmeli**. Issue #22/#16 kapsamındaki user-confirmed custom export.
+- [PR #35](https://github.com/hilmiguner/vardiyum/pull/35) `feat/custom-pay-privacy-export-v8` branch'inde; **main'e merge edilmedi; [PR CI #43826687695](https://github.com/hilmiguner/vardiyum/actions/runs/43826687695) **SUCCESS (298/298 Node, Prettier, ESLint, TypeScript, Expo dependency check, Android+iOS JS export)****. Issue #22/#16 kapsamındaki user-confirmed custom export.
 - `src/domain/custom-pay-export.ts`: yalnız **güncel source-coherent `status=estimated` combined custom day2–28** raporu; JSON `vardiyum-custom-pay-estimate-v1`, kaynak çalışma ID/UTC/IANA, ücret profil/audit revision, imzalı integer minor tutarlar, bonus/kesinti/düzeltme orijinal ve dönem atıf izi; CSV tüm riskli metinlerde spreadsheet formula neutralization. Negatif/overflow/bozuk kaynak/toplam/no FX ve blocked/day1 export kapalı.
 - `src/components/custom-pay-combined-panel.tsx`: TR/EN toplam+dönem+satır sayısı **önizlemesi ve her paylaşım için kullanıcı onayı**; onaydan **sonra** tek SQLite exclusive transaction ile raporu yeniden oku. Kullanıcıya gösterilmiş eski raporla herhangi bir kaynak/audit/para alanı uyuşmazsa **paylaşma, tekrar inceleme iste**. Otomatik upload yok.
 - `src/services/custom-pay-export-files.ts`: kullanıcı share ekranı için kısa süreli **şifresiz cache dosyası**; paylaşım bitince/iptal/hata durumunda `finally` cleanup. Native OS davranışları **gerçek cihazda test edilmedi**. Dosya şifreli backup değildir.

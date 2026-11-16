@@ -211,6 +211,6 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 
 ## 2026-11-16 — Özel dönem CSV/JSON, PR #35 (inceleme / CI)
 
-- [ ] [PR #35](https://github.com/hilmiguner/vardiyum/pull/35): açık kullanıcının mahremiyet onayı + fresh validated combined custom report; JSON v1/CSV source audit/dönem UTC/IANA ve full minor unit, spreadsheet injection guard, ephemeral OS share + cache cleanup; Node regresyonu ve TR/EN. **PR CI/merge doğrulaması bekleniyor.**
+- [ ] [PR #35](https://github.com/hilmiguner/vardiyum/pull/35): açık kullanıcının mahremiyet onayı + fresh validated combined custom report; JSON v1/CSV source audit/dönem UTC/IANA ve full minor unit, spreadsheet injection guard, ephemeral OS share + cache cleanup; Node regresyonu ve TR/EN. **PR CI #43826687695 SUCCESS, 298/298 Node + Android/iOS JS; merge kullanıcı onayı bekleniyor.**
 - [ ] Custom `monthly_fixed→monthly_fixed` ve `monthly_fixed↔hourly` efektif ay geçişi: kullanıcıya açık ayrı full/partial BASE+overtime attribution politikası, silent prorata ve double-count kesin yasak. Issue #22/#16 açık.
 - [ ] iOS/Android gerçek cihaz SQLite ve OS paylaşımı/temizliği, DST, AES clean restore, low-disk/crash QA Issue #2/#20; kullanıcı kararıyla erteli.
