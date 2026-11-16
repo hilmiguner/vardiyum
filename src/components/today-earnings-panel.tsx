@@ -44,8 +44,7 @@ export function TodayEarningsPanel({ date, timeZone }: { date: string; timeZone:
     }, [date, timeZone, revision]),
   );
 
-  const summary =
-    loaded?.date === date && loaded.timeZone === timeZone ? loaded.summary : null;
+  const summary = loaded?.date === date && loaded.timeZone === timeZone ? loaded.summary : null;
   const locale = i18n.language.startsWith('tr') ? 'tr' : 'en';
 
   return (
