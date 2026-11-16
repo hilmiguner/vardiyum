@@ -94,7 +94,7 @@ export function CustomFixedTransitionPanel({
     }
   }
 
-  if (report?.status === 'not_applicable' && !error) return null;
+  if (report?.status === 'not_applicable') return null;
   return (
     <Panel>
       <Heading>{t('earnFixedTransitionTitle')}</Heading>
