@@ -21,6 +21,12 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Check Expo dependency compatibility
         run: npx expo install --check
+      - name: Temporary formatting diagnostic (remove)
+        run: |
+          npm run format:write
+          echo BEGIN_P0_PRETTIER_DIFF
+          git --no-pager diff -- src/components/routine-day-checklist.tsx src/domain/routine-screen-gate.ts
+          echo END_P0_PRETTIER_DIFF
       - name: Code formatting
         run: npm run format
       - name: Lint
