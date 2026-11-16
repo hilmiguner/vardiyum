@@ -262,3 +262,9 @@
 - [x] `tests/custom-pay-export.test.mjs` Node: versioned JSON source IDs/UTC/IANA/pay/rate/audit revision + period bounds + integer signed money, fixed EXCLUDE consent, CSV quote/control/newline/formula injection, export `blocked`/`disabled`/day1/missing source/mismatched FX/revision/negative total/overflow/duplicate source fail-closed, immutable input, reviewed==fresh ve source changed→NO share.
 - [x] [PR #35 Actions #43826687695](https://github.com/hilmiguner/vardiyum/actions/runs/43826687695) **SUCCESS 298/298 Node, 0 fail**, Prettier, ESLint, TypeScript, Expo dependency check, Android+iOS JS export. Native cihaz QA DEĞİL.
 - [ ] Native Android/iOS gerçek OS share file mime/cleanup/permission, SQLite single-transaction source freshness, encrypted backup roundtrip/clean restore/process kill/low disk, DST: Issue #2/#20 kullanıcı isteğiyle erteli. JS export native PASS değildir.
+
+## 2026-11-16 — PR #36 fixed→fixed BASE-only kaynak/attribution regression
+
+- [x] `tests/custom-fixed-transition.test.mjs`: exact two fixed sources/UTC-IANA & startDay26/year rollover/Kathmandu 45min; explicit zero/full/partial signed integer minor, >source/negative/fraction/invalid source/fixed↔hourly/FX/no implicit prorata; canonical event/head/gap/tamper/readback; 2 revision original byte-preserved; stale consent vs source profile revision correction/time zone; optimistic stale save/unchanged, injected SQL error transaction rollback; v1→v8 real SQLite 18 tablo/FK/integrity; original profiles/monthly/combined/export unchanged, combined for mixed fixed remains BLOCKED.
+- [x] [PR #36 Actions #43831061577](https://github.com/hilmiguner/vardiyum/actions/runs/43831061577) **SUCCESS: 309/309 Node, 0 fail**, Prettier, ESLint, TypeScript, Expo dependencies, Android+iOS **JS** exports; NOT native QA.
+- [ ] Native device source/work/relaunch/AES clean restore/DST/OS share cleanup/process kill/low disk QA Issue #2/#20 deferred by user.

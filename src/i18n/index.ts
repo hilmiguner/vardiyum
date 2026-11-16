@@ -12,6 +12,32 @@ const resources = {
       routines: 'Rutinler',
       earnings: 'Kazanç',
       settings: 'Ayarlar',
+      earnFixedTransitionTitle: 'Sabit maaş değişimi: iki kaynaklı ANA ücret beyanı',
+      earnFixedTransitionExplanation:
+        'Özel dönem içinde 1. günde sabit aylık ücret profilin değişirse eski ve yeni kaynak için ayrı net ANA tutarı SEN girersin. Her tutar 0 ile kendi kaynak tam sabit ana ücreti arasında olmalı; otomatik gün/saat oranlaması yok. Kaydedilen tutarlar tam maaş/mesai tahmini değildir.',
+      earnFixedTransitionPeriod:
+        'Dönem {{start}} – {{end}} · kaydedilmiş program saat dilimi {{zone}}',
+      earnFixedTransitionBlocked:
+        'Bu geçiş iki sabit maaş profili ve aynı para birimi olarak doğrulanamadı. Karma sabit/saatlik ve farklı para birimi desteklenmiyor.',
+      earnFixedTransitionStale:
+        'Önceki beyan ücret profili veya saat dilimi değiştiğinden GEÇERSİZ. Tutar gösterilmez; yeni açık karar kaydet.',
+      earnFixedTransitionSegment: '{{index}}. kaynak dilimi: {{start}} – {{end}}',
+      earnFixedTransitionProfile:
+        'Profil {{id}} · kaynak sürümü {{revision}} · tam aylık ANA ücret {{amount}}',
+      earnFixedTransitionPreviouslyDeclared: 'Önceki kayıtlı dilim beyanı: {{amount}}',
+      earnFixedTransitionInput: '{{index}}. dilim için beyan ettiğin ANA ücret ({{currency}})',
+      earnFixedTransitionDeclaredTotal:
+        'İki dilimin beyan edilmiş sadece ANA ücret toplamı: {{amount}} · onay sürümü {{revision}}',
+      earnFixedTransitionNeedsDecision:
+        'Henüz geçerli beyan yok. Toplam üretilmez; iki dilim için ayrı tutar ve gerekçe gir.',
+      earnFixedTransitionReason:
+        'İki ücret tutarını bu şekilde belirleme gerekçen (3–160 karakter)',
+      earnFixedTransitionReasonPlaceholder: 'Örn. sözleşmede belirtilen ara dönem ana ücreti',
+      earnFixedTransitionSave: 'İki ANA ücret beyanını kaydet',
+      earnFixedTransitionSaved: 'Kaynaklara bağlı ANA ücret beyanı kaydedildi.',
+      earnFixedTransitionSaveFailed: 'ANA ücret geçişi beyanı kaydedilemedi',
+      earnFixedTransitionNotPayslip:
+        'Bu yalnız kullanıcıya ait iki ayrı sabit ücret ANA tutarı beyanıdır. Gerçek çalışma, fazla mesai, prim/kesinti/düzeltme, vergi/SGK/net ve resmî bordro içermez. Tam özel dönem birleşik tahmini, geçiş mesai politikası onaylanana kadar ENGELLİDİR.',
       earnCustomExportHeading: 'Özel dönem raporu: CSV/JSON',
       earnCustomExportHint:
         'Yalnız güncel doğrulanmış birleşik tutar paylaşılabilir. Dosya kaynak çalışma kimlikleri, gerçek UTC giriş/çıkış ve saat dilimi, profil/audit sürümleri, prim/kesinti notları ve kesin kuruşları içerir. Gizli finansal veri; şifreli yedek değildir, otomatik aktarım YOK.',
@@ -630,6 +656,30 @@ const resources = {
       routines: 'Routines',
       earnings: 'Earnings',
       settings: 'Settings',
+      earnFixedTransitionTitle: 'Fixed salary change: two-source BASE declaration',
+      earnFixedTransitionExplanation:
+        'When your monthly fixed salary changes on the 1st within a custom pay period, YOU enter an explicit BASE amount for each old/new source segment (from zero up to its own source full monthly BASE). No day or hour prorating. This is NOT a complete earnings estimate.',
+      earnFixedTransitionPeriod: 'Period {{start}} – {{end}} · saved schedule zone {{zone}}',
+      earnFixedTransitionBlocked:
+        'The change could not be validated as two fixed monthly profiles in the same currency. Fixed/hourly mixtures and currency conversion are not supported.',
+      earnFixedTransitionStale:
+        'Your previous declaration is STALE because the pay profile or time zone changed. No amount is shown until you make a new explicit declaration.',
+      earnFixedTransitionSegment: 'Source segment {{index}}: {{start}} – {{end}}',
+      earnFixedTransitionProfile:
+        'Profile {{id}} · immutable revision {{revision}} · full monthly BASE {{amount}}',
+      earnFixedTransitionPreviouslyDeclared: 'Previously declared segment BASE: {{amount}}',
+      earnFixedTransitionInput: 'BASE you declare for segment {{index}} ({{currency}})',
+      earnFixedTransitionDeclaredTotal:
+        'Declared BASE-only sum of both segments: {{amount}} · decision revision {{revision}}',
+      earnFixedTransitionNeedsDecision:
+        'No current declaration. No amount is produced; explicitly enter both amounts and a reason.',
+      earnFixedTransitionReason: 'Reason for these two BASE amounts (3–160 characters)',
+      earnFixedTransitionReasonPlaceholder: 'E.g. contractual partial-period base',
+      earnFixedTransitionSave: 'Save both BASE declarations',
+      earnFixedTransitionSaved: 'Source-bound BASE declarations saved.',
+      earnFixedTransitionSaveFailed: 'Unable to save fixed-transition BASE declarations',
+      earnFixedTransitionNotPayslip:
+        'This is ONLY a user-declared pair of fixed-salary BASE amounts. It excludes logged work, overtime, bonuses, deductions, corrections, net/tax/social insurance and official payroll. The complete custom pay-period estimate remains BLOCKED until a separate overtime policy is approved.',
       earnCustomExportHeading: 'Custom period report: CSV/JSON',
       earnCustomExportHint:
         'Only the latest validated combined estimate can be shared. The file includes work IDs, original UTC times and time zones, profile/audit revisions, adjustment notes and exact minor units. Sensitive financial data; not encrypted backup and never sent automatically.',
