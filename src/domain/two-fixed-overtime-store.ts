@@ -43,7 +43,8 @@ interface TwoFixedOvertimeReviewSegment {
 }
 
 export type TwoFixedOvertimePolicyReview =
-  | { status: 'not_applicable' | 'requires_base'; periodKey: string; startDay: number }
+  | { status: 'not_applicable'; periodKey: string; startDay: number }
+  | { status: 'requires_base'; periodKey: string; startDay: number }
   | { status: 'blocked'; periodKey: string; startDay: number; reasons: string[] }
   | {
       status: 'review';
