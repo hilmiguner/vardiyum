@@ -53,21 +53,25 @@ export function fixedTransitionHeadKey(periodKey: string, day: number): string {
   return fixedTransitionPrefix(periodKey, day) + 'head';
 }
 
-export function fixedTransitionEventKey(periodKey: string, day: number, revision: number): string {
-  if (!Number.isSafeInteger(revision) || revision < 1 ||
-    revision > FIXED_TRANSITION_MAX_REVISIONS)
+export function fixedTransitionEventKey(
+  periodKey: string,
+  day: number,
+  revision: number,
+): string {
+  if (
+    !Number.isSafeInteger(revision) ||
+    revision < 1 ||
+    revision > FIXED_TRANSITION_MAX_REVISIONS
+  )
     throw new Error('FIXED_TRANSITION_REVISION_LIMIT');
-  return fixedTransitionPrefix(periodKey, day) + 'event:' +
-    String(revision).padStart(3, '0');
+  return fixedTransitionPrefix(periodKey, day) + 'event:' + String(revision).padStart(3, '0');
 }
 
-export function eligibleFixedTransition(plan: CustomPayProfilePlan): [
-  CustomPayProfilePlan['segments'][number],
-  CustomPayProfilePlan['segments'][number],
-] {
+export function eligibleFixedTransition(
+  plan: CustomPayProfilePlan,
+): [CustomPayProfilePlan['segments'][number], CustomPayProfilePlan['segments'][number]] {
   fixedTransitionPrefix(plan.periodKey, plan.startDay);
-  if (plan.status !== 'profile_transition_review_required' ||
-    plan.segments.length !== 2)
+  if (plan.status !== 'profile_transition_review_required' || plan.segments.length !== 2)
     throw new Error('FIXED_TRANSITION_TWO_PROFILES_REQUIRED');
   const [first, second] = plan.segments;
   const a = validateEarningsProfile(first.profile);
@@ -85,7 +89,8 @@ export function eligibleFixedTransition(plan: CustomPayProfilePlan): [
     b.effectiveFrom !== second.startDate ||
     first.startInstantUtc >= first.endInstantUtc ||
     second.startInstantUtc >= second.endInstantUtc
-  ) throw new Error('FIXED_TRANSITION_SEGMENT_COVERAGE_INVALID');
+  )
+    throw new Error('FIXED_TRANSITION_SEGMENT_COVERAGE_INVALID');
 
   const canonical = planCustomPayProfiles(plan.periodKey, plan.startDay, plan.timeZone, [a, b]);
   if (JSON.stringify(canonical) !== JSON.stringify(plan))
@@ -94,9 +99,12 @@ export function eligibleFixedTransition(plan: CustomPayProfilePlan): [
 }
 
 function timestamp(value: string): void {
-  if (typeof value !== 'string' || !UTC.test(value) ||
+  if (
+    typeof value !== 'string' ||
+    !UTC.test(value) ||
     !Number.isFinite(Date.parse(value)) ||
-    new Date(value).toISOString() !== value)
+    new Date(value).toISOString() !== value
+  )
     throw new Error('INVALID_FIXED_TRANSITION_TIMESTAMP');
 }
 
@@ -114,8 +122,12 @@ export function createFixedTransitionBaseEvent(
     throw new Error('FIXED_TRANSITION_TWO_AMOUNTS_REQUIRED');
   const amounts = declared.map((amount, index) => {
     const limit = segments[index].profile.baseMinorUnits;
-    if (!Number.isSafeInteger(amount) || amount < 0 ||
-      amount > limit || BigInt(amount) > MAX_MINOR_UNITS)
+    if (
+      !Number.isSafeInteger(amount) ||
+      amount < 0 ||
+      amount > limit ||
+      BigInt(amount) > MAX_MINOR_UNITS
+    )
       throw new Error('INVALID_FIXED_TRANSITION_SEGMENT_AMOUNT');
     return amount;
   }) as [number, number];
@@ -171,7 +183,8 @@ export function decodeFixedTransitionHistory(
     !/^[1-9][0-9]*$/.test(heads[0].value) ||
     Number(heads[0].value) !== events.length ||
     events.length === 0
-  ) throw new Error('INVALID_FIXED_TRANSITION_HEAD');
+  )
+    throw new Error('INVALID_FIXED_TRANSITION_HEAD');
 
   const history: FixedTransitionBaseEvent[] = [];
   for (let index = 0; index < events.length; index++) {
@@ -184,16 +197,21 @@ export function decodeFixedTransitionHistory(
     let event: FixedTransitionBaseEvent;
     try {
       event = JSON.parse(row.value) as FixedTransitionBaseEvent;
-      if (!event || typeof event !== 'object' || Array.isArray(event) ||
-        !Array.isArray(event.segments) || event.segments.length !== 2)
+      if (
+        !event ||
+        typeof event !== 'object' ||
+        Array.isArray(event) ||
+        !Array.isArray(event.segments) ||
+        event.segments.length !== 2
+      )
         throw new Error('INVALID_FIXED_TRANSITION_EVENT');
       const plan = planCustomPayProfiles(periodKey, day, event.scheduleTimeZone, [
-        event.segments[0].profile, event.segments[1].profile,
+        event.segments[0].profile,
+        event.segments[1].profile,
       ]);
       const canonical = createFixedTransitionBaseEvent(
         plan,
-        [event.segments[0].declaredBaseMinorUnits,
-          event.segments[1].declaredBaseMinorUnits],
+        [event.segments[0].declaredBaseMinorUnits, event.segments[1].declaredBaseMinorUnits],
         revision,
         event.reason,
         event.recordedAt,
@@ -201,10 +219,12 @@ export function decodeFixedTransitionHistory(
       if (row.value !== JSON.stringify(canonical))
         throw new Error('INVALID_FIXED_TRANSITION_EVENT');
       const previous = history[history.length - 1];
-      if (previous &&
+      if (
+        previous &&
         (canonical.recordedAt < previous.recordedAt ||
           (canonical.scheduleTimeZone === previous.scheduleTimeZone &&
-            JSON.stringify(canonical.segments) === JSON.stringify(previous.segments))))
+            JSON.stringify(canonical.segments) === JSON.stringify(previous.segments)))
+      )
         throw new Error('INVALID_FIXED_TRANSITION_REVISION');
       history.push(canonical);
     } catch {
@@ -227,9 +247,11 @@ export function fixedTransitionMatchesPlan(
       event.reason,
       event.recordedAt,
     );
-    return event.scheduleTimeZone === plan.timeZone &&
+    return (
+      event.scheduleTimeZone === plan.timeZone &&
       event.currency === segments[0].profile.currency &&
-      JSON.stringify(canonical) === JSON.stringify(event);
+      JSON.stringify(canonical) === JSON.stringify(event)
+    );
   } catch {
     return false;
   }
