@@ -220,7 +220,7 @@ test('signed bonus, deduction and correction sum with exact cents and source IDs
     assert.equal(r.adjustmentMinorUnits,39_210);
     assert.equal(r.earningsMinorUnits,20_000);
     assert.equal(r.totalMinorUnits,59_210);
-    assert.deepEqual(r.adjustmentLines.map(l=>l.selectedMinorUnits),[43_211,-2_500,-1_501]);
+    assert.deepEqual(Object.fromEntries(r.adjustmentLines.map(l=>[l.sourceId,l.selectedMinorUnits])),{bonus_nov:43_211,corr_nov:-1_501,ded_nov:-2_500});
     assert.equal(new Set(r.adjustmentLines.map(l=>l.sourceId)).size,3);
     assert.equal(r.adjustmentLines.reduce((s,l)=>s+l.selectedMinorUnits,0),39_210);
   }finally{db.close();}
