@@ -218,6 +218,25 @@ test('financial inconsistencies, duplicate source IDs and foreign FX cannot leav
   }
 });
 
+test('negative signed deduction stays numeric and exact in CSV and JSON', () => {
+  const report = hourly();
+  const deduction = report.adjustmentLines[0];
+  deduction.sourceKind = 'deduction';
+  deduction.sourceAmountMinorUnits = -1_000;
+  deduction.earlierMinorUnits = -500;
+  deduction.laterMinorUnits = -500;
+  deduction.selectedMinorUnits = -500;
+  report.adjustmentMinorUnits = -500;
+  report.totalMinorUnits = 14_500;
+  const csv = createCustomPayCombinedExport(report, 'csv').content;
+  assert.match(csv, /"deduction"/);
+  assert.match(csv, /,-500,/);
+  assert.doesNotMatch(csv, /"'-500"/);
+  const json = JSON.parse(createCustomPayCombinedExport(report, 'json').content);
+  assert.equal(json.adjustmentSources[0].selectedMinorUnits, -500);
+  assert.equal(json.totals.totalMinorUnits, 14500);
+});
+
 test('export path is pure and leaves its entire in-memory source untouched', () => {
   const snapshot = hourly();
   const before = JSON.stringify(snapshot);
