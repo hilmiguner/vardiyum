@@ -12,15 +12,7 @@ import type { ShiftTemplate } from './shift-engine.ts';
  */
 export function calendarEditorSourceKey(
   date: string,
-  template: Pick<
-    ShiftTemplate,
-    | 'id'
-    | 'startsAt'
-    | 'endsAt'
-    | 'endDayOffset'
-    | 'breakMinutes'
-    | 'isRestDay'
-  >,
+  template: ShiftTemplate,
   scheduleTimeZone: string,
 ): string {
   return JSON.stringify([
