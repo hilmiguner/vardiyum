@@ -21,7 +21,8 @@ export async function shareCustomPayExportFile(file: {
     !file.name.endsWith('.' + format) ||
     !['text/csv', 'application/json'].includes(file.mimeType) ||
     !file.content
-  ) throw new Error('CUSTOM_PAY_EXPORT_INVALID_FILE');
+  )
+    throw new Error('CUSTOM_PAY_EXPORT_INVALID_FILE');
   if (!(await Sharing.isAvailableAsync()))
     throw new Error('CUSTOM_PAY_EXPORT_SHARE_NOT_AVAILABLE');
 
