@@ -708,7 +708,7 @@ const resources = {
       todayEarningsTitle: 'Estimated earnings for this pay period',
       todayEarningsCalendarPeriod: 'Calendar month: {{from}} – {{to}}',
       todayEarningsCustomPeriod: 'Custom pay period: {{from}} – {{to}}',
-      todayEarningsNeedsProfile: 'No pay profile for this period. Create one in Earnings.'
+      todayEarningsNeedsProfile: 'No pay profile for this period. Create one in Earnings.',
       todayEarningsNoEntries:
         'No logged actual work or adjustment is available to calculate this period yet.',
       todayEarningsBlocked:
