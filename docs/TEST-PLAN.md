@@ -311,3 +311,9 @@
 - [x] `src/components/routine-day-checklist.tsx`: routine snapshot okuma hatasında Retry, schedule DB hatasını önce göster; mevcut tamamlanma/audit değişmedi. `src/app/settings.tsx`: ilk DB read hatasında Retry.
 - [x] `tests/routine-screen-gate.test.mjs` 5 saf regresyon: gerçekten boş döngü, bozulan schedule DB, routine source DB hatası, yükleme önceliği, iyileşmiş duruma dönüş. Yeni SQLite tablo yok, mevcut testlere dokunulmadı.
 - [ ] PR #41 son HEAD Prettier/lint/TypeScript/Node/JS CI PASS, kullanıcı ayrı merge onayı ve main CI doğrulaması. Aşama 1 cihaz UX PASS değildir; aşama 2 `docs/DEVICE-SMOKE.md` oturumu zorunlu.
+
+## 2026-11-16 — Stage 2 installable native preview static safety gate (native PASS değil)
+
+- [x] `eas.json` Expo internal `preview`: Android `apk`, iOS `simulator:false`. `tests/native-preview-config.test.mjs` +4 statik config test. Bunlar native binary üretmez veya kullanıcı cihazına kurmaz.
+- [ ] Expo `eas init` kullanıcı hesabı/projesi linki; Android APK EAS build ID, iOS Apple Developer ad hoc cihaz kaydı+IPA build ID; gerçek kurulum, offline kullanım, bildirim, SQLite restore, OS paylaşım, TalkBack/VoiceOver ve düşük disk/crash.
+- [ ] [DEVICE-SMOKE.md](DEVICE-SMOKE.md) D01–D10 hem Android hem iOS PASS/FAIL/BLOCKED kayıtları. Bu hücreler henüz NOT_TESTED, beta aşaması bloklu.
