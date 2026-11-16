@@ -1,5 +1,26 @@
 # Vardiyum — Faz 1 Gerçek Cihaz Kontrol Listesi
 
+## 2026-11-16 — GÜNCEL MVP 2. aşama / tek gerçek cihaz kabul oturumu (Issue #38, #2, #20)
+
+**Önkoşul:** PR #41 kullanıcı onayıyla merge ve main CI başarılı olduktan sonra aşağıdaki testleri **Android ve iOS gerçek native derlemelerde ayrı ayrı** kaydet. JS export/Expo Go/Mac simülatör yalnız sınırlı kanıttır; native standalone/offline, OS bildirimleri ve AES dosya yaşam döngüsü gerçek OS üzerinde doğrulanmalıdır. Tüm kutular **henüz test edilmedi**. Aşağıdaki sonuçları kişisel finans, recovery key veya hassas vardiya notlarını paylaşmadan kaydet.
+
+| ID | Gerçek cihaz kabulü | Android | iOS |
+| --- | --- | --- | --- |
+| D01 | Production/standalone veya native preview build açılır; Bugün/Takvim/Rutinler/Kazanç/Ayarlar, ilk boş kurulum CTA | NOT_TESTED | NOT_TESTED |
+| D02 | Vardiya döngüsü/renk/gece+1/mola/override→geri alma; aynı gün shift değişince eski gerçek çalışma saatleri default'ta kalmaz | NOT_TESTED | NOT_TESTED |
+| D03 | Gerçek çalışma UTC, günlük görev tamamla/geri al/rutin arşiv; uygulamayı kapat/yeni aç; offline SQLite verisi aynı | NOT_TESTED | NOT_TESTED |
+| D04 | SQLite v1→v8 ardışık migration, eski verinin korunumu, FK/integrity, WAL, temiz kurulum | NOT_TESTED | NOT_TESTED |
+| D05 | OS bildirim izni kabul/ret, rutin opt-in/out, foreground/background, tekrar planlama, eski owned dışında hiçbir bildirimin silinmemesi | NOT_TESTED | NOT_TESTED |
+| D06 | Saat dilimi, NYC DST gap/fold, Nepal +05:45, midnight crossing; planlı ≠ gerçek çalışma | NOT_TESTED | NOT_TESTED |
+| D07 | Aylık ve 26–25 Bugün kaynağı, earnings BLOCKED/no profile/no work/FX durumlarında rakam gizleme; Türkçe+İngilizce | NOT_TESTED | NOT_TESTED |
+| D08 | AES-256-GCM yedek ve 64 karakter anahtar; yanlış key/bozuk dosya, yalnız boş temiz hedef atomik restore, key gizliliği, OS dosya seçici | NOT_TESTED | NOT_TESTED |
+| D09 | OS CSV/JSON paylaşımdan önce explicit consent, iptal, geçici plaintext cleanup, arka plan/kill/düşük disk sırasında yanlış paylaşım/veri kaybı olmaması | NOT_TESTED | NOT_TESTED |
+| D10 | TalkBack/VoiceOver, büyük font/satır kayması, light/dark kontrast, uzun TR/EN metinleri, erişilebilir Retry/permission CTA | NOT_TESTED | NOT_TESTED |
+
+**Her kayıt için:** commit SHA, uygulama sürümü/build ID, cihaz modeli/OS, tarih, tester, kurulum durumu, beklenen ve gözlenen, PASS/FAIL/BLOCKED/NOT_TESTED, ilgili GitHub issue, kişisel bilgi içermeyen kanıt. **Kritik P0 FAIL ile beta aşamasına geçilmez.** Android testi iOS PASS sayılmaz.
+
+**Tarihsel eski Faz 1–4 listeleri aşağıda korunur; güncel teslim kontrolü bu tablo ve [MVP-SCOPE-FREEZE.md](MVP-SCOPE-FREEZE.md)'dir.**
+
 **Durum:** 2026-11-15 itibarıyla henüz uygulanmadı. GitHub Actions #43697865419 Android/iOS **JavaScript** export doğrulaması yapmıştır; gerçek cihazda açılış kanıtı değildir.
 
 ## Hazırlık

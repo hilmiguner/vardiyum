@@ -49,7 +49,7 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const c = usePalette();
-  const { schedule, saveConfig, loading, error } = useAppState();
+  const { schedule, saveConfig, reload, loading, error } = useAppState();
   const [draft, setDraft] = useState<Draft | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -144,9 +144,11 @@ export default function SettingsScreen() {
       {loading ? (
         <Muted>{t('loading')}</Muted>
       ) : error ? (
-        <Muted>
-          {t('databaseError')} ({error})
-        </Muted>
+        <Panel>
+          <Heading>{t('databaseError')}</Heading>
+          <Muted>{error}</Muted>
+          <Action label={t('retry')} onPress={() => void reload()} />
+        </Panel>
       ) : (
         <>
           <Panel>

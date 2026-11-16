@@ -38,3 +38,18 @@
 - [x] Ayarlar'da özel maaş dönemi tercihinin `henüz etkinleşmediğini` iddia eden tarihsel TR/EN uyarı metinleri gerçek ürün davranışına uyarlandı: takvim ayı raporu değişmez, ayrı özel dönem tahmini yalnız doğrulanmış kaynaklarla.
 - [ ] Son temiz PR #40 HEAD Actions / merge için **ayrı kullanıcı onayı**. Bu PR P0 aşama 1'in tamamı değildir.
 - [ ] **P0 aşama 1 kalan tek toplu kabul denetimi:** ilk kurulum, TR/EN UX, temel erişilebilirlik, boş/hatalı kayıt, bildirim reddi/kritik gizlilik ve dört sekme + Ayarlar akışları; kanıtlı P0 eksikler düzeltilir. Native iOS/Android #2/#20 aşama 2, beta ve store daha sonra.
+
+## 2026-11-16 — 1. aşama son kaynak-kod denetimi (PR #41; cihaz değil)
+
+| MVP P0 kullanıcı akışı | Kanıtlanan kod | Son durum / kalan |
+| --- | --- | --- |
+| İlk açılış/kurulum | `Today` ve `Calendar` boş program → `/settings` CTA; `Settings` döngü şablon/saat/tarih doğrulaması ve transactional SQLite | **PR #41:** `Routines` aynı CTA ve `Settings` DB read Retry; ilk cihaz açılışı ve erişilebilir büyük font **Aşama 2** |
+| Bugün | Bugünkü program IANA yerel gün, bir sonraki vardiya, günlük rutin; [PR #40](https://github.com/hilmiguner/vardiyum/pull/40) verified calendar/custom earnings-only summary | **Kod mevcut**, yanlış rapor/FX/needs_profile/blocked/no_work durumunda tutar YOK, resmî/net pay iddiası YOK |
+| Takvim + gerçek çalışma | [PR #39](https://github.com/hilmiguner/vardiyum/pull/39): aynı gün vardiya veya kaynak saat/zone değişiminde draft reset; kullanıcı gerçek UTC çalışma kaydı korunur | **Kod mevcut**, native SQLite kalıcılığı/DST gerçek cihaz Aşama 2 |
+| Rutin/izne bağlı davranış | Kural edit/archive, checkbox/audit, 14 gün bildirim reconciliation ve sadece kullanıcı aksiyonuyla OS izni | **PR #41:** storage error iken stale `rules` yönetimi yok, açık Retry + no-schedule CTA, checklist recovery; gerçek OS izin reddi/teslim Aşama 2 |
+| Kazanç/gizlilik | Saatlik/sabit ve doğrulanmış destekli özel dönemde pre-tax, explicit consent CSV/JSON, fail-closed; AES-256-GCM clean restore kodu | **Kod mevcut, cihaz kanıtı yok**; fixed→fixed OT amount/combined/FX v1.1+ ve BLOCKED |
+| TR/EN/erişilebilirlik | İki dilde etiketler, checkbox/button role, uyarılar; "özel dönem aktif değil" eski metni PR #40 ile düzeltildi | Cihazda TalkBack/VoiceOver, dynamic text overflow, düşük kontrast ve erişilebilir izin ekranları henüz **PASS değil** |
+
+**Kapatma kuralı:** PR #41 son HEAD CI + kullanıcı merge onayı + main CI doğrulanınca **kaynak düzeyinde ilk ekran/çekirdek P0 denetim döngüsünü kapat**. Yeni mikro-özellik arama. Issue #38 2. aşama, gerçek cihaz üzerinde objektif kayıt ve bug-fix triage; 3. kapalı beta, 4. store. Native testte P0 bulunursa aynı aşamada düzelt; stage sayısı artmaz.
+
+**PR kanıtı:** [#40 main CI #43865416364](https://github.com/hilmiguner/vardiyum/actions/runs/43865416364) 333/333 SUCCESS. [#41](https://github.com/hilmiguner/vardiyum/pull/41) rutin ilk kurulum + schedule/routine DB error gate + retry (5 yeni regresyon). **PR OPEN/CI ve merge ayrı kontrol edilir**.

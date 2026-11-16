@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { Alert, Pressable, Text, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +14,7 @@ import {
   updateRoutine,
 } from '../../data/routine-repository';
 import { calendarDateInZone, calendarOrdinal } from '../../domain/shift-engine';
+import { routineScreenGate } from '../../domain/routine-screen-gate';
 import {
   EVERY_DAY,
   validateRoutine,
@@ -246,8 +247,15 @@ function RoutineEditor({
 
 export default function RoutinesScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const c = usePalette();
-  const { schedule, loading: scheduleLoading, refreshReminders } = useAppState();
+  const {
+    schedule,
+    loading: scheduleLoading,
+    error: scheduleError,
+    reload,
+    refreshReminders,
+  } = useAppState();
   const today = calendarDateInZone(schedule.timeZone);
   const [dateInput, setDateInput] = useState(today);
   const [selectedDate, setSelectedDate] = useState(today);
@@ -303,6 +311,23 @@ export default function RoutinesScreen() {
     ]);
   };
 
+  const gate = routineScreenGate({
+    scheduleLoading,
+    scheduleError,
+    hasPattern: schedule.pattern !== null,
+    routineError: loadError,
+  });
+
+  const retry = () => {
+    if (scheduleError) {
+      void reload();
+      return;
+    }
+    void refresh().catch((reason: unknown) => {
+      setLoadError(reason instanceof Error ? reason.message : 'DATABASE_ERROR');
+    });
+  };
+
   const setDate = () => {
     try {
       calendarOrdinal(dateInput);
@@ -313,11 +338,19 @@ export default function RoutinesScreen() {
   };
   return (
     <Page title={t('routines')} subtitle={t('routinePageSubtitle')}>
-      {scheduleLoading ? (
+      {gate === 'loading' ? (
         <Muted>{t('loading')}</Muted>
-      ) : !schedule.pattern ? (
+      ) : gate === 'schedule_error' || gate === 'routine_error' ? (
         <Panel>
-          <Muted>{t('noPattern')}</Muted>
+          <Heading>{t('databaseError')}</Heading>
+          <Muted>{scheduleError ?? loadError}</Muted>
+          <Action label={t('retry')} onPress={retry} />
+        </Panel>
+      ) : gate === 'configure' ? (
+        <Panel>
+          <Heading>{t('configure')}</Heading>
+          <Muted>{t('configureDescription')}</Muted>
+          <Action label={t('configure')} onPress={() => router.push('/settings')} />
         </Panel>
       ) : (
         <>
@@ -342,7 +375,6 @@ export default function RoutinesScreen() {
           </Panel>
           <ReminderConsentPanel />
           <RoutineDayChecklist date={selectedDate} revision={revision} showHistory />
-          {loadError ? <Text style={{ color: c.danger }}>{loadError}</Text> : null}
           <Panel>
             <Heading>{t('manageRoutineRules')}</Heading>
             {rules.filter((rule) => rule.archivedAt === null).length === 0 ? (

@@ -11,7 +11,7 @@ import {
 import { tasksForDate } from '../domain/routine-engine';
 import { useAppState } from '../state/app-state';
 import { usePalette } from '../theme/colors';
-import { Heading, Muted, Panel } from './ui';
+import { Action, Heading, Muted, Panel } from './ui';
 
 export function RoutineDayChecklist({
   date,
@@ -24,7 +24,13 @@ export function RoutineDayChecklist({
 }) {
   const { t } = useTranslation();
   const c = usePalette();
-  const { schedule, loading: scheduleLoading, refreshReminders } = useAppState();
+  const {
+    schedule,
+    loading: scheduleLoading,
+    error: scheduleError,
+    reload,
+    refreshReminders,
+  } = useAppState();
   const [loaded, setLoaded] = useState<{ date: string; data: RoutineSnapshot } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
@@ -76,12 +82,29 @@ export function RoutineDayChecklist({
       <Heading>{t('dailyRoutineTitle', { date })}</Heading>
       {scheduleLoading ? (
         <Muted>{t('loading')}</Muted>
+      ) : scheduleError ? (
+        <>
+          <Muted>
+            {t('databaseError')}: {scheduleError}
+          </Muted>
+          <Action label={t('retry')} onPress={() => void reload()} />
+        </>
       ) : !schedule.pattern ? (
         <Muted>{t('noPattern')}</Muted>
       ) : error ? (
-        <Text style={{ color: c.danger }}>
-          {t('routineError')}: {error}
-        </Text>
+        <>
+          <Text style={{ color: c.danger }}>
+            {t('routineError')}: {error}
+          </Text>
+          <Action
+            label={t('retry')}
+            onPress={() => {
+              void refresh().catch((reason: unknown) => {
+                setError(reason instanceof Error ? reason.message : 'DATABASE_ERROR');
+              });
+            }}
+          />
+        </>
       ) : !data ? (
         <Muted>{t('loading')}</Muted>
       ) : (

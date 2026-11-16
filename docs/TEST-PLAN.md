@@ -303,3 +303,11 @@
 - [x] UI `TodayEarningsPanel` focus refresh; period start/end; saved full-month fixed assumption; blocked/no profile/no work/error hiding exact money, retry, deep link to Earnings. TR/EN settings stale “not enabled” copy fixed; no new calculation/SQLite migration.
 - [x] Temporary formatter-diagnostic [Actions #43858929304](https://github.com/hilmiguner/vardiyum/actions/runs/43858929304) **SUCCESS, 333/333 Node, 0 fail**, Prettier lint TypeScript Android+iOS JS bundle; two exact format edits applied, workflow reverted to identical main.
 - [ ] [PR #40](https://github.com/hilmiguner/vardiyum/pull/40) clean original-workflow CI final head and user merge permission required; no native Android/iOS acceptance. Next limited P0 stage #38/1 closure/first-run UX checklist, NOT new payroll variants.
+
+## 2026-11-16 — PR #41 Routines P0 ilk kurulum ve DB error gate
+
+- [x] `src/domain/routine-screen-gate.ts`: `loading→schedule_error→configure→routine_error→ready`, yanlış/bozuk SQLite okumasını boş vardiya ile karıştırma; eski düzenleme butonunu gösterme.
+- [x] `src/app/(tabs)/routines.tsx`: ilk kurulumda mevcut TR/EN Configure → Ayarlar CTA; schedule DB veya routine snapshot hatası için doğrudan `Retry`; eski listede edit/toggle/archive fail-closed.
+- [x] `src/components/routine-day-checklist.tsx`: routine snapshot okuma hatasında Retry, schedule DB hatasını önce göster; mevcut tamamlanma/audit değişmedi. `src/app/settings.tsx`: ilk DB read hatasında Retry.
+- [x] `tests/routine-screen-gate.test.mjs` 5 saf regresyon: gerçekten boş döngü, bozulan schedule DB, routine source DB hatası, yükleme önceliği, iyileşmiş duruma dönüş. Yeni SQLite tablo yok, mevcut testlere dokunulmadı.
+- [ ] PR #41 son HEAD Prettier/lint/TypeScript/Node/JS CI PASS, kullanıcı ayrı merge onayı ve main CI doğrulaması. Aşama 1 cihaz UX PASS değildir; aşama 2 `docs/DEVICE-SMOKE.md` oturumu zorunlu.
