@@ -8,7 +8,7 @@ import {
 
 export const TWO_FIXED_OT_PREFIX = 'earnings_custom_two_fixed_overtime_policy_v1:';
 export const TWO_FIXED_OT_MAX_REVISIONS = 64;
-const UTC = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$/;
+const UTC = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z$/;
 
 export type TwoFixedOvertimeDecision = 'exclude_logged_overtime' | 'include_logged_overtime';
 /**
