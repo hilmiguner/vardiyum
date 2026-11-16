@@ -55,13 +55,20 @@ export function TwoFixedOvertimePolicyPanel({
           if (active)
             setError(failure instanceof Error ? failure.message : 'TWO_FIXED_OT_READ_FAILED');
         });
-      return () => { active = false; };
+      return () => {
+        active = false;
+      };
     }, [periodKey, timeZone, refreshRevision, reload]),
   );
 
   async function save() {
-    if (busy || report?.status !== 'review' || !choice ||
-      (choice === 'include_logged_overtime' && !threshold)) return;
+    if (
+      busy ||
+      report?.status !== 'review' ||
+      !choice ||
+      (choice === 'include_logged_overtime' && !threshold)
+    )
+      return;
     try {
       if (reason.trim().length < 3 || reason.trim().length > 160)
         throw new Error('INVALID_TWO_FIXED_OT_REASON');
@@ -106,9 +113,7 @@ export function TwoFixedOvertimePolicyPanel({
           opacity: disabled ? 0.55 : 1,
         }}
       >
-        <Text style={{ color: c.text, fontWeight: selected ? '800' : '400' }}>
-          {label}
-        </Text>
+        <Text style={{ color: c.text, fontWeight: selected ? '800' : '400' }}>{label}</Text>
       </Pressable>
     );
   }
@@ -128,25 +133,35 @@ export function TwoFixedOvertimePolicyPanel({
           <Text style={{ color: c.danger, fontWeight: '700' }}>
             {t('earnTwoFixedOtBlocked')}
           </Text>
-          {report.reasons.map((why) => <Muted key={why}>{why}</Muted>)}
+          {report.reasons.map((why) => (
+            <Muted key={why}>{why}</Muted>
+          ))}
         </>
       ) : (
         <>
-          <Muted>{t('earnTwoFixedOtBaseSource', {
-            base: formatMoneyMinor(report.baseTotalMinorUnits, report.currency, locale),
-            revision: report.baseRevision,
-          })}</Muted>
+          <Muted>
+            {t('earnTwoFixedOtBaseSource', {
+              base: formatMoneyMinor(report.baseTotalMinorUnits, report.currency, locale),
+              revision: report.baseRevision,
+            })}
+          </Muted>
           {report.segments.map((segment, index) => (
             <View key={segment.profileId} style={{ gap: 4 }}>
-              <Muted>{t('earnTwoFixedOtProfile', {
-                index: index + 1,
-                id: segment.profileId,
-                revision: segment.profileRevision,
-                minutes: segment.thresholdMinutes ?? t('earnTwoFixedOtUnconfigured'),
-                rate: formatMoneyMinor(segment.overtimeHourlyMinorUnits, report.currency, locale),
-                numerator: segment.multiplierNumerator,
-                denominator: segment.multiplierDenominator,
-              })}</Muted>
+              <Muted>
+                {t('earnTwoFixedOtProfile', {
+                  index: index + 1,
+                  id: segment.profileId,
+                  revision: segment.profileRevision,
+                  minutes: segment.thresholdMinutes ?? t('earnTwoFixedOtUnconfigured'),
+                  rate: formatMoneyMinor(
+                    segment.overtimeHourlyMinorUnits,
+                    report.currency,
+                    locale,
+                  ),
+                  numerator: segment.multiplierNumerator,
+                  denominator: segment.multiplierDenominator,
+                })}
+              </Muted>
             </View>
           ))}
           {report.stale ? (
@@ -154,31 +169,47 @@ export function TwoFixedOvertimePolicyPanel({
               {t('earnTwoFixedOtStale')}
             </Text>
           ) : report.latestDecision ? (
-            <Muted>{t('earnTwoFixedOtCurrent', {
-              decision: t(report.latestDecision === 'include_logged_overtime'
-                ? 'earnTwoFixedOtInclude' : 'earnTwoFixedOtExclude'),
-              mode: report.latestThresholdMode
-                ? t(report.latestThresholdMode === 'carry_worked_time'
-                  ? 'earnTwoFixedOtCarry' : 'earnTwoFixedOtReset')
-                : t('earnTwoFixedOtNoMode'),
-              revision: report.latestRevision,
-            })}</Muted>
+            <Muted>
+              {t('earnTwoFixedOtCurrent', {
+                decision: t(
+                  report.latestDecision === 'include_logged_overtime'
+                    ? 'earnTwoFixedOtInclude'
+                    : 'earnTwoFixedOtExclude',
+                ),
+                mode: report.latestThresholdMode
+                  ? t(
+                      report.latestThresholdMode === 'carry_worked_time'
+                        ? 'earnTwoFixedOtCarry'
+                        : 'earnTwoFixedOtReset',
+                    )
+                  : t('earnTwoFixedOtNoMode'),
+                revision: report.latestRevision,
+              })}
+            </Muted>
           ) : (
             <Muted>{t('earnTwoFixedOtMissing')}</Muted>
           )}
           <Muted>{t('earnTwoFixedOtDecisionLabel')}</Muted>
-          {option(t('earnTwoFixedOtExclude'), choice === 'exclude_logged_overtime',
-            () => { setChoice('exclude_logged_overtime'); setThreshold(null); })}
-          {option(t('earnTwoFixedOtInclude'), choice === 'include_logged_overtime',
-            () => setChoice('include_logged_overtime'), !report.canInclude)}
+          {option(t('earnTwoFixedOtExclude'), choice === 'exclude_logged_overtime', () => {
+            setChoice('exclude_logged_overtime');
+            setThreshold(null);
+          })}
+          {option(
+            t('earnTwoFixedOtInclude'),
+            choice === 'include_logged_overtime',
+            () => setChoice('include_logged_overtime'),
+            !report.canInclude,
+          )}
           {!report.canInclude ? <Muted>{t('earnTwoFixedOtNeedRates')}</Muted> : null}
           {choice === 'include_logged_overtime' ? (
             <>
               <Muted>{t('earnTwoFixedOtThresholdLabel')}</Muted>
-              {option(t('earnTwoFixedOtCarry'), threshold === 'carry_worked_time',
-                () => setThreshold('carry_worked_time'))}
-              {option(t('earnTwoFixedOtReset'), threshold === 'restart_at_transition',
-                () => setThreshold('restart_at_transition'))}
+              {option(t('earnTwoFixedOtCarry'), threshold === 'carry_worked_time', () =>
+                setThreshold('carry_worked_time'),
+              )}
+              {option(t('earnTwoFixedOtReset'), threshold === 'restart_at_transition', () =>
+                setThreshold('restart_at_transition'),
+              )}
             </>
           ) : null}
           <Muted>{t('earnTwoFixedOtReason')}</Muted>
@@ -190,14 +221,21 @@ export function TwoFixedOvertimePolicyPanel({
             placeholder={t('earnTwoFixedOtReasonPlaceholder')}
             placeholderTextColor={c.muted}
             style={{
-              color: c.text, borderWidth: 1, borderColor: c.border,
-              borderRadius: 12, padding: 12,
+              color: c.text,
+              borderWidth: 1,
+              borderColor: c.border,
+              borderRadius: 12,
+              padding: 12,
             }}
           />
           <Action
             label={t('earnTwoFixedOtSave')}
-            disabled={busy || !choice || reason.trim().length < 3 ||
-              (choice === 'include_logged_overtime' && (!threshold || !report.canInclude))}
+            disabled={
+              busy ||
+              !choice ||
+              reason.trim().length < 3 ||
+              (choice === 'include_logged_overtime' && (!threshold || !report.canInclude))
+            }
             onPress={() => void save()}
           />
         </>
