@@ -214,3 +214,10 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 - [ ] [PR #35](https://github.com/hilmiguner/vardiyum/pull/35): açık kullanıcının mahremiyet onayı + fresh validated combined custom report; JSON v1/CSV source audit/dönem UTC/IANA ve full minor unit, spreadsheet injection guard, ephemeral OS share + cache cleanup; Node regresyonu ve TR/EN. **PR CI #43826687695 SUCCESS, 298/298 Node + Android/iOS JS; merge kullanıcı onayı bekleniyor.**
 - [ ] Custom `monthly_fixed→monthly_fixed` ve `monthly_fixed↔hourly` efektif ay geçişi: kullanıcıya açık ayrı full/partial BASE+overtime attribution politikası, silent prorata ve double-count kesin yasak. Issue #22/#16 açık.
 - [ ] iOS/Android gerçek cihaz SQLite ve OS paylaşımı/temizliği, DST, AES clean restore, low-disk/crash QA Issue #2/#20; kullanıcı kararıyla erteli.
+
+## 2026-11-16 — Sabit→sabit ücret geçişi, kullanıcı kaynak payları PR #36
+
+- [x] [PR #35](https://github.com/hilmiguner/vardiyum/pull/35) privacy-confirmed special-period CSV/JSON **MERGED** `dcbdcc2d`, [main CI #43829741653](https://github.com/hilmiguner/vardiyum/actions/runs/43829741653) SUCCESS, **298 Node**, Android+iOS JS export.
+- [ ] [PR #36](https://github.com/hilmiguner/vardiyum/pull/36): iki kaynak `monthly_fixed` effective-month geçişinde 2–28 özel pay period için kullanıcı tarafından explicit **her iki profilin BASE-only ana tutarı**; UTC/IANA segment izleri, immutable kaynak/profile revision + stale redecision, v8 `app_settings` atomic CAS, TR/EN UI ve gerçek SQLite regresyon. CI ve merge **bekliyor**.
+- [ ] İki sabit ücrete geçişte gerçek çalışma için **ayrı overtime eşiği/rate/consent politikası** ve eski-yeni kaynak ilişkisi; fixed→hourly ayrıca; signed adjustment atfı+combined/export kapısı ancak bütün kaynaklar doğrulandıktan sonra. Sessiz gün/saat oranlama ya da çift sayım YOK. Issue #22/#16 açık.
+- [ ] Erteli fiziksel iOS/Android SQLite migration/persist, AES clean restore, OS CSV paylaşım-temizleme, bildirim, DST/low disk/process kill Issue #2/#20.
