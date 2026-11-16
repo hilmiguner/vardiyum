@@ -296,3 +296,10 @@
 - [x] [PR #39 CI #43853928391](https://github.com/hilmiguner/vardiyum/actions/runs/43853928391) **SUCCESS: 323/323 Node, 0 fail; Prettier/ESLint/TypeScript/Expo, Android+iOS JS bundles** (native acceptance değildir).
 - [ ] Belgeleri içeren son commit CI, ardından kullanıcı merge onayı; native QA iddiası yok.
 - [ ] Stage #38/1 remaining Product 3.6 Today earnings summary with correct source/period and fail-closed, then P0 first-use workflow acceptance. Native device acceptance #2/#20 separate stage.
+
+## 2026-11-16 — PR #40 Today current pay-period source-verified summary regressions
+
+- [x] `tests/today-earnings-summary.test.mjs` **+10 Node**: default calendar day1 only existing report, day26 source-key previous start month, 25/26 boundary & year/leap + Kathmandu 45-minute offset; exact same `periodKey`, `startDay`, `start/end`, `scope`, `disclaimer`, money integer and ISO currency; missing profile, blocked/missing entries/foreign wrong source/no FX; preference readback race prevents stale amount; SQLite errors fail closed.
+- [x] UI `TodayEarningsPanel` focus refresh; period start/end; saved full-month fixed assumption; blocked/no profile/no work/error hiding exact money, retry, deep link to Earnings. TR/EN settings stale “not enabled” copy fixed; no new calculation/SQLite migration.
+- [x] Temporary formatter-diagnostic [Actions #43858929304](https://github.com/hilmiguner/vardiyum/actions/runs/43858929304) **SUCCESS, 333/333 Node, 0 fail**, Prettier lint TypeScript Android+iOS JS bundle; two exact format edits applied, workflow reverted to identical main.
+- [ ] [PR #40](https://github.com/hilmiguner/vardiyum/pull/40) clean original-workflow CI final head and user merge permission required; no native Android/iOS acceptance. Next limited P0 stage #38/1 closure/first-run UX checklist, NOT new payroll variants.

@@ -29,3 +29,12 @@
 ## Sıradaki P0 kabul faaliyeti
 
 `docs/PRODUCT.md` 3.6 doğrultusunda Bugün sayfası için **kaynak doğrulanmış, doğru dönemli ve eksik/blocked durumlarda rakam göstermeyen** sınırlı kazanç özeti kabulü. Yeni maaş/OT fiyat motoru **AÇILMAYACAK**. Ardından ilk kurulum ve temel rutin/izin-denied/TR-EN ekranları üzerinden son P0 kabul/bugfix, sonra native #2/#20 aşamasına geç. **Yeni sonsuz özellik loop'una geri dönme; #38'deki dört aşama aynı kalır.**
+
+## 2026-11-16 — PR #39 MERGED ve PR #40 güvenli Bugün kazanç özeti (P0 aşama 1)
+
+- [x] [PR #39](https://github.com/hilmiguner/vardiyum/pull/39) kullanıcı onayıyla MERGED, main `8b778cb6dde93890bd68b98b083b71040f2e2aef`; [main CI #43857901909](https://github.com/hilmiguner/vardiyum/actions/runs/43857901909) **SUCCESS 323 Node**. Önceki bölümün “merge bekleniyor” ifadeleri geçmiş durumu gösterir, artık güncel değildir.
+- [x] [PR #40](https://github.com/hilmiguner/vardiyum/pull/40) `PRODUCT.md` §3.6'da eksik kalan **Bugün tahmini kazanç özeti** için kaynak-bağlı yalnız *mevcut* aylık veya özel dönem combined report, doğru gün/ay zone ve `payPeriodForDate` (26→25), fail-closed + TR/EN durum/CTA ekranı. `loadTodayEarningsFromSources` bir kez ilgili raporu yükler ve kaydedilmiş dönem başlangıcı değişmediyse yalnız o kaynak tutarını sunar. Eski aylık ve özel dönem toplamlarını toplamaz, yeni bordro motoru kurmaz.
+- [x] +10 Node test: aylık gün1 vs gün26, 25/26 sınırı, yıl/Şubat/45 dakikalık IANA, user-reported kaynak discl/scope, yanlış ay/para/FX, needs_profile, blocked, no data, ayar race, SQLite failure. Temp format tanı [Actions #43858929304](https://github.com/hilmiguner/vardiyum/actions/runs/43858929304) **SUCCESS 333/333 Node + Android/iOS JS**; tanı workflow'u geri alındı.
+- [x] Ayarlar'da özel maaş dönemi tercihinin `henüz etkinleşmediğini` iddia eden tarihsel TR/EN uyarı metinleri gerçek ürün davranışına uyarlandı: takvim ayı raporu değişmez, ayrı özel dönem tahmini yalnız doğrulanmış kaynaklarla.
+- [ ] Son temiz PR #40 HEAD Actions / merge için **ayrı kullanıcı onayı**. Bu PR P0 aşama 1'in tamamı değildir.
+- [ ] **P0 aşama 1 kalan tek toplu kabul denetimi:** ilk kurulum, TR/EN UX, temel erişilebilirlik, boş/hatalı kayıt, bildirim reddi/kritik gizlilik ve dört sekme + Ayarlar akışları; kanıtlı P0 eksikler düzeltilir. Native iOS/Android #2/#20 aşama 2, beta ve store daha sonra.
