@@ -404,8 +404,8 @@ test('calendar adjustment modified outside app invalidates combined report witho
 test('fixed full base plus user-approved overtime plus allocated bonus is combined ONCE', async () => {
   const db = await fixture('monthly_fixed');
   try {
-    await baseChoice();
-    await consent();
+    await baseChoice(db);
+    await consent(db);
     insertWork(db);
     insertAdjustment(db);
     await allocate(db);
@@ -437,8 +437,8 @@ test('fixed full base plus user-approved overtime plus allocated bonus is combin
 test('explicit fixed overtime EXCLUDE consents to base plus signed adjustment without extra overtime', async () => {
   const db = await fixture('monthly_fixed');
   try {
-    await baseChoice('explicit_partial_base', 1_234_500);
-    await consent('exclude_logged_overtime');
+    await baseChoice(db, 'explicit_partial_base', 1_234_500);
+    await consent(db, 'exclude_logged_overtime');
     insertWork(db);
     insertAdjustment(db);
     await allocate(db);
@@ -465,7 +465,7 @@ test('no explicit fixed base or no explicit overtime decision never yields combi
     const a = await report(db);
     assert.equal(a.status, 'blocked');
     assert.equal('totalMinorUnits' in a, false);
-    await baseChoice();
+    await baseChoice(db);
     const b = await report(db);
     assert.equal(b.status, 'blocked');
     assert.ok(b.reasons.some((x) => x.startsWith('CUSTOM_COMBINED_FIXED_OT_NOT_APPROVED')));
@@ -478,17 +478,17 @@ test('no explicit fixed base or no explicit overtime decision never yields combi
 test('fixed base correction makes old overtime consent stale; reapprove safely reprices', async () => {
   const db = await fixture('monthly_fixed');
   try {
-    await baseChoice();
-    await consent();
+    await baseChoice(db);
+    await consent(db);
     insertWork(db);
     insertAdjustment(db);
     await allocate(db);
     assert.equal((await report(db)).status, 'estimated');
-    await baseChoice('explicit_partial_base', 1_000_000, 1, STAMP2);
+    await baseChoice(db, 'explicit_partial_base', 1_000_000, 1, STAMP2);
     const stale = await report(db);
     assert.equal(stale.status, 'blocked');
     assert.equal('totalMinorUnits' in stale, false);
-    await consent('include_logged_overtime', 1, STAMP3);
+    await consent(db, 'include_logged_overtime', 1, STAMP3);
     const current = await report(db);
     assert.equal(current.status, 'estimated');
     assert.equal(current.baseRevision, 2);
@@ -502,8 +502,8 @@ test('fixed base correction makes old overtime consent stale; reapprove safely r
 test('missing source-bound custom period break blocks fixed combined pay', async () => {
   const db = await fixture('monthly_fixed');
   try {
-    await baseChoice();
-    await consent();
+    await baseChoice(db);
+    await consent(db);
     insertWork(
       db,
       work({
@@ -764,8 +764,8 @@ test('source report tampered into duplicate ID or forged currency denies total',
 test('SQLite v1→v8, 18 tables, source rows and monthly adjustment originals unchanged', async () => {
   const db = await fixture('monthly_fixed');
   try {
-    await baseChoice();
-    await consent();
+    await baseChoice(db);
+    await consent(db);
     insertWork(db);
     insertAdjustment(db);
     await allocate(db);
