@@ -1,4 +1,6 @@
-# Vardiyum — Faz 1 Gerçek Cihaz Kontrol Listesi
+# Vardiyum — Gerçek Cihaz Kabul Listesi
+
+> **2026-11-16 MVP Stage 2 AKTİF — D01–D10 Android ve iOS sonuçları HALEN NOT_TESTED.** [Kurulabilir Android APK ve fiziksel iOS IPA hazırlığı](NATIVE-PREVIEW.md). [PR #41](https://github.com/hilmiguner/vardiyum/pull/41) MERGED `8b72b55625eee5c4f278f467a5d45df20dc3bfd0`, main CI 338/338 Node + Android/iOS JavaScript paketleme SUCCESS; bu **native cihaz PASS değildir**. EAS Expo kullanıcı hesabı/proje linki/gerçek APK-IPA build/kurulum henüz yapılmadı.
 
 ## 2026-11-16 — GÜNCEL MVP 2. aşama / tek gerçek cihaz kabul oturumu (Issue #38, #2, #20)
 
