@@ -75,15 +75,19 @@ export async function appendFixedTransitionBaseRevision(
   input: SaveFixedTransitionBase,
 ): Promise<FixedTransitionBaseEvent> {
   fixedTransitionPrefix(input.periodKey, input.startDay);
-  if (!Number.isSafeInteger(input.expectedRevision) || input.expectedRevision < 0 ||
-    input.expectedRevision >= FIXED_TRANSITION_MAX_REVISIONS)
+  if (
+    !Number.isSafeInteger(input.expectedRevision) ||
+    input.expectedRevision < 0 ||
+    input.expectedRevision >= FIXED_TRANSITION_MAX_REVISIONS
+  )
     throw new Error('INVALID_FIXED_TRANSITION_EXPECTED_REVISION');
 
   const plan = await loadCustomPayProfilePreviewFromStore(
-    store, input.periodKey, input.scheduleTimeZone,
+    store,
+    input.periodKey,
+    input.scheduleTimeZone,
   );
-  if (plan.startDay !== input.startDay)
-    throw new Error('FIXED_TRANSITION_START_DAY_CHANGED');
+  if (plan.startDay !== input.startDay) throw new Error('FIXED_TRANSITION_START_DAY_CHANGED');
   eligibleFixedTransition(plan);
   const previous = await readFixedTransitionHistory(store, input.periodKey, input.startDay);
   if (previous.length !== input.expectedRevision)
@@ -103,7 +107,8 @@ export async function appendFixedTransitionBaseRevision(
     if (
       event.scheduleTimeZone === latest.scheduleTimeZone &&
       JSON.stringify(event.segments) === JSON.stringify(latest.segments)
-    ) throw new Error('UNCHANGED_FIXED_TRANSITION_CHOICE');
+    )
+      throw new Error('UNCHANGED_FIXED_TRANSITION_CHOICE');
   }
 
   await store.runAsync(
@@ -117,13 +122,17 @@ export async function appendFixedTransitionBaseRevision(
   } else {
     const result = await store.runAsync(
       'UPDATE app_settings SET value=? WHERE key=? AND value=?',
-      String(event.revision), head, String(previous.length),
+      String(event.revision),
+      head,
+      String(previous.length),
     );
     if (result.changes !== 1) throw new Error('STALE_FIXED_TRANSITION_REVISION');
   }
   const readback = await readFixedTransitionHistory(store, input.periodKey, input.startDay);
-  if (readback.length !== event.revision ||
-    JSON.stringify(readback[readback.length - 1]) !== JSON.stringify(event))
+  if (
+    readback.length !== event.revision ||
+    JSON.stringify(readback[readback.length - 1]) !== JSON.stringify(event)
+  )
     throw new Error('FIXED_TRANSITION_READBACK_MISMATCH');
   if ((await readPayPeriodStartDay(store)) !== plan.startDay)
     throw new Error('FIXED_TRANSITION_SETTING_CHANGED_DURING_SAVE');
@@ -137,18 +146,23 @@ export async function loadFixedTransitionBaseReviewFromStore(
   timeZone: string,
 ): Promise<FixedTransitionBaseReview> {
   const plan = await loadCustomPayProfilePreviewFromStore(store, periodKey, timeZone);
-  if (plan.startDay === 1 || plan.status === 'single_hourly_profile' ||
+  if (
+    plan.startDay === 1 ||
+    plan.status === 'single_hourly_profile' ||
     plan.status === 'fixed_salary_assumption_required' ||
     plan.status === 'needs_profile' ||
     (plan.status === 'profile_transition_review_required' &&
-      plan.segments.every((segment) => segment.profile.model === 'hourly')))
+      plan.segments.every((segment) => segment.profile.model === 'hourly'))
+  )
     return { status: 'not_applicable', periodKey, startDay: plan.startDay };
   let segments: ReturnType<typeof eligibleFixedTransition>;
   try {
     segments = eligibleFixedTransition(plan);
   } catch (e) {
     return {
-      status: 'blocked', periodKey, startDay: plan.startDay,
+      status: 'blocked',
+      periodKey,
+      startDay: plan.startDay,
       reasons: [e instanceof Error ? e.message : 'FIXED_TRANSITION_UNSUPPORTED'],
     };
   }
@@ -159,7 +173,8 @@ export async function loadFixedTransitionBaseReviewFromStore(
     throw new Error('FIXED_TRANSITION_SETTING_CHANGED_DURING_READ');
   return {
     status: 'review',
-    periodKey, startDay: plan.startDay,
+    periodKey,
+    startDay: plan.startDay,
     startDate: plan.startDate,
     endDateInclusive: plan.endDateInclusive,
     currency: segments[0].profile.currency,
@@ -168,8 +183,8 @@ export async function loadFixedTransitionBaseReviewFromStore(
       profileId: segment.profile.id,
       profileRevision: segment.profile.revision,
       sourceFullBaseMinorUnits: segment.profile.baseMinorUnits,
-      declaredBaseMinorUnits: latest && !stale ?
-        latest.segments[index].declaredBaseMinorUnits : null,
+      declaredBaseMinorUnits:
+        latest && !stale ? latest.segments[index].declaredBaseMinorUnits : null,
       startDate: segment.startDate,
       endDateInclusive: segment.endDateInclusive,
       startInstantUtc: segment.startInstantUtc,
