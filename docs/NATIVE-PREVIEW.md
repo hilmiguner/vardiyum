@@ -1,5 +1,9 @@
 # Vardiyum — MVP 2. Aşama: Kurulabilir Native Önizleme ve Gerçek Cihaz Doğrulaması
 
+**2026-11-16 GÜNCEL DURUM:** PR #42 **MERGED** `main=c3b737fd54e15266c8831ee8fff4f7470b1857e1` ([CI #43880960771](https://github.com/hilmiguner/vardiyum/actions/runs/43880960771) SUCCESS 342/342 Node + Android/iOS JS). `preview` profili main'de; Expo proje hesabı/projectId/Android native APK build veya iOS native IPA **henüz oluşturulmadı**. Telefon testleri D01–D10 Android/iOS **20/20 NOT_TESTED**. Aşağıdaki tarihsel açıklamalar PR öncesi durumu anlatır; bu satır en güncel kayıttır.
+
+**Windows ilk adımı (repo henüz klonlu değilse `git clone https://github.com/hilmiguner/vardiyum.git C:\\vardiyum`; sonra `cd C:\\vardiyum`)**. Windows'ta zaten klon varsa yalnız repo köküne geç. Expo giriş bilgisi ve Apple/keystore secret'larını sohbet/issue'ya KOPYALAMA. `eas init` proje kimliğini oluşturduktan sonra gerçek projectId/app.json değişikliğini ve build sayfası bağlantısını gizli anahtar olmadan raporla. EAS hesap bağlantısını bizim GitHub aracımız otomatik yapamıyor.
+
 **Durum (2026-11-16):** Hazırlık konfigürasyonu PR kapsamındadır; EAS Expo hesabına bağlanma, Android APK/iOS IPA bulut derlemesi, telefona kurulum ve test sonuçlarının **hiçbiri henüz doğrulanmadı**. Son kaynak kodu: [PR #41](https://github.com/hilmiguner/vardiyum/pull/41) kullanıcı onayıyla main'e MERGED, `8b72b55625eee5c4f278f467a5d45df20dc3bfd0`, [main CI #43877499033](https://github.com/hilmiguner/vardiyum/actions/runs/43877499033) SUCCESS **338/338 Node** ve Android/iOS **JavaScript bundle** (native binary değil).
 
 **Tek takip:** [Issue #38](https://github.com/hilmiguner/vardiyum/issues/38) / [#2](https://github.com/hilmiguner/vardiyum/issues/2) / [#20](https://github.com/hilmiguner/vardiyum/issues/20), [DEVICE-SMOKE.md](DEVICE-SMOKE.md) D01–D10 × Android/iOS. Önce [MVP-SCOPE-FREEZE.md](MVP-SCOPE-FREEZE.md). Yeni maaş/OT özelliklerine dönme.
