@@ -8,7 +8,7 @@ import type {
 } from './custom-adjustment-attribution-store.ts';
 import type { CustomFixedBaseReport } from './custom-fixed-base-store.ts';
 import type { FixedOvertimeView } from './custom-fixed-overtime-store.ts';
-import type { CustomHourlyEstimate, CustomHourlyLine } from './custom-hourly-work-estimate.ts';
+import type { CustomHourlyEstimate } from './custom-hourly-work-estimate.ts';
 import type { CustomPayProfilePlan } from './custom-pay-profile-policy.ts';
 
 const MAX_MINOR = 1_000_000_000_000n;
