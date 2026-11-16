@@ -84,7 +84,9 @@ export function RoutineDayChecklist({
         <Muted>{t('loading')}</Muted>
       ) : scheduleError ? (
         <>
-          <Muted>{t('databaseError')}: {scheduleError}</Muted>
+          <Muted>
+            {t('databaseError')}: {scheduleError}
+          </Muted>
           <Action label={t('retry')} onPress={() => void reload()} />
         </>
       ) : !schedule.pattern ? (
