@@ -5,11 +5,7 @@
  * successfully loaded schedule and routine snapshot.
  */
 export type RoutineScreenGate =
-  | 'loading'
-  | 'schedule_error'
-  | 'configure'
-  | 'routine_error'
-  | 'ready';
+  'loading' | 'schedule_error' | 'configure' | 'routine_error' | 'ready';
 
 export function routineScreenGate({
   scheduleLoading,
