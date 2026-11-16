@@ -236,7 +236,10 @@ export async function loadFixedOvertimeViewFromStore(
     bounds.startDate.slice(0, 7),
     bounds.endDateInclusive.slice(0, 7),
   );
-  if (!adjustments || (await adjustmentAttributionGate(store, periodKey, adjustments.n)) !== 0)
+  const remainingUnattributed = adjustments
+    ? await adjustmentAttributionGate(store, periodKey, adjustments.n)
+    : -1;
+  if (remainingUnattributed !== 0)
     return {
       status: 'blocked',
       periodKey,
@@ -272,7 +275,10 @@ export async function loadFixedOvertimeViewFromStore(
   }
   if ((await readPayPeriodStartDay(store)) !== plan.startDay)
     throw new Error('FIXED_OVERTIME_SETTING_CHANGED_DURING_REPORT');
-  const estimate = estimateCustomFixedOvertime(plan, base, current, sources, adjustments.n);
+  // Once EVERY original monthly adjustment was allocated, pass the remaining
+  // unknown count (zero), NOT the original count. The OT engine must never
+  // silently include or re-price any allocated bonus/deduction itself.
+  const estimate = estimateCustomFixedOvertime(plan, base, current, sources, remainingUnattributed);
   return {
     status: 'review',
     periodKey,
