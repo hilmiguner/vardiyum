@@ -12,6 +12,43 @@ const resources = {
       routines: 'Rutinler',
       earnings: 'Kazanç',
       settings: 'Ayarlar',
+      earnTwoFixedOtTitle: 'Sabit ücret değişimi: fazla mesai politikası',
+      earnTwoFixedOtExplanation:
+        'Bu özel maaş dönemindeki iki SABİT ücret kaynağı için fazla mesaiyi ayrı onayla. Dahil edersen birinci dilimdeki kaydedilmiş çalışmanın ikinci dilimin kendi eşiğine sayılıp sayılmayacağını açıkça seç. Bu bir hesaplama, hukuki sınır veya bordro değildir.',
+      earnTwoFixedOtRequiresBase:
+        'Önce her iki sabit ücret dilimi için güncel ve onaylı ANA ücret tutarlarını kaydet.',
+      earnTwoFixedOtBlocked:
+        'Fazla mesai politikası için iki güvenilir sabit ücret profili gereklidir.',
+      earnTwoFixedOtBaseSource:
+        'Kaynak ANA ücret toplamı: {{base}} · değişmez beyan revizyonu {{revision}}',
+      earnTwoFixedOtProfile:
+        '{{index}}. profil {{id}} · sürüm {{revision}} · fazla mesai eşiği {{minutes}} dakika · saatlik ek mesai {{rate}} · çarpan {{numerator}}/{{denominator}}',
+      earnTwoFixedOtUnconfigured: 'tanımlanmamış',
+      earnTwoFixedOtStale:
+        'Önceki fazla mesai kararı ANA ücret kaynağı, profil veya saat dilimi değiştiğinden geçersiz. Yeniden açık seçim yap.',
+      earnTwoFixedOtCurrent:
+        'Kaydedilmiş fazla mesai kararı: {{decision}} · sayaç {{mode}} · revizyon {{revision}}',
+      earnTwoFixedOtNoMode: 'uygulanmaz',
+      earnTwoFixedOtMissing:
+        'Henüz açık fazla mesai onayı yok. Otomatik dahil etme veya hesaplama yapılmaz.',
+      earnTwoFixedOtDecisionLabel:
+        'Bu özel maaş döneminde kaydedilmiş fazla mesai hesabına ilişkin kararın',
+      earnTwoFixedOtExclude: 'Bu dönemde fazla mesaiyi dahil ETME',
+      earnTwoFixedOtInclude: 'Kaydedilmiş fazla mesaiyi dahil etmeye onay ver',
+      earnTwoFixedOtNeedRates:
+        'Dahil etme için iki profilin de fazla mesai eşiği ve saatlik ek mesai ücreti tanımlanmış olmalı.',
+      earnTwoFixedOtThresholdLabel:
+        'İkinci ücret profiline geçince fazla mesai eşik sayacı nasıl çalışsın?',
+      earnTwoFixedOtCarry:
+        'Sayaç DEVAM ETSİN: ilk dilimdeki çalışma ikinci profilin eşiğine sayılsın',
+      earnTwoFixedOtReset: 'Sayaç SIFIRLANSIN: ikinci dilim yeni eşikten başlasın',
+      earnTwoFixedOtReason: 'Bu kararın gerekçesi (3–160 karakter)',
+      earnTwoFixedOtReasonPlaceholder: 'Örn. iş sözleşmemdeki fazla mesai uygulaması',
+      earnTwoFixedOtSave: 'Kaynaklara bağlı fazla mesai politikasını kaydet',
+      earnTwoFixedOtSaved: 'Fazla mesai kararın ve eşik politikası sürümlü kaydedildi.',
+      earnTwoFixedOtSaveFailed: 'Fazla mesai politikası kaydedilemedi',
+      earnTwoFixedOtNoPayYet:
+        'UYARI: Bu bir karar kaydıdır; sistem henüz iki profilli fazla mesaiyi HESAPLAMIYOR. Kaynak gerçek çalışma ve molalar sonraki geliştirmede denetlenene kadar birleşik özel dönem tahmini ve CSV/JSON bu senaryoda ENGELLİDİR. Resmî ücret/bordro değildir.',
       earnFixedTransitionTitle: 'Sabit maaş değişimi: iki kaynaklı ANA ücret beyanı',
       earnFixedTransitionExplanation:
         'Özel dönem içinde 1. günde sabit aylık ücret profilin değişirse eski ve yeni kaynak için ayrı net ANA tutarı SEN girersin. Her tutar 0 ile kendi kaynak tam sabit ana ücreti arasında olmalı; otomatik gün/saat oranlaması yok. Kaydedilen tutarlar tam maaş/mesai tahmini değildir.',
@@ -656,6 +693,43 @@ const resources = {
       routines: 'Routines',
       earnings: 'Earnings',
       settings: 'Settings',
+      earnTwoFixedOtTitle: 'Fixed salary transition: overtime policy',
+      earnTwoFixedOtExplanation:
+        'Explicitly choose how logged overtime should be treated across the two FIXED salary sources. If included, decide whether time worked before the boundary counts toward the second source’s own threshold. This is NOT payroll, overtime pricing or a legal threshold.',
+      earnTwoFixedOtRequiresBase:
+        'First save a current, explicit BASE declaration for both fixed salary segments.',
+      earnTwoFixedOtBlocked:
+        'Two verified fixed salary profiles are required for this overtime policy.',
+      earnTwoFixedOtBaseSource:
+        'Source BASE total: {{base}} · immutable decision revision {{revision}}',
+      earnTwoFixedOtProfile:
+        'Profile {{index}}: {{id}} · revision {{revision}} · overtime threshold {{minutes}} minutes · additional hourly rate {{rate}} · multiplier {{numerator}}/{{denominator}}',
+      earnTwoFixedOtUnconfigured: 'unconfigured',
+      earnTwoFixedOtStale:
+        'Previous overtime policy is STALE because BASE, profile or schedule zone changed. Explicitly decide again.',
+      earnTwoFixedOtCurrent:
+        'Saved overtime decision: {{decision}} · counter {{mode}} · revision {{revision}}',
+      earnTwoFixedOtNoMode: 'not applicable',
+      earnTwoFixedOtMissing:
+        'No explicit overtime consent exists. No automatic inclusion or calculation.',
+      earnTwoFixedOtDecisionLabel:
+        'Your decision about recorded overtime in this custom pay period',
+      earnTwoFixedOtExclude: 'EXCLUDE overtime from this period',
+      earnTwoFixedOtInclude: 'Approve including logged overtime',
+      earnTwoFixedOtNeedRates:
+        'Both salary profiles need a valid overtime threshold and additional hourly rate before inclusion can be approved.',
+      earnTwoFixedOtThresholdLabel:
+        'When the second fixed salary source starts, what happens to the overtime counter?',
+      earnTwoFixedOtCarry:
+        'CARRY: prior logged time counts toward the second profile’s threshold',
+      earnTwoFixedOtReset: 'RESET: count starts anew for the second segment',
+      earnTwoFixedOtReason: 'Reason for your choice (3–160 characters)',
+      earnTwoFixedOtReasonPlaceholder: 'E.g. overtime approach in my contract',
+      earnTwoFixedOtSave: 'Save source-bound overtime policy',
+      earnTwoFixedOtSaved: 'Overtime consent and threshold policy saved with revision.',
+      earnTwoFixedOtSaveFailed: 'Could not save overtime policy',
+      earnTwoFixedOtNoPayYet:
+        'CAUTION: this records a decision ONLY; the app does NOT YET PRICE overtime across two fixed profiles. Full combined earnings and CSV/JSON for this case remain BLOCKED until actual work and breaks are source-verified in a later phase. Not an official payslip.',
       earnFixedTransitionTitle: 'Fixed salary change: two-source BASE declaration',
       earnFixedTransitionExplanation:
         'When your monthly fixed salary changes on the 1st within a custom pay period, YOU enter an explicit BASE amount for each old/new source segment (from zero up to its own source full monthly BASE). No day or hour prorating. This is NOT a complete earnings estimate.',

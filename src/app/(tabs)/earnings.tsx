@@ -10,6 +10,7 @@ import { CustomPayProfilePreviewPanel } from '../../components/custom-pay-profil
 import { CustomHourlyEstimatePanel } from '../../components/custom-hourly-estimate-panel';
 import { CustomFixedBasePanel } from '../../components/custom-fixed-base-panel';
 import { CustomFixedTransitionPanel } from '../../components/custom-fixed-transition-panel';
+import { TwoFixedOvertimePolicyPanel } from '../../components/two-fixed-overtime-policy-panel';
 import { CustomFixedOvertimePanel } from '../../components/custom-fixed-overtime-panel';
 import { CustomAdjustmentAttributionPanel } from '../../components/custom-adjustment-attribution-panel';
 import { CustomPayCombinedPanel } from '../../components/custom-pay-combined-panel';
@@ -541,6 +542,12 @@ export default function EarningsScreen() {
         onSaved={() => setRevision((before) => before + 1)}
       />
       <CustomFixedTransitionPanel
+        periodKey={month}
+        timeZone={schedule.timeZone}
+        refreshRevision={revision}
+        onSaved={() => setRevision((before) => before + 1)}
+      />
+      <TwoFixedOvertimePolicyPanel
         periodKey={month}
         timeZone={schedule.timeZone}
         refreshRevision={revision}
