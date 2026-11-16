@@ -1,4 +1,7 @@
-import { planCustomPayProfiles, type CustomPayProfilePlan } from './custom-pay-profile-policy.ts';
+import {
+  planCustomPayProfiles,
+  type CustomPayProfilePlan,
+} from './custom-pay-profile-policy.ts';
 import {
   createFixedTransitionBaseEvent,
   eligibleFixedTransition,
@@ -44,7 +47,11 @@ export function twoFixedOvertimeHeadKey(periodKey: string, day: number): string 
   return twoFixedOvertimePrefix(periodKey, day) + 'head';
 }
 
-export function twoFixedOvertimeEventKey(periodKey: string, day: number, revision: number): string {
+export function twoFixedOvertimeEventKey(
+  periodKey: string,
+  day: number,
+  revision: number,
+): string {
   if (!Number.isSafeInteger(revision) || revision < 1 || revision > TWO_FIXED_OT_MAX_REVISIONS)
     throw new Error('TWO_FIXED_OT_REVISION_LIMIT');
   return twoFixedOvertimePrefix(periodKey, day) + 'event:' + String(revision).padStart(3, '0');
@@ -66,7 +73,9 @@ export function createTwoFixedOvertimePolicyEvent(
   const canonicalBase = createFixedTransitionBaseEvent(
     plan,
     [base.segments[0].declaredBaseMinorUnits, base.segments[1].declaredBaseMinorUnits],
-    base.revision, base.reason, base.recordedAt,
+    base.revision,
+    base.reason,
+    base.recordedAt,
   );
   if (JSON.stringify(canonicalBase) !== JSON.stringify(base))
     throw new Error('INVALID_TWO_FIXED_OT_BASE');
@@ -78,22 +87,34 @@ export function createTwoFixedOvertimePolicyEvent(
     if (thresholdMode !== 'carry_worked_time' && thresholdMode !== 'restart_at_transition')
       throw new Error('TWO_FIXED_OT_THRESHOLD_CHOICE_REQUIRED');
     for (const segment of sources) {
-      if (segment.profile.overtimeAfterMinutes === null ||
-        segment.profile.overtimeHourlyMinorUnits <= 0)
+      if (
+        segment.profile.overtimeAfterMinutes === null ||
+        segment.profile.overtimeHourlyMinorUnits <= 0
+      )
         throw new Error('TWO_FIXED_OT_SOURCE_RATE_NOT_CONFIGURED');
     }
   }
   if (typeof reason !== 'string' || reason.trim().length < 3 || reason.trim().length > 160)
     throw new Error('INVALID_TWO_FIXED_OT_REASON');
-  if (typeof recordedAt !== 'string' || !UTC.test(recordedAt) ||
+  if (
+    typeof recordedAt !== 'string' ||
+    !UTC.test(recordedAt) ||
     !Number.isFinite(Date.parse(recordedAt)) ||
-    new Date(recordedAt).toISOString() !== recordedAt)
+    new Date(recordedAt).toISOString() !== recordedAt
+  )
     throw new Error('INVALID_TWO_FIXED_OT_TIMESTAMP');
   return {
-    schema: 1, source: 'user_entered',
-    periodKey: plan.periodKey, startDay: plan.startDay, scheduleTimeZone: plan.timeZone,
-    fixedTransitionBase: canonicalBase, decision, thresholdMode, revision,
-    reason: reason.trim(), recordedAt,
+    schema: 1,
+    source: 'user_entered',
+    periodKey: plan.periodKey,
+    startDay: plan.startDay,
+    scheduleTimeZone: plan.timeZone,
+    fixedTransitionBase: canonicalBase,
+    decision,
+    thresholdMode,
+    revision,
+    reason: reason.trim(),
+    recordedAt,
   };
 }
 
@@ -110,10 +131,12 @@ export function decodeTwoFixedOvertimePolicyHistory(
     throw new Error('TWO_FIXED_OT_REVISION_LIMIT');
   const heads = rows.filter((x) => x.key === prefix + 'head');
   const events = rows.filter((x) => x.key !== prefix + 'head');
-  if (heads.length !== 1 ||
+  if (
+    heads.length !== 1 ||
     !/^[1-9][0-9]*$/.test(heads[0].value) ||
     Number(heads[0].value) !== events.length ||
-    events.length === 0)
+    events.length === 0
+  )
     throw new Error('INVALID_TWO_FIXED_OT_HEAD');
   const history: TwoFixedOvertimePolicyEvent[] = [];
   for (let index = 0; index < events.length; index++) {
@@ -125,27 +148,40 @@ export function decodeTwoFixedOvertimePolicyHistory(
       throw new Error('INVALID_TWO_FIXED_OT_EVENT');
     try {
       const value = JSON.parse(row.value) as TwoFixedOvertimePolicyEvent;
-      if (!value || typeof value !== 'object' || Array.isArray(value) ||
-        !value.fixedTransitionBase || !Array.isArray(value.fixedTransitionBase.segments) ||
-        value.fixedTransitionBase.segments.length !== 2)
+      if (
+        !value ||
+        typeof value !== 'object' ||
+        Array.isArray(value) ||
+        !value.fixedTransitionBase ||
+        !Array.isArray(value.fixedTransitionBase.segments) ||
+        value.fixedTransitionBase.segments.length !== 2
+      )
         throw new Error('INVALID_TWO_FIXED_OT_EVENT');
       const base = value.fixedTransitionBase;
-      const plan = planCustomPayProfiles(
-        periodKey, day, base.scheduleTimeZone,
-        [base.segments[0].profile, base.segments[1].profile],
-      );
+      const plan = planCustomPayProfiles(periodKey, day, base.scheduleTimeZone, [
+        base.segments[0].profile,
+        base.segments[1].profile,
+      ]);
       const canonical = createTwoFixedOvertimePolicyEvent(
-        plan, base, value.decision, value.thresholdMode,
-        revision, value.reason, value.recordedAt,
+        plan,
+        base,
+        value.decision,
+        value.thresholdMode,
+        revision,
+        value.reason,
+        value.recordedAt,
       );
       if (JSON.stringify(canonical) !== row.value)
         throw new Error('INVALID_TWO_FIXED_OT_EVENT');
       const last = history[history.length - 1];
-      if (last && (canonical.recordedAt < last.recordedAt ||
-        (canonical.decision === last.decision &&
-          canonical.thresholdMode === last.thresholdMode &&
-          JSON.stringify(canonical.fixedTransitionBase) ===
-            JSON.stringify(last.fixedTransitionBase))))
+      if (
+        last &&
+        (canonical.recordedAt < last.recordedAt ||
+          (canonical.decision === last.decision &&
+            canonical.thresholdMode === last.thresholdMode &&
+            JSON.stringify(canonical.fixedTransitionBase) ===
+              JSON.stringify(last.fixedTransitionBase)))
+      )
         throw new Error('INVALID_TWO_FIXED_OT_REDECISION');
       history.push(canonical);
     } catch {
@@ -162,8 +198,13 @@ export function twoFixedOvertimePolicyMatches(
 ): boolean {
   try {
     const canonical = createTwoFixedOvertimePolicyEvent(
-      plan, base, event.decision, event.thresholdMode,
-      event.revision, event.reason, event.recordedAt,
+      plan,
+      base,
+      event.decision,
+      event.thresholdMode,
+      event.revision,
+      event.reason,
+      event.recordedAt,
     );
     return JSON.stringify(canonical) === JSON.stringify(event);
   } catch {
