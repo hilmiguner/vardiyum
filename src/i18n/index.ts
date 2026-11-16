@@ -12,6 +12,16 @@ const resources = {
       routines: 'Rutinler',
       earnings: 'Kazanç',
       settings: 'Ayarlar',
+      earnCustomExportHeading: 'Özel dönem raporu: CSV/JSON',
+      earnCustomExportHint:
+        'Yalnız güncel doğrulanmış birleşik tutar paylaşılabilir. Dosya kaynak çalışma kimlikleri, gerçek UTC giriş/çıkış ve saat dilimi, profil/audit sürümleri, prim/kesinti notları ve kesin kuruşları içerir. Gizli finansal veri; şifreli yedek değildir, otomatik aktarım YOK.',
+      earnCustomExportCsv: 'Özel dönem CSV dosyasını paylaş',
+      earnCustomExportJson: 'Özel dönem JSON dosyasını paylaş',
+      earnCustomExportPrivacyTitle: 'Özel dönem finansal dosyasını dışarı paylaş?',
+      earnCustomExportPrivacyBody:
+        'Dönem: {{from}} – {{to}}\nTahmini toplam: {{total}}\nÇalışma kalemi: {{work}} · ek kalem: {{adjustments}}\nDosya tüm kaynak kimlikleri, saatleri, ücretleri ve notları içerir. Seçtiğin uygulama bunları görebilir. Takvim ayı raporuyla toplama. Bu resmî bordro değildir. Onaydan sonra kaynaklar yeniden okunur; değişmişse paylaşım iptal edilir.',
+      earnCustomExportConfirm: 'Dosyayı paylaş',
+      earnCustomExportFailed: 'Özel dönem raporu paylaşılamadı',
       earnCombinedTitle: 'Özel maaş dönemi: birleşik kazanç tahmini',
       earnCombinedExplanation:
         'Yalnız doğrulanmış gerçek saatlik çalışma YA DA kullanıcı tarafından seçilmiş sabit ücret ile ayrı onaylı fazla mesai ve açıkça döneme atanmış prim/kesinti/düzeltme birleştirilir. Belirsiz kaynak, farklı para birimi veya geçersiz revizyon varsa toplam gösterilmez.',
@@ -48,7 +58,7 @@ const resources = {
       earnCombinedAuditReason: 'Atıf gerekçesi: {{reason}} · {{recordedAt}}',
       earnCombinedNoAdjustmentRows: 'Bu özel döneme atanmış ek kazanç/kesinti kaydı yok.',
       earnCombinedNotPayslip:
-        'Bu tutar kullanıcı girdilerine dayalı, vergi öncesi yaklaşık tahmindir; resmî bordro, işveren onayı, net maaş, vergi/SGK veya yasal mesai alacağı DEĞİLDİR. Birleştirme yalnız BU özel dönem içindir. Takvim ayı raporu aynı kaynakları da içerir; aylık ve özel dönem tutarlarını birbirine EKLEME. CSV/JSON dışa aktarım burada henüz etkin değildir.',
+        'Bu tutar kullanıcı girdilerine dayalı, vergi öncesi yaklaşık tahmindir; resmî bordro, işveren onayı, net maaş, vergi/SGK veya yasal mesai alacağı DEĞİLDİR. Birleştirme yalnız BU özel dönem içindir. Takvim ayı raporu aynı kaynakları da içerir; aylık ve özel dönem tutarlarını birbirine EKLEME. Özel dönem CSV/JSON yalnız açık kullanıcı onayıyla paylaşılır.',
       earnAttribTitle: 'Özel maaş dönemi: prim, kesinti ve düzeltme atfı',
       earnAttribExplanation:
         'Takvim ayına kayıtlı her prim, kesinti veya düzeltmeyi hangi özel maaş dönemine ait olduğunu SEN belirleyerek ayır. İlk dönem tutarını tam kuruş olarak yaz; kalan tutar otomatik olarak ikinci döneme aktarılır. Gün sayısına göre bölme yapılmaz ve aynı kaynak iki kez sayılmaz.',
@@ -620,6 +630,16 @@ const resources = {
       routines: 'Routines',
       earnings: 'Earnings',
       settings: 'Settings',
+      earnCustomExportHeading: 'Custom period report: CSV/JSON',
+      earnCustomExportHint:
+        'Only the latest validated combined estimate can be shared. The file includes work IDs, original UTC times and time zones, profile/audit revisions, adjustment notes and exact minor units. Sensitive financial data; not encrypted backup and never sent automatically.',
+      earnCustomExportCsv: 'Share custom period CSV file',
+      earnCustomExportJson: 'Share custom period JSON file',
+      earnCustomExportPrivacyTitle: 'Share this sensitive custom pay-period file?',
+      earnCustomExportPrivacyBody:
+        'Period: {{from}} – {{to}}\nEstimated total: {{total}}\nWork lines: {{work}} · adjustment lines: {{adjustments}}\nThis file includes source IDs, UTC times, salary amounts and notes. The receiving app may access them. Do not add calendar-month totals. This is not an official payslip. Sources are re-read after confirmation; changed sources cancel sharing.',
+      earnCustomExportConfirm: 'Share this file',
+      earnCustomExportFailed: 'Unable to share custom period report',
       earnCombinedTitle: 'Custom pay period: combined earnings estimate',
       earnCombinedExplanation:
         'Only verified logged hourly work OR an explicitly chosen fixed base plus separately approved overtime is combined with bonuses, deductions and corrections expressly assigned to this pay period. Missing provenance, currency mismatch or stale revisions block the total.',
@@ -656,7 +676,7 @@ const resources = {
       earnCombinedNoAdjustmentRows:
         'No additional allocated earning/deduction sources in this pay period.',
       earnCombinedNotPayslip:
-        'User-reported approximate PRE-TAX estimate ONLY: not official payroll, employer approval, net salary, tax/social insurance or a statutory overtime claim. This combines sources for THIS special pay period only. The calendar-month report includes the same underlying sources: do NOT ADD monthly and custom period totals. Custom CSV/JSON export is not available yet.',
+        'User-reported approximate PRE-TAX estimate ONLY: not official payroll, employer approval, net salary, tax/social insurance or a statutory overtime claim. This combines sources for THIS special pay period only. The calendar-month report includes the same underlying sources: do NOT ADD monthly and custom period totals. Custom CSV/JSON is shared only with explicit consent.',
       earnAttribTitle: 'Custom pay period: bonus, deduction and correction allocation',
       earnAttribExplanation:
         'You explicitly assign each calendar-month bonus, deduction or correction between its two eligible custom pay periods. Enter the earlier period amount in exact minor currency units; the remainder belongs to the later period. No day-based proration and no double allocation of a source.',
