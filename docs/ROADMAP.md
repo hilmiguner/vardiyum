@@ -221,3 +221,11 @@ V1.1+ adayları: widget, detaylı analiz, isteğe bağlı hesap ve senkronizasyo
 - [ ] [PR #36](https://github.com/hilmiguner/vardiyum/pull/36): iki kaynak `monthly_fixed` effective-month geçişinde 2–28 özel pay period için kullanıcı tarafından explicit **her iki profilin BASE-only ana tutarı**; UTC/IANA segment izleri, immutable kaynak/profile revision + stale redecision, v8 `app_settings` atomic CAS, TR/EN UI ve gerçek SQLite regresyon. [PR CI #43831061577](https://github.com/hilmiguner/vardiyum/actions/runs/43831061577) **SUCCESS 309/309 Node, Android+iOS JS**; merge kullanıcı onayı bekliyor.
 - [ ] İki sabit ücrete geçişte gerçek çalışma için **ayrı overtime eşiği/rate/consent politikası** ve eski-yeni kaynak ilişkisi; fixed→hourly ayrıca; signed adjustment atfı+combined/export kapısı ancak bütün kaynaklar doğrulandıktan sonra. Sessiz gün/saat oranlama ya da çift sayım YOK. Issue #22/#16 açık.
 - [ ] Erteli fiziksel iOS/Android SQLite migration/persist, AES clean restore, OS CSV paylaşım-temizleme, bildirim, DST/low disk/process kill Issue #2/#20.
+
+## 2026-11-16 — Current staged custom fixed→fixed roadmap
+
+- [x] [PR #36](https://github.com/hilmiguner/vardiyum/pull/36) two-source explicit fixed salary BASE declaration **MERGED**, main SHA `2681e478c40e44d75f2993dc51cc74f953965e4b`, main CI SUCCESS.
+- [ ] [PR #37](https://github.com/hilmiguner/vardiyum/pull/37) two-source fixed OT consent and threshold policy: explicit include+carry vs include+reset vs exclude, bound to current exact immutable BASE/profile and IANA zone; app_settings v8 atomic decision revision; TR/EN UI and SQLite tests. Final CI / merge **pending**.
+- [ ] Next after #37: source-verified actual work and break double-boundary audit; split at both custom-period and effective-first UTC boundary without duplicate pay or invented fractional breaks; explicitly apply user-chosen threshold strategy and both overtime source rates. Separate work-only estimate for two-fixed period, never infer legal entitlement.
+- [ ] Then separate combined signed adjustments and privacy-approved source-verified export only when complete; mixed fixed/hourly / cross-currency explicitly unresolved; Issue #22 & #16 OPEN.
+- [ ] Native iOS/Android acceptance #2/#20 (SQLite v8 persistence, clean AES restore, OS CSV/JSON share temp cleanup, DST, device notifications/crash/relaunch) USER-DEFERRED.
