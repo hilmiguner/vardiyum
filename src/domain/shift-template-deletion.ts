@@ -1,4 +1,4 @@
-import type { DayOverride, ShiftTemplate } from './shift-engine.ts';
+import type { DayOverride } from './shift-engine.ts';
 
 /**
  * Custom templates are removable only after the user removes all future
@@ -7,7 +7,7 @@ import type { DayOverride, ShiftTemplate } from './shift-engine.ts';
  */
 export function assertRemovableCustomTemplate(
   id: string,
-  templates: readonly ShiftTemplate[],
+  templates: readonly { id: string }[],
   cycleDays: readonly string[],
   overrides: Readonly<Record<string, DayOverride>>,
 ): void {
