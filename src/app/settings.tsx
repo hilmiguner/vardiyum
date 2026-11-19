@@ -112,27 +112,23 @@ export default function SettingsScreen() {
       Alert.alert(t('deleteShiftTypeTitle'), t('deleteShiftTypeInUse'));
       return;
     }
-    Alert.alert(
-      t('deleteShiftTypeTitle'),
-      t('deleteShiftTypeConfirm', { name: entry.name }),
-      [
-        { text: t('cancel'), style: 'cancel' },
-        {
-          text: t('delete'),
-          style: 'destructive',
-          onPress: () =>
-            edit((before) => ({
-              ...before,
-              templates: before.templates.filter((item) => item.id !== entry.id),
-              removedIds:
-                schedule.templates.some((item) => item.id === entry.id) &&
-                !before.removedIds.includes(entry.id)
-                  ? [...before.removedIds, entry.id]
-                  : before.removedIds,
-            })),
-        },
-      ],
-    );
+    Alert.alert(t('deleteShiftTypeTitle'), t('deleteShiftTypeConfirm', { name: entry.name }), [
+      { text: t('cancel'), style: 'cancel' },
+      {
+        text: t('delete'),
+        style: 'destructive',
+        onPress: () =>
+          edit((before) => ({
+            ...before,
+            templates: before.templates.filter((item) => item.id !== entry.id),
+            removedIds:
+              schedule.templates.some((item) => item.id === entry.id) &&
+              !before.removedIds.includes(entry.id)
+                ? [...before.removedIds, entry.id]
+                : before.removedIds,
+          })),
+      },
+    ]);
   };
 
   const save = async () => {
@@ -335,7 +331,11 @@ export default function SettingsScreen() {
                     accessibilityRole="button"
                     accessibilityLabel={`${t('deleteShiftType')}: ${template.name}`}
                     onPress={() => removeTemplate(template)}
-                    style={{ alignSelf: 'flex-start', paddingVertical: 10, paddingHorizontal: 12 }}
+                    style={{
+                      alignSelf: 'flex-start',
+                      paddingVertical: 10,
+                      paddingHorizontal: 12,
+                    }}
                   >
                     <Text style={{ color: c.text, fontWeight: '700' }}>
                       {t('deleteShiftType')}
