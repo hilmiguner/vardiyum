@@ -25,5 +25,7 @@ test('preview configuration links only the verified Expo project and contains no
   const raw = JSON.stringify(eas);
   assert.ok(!/EXPO_TOKEN|API_KEY|PASSWORD|privateKey|projectId|secret/i.test(raw));
   assert.equal(config.extra.eas.projectId, '0ec5a8c3-f277-43d0-82c7-8b822835a4c2');
-  assert.ok(!/EXPO_TOKEN|API_KEY|PASSWORD|privateKey|secret/i.test(JSON.stringify(config.extra)));
+  assert.ok(
+    !/EXPO_TOKEN|API_KEY|PASSWORD|privateKey|secret/i.test(JSON.stringify(config.extra)),
+  );
 });
