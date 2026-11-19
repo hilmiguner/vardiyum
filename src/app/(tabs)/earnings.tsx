@@ -707,11 +707,11 @@ export default function EarningsScreen() {
       <Panel>
         <Action
           label={t(showEditor ? 'earnHideProfileEditor' : 'earnNewProfile')}
-          onPress={() => setShowEditor(!showEditor)}
+          onPress={() => setShowEditor((previous) => !previous)}
         />
         <Muted>{t('earnProfileVersionWarning')}</Muted>
       </Panel>
-      {showEditor || report?.status === 'needs_profile' ? (
+      {showEditor ? (
         <ProfileEditor
           key={month}
           selectedMonth={month}
