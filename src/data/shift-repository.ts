@@ -98,8 +98,7 @@ export async function saveScheduleConfig(
     const nextIds = new Set(templates.map((item) => item.id));
     const removedIds = new Set(removedTemplateIds);
     for (const { id } of existing) {
-      if (!nextIds.has(id) && !removedIds.has(id))
-        throw new Error('STALE_SHIFT_TEMPLATE_LIST');
+      if (!nextIds.has(id) && !removedIds.has(id)) throw new Error('STALE_SHIFT_TEMPLATE_LIST');
     }
     for (const id of removedIds) {
       if (
@@ -125,8 +124,7 @@ export async function saveScheduleConfig(
         } catch {
           throw new Error('INVALID_STORED_RECURRENCE');
         }
-        if (!Array.isArray(recurrence.shiftIds))
-          throw new Error('INVALID_STORED_RECURRENCE');
+        if (!Array.isArray(recurrence.shiftIds)) throw new Error('INVALID_STORED_RECURRENCE');
         if (recurrence.shiftIds.some((id) => removedIds.has(id)))
           throw new Error('SHIFT_USED_BY_ROUTINE');
       }
