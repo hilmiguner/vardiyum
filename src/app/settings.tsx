@@ -30,7 +30,6 @@ interface Draft {
   days: string[];
   templates: TemplateDraft[];
 }
-const SAMPLE = ['morning', 'morning', 'evening', 'evening', 'night', 'night', 'off', 'off'];
 const COLORS = ['#56A3FF', '#E8A86E', '#A18CF6', '#5EC59C', '#F4A4B4'];
 
 function toDraft(template: ShiftTemplate): TemplateDraft {
@@ -55,7 +54,7 @@ export default function SettingsScreen() {
 
   const initial = (): Draft => ({
     anchor: schedule.pattern?.anchorDate ?? localDateString(),
-    days: [...(schedule.pattern?.days ?? ['morning', 'evening', 'night', 'off'])],
+    days: [...(schedule.pattern?.days ?? ['morning'])],
     templates: (schedule.templates.length ? schedule.templates : DEFAULT_TEMPLATES).map(
       toDraft,
     ),
@@ -233,16 +232,6 @@ export default function SettingsScreen() {
                 <Text style={{ color: c.text, textAlign: 'center' }}>− {t('removeDay')}</Text>
               </Pressable>
             </View>
-            <Action
-              label={t('example')}
-              onPress={() =>
-                edit((before) => ({
-                  ...before,
-                  anchor: localDateString(),
-                  days: [...SAMPLE],
-                }))
-              }
-            />
           </Panel>
 
           <Panel>
