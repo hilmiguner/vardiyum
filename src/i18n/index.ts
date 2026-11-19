@@ -536,7 +536,7 @@ const resources = {
       earnCurrency: 'Para birimi (iki ondalıklı)',
       earnHourlyRate: 'Bir saatlik ücret',
       earnMonthlyBase: 'Tam ay için sabit tutar',
-      earnThresholdMinutes: 'Fazla mesai hangi süreden sonra başlasın? (dakika)'
+      earnThresholdMinutes: 'Fazla mesai hangi süreden sonra başlasın? (dakika)',
       earnThresholdPlaceholder: 'Boşsa fazla mesai katsayısı uygulanmaz',
       earnThresholdWarning:
         'Örnek: 180 saat = 10.800 dakika. Yalnız kaydedilmiş gerçek çalışmanın bu sınırı aşan kısmı mesai sayılır; yasal sınır otomatik belirlenmez.',
@@ -1248,7 +1248,7 @@ const resources = {
       earnCurrency: 'Currency (two decimal places)',
       earnHourlyRate: 'Pay per hour',
       earnMonthlyBase: 'Fixed full-month amount',
-      earnThresholdMinutes: 'Start overtime after how many minutes in this period?'
+      earnThresholdMinutes: 'Start overtime after how many minutes in this period?',
       earnThresholdPlaceholder: 'Blank means no overtime multiplier',
       earnThresholdWarning:
         'Example: 180 hours = 10,800 minutes. Only logged actual work above this threshold is treated as overtime; no legal threshold is assumed.',
