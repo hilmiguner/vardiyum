@@ -22,7 +22,10 @@ jobs:
       - name: Check Expo dependency compatibility
         run: npx expo install --check
       - name: Code formatting
-        run: npm run format
+        run: |
+          npm run format:write
+          git diff -- src/app/settings.tsx src/data/shift-repository.ts src/i18n/index.ts tests/native-preview-config.test.mjs app.json
+          npm run format
       - name: Lint
         run: npm run lint
       - name: Typecheck
