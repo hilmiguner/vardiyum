@@ -88,11 +88,49 @@ export async function loadSchedule(): Promise<ShiftSchedule> {
 export async function saveScheduleConfig(
   patternInput: ShiftPattern,
   templateInput: readonly ShiftTemplate[],
+  removedTemplateIds: readonly string[] = [],
 ): Promise<void> {
   const { pattern, templates } = validateScheduleConfig(patternInput, templateInput);
   const db = await getDatabase();
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
   await db.withExclusiveTransactionAsync(async (tx) => {
+    const existing = await tx.getAllAsync<{ id: string }>('SELECT id FROM shift_templates');
+    const nextIds = new Set(templates.map((item) => item.id));
+    const removedIds = new Set(removedTemplateIds);
+    for (const { id } of existing) {
+      if (!nextIds.has(id) && !removedIds.has(id))
+        throw new Error('STALE_SHIFT_TEMPLATE_LIST');
+    }
+    for (const id of removedIds) {
+      if (
+        !id.startsWith('custom_') ||
+        nextIds.has(id) ||
+        !existing.some((item) => item.id === id)
+      )
+        throw new Error('INVALID_SHIFT_TEMPLATE_REMOVAL');
+      const override = await tx.getFirstAsync<{ date: string }>(
+        'SELECT date FROM day_overrides WHERE shift_code = ? LIMIT 1',
+        id,
+      );
+      if (override) throw new Error('SHIFT_TEMPLATE_IN_USE');
+    }
+    if (removedIds.size) {
+      const routineRows = await tx.getAllAsync<{ recurrence_json: string }>(
+        'SELECT recurrence_json FROM routine_rules',
+      );
+      for (const row of routineRows) {
+        let recurrence: { shiftIds?: unknown };
+        try {
+          recurrence = JSON.parse(row.recurrence_json) as { shiftIds?: unknown };
+        } catch {
+          throw new Error('INVALID_STORED_RECURRENCE');
+        }
+        if (!Array.isArray(recurrence.shiftIds))
+          throw new Error('INVALID_STORED_RECURRENCE');
+        if (recurrence.shiftIds.some((id) => removedIds.has(id)))
+          throw new Error('SHIFT_USED_BY_ROUTINE');
+      }
+    }
     for (const entry of templates) {
       await tx.runAsync(
         `INSERT INTO shift_templates (
@@ -134,6 +172,10 @@ export async function saveScheduleConfig(
         index,
         shiftId,
       );
+    }
+    for (const id of removedIds) {
+      const removed = await tx.runAsync('DELETE FROM shift_templates WHERE id = ?', id);
+      if (removed.changes !== 1) throw new Error('SHIFT_TEMPLATE_NOT_FOUND');
     }
   });
 }
