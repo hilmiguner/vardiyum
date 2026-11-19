@@ -271,6 +271,7 @@ function ProfileEditor({
               maxLength={4}
             />
           </View>
+          <Muted>{t('earnMultiplierHelp')}</Muted>
         </View>
       ) : null}
       {initial ? (
