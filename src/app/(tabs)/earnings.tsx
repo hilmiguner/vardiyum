@@ -252,24 +252,26 @@ function ProfileEditor({
         />
       ) : null}
       {threshold.trim() ? (
-        <View style={{ flexDirection: 'row', gap: 8 }}>
-          <View style={{ flex: 1 }}>
-            <InputField
-              label={t('earnMultiplierNumerator')}
-              value={numerator}
-              onChange={setNumerator}
-              placeholder="1"
-              maxLength={4}
-            />
-          </View>
-          <View style={{ flex: 1 }}>
-            <InputField
-              label={t('earnMultiplierDenominator')}
-              value={denominator}
-              onChange={setDenominator}
-              placeholder="1"
-              maxLength={4}
-            />
+        <View style={{ gap: 8 }}>
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            <View style={{ flex: 1 }}>
+              <InputField
+                label={t('earnMultiplierNumerator')}
+                value={numerator}
+                onChange={setNumerator}
+                placeholder="1"
+                maxLength={4}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <InputField
+                label={t('earnMultiplierDenominator')}
+                value={denominator}
+                onChange={setDenominator}
+                placeholder="1"
+                maxLength={4}
+              />
+            </View>
           </View>
           <Muted>{t('earnMultiplierHelp')}</Muted>
         </View>
