@@ -14,6 +14,7 @@ import {
   validateScheduleConfig,
 } from '../domain/shift-engine';
 import { useAppState } from '../state/app-state';
+import { assertRemovableCustomTemplate } from '../domain/shift-template-deletion';
 import { usePalette } from '../theme/colors';
 
 interface TemplateDraft {
@@ -29,6 +30,7 @@ interface Draft {
   anchor: string;
   days: string[];
   templates: TemplateDraft[];
+  removedIds: string[];
 }
 const COLORS = ['#56A3FF', '#E8A86E', '#A18CF6', '#5EC59C', '#F4A4B4'];
 
@@ -58,6 +60,7 @@ export default function SettingsScreen() {
     templates: (schedule.templates.length ? schedule.templates : DEFAULT_TEMPLATES).map(
       toDraft,
     ),
+    removedIds: [],
   });
   const view = draft ?? initial();
   const edit = (transform: (current: Draft) => Draft) =>
@@ -102,6 +105,36 @@ export default function SettingsScreen() {
     });
   };
 
+  const removeTemplate = (entry: TemplateDraft) => {
+    try {
+      assertRemovableCustomTemplate(entry.id, view.templates, view.days, schedule.overrides);
+    } catch {
+      Alert.alert(t('deleteShiftTypeTitle'), t('deleteShiftTypeInUse'));
+      return;
+    }
+    Alert.alert(
+      t('deleteShiftTypeTitle'),
+      t('deleteShiftTypeConfirm', { name: entry.name }),
+      [
+        { text: t('cancel'), style: 'cancel' },
+        {
+          text: t('delete'),
+          style: 'destructive',
+          onPress: () =>
+            edit((before) => ({
+              ...before,
+              templates: before.templates.filter((item) => item.id !== entry.id),
+              removedIds:
+                schedule.templates.some((item) => item.id === entry.id) &&
+                !before.removedIds.includes(entry.id)
+                  ? [...before.removedIds, entry.id]
+                  : before.removedIds,
+            })),
+        },
+      ],
+    );
+  };
+
   const save = async () => {
     if (loading || error) return;
     let valid;
@@ -128,11 +161,17 @@ export default function SettingsScreen() {
     }
     setSaving(true);
     try {
-      await saveConfig(valid.pattern, valid.templates);
+      await saveConfig(valid.pattern, valid.templates, view.removedIds);
       Alert.alert(t('saved'));
       router.back();
     } catch (reason) {
-      Alert.alert(t('databaseError'), reason instanceof Error ? reason.message : '');
+      const message = reason instanceof Error ? reason.message : '';
+      Alert.alert(
+        t('databaseError'),
+        message.includes('SHIFT_TEMPLATE_IN_USE') || message.includes('SHIFT_USED_BY_ROUTINE')
+          ? t('deleteShiftTypeReferenced')
+          : message,
+      );
     } finally {
       setSaving(false);
     }
@@ -291,6 +330,18 @@ export default function SettingsScreen() {
                   </View>
                 )}
                 {template.isRestDay ? <Muted>{t('restDay')}</Muted> : null}
+                {template.id.startsWith('custom_') ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={`${t('deleteShiftType')}: ${template.name}`}
+                    onPress={() => removeTemplate(template)}
+                    style={{ alignSelf: 'flex-start', paddingVertical: 10, paddingHorizontal: 12 }}
+                  >
+                    <Text style={{ color: c.text, fontWeight: '700' }}>
+                      {t('deleteShiftType')}
+                    </Text>
+                  </Pressable>
+                ) : null}
               </View>
             ))}
             <View style={{ flexDirection: 'row', gap: 10 }}>
