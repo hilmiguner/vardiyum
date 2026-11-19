@@ -63,7 +63,7 @@ export function filterTimeZoneChoices(
   const needle = query.trim().toLocaleLowerCase(locale);
   if (!needle) return [...zones];
   return zones.filter((zone) =>
-    (humanTimeZoneLabel(zone, locale) + ' ' + zone.replaceAll('_', ' '))
+    (humanTimeZoneLabel(zone, locale) + ' ' + zone + ' ' + zone.replaceAll('_', ' '))
       .toLocaleLowerCase(locale)
       .includes(needle),
   );
