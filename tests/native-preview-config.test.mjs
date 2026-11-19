@@ -21,8 +21,9 @@ test('iOS preview targets a registered real device and has a fixed bundle identi
   assert.match(config.ios.bundleIdentifier, /^[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/);
 });
 
-test('preview configuration carries no Expo credentials, Apple secrets, or fabricated project ID', () => {
+test('preview configuration links only the verified Expo project and contains no secrets', () => {
   const raw = JSON.stringify(eas);
   assert.ok(!/EXPO_TOKEN|API_KEY|PASSWORD|privateKey|projectId|secret/i.test(raw));
-  assert.equal('extra' in config && 'eas' in config.extra, false);
+  assert.equal(config.extra.eas.projectId, '0ec5a8c3-f277-43d0-82c7-8b822835a4c2');
+  assert.ok(!/EXPO_TOKEN|API_KEY|PASSWORD|privateKey|secret/i.test(JSON.stringify(config.extra)));
 });
