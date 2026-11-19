@@ -600,6 +600,14 @@ const resources = {
       restDay: 'Çalışılmayan gün',
       addShift: 'Vardiya ekle',
       addRest: 'İzin ekle',
+      deleteShiftType: 'Bu türü sil',
+      deleteShiftTypeTitle: 'Vardiya türünü sil',
+      deleteShiftTypeConfirm: '{{name}} silinsin mi? Bu işlem Kaydet ile uygulanır.',
+      deleteShiftTypeInUse:
+        'Bu tür önce döngü günlerinden ve tek günlük değişikliklerden kaldırılmalı.',
+      deleteShiftTypeReferenced:
+        'Bu vardiya türüne bağlı kayıtlı rutinler veya özel günler var. Önce bağlantıları kaldır.',
+      deleteShiftTypeFailed: 'Vardiya türü silinemedi. Kayıtları kontrol et.',
       overnightHint:
         'Bitiş saati başlangıçtan önce veya aynıysa vardiya ertesi gün biter; aynı saat 24 saatlik vardiyadır.',
       customName: 'Yeni vardiya',
@@ -651,6 +659,10 @@ const resources = {
       scheduleTimeZoneTitle: 'Programın saat dilimi',
       currentTimeZone: 'Kayıtlı saat dilimi: {{zone}}',
       timeZoneIdentifier: 'IANA saat dilimi',
+      chooseTimeZone: 'Şehir veya saat dilimi seç',
+      timeZoneSearch: 'Şehir / bölge ara',
+      noTimeZones: 'Eşleşen şehir bulunamadı.',
+      deviceTimeZone: 'Telefonun saat dilimi',
       zoneChangeWarning:
         'Saat dilimini değiştirmek planlanan saatlerin UTC karşılığını değiştirir. Gerçek mesai kayıtları değişmez.',
       changeTimeZone: 'Saat dilimini değiştir',
@@ -1297,6 +1309,14 @@ const resources = {
       restDay: 'Non-working day',
       addShift: 'Add shift',
       addRest: 'Add day off',
+      deleteShiftType: 'Delete this type',
+      deleteShiftTypeTitle: 'Remove shift type',
+      deleteShiftTypeConfirm: 'Remove {{name}}? This is applied when you tap Save.',
+      deleteShiftTypeInUse:
+        'First replace this type in the rotation and any daily overrides.',
+      deleteShiftTypeReferenced:
+        'Saved routines or date overrides still reference this type. Remove those links first.',
+      deleteShiftTypeFailed: 'Shift type could not be removed. Check its references.',
       overnightHint:
         'If the end time is at or before the start, the shift ends next day; equal hours mean a 24-hour shift.',
       customName: 'New shift',
@@ -1349,6 +1369,10 @@ const resources = {
       scheduleTimeZoneTitle: 'Schedule time zone',
       currentTimeZone: 'Stored schedule zone: {{zone}}',
       timeZoneIdentifier: 'IANA time zone',
+      chooseTimeZone: 'Choose city or time zone',
+      timeZoneSearch: 'Search city or region',
+      noTimeZones: 'No matching cities found.',
+      deviceTimeZone: 'Device time zone',
       zoneChangeWarning:
         'Changing the schedule zone changes planned UTC times. Past actual work records are unchanged.',
       changeTimeZone: 'Change schedule time zone',
