@@ -1316,8 +1316,7 @@ const resources = {
       deleteShiftType: 'Delete this type',
       deleteShiftTypeTitle: 'Remove shift type',
       deleteShiftTypeConfirm: 'Remove {{name}}? This is applied when you tap Save.',
-      deleteShiftTypeInUse:
-        'First replace this type in the rotation and any daily overrides.',
+      deleteShiftTypeInUse: 'First replace this type in the rotation and any daily overrides.',
       deleteShiftTypeReferenced:
         'Saved routines or date overrides still reference this type. Remove those links first.',
       deleteShiftTypeFailed: 'Shift type could not be removed. Check its references.',
