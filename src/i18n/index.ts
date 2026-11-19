@@ -536,13 +536,15 @@ const resources = {
       earnCurrency: 'Para birimi (iki ondalıklı)',
       earnHourlyRate: 'Bir saatlik ücret',
       earnMonthlyBase: 'Tam ay için sabit tutar',
-      earnThresholdMinutes: 'Dönem içi fazla mesai eşiği (dakika, isteğe bağlı)',
+      earnThresholdMinutes: 'Fazla mesai hangi süreden sonra başlasın? (dakika)'
       earnThresholdPlaceholder: 'Boşsa fazla mesai katsayısı uygulanmaz',
       earnThresholdWarning:
-        'Bu eşik ve çarpan tamamen senin seçimin. Herhangi bir mevzuat katsayısı otomatik uygulanmaz.',
+        'Örnek: 180 saat = 10.800 dakika. Yalnız kaydedilmiş gerçek çalışmanın bu sınırı aşan kısmı mesai sayılır; yasal sınır otomatik belirlenmez.',
       earnOvertimeHourlyRate: 'Aylık modele ek mesai saatlik ücreti',
-      earnMultiplierNumerator: 'Çarpan payı',
-      earnMultiplierDenominator: 'Çarpan paydası',
+      earnMultiplierNumerator: 'Katsayının üst sayısı',
+      earnMultiplierDenominator: 'Katsayının alt sayısı',
+      earnMultiplierHelp:
+        'Katsayı = üst sayı ÷ alt sayı. 3 ÷ 2 = 1,5 kat; 2 ÷ 1 = 2 kat. Şimdilik aynı dönemde tek katsayı vardır; normal ve bayram mesaileri ayrı sınıflandırılmaz.',
       earnSaveProfile: 'Ücret profilini kaydet',
       earnProfileSaved: 'Ücret profili kaydedildi.',
       earnProfileError: 'Ücret profili kaydedilemedi',
@@ -1246,13 +1248,15 @@ const resources = {
       earnCurrency: 'Currency (two decimal places)',
       earnHourlyRate: 'Pay per hour',
       earnMonthlyBase: 'Fixed full-month amount',
-      earnThresholdMinutes: 'Overtime threshold per period (minutes, optional)',
+      earnThresholdMinutes: 'Start overtime after how many minutes in this period?'
       earnThresholdPlaceholder: 'Blank means no overtime multiplier',
       earnThresholdWarning:
-        'You set the threshold and multiplier; no legal rate is automatically assumed.',
+        'Example: 180 hours = 10,800 minutes. Only logged actual work above this threshold is treated as overtime; no legal threshold is assumed.',
       earnOvertimeHourlyRate: 'Additional overtime hourly rate for fixed monthly model',
-      earnMultiplierNumerator: 'Multiplier numerator',
-      earnMultiplierDenominator: 'Multiplier denominator',
+      earnMultiplierNumerator: 'Multiplier top number',
+      earnMultiplierDenominator: 'Multiplier bottom number',
+      earnMultiplierHelp:
+        'Multiplier = top ÷ bottom: 3 ÷ 2 = 1.5x, 2 ÷ 1 = 2x. Only one rate applies to a period for now; regular versus holiday overtime is not yet classified.',
       earnSaveProfile: 'Save pay profile',
       earnProfileSaved: 'Pay profile saved.',
       earnProfileError: 'Could not save pay profile',
