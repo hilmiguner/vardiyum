@@ -28,31 +28,31 @@ export default function TabLayout() {
     >
       <Tabs
         screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: c.accent,
-        tabBarInactiveTintColor: c.muted,
-        tabBarStyle: {
-          backgroundColor: c.card,
-          borderTopColor: c.border,
-          height: 56 + bottomInset,
-          paddingTop: 8,
-          paddingBottom: isAndroid ? 8 : bottomInset,
-        },
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '700' },
-      }}
-    >
-      {(['index', 'calendar', 'routines', 'earnings'] as const).map((name) => (
-        <Tabs.Screen
-          key={name}
-          name={name}
-          options={{
-            title: t(name === 'index' ? 'today' : name),
-            tabBarIcon: ({ color }) => (
-              <Text style={{ color, fontSize: 20 }}>{icons[name]}</Text>
-            ),
-          }}
-        />
-      ))}
+          headerShown: false,
+          tabBarActiveTintColor: c.accent,
+          tabBarInactiveTintColor: c.muted,
+          tabBarStyle: {
+            backgroundColor: c.card,
+            borderTopColor: c.border,
+            height: 56 + bottomInset,
+            paddingTop: 8,
+            paddingBottom: isAndroid ? 8 : bottomInset,
+          },
+          tabBarLabelStyle: { fontSize: 11, fontWeight: '700' },
+        }}
+      >
+        {(['index', 'calendar', 'routines', 'earnings'] as const).map((name) => (
+          <Tabs.Screen
+            key={name}
+            name={name}
+            options={{
+              title: t(name === 'index' ? 'today' : name),
+              tabBarIcon: ({ color }) => (
+                <Text style={{ color, fontSize: 20 }}>{icons[name]}</Text>
+              ),
+            }}
+          />
+        ))}
       </Tabs>
     </SafeAreaView>
   );
