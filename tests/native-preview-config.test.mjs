@@ -29,3 +29,22 @@ test('preview configuration links only the verified Expo project and contains no
     !/EXPO_TOKEN|API_KEY|PASSWORD|privateKey|secret/i.test(JSON.stringify(config.extra)),
   );
 });
+
+test('Android previews compile SQLite natively for 32-bit devices instead of using a published binary', () => {
+  const sqlitePlugin = config.plugins.find(
+    (entry) => Array.isArray(entry) && entry[0] === 'expo-sqlite',
+  );
+  assert.ok(sqlitePlugin, 'expo-sqlite config plugin is required');
+  assert.equal(sqlitePlugin[1].android.enableFTS, true);
+  assert.equal(sqlitePlugin[1].useSQLCipher, undefined);
+  assert.equal(sqlitePlugin[1].useLibSQL, undefined);
+
+  // Expo SQLite SDK 57 switches off its published Android AAR when the
+  // expo.sqlite.enableFTS Gradle property is explicitly supplied. The
+  // published binary in the first physical APK lacked armv7 SQLite.
+  const publicationRule = readFileSync(
+    new URL('../node_modules/expo-sqlite/android/shouldUsePublication.groovy', import.meta.url),
+    'utf8',
+  );
+  assert.match(publicationRule, /"expo\.sqlite\.enableFTS"/);
+});
