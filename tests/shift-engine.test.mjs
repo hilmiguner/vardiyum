@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   addCalendarDays,
   calendarOrdinal,
+  calendarDateInZone,
   cycleIndex,
   scheduledShift,
   validatePattern,
@@ -43,4 +44,10 @@ test('invalid values are rejected', () => {
     () => scheduledShift('2026-11-15', { anchorDate: '2026-11-15', days: [] }),
     /EMPTY_PATTERN/,
   );
+});
+
+test('saved Istanbul time zone switches calendar date at local midnight', () => {
+  const zone = 'Europe/Istanbul';
+  assert.equal(calendarDateInZone(zone, new Date('2026-11-20T20:59:59Z')), '2026-11-20');
+  assert.equal(calendarDateInZone(zone, new Date('2026-11-20T21:00:00Z')), '2026-11-21');
 });
