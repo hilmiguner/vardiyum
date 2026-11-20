@@ -14,7 +14,7 @@ import {
   validateScheduleConfig,
 } from '../domain/shift-engine';
 import { useAppState } from '../state/app-state';
-import { assertRemovableCustomTemplate } from '../domain/shift-template-deletion';
+import { assertRemovableShiftTemplate } from '../domain/shift-template-deletion';
 import { usePalette } from '../theme/colors';
 
 interface TemplateDraft {
@@ -107,7 +107,7 @@ export default function SettingsScreen() {
 
   const removeTemplate = (entry: TemplateDraft) => {
     try {
-      assertRemovableCustomTemplate(entry.id, view.templates, view.days, schedule.overrides);
+      assertRemovableShiftTemplate(entry.id, view.templates, view.days, schedule.overrides);
     } catch {
       Alert.alert(t('deleteShiftTypeTitle'), t('deleteShiftTypeInUse'));
       return;
@@ -326,7 +326,7 @@ export default function SettingsScreen() {
                   </View>
                 )}
                 {template.isRestDay ? <Muted>{t('restDay')}</Muted> : null}
-                {template.id.startsWith('custom_') ? (
+                {view.templates.length > 1 ? (
                   <Pressable
                     accessibilityRole="button"
                     accessibilityLabel={`${t('deleteShiftType')}: ${template.name}`}
