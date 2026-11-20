@@ -101,11 +101,7 @@ export async function saveScheduleConfig(
       if (!nextIds.has(id) && !removedIds.has(id)) throw new Error('STALE_SHIFT_TEMPLATE_LIST');
     }
     for (const id of removedIds) {
-      if (
-        !id.startsWith('custom_') ||
-        nextIds.has(id) ||
-        !existing.some((item) => item.id === id)
-      )
+      if (nextIds.has(id) || !existing.some((item) => item.id === id))
         throw new Error('INVALID_SHIFT_TEMPLATE_REMOVAL');
       const override = await tx.getFirstAsync<{ date: string }>(
         'SELECT date FROM day_overrides WHERE shift_code = ? LIMIT 1',
