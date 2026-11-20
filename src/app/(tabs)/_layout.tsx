@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Platform, Text } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { usePalette } from '../../theme/colors';
@@ -16,10 +16,18 @@ export default function TabLayout() {
   const { t } = useTranslation();
   const c = usePalette();
   const insets = useSafeAreaInsets();
-  const bottomInset = Math.max(insets.bottom, 8);
+  // On Android 3-button navigation, padding inside the bar alone can leave
+  // the tab touch targets under the OS navigation controls. Reserve the
+  // actual bottom safe area OUTSIDE the tab navigator instead.
+  const isAndroid = Platform.OS === 'android';
+  const bottomInset = isAndroid ? 0 : Math.max(insets.bottom, 8);
   return (
-    <Tabs
-      screenOptions={{
+    <SafeAreaView
+      edges={isAndroid ? ['bottom'] : []}
+      style={{ flex: 1, backgroundColor: c.card }}
+    >
+      <Tabs
+        screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: c.accent,
         tabBarInactiveTintColor: c.muted,
@@ -28,7 +36,7 @@ export default function TabLayout() {
           borderTopColor: c.border,
           height: 56 + bottomInset,
           paddingTop: 8,
-          paddingBottom: bottomInset,
+          paddingBottom: isAndroid ? 8 : bottomInset,
         },
         tabBarLabelStyle: { fontSize: 11, fontWeight: '700' },
       }}
@@ -45,6 +53,7 @@ export default function TabLayout() {
           }}
         />
       ))}
-    </Tabs>
+      </Tabs>
+    </SafeAreaView>
   );
 }
