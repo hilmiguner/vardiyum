@@ -1,17 +1,17 @@
 import type { DayOverride } from './shift-engine.ts';
 
 /**
- * Custom templates are removable only after the user removes all future
- * schedule references. Historical actual-work and routine snapshots are
- * immutable; their database-level references are checked on Save.
+ * Built-in and user-created templates have identical deletion semantics.
+ * Deletion is blocked while referenced by the editable cycle or saved day
+ * overrides. The SQLite transaction additionally guards routine references
+ * (including archived rules), preserving audit and actual-work records.
  */
-export function assertRemovableCustomTemplate(
+export function assertRemovableShiftTemplate(
   id: string,
   templates: readonly { id: string }[],
   cycleDays: readonly string[],
   overrides: Readonly<Record<string, DayOverride>>,
 ): void {
-  if (!id.startsWith('custom_')) throw new Error('DEFAULT_SHIFT_CANNOT_BE_REMOVED');
   if (!templates.some((template) => template.id === id))
     throw new Error('SHIFT_TEMPLATE_NOT_FOUND');
   if (templates.length <= 1) throw new Error('CANNOT_REMOVE_LAST_SHIFT');
