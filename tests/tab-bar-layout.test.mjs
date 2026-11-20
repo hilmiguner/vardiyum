@@ -14,7 +14,10 @@ test('Android tabs reserve their OS bottom inset outside the navigator', () => {
 
 test('tab glyphs and labels use explicit centered layouts', () => {
   assert.match(layout, /tabBarLabelPosition: 'below-icon'/);
-  assert.match(layout, /tabBarItemStyle: \{ alignItems: 'center', justifyContent: 'center' \}/);
+  assert.match(
+    layout,
+    /tabBarItemStyle: \{ alignItems: 'center', justifyContent: 'center' \}/,
+  );
   assert.match(layout, /tabBarActiveBackgroundColor: c\.card/);
   assert.match(layout, /tabBarInactiveBackgroundColor: c\.card/);
   assert.match(layout, /tabBarLabelStyle: \{[^\n]*textAlign: 'center'/);
