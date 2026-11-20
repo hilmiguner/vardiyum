@@ -7,21 +7,25 @@ const layout = readFileSync(
   'utf8',
 );
 
-test('Android tabs reserve their OS bottom inset outside the navigator', () => {
-  assert.match(layout, /edges=\{isAndroid \? \['bottom'\] : \[\]\}/);
-  assert.match(layout, /const bottomInset = isAndroid \? 0 :/);
-});
+test('Android tab bar layout anchors', () => {
+  const required = [
+    "edges={isAndroid ? ['bottom'] : []}",
+    'const bottomInset = isAndroid ? 0 :',
+    "tabBarLabelPosition: 'below-icon'",
+    'tabBarItemStyle:',
+    "alignItems: 'center'",
+    "justifyContent: 'center'",
+    'tabBarActiveBackgroundColor: c.card',
+    'tabBarInactiveBackgroundColor: c.card',
+    "textAlign: 'center'",
+    'width: 28',
+    'height: 28',
+    'lineHeight: 28',
+    "textAlignVertical: 'center'",
+    'includeFontPadding: false',
+  ];
 
-test('tab glyphs and labels use explicit centered layouts', () => {
-  assert.match(layout, /tabBarLabelPosition: 'below-icon'/);
-  assert.match(
-    layout,
-    /tabBarItemStyle: \{ alignItems: 'center', justifyContent: 'center' \}/,
-  );
-  assert.match(layout, /tabBarActiveBackgroundColor: c\.card/);
-  assert.match(layout, /tabBarInactiveBackgroundColor: c\.card/);
-  assert.match(layout, /tabBarLabelStyle: \{[^\n]*textAlign: 'center'/);
-  assert.match(layout, /width: 28,\s*height: 28,\s*lineHeight: 28,/);
-  assert.match(layout, /textAlignVertical: 'center'/);
-  assert.match(layout, /includeFontPadding: false/);
+  for (const snippet of required) {
+    assert.ok(layout.includes(snippet), `Missing tab layout: ${snippet}`);
+  }
 });
