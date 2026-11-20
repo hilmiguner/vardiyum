@@ -18,9 +18,8 @@ const templates = [...DEFAULT_TEMPLATES, custom];
 
 test('unused user-created shift and built-in default types are equally removable', () => {
   for (const id of ['custom_123', 'morning', 'evening', 'night', 'off']) {
-    assert.doesNotThrow(() =>
-      assertRemovableShiftTemplate(id, templates, ['custom_123' === id ? 'off' : 'custom_123'], {}),
-    );
+    const cycle = id === custom.id ? ['off'] : [custom.id];
+    assert.doesNotThrow(() => assertRemovableShiftTemplate(id, templates, cycle, {}));
   }
 });
 
