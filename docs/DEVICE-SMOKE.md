@@ -1,6 +1,6 @@
 # Vardiyum — Gerçek Cihaz Kabul Listesi
 
-> **2026-11-16 MVP Stage 2 AKTİF — D01–D10 Android ve iOS sonuçları HALEN NOT_TESTED.** [Kurulabilir Android APK ve fiziksel iOS IPA hazırlığı](NATIVE-PREVIEW.md). [PR #41](https://github.com/hilmiguner/vardiyum/pull/41) MERGED `8b72b55625eee5c4f278f467a5d45df20dc3bfd0`, main CI 338/338 Node + Android/iOS JavaScript paketleme SUCCESS; bu **native cihaz PASS değildir**. EAS Expo kullanıcı hesabı/proje linki/gerçek APK-IPA build/kurulum henüz yapılmadı.
+> **EN GÜNCEL 2026-11-20:** Yeni EAS Android APK `db787de4-e2d5-46f6-91e3-7c5c554e63d8` (source `dc6a4e19300d361939794f98f5c17bce0d68fc9c`) **Galaxy A02s SM-A025F/DS Android 12 (ARM32)** üzerinde SQLite açılışı, Bugün/Takvim/Rutin/Kazanç ekranları ve Ayarlar'da kaydedilen döngünün kapat/aç kalıcılığı **GERÇEK CİHAZ PASS**. Önceki `NativeDatabaseBinding` hatası bu cihazda kayboldu. **Galaxy A23 SM-A235F/DSN Android 14 yeni APK yeniden test BEKLİYOR; Android platform D01 genel sonuç PARTIAL**, D02–D10 ve iOS NOT_TESTED. [PR #46](https://github.com/hilmiguner/vardiyum/pull/46) **OPEN, MERGE YOK**, [CI #44788647775](https://github.com/hilmiguner/vardiyum/actions/runs/44788647775) SUCCESS, [#43](https://github.com/hilmiguner/vardiyum/issues/43) / [#38](https://github.com/hilmiguner/vardiyum/issues/38) açık, beta yok. Tarihsel eski durum kayıtları aşağıda korunuyor.
 
 ## 2026-11-16 — GÜNCEL MVP 2. aşama / tek gerçek cihaz kabul oturumu (Issue #38, #2, #20)
 
@@ -8,7 +8,7 @@
 
 | ID | Gerçek cihaz kabulü | Android | iOS |
 | --- | --- | --- | --- |
-| D01 | Production/standalone veya native preview build açılır; Bugün/Takvim/Rutinler/Kazanç/Ayarlar, ilk boş kurulum CTA | **FAIL** — 2 cihaz açıldı, birinde native SQLite yükleme hatası, diğerinde UI bulguları (#43/#44) | NOT_TESTED |
+| D01 | Production/standalone veya native preview build açılır; Bugün/Takvim/Rutinler/Kazanç/Ayarlar, ilk boş kurulum CTA | **PARTIAL** — Galaxy A02s SM-A025F/DS Android 12: native SQLite açılış + dört sekme + döngü kaydı yeniden açılışta korunuyor **PASS**. Galaxy A23 SM-A235F/DSN Android 14 yeni APK retest **PENDING** (#43/#44). | NOT_TESTED |
 | D02 | Vardiya döngüsü/renk/gece+1/mola/override→geri alma; aynı gün shift değişince eski gerçek çalışma saatleri default'ta kalmaz | NOT_TESTED | NOT_TESTED |
 | D03 | Gerçek çalışma UTC, günlük görev tamamla/geri al/rutin arşiv; uygulamayı kapat/yeni aç; offline SQLite verisi aynı | NOT_TESTED | NOT_TESTED |
 | D04 | SQLite v1→v8 ardışık migration, eski verinin korunumu, FK/integrity, WAL, temiz kurulum | NOT_TESTED | NOT_TESTED |
@@ -191,3 +191,12 @@
 - User completed **new APK native build** `db787de4-e2d5-46f6-91e3-7c5c554e63d8` [Expo build](https://expo.dev/accounts/hilmiguner/projects/vardiyum/builds/db787de4-e2d5-46f6-91e3-7c5c554e63d8), [artifact APK](https://expo.dev/artifacts/eas/So6mToPJbRvAk__pXPEo-qz0Wa3euivrL0ExLJelU-U.apk); finished 2026-11-20 20:29:34; SDK 57, version 0.1.0, code 1.
 - User downloaded into `C:\vardiyum-native-qa\vardiyum-test.apk`, ran checked-in `scripts/verify-android-apk-native.ps1` and got **`armeabi-v7a REACT_NATIVE=True SQLITE=True`**, **`arm64-v8a REACT_NATIVE=True SQLITE=True`**, **`NATIVE_SQLITE_ABI=PASS`**. SHA-256 `1B88EE921F4AB584D17890F4B592B11C73667AAD9078DEEB942B3FD6D0D9702C`.
 - Strong evidence that previously **missing ARM32 `libexpo-sqlite.so`** in old physical A02s APK is now packaged. **DO NOT claim physical SQLite bug fixed or D01 pass until new APK installed and exercised on A02s (Android12 zygote32) and A23 (Android14)**. Install with `adb install -r C:\vardiyum-native-qa\vardiyum-test.apk`, same signing key, do not uninstall/clear app data if signature mismatch; test opens all tabs, schedule saves and survives force stop/reopen, existing A23 data persists; safe area and UX fixes. Keep Issue [#43](https://github.com/hilmiguner/vardiyum/issues/43) and [#38](https://github.com/hilmiguner/vardiyum/issues/38) open pending physical acceptance, #45 custom OT planned separately.
+
+
+## 2026-11-20 — İlk ARM32 gerçek cihaz SQLite PASS, A23 bekliyor
+
+- **Gerçek cihaz:** Samsung Galaxy A02s `SM-A025F/DS`, Android 12, `zygote32` / `armeabi-v7a`; EAS preview build [`db787de4-e2d5-46f6-91e3-7c5c554e63d8`](https://expo.dev/accounts/hilmiguner/projects/vardiyum/builds/db787de4-e2d5-46f6-91e3-7c5c554e63d8), kaynak commit `dc6a4e19300d361939794f98f5c17bce0d68fc9c`, APK SHA256 `1B88EE921F4AB584D17890F4B592B11C73667AAD9078DEEB942B3FD6D0D9702C`.
+- **Kullanıcının doğrudan test sonucu:** (1) `Yerel veriler açılmadı` / `NativeDatabaseBinding` hatası tekrar etmiyor, (2) Bugün, Takvim, Rutinler, Kazanç açılıyor, (3) Ayarlar'da döngü kaydı yapıldı ve uygulama tamamen kapatılıp yeniden açıldığında **kalıcı**. **A02s SQLite P0 teşhis edilen cihazda düzeldi (PASS)**.
+- ARM32 + ARM64 native SQLite kütüphaneleri aynı yeni APK'da `NATIVE_SQLITE_ABI=PASS`. Önceki APK'da ARM32 SQLite .so eksikti; Expo SQLite kaynak derleme ayarı bu eksikliği gidermiş görünüyor ve fiziksel cihazda doğrulandı.
+- **Sıradaki cihaz:** Samsung Galaxy A23 `SM-A235F/DSN`, Android 14. **Yeni APK'nın** üzerine kurulumunun, eski kayıtların kalıcılığının, bottom-safe-area, vardiya/izin ekle-sil, şehir bazlı zone picker, ücret profili formu göster/gizle ve kaldırılmış örnek döngünün gerçek cihaz testi **BEKLİYOR**. `adb install -r C:\vardiyum-native-qa\vardiyum-test.apk`; önceki uygulamayı uninstall/clear etme, imza uyuşmazlığında dur.
+- **MVP gate:** D01 Android `PARTIAL` (A02s ilk açılış ve SQLite kalıcılık PASS; A23 yeniden test bekliyor), Android kalan D02–D10 ve iOS D01–D10 NOT_TESTED. [PR #46](https://github.com/hilmiguner/vardiyum/pull/46) **OPEN**; explicit user merge onayı yok. [Issue #43](https://github.com/hilmiguner/vardiyum/issues/43) kök neden + cihaz kapsamı, [#38](https://github.com/hilmiguner/vardiyum/issues/38) takip. Beta/store henüz yok.
