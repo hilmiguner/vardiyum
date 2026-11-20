@@ -594,7 +594,7 @@ const resources = {
       scheduleZone: 'Takvim saat dilimi: {{zone}}',
       shiftTypes: 'Vardiya türleri ve saatleri',
       shiftTypesHint:
-        'İsimleri, saatleri ve molaları düzenle; döngü günlerine dokunarak türleri değiştir.',
+        'İsimleri, saatleri ve molaları düzenle. Döngü gününe dokunup vardiya türünü değiştir; kullanılmayan türleri silebilirsin.',
       shiftName: 'Vardiya adı',
       startTime: 'Başlangıç',
       endTime: 'Bitiş',
@@ -606,7 +606,7 @@ const resources = {
       deleteShiftTypeTitle: 'Vardiya türünü sil',
       deleteShiftTypeConfirm: '{{name}} silinsin mi? Bu işlem Kaydet ile uygulanır.',
       deleteShiftTypeInUse:
-        'Bu tür önce döngü günlerinden ve tek günlük değişikliklerden kaldırılmalı.',
+        'Önce bu türü kullanan döngü günlerini başka bir vardiya/izin türüyle değiştir; tek günlük değişiklik varsa onu da kaldır. Sonra tekrar silmeyi dene.',
       deleteShiftTypeReferenced:
         'Bu vardiya türüne bağlı kayıtlı rutinler veya özel günler var. Önce bağlantıları kaldır.',
       deleteShiftTypeFailed: 'Vardiya türü silinemedi. Kayıtları kontrol et.',
@@ -1305,7 +1305,8 @@ const resources = {
       setupSubtitle: 'Tap a cycle day to change its shift.',
       scheduleZone: 'Schedule time zone: {{zone}}',
       shiftTypes: 'Shift types and hours',
-      shiftTypesHint: 'Edit names, hours and breaks. Tap a cycle day to change its shift type.',
+      shiftTypesHint:
+        'Edit names, hours and breaks. Tap a cycle day to change its shift type; unused types can be deleted.',
       shiftName: 'Shift name',
       startTime: 'Start',
       endTime: 'End',
@@ -1316,7 +1317,8 @@ const resources = {
       deleteShiftType: 'Delete this type',
       deleteShiftTypeTitle: 'Remove shift type',
       deleteShiftTypeConfirm: 'Remove {{name}}? This is applied when you tap Save.',
-      deleteShiftTypeInUse: 'First replace this type in the rotation and any daily overrides.',
+      deleteShiftTypeInUse:
+        'First replace cycle days that use this type with another shift or day off and clear any date overrides, then delete it.',
       deleteShiftTypeReferenced:
         'Saved routines or date overrides still reference this type. Remove those links first.',
       deleteShiftTypeFailed: 'Shift type could not be removed. Check its references.',
