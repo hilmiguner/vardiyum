@@ -17,6 +17,7 @@ import {
   readAuthenticatedPayload,
   encodeEncryptedEnvelope,
   decodeEncryptedEnvelope,
+  decodeBase64Bytes,
 } from '../src/domain/backup-archive.ts';
 import {
   INITIAL_SCHEMA,
@@ -195,7 +196,7 @@ test('Node AES-256-GCM interoperable envelope shape, wrong key and tampering fai
   const combined = Buffer.concat([iv, encrypted, cipher.getAuthTag()]);
   const envelope = encodeEncryptedEnvelope(combined.toString('base64'));
   assert.equal(JSON.parse(envelope).format, BACKUP_FORMAT);
-  const decoded = Buffer.from(decodeEncryptedEnvelope(envelope), 'base64');
+  const decoded = Buffer.from(decodeBase64Bytes(decodeEncryptedEnvelope(envelope)));
   const decrypt = (secret, bytes) => {
     const dc = createDecipheriv('aes-256-gcm', secret, bytes.subarray(0, 12));
     dc.setAAD(aad);
@@ -232,4 +233,19 @@ test('future schemas and huge data must not be silently truncated or downgraded'
     () => readAuthenticatedPayload(JSON.stringify(bad), fakeColumns(), sha),
     /BACKUP_INVALID_PAYLOAD/,
   );
+});
+
+test('strict Base64 decoder matches Node bytes for encrypted combined data', () => {
+  for (const source of [
+    Buffer.from([0]),
+    Buffer.from([0, 255]),
+    Buffer.from([0, 127, 128]),
+    Buffer.from([255, 1, 85, 254]),
+    randomBytes(97),
+  ]) {
+    assert.deepEqual(Buffer.from(decodeBase64Bytes(source.toString('base64'))), source);
+  }
+  for (const invalid of ['Zh==', 'Zm9=', 'AA A', 'AAAA=', '%%%%']) {
+    assert.throws(() => decodeBase64Bytes(invalid), /BACKUP_INVALID_CIPHERTEXT/);
+  }
 });

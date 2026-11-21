@@ -51,3 +51,10 @@ test('fresh-export diagnostics use fixed stages and preserve generic import erro
   assert.ok(!crypto.includes('console.log'));
   assert.ok(!crypto.includes('console.error'));
 });
+
+test('Android AESSealedData receives bytes on both self-check and Drive import', () => {
+  assert.ok(crypto.includes('AESSealedData.fromCombined(decodeBase64Bytes(encoded))'));
+  assert.ok(crypto.includes('AESSealedData.fromCombined(decodeBase64Bytes(combined))'));
+  assert.ok(!crypto.includes('AESSealedData.fromCombined(encoded)'));
+  assert.ok(!crypto.includes('AESSealedData.fromCombined(combined)'));
+});

@@ -13,6 +13,7 @@ import {
   normalizeRecoveryKey,
   encodeEncryptedEnvelope,
   decodeEncryptedEnvelope,
+  decodeBase64Bytes,
   utf8Bytes,
   utf8String,
   type BackupSnapshot,
@@ -53,7 +54,7 @@ export async function openEncryptedBackup(
   const keyHex = normalizeRecoveryKey(recoveryKeyInput);
   try {
     const key = await AESEncryptionKey.import(keyHex, 'hex');
-    const sealed = AESSealedData.fromCombined(encoded);
+    const sealed = AESSealedData.fromCombined(decodeBase64Bytes(encoded));
     const bytes = await aesDecryptAsync(sealed, key, { output: 'bytes', additionalData: AAD });
     if (!(bytes instanceof Uint8Array)) throw new Error('BACKUP_DECRYPTION_FAILED');
     return readAuthenticatedPayload(utf8String(bytes), expectedColumns, sha256);
@@ -103,7 +104,7 @@ export async function checkFreshEncryptedBackup(
   }
   let sealed: ReturnType<typeof AESSealedData.fromCombined>;
   try {
-    sealed = AESSealedData.fromCombined(combined);
+    sealed = AESSealedData.fromCombined(decodeBase64Bytes(combined));
   } catch {
     throw new Error('BACKUP_EXPORT_CHECK_COMBINED_FAILED');
   }
