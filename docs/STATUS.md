@@ -1,5 +1,7 @@
 # Vardiyum — Güncel Durum / Kanıt Kaydı
 
+> **ÇALIŞMA KARARI 2026-11-21:** Vardiyum artık Android Studio Pixel 7 Android 16 x86_64 emülatöründe yerel geliştirme/QA kullanıyor; kurumsal Samsung A23 geliştirici modu nedeniyle IT uyarısı sonrası test dışı bırakıldı. GitHub Actions Free kotası için PR #46 `Mobile quality` otomatik tetikleyicisi yalnız feature dalında 2026-12-01'e kadar durduruldu (`workflow_dispatch` only). Günlük testler yerel `npm run check` ve `npx expo run:android --device emulator-5554`; tek PR / 1 Aralık'ta CI geri açma ve onaylı merge. `main` CI YAML'ı değişmedi, PR #46 açık/merge edilmedi. Son iki UI/gece yarısı düzeltmesi native emülatörde henüz doğrulanmadı.
+
 > **EN GÜNCEL 2026-11-21 / A23 GERÇEK CİHAZ:** Galaxy A02s Android12 ARM32 SQLite ilk açılış/kalıcılık PASS. Galaxy A23 Android14'te yeni APK ile eski veriler KORUNDU, varsayılan Sabah/Akşam/Gece/İzin silme seçenekleri VAR, kullanılmayan şablon silme + Kaydet + yeniden açma PASS; alt sekmelere dokunuluyor ve OS navigasyonuyla önceki çakışma görünmüyor. **Kalan:** Bugün sekmesindeki geniş gri aktif arka plan/ikon hizası; 00:23 ekranında Bugün 2026-11-20 görünmesi (yerel IANA tarih yenileme olası kusuru). PR #46 dalında bu iki sorun için **YENİ KOD DÜZELTMELERİ VAR AMA YENİ APK/PHYSICAL RETEST YOK**. Bu bildirimde EAS build ID/SHA verilmedi. PR #46 OPEN/merge onayı yok; final CI doğrulanmalı. Android D01 PARTIAL, diğer Android D02-D10 ve tüm iOS QA AÇIK, beta/store yok.
 
 
