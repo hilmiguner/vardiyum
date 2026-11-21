@@ -1,5 +1,7 @@
 # Vardiyum — Yeni Sohbette Devam Notu
 
+> **2026-11-22 / E06-B GECE YARISI EMÜLATÖR PASS:** Kullanıcı Pixel 7 / Android16 API36 emülatörde, kayıtlı `Europe/Istanbul` program saat diliminde 2026-11-21 23:59→2026-11-22 00:00 geçişinde **Bugün ekranının yaklaşık 5–6 saniyede kendiliğinden yenilendiğini** bildirdi; ekran görüntüsünde saat `00:00`, Bugün `2026-11-22`, Sonraki gün `2026-11-23`, `Schedule time zone: Europe/Istanbul` var. **E06-B PASS**; `E06-A PASS` korunuyor; **E06-C arka plandan dönüş PENDING**. Bu emülatör UI kanıtıdır, gerçek Android/iOS cihaz veya E06-C sonucu değildir. PR #46 OPEN, otomatik CI 2026-12-01'e kadar duraklatılmış.
+
 > **2026-11-21 / E06-A PIXEL 7 EMÜLATÖR PASS:** Kullanıcı Pixel 7 / Android 16 emülatöründe kayıtlı program saat dilimini `Europe/Istanbul` seçip kaydetti; uygulamayı tamamen kapatıp yeniden açtıktan sonra seçim **korundu**, Bugün ekranı **hatasız açıldı**. **E06-A PASS**, E06-B (odaktayken yerel 00:00 geçişi) ve E06-C (arka plandan 00:00 sonrası dönüş) **PENDING**. Geçmiş UTC çalışma kayıtlarının byte-identical korunduğu bu gözlemde ayrıca doğrulanmadı. Windows yerel son kod testi 355/355 PASS; GitHub CI yok, PR #46 OPEN.
 
 > **2026-11-21 / YENİ YEREL KALİTE KANITI (PR #46 `b586e6d`):** Kullanıcının `C:\vardiyum-native-qa` klonunda `git pull --ff-only` FAST-FORWARD PASS; `npm run check` **355/355 Node PASS**, Prettier PASS, TypeScript PASS, ESLint **0 error / 29 warning**. İstanbul gün değişimiyle ilgili 2 yeni test de PASS. Bu **Windows local quality** sonucudur; GitHub Actions ve `Europe/Istanbul` emülatör gece yarısı / `AppState` görsel kabulü değildir. `package.json` ve `expo-env.d.ts` mevcut kullanıcı değişiklikleri korunmuştur. PR #46 OPEN, otomatik CI 1 Aralık'a kadar duraklatılmış; merge yok.
@@ -601,3 +603,8 @@ Yeni sohbet:
 
 - Pixel 7 Android16 emülatör: program saat dilimi `Europe/Istanbul` kayıt/yeniden başlatma sonrası kalıcılığı **PASS**, Bugün ekranı açılışı **PASS** (kullanıcı). Bu, geçmiş gerçek UTC satırlarının ayrı bütünlük incelemesi veya gece yarısı yenileme PASS değildir.
 - Sırada E06-B: emülatör **cihaz** zone `Europe/Istanbul` olursa 23:59→00:00, cihaz GMT kalırsa 20:59→21:00 GMT (İstanbul 23:59→00:00) odakta Bugün tarih yenilemesini gözle. Sonra E06-C aynı sınırı Home→foreground ile test et. Windows ana saatini değiştirme, cihazda otomatik tarih/saat ve zone'u bitince geri aç. E06-B/C halen PENDING. `DEVICE-SMOKE.md` takip.
+
+## 2026-11-22 — E06-B Pixel 7 geçişi PASS, sırada E06-C
+
+- Kullanıcı emülatörde `Europe/Istanbul` saat dilimiyle 21→22 Kasım yerel gece yarısını canlı izledi: Bugün `2026-11-22`, yarın `2026-11-23`, ekranın kendi kendine yenilenmesi yaklaşık **5–6 sn**. Ekran görüntüsü cihaz saatinin `00:00` olduğunu doğruluyor. **E06-A/B PASS**; arka planda gece yarısı + ön plana dönüş **E06-C PENDING**.
+- E06-C için emülatör saatini geçici olarak **2026-11-21 23:59 Europe/Istanbul** yap, Bugün açıkken **Home** ile Android ana ekrana çık, saat 00:00'ı geçince uygulamayı tekrar açıp 22 Kasım tarihine güncellenmesini doğrula. Uygulamayı force-stop yapma ve verileri silme. Testten sonra Android emülatör otomatik saat/zaman dilimini yeniden aç. Windows sistem saatine dokunma. PR #46 açık/merge edilmedi; GitHub Actions kapalı.
