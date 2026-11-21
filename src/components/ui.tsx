@@ -21,7 +21,7 @@ export function Page({
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: palette.bg }}
-      edges={['top', 'left', 'right']}
+      edges={settings ? ['top', 'left', 'right'] : ['top', 'right', 'bottom', 'left']}
     >
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 36, gap: 18 }}>
         <View

@@ -252,25 +252,28 @@ function ProfileEditor({
         />
       ) : null}
       {threshold.trim() ? (
-        <View style={{ flexDirection: 'row', gap: 8 }}>
-          <View style={{ flex: 1 }}>
-            <InputField
-              label={t('earnMultiplierNumerator')}
-              value={numerator}
-              onChange={setNumerator}
-              placeholder="1"
-              maxLength={4}
-            />
+        <View style={{ gap: 8 }}>
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            <View style={{ flex: 1 }}>
+              <InputField
+                label={t('earnMultiplierNumerator')}
+                value={numerator}
+                onChange={setNumerator}
+                placeholder="1"
+                maxLength={4}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <InputField
+                label={t('earnMultiplierDenominator')}
+                value={denominator}
+                onChange={setDenominator}
+                placeholder="1"
+                maxLength={4}
+              />
+            </View>
           </View>
-          <View style={{ flex: 1 }}>
-            <InputField
-              label={t('earnMultiplierDenominator')}
-              value={denominator}
-              onChange={setDenominator}
-              placeholder="1"
-              maxLength={4}
-            />
-          </View>
+          <Muted>{t('earnMultiplierHelp')}</Muted>
         </View>
       ) : null}
       {initial ? (
@@ -707,11 +710,11 @@ export default function EarningsScreen() {
       <Panel>
         <Action
           label={t(showEditor ? 'earnHideProfileEditor' : 'earnNewProfile')}
-          onPress={() => setShowEditor(!showEditor)}
+          onPress={() => setShowEditor((previous) => !previous)}
         />
         <Muted>{t('earnProfileVersionWarning')}</Muted>
       </Panel>
-      {showEditor || report?.status === 'needs_profile' ? (
+      {showEditor ? (
         <ProfileEditor
           key={month}
           selectedMonth={month}

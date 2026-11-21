@@ -27,7 +27,11 @@ interface AppState {
   refreshReminders: () => void;
   loading: boolean;
   error: string | null;
-  saveConfig: (pattern: ShiftPattern, templates: readonly ShiftTemplate[]) => Promise<void>;
+  saveConfig: (
+    pattern: ShiftPattern,
+    templates: readonly ShiftTemplate[],
+    removedTemplateIds?: readonly string[],
+  ) => Promise<void>;
   changeDay: (date: string, shiftId: string | null, note?: string) => Promise<void>;
   reload: () => Promise<void>;
 }
@@ -90,8 +94,12 @@ export function AppStateProvider({ children }: PropsWithChildren) {
   }, []);
 
   const saveConfig = useCallback(
-    async (pattern: ShiftPattern, templates: readonly ShiftTemplate[]) => {
-      await saveScheduleConfig(pattern, templates);
+    async (
+      pattern: ShiftPattern,
+      templates: readonly ShiftTemplate[],
+      removedTemplateIds: readonly string[] = [],
+    ) => {
+      await saveScheduleConfig(pattern, templates, removedTemplateIds);
       setSchedule((before) => ({
         ...before,
         pattern: { anchorDate: pattern.anchorDate, days: [...pattern.days] },

@@ -1,6 +1,7 @@
 import { File, Paths } from 'expo-file-system';
 import * as DocumentPicker from 'expo-document-picker';
 import * as Sharing from 'expo-sharing';
+import { randomUUID } from 'expo-crypto';
 
 import { BACKUP_MAX_ENVELOPE_CHARS, decodeEncryptedEnvelope } from '../domain/backup-archive';
 
@@ -10,14 +11,21 @@ import { BACKUP_MAX_ENVELOPE_CHARS, decodeEncryptedEnvelope } from '../domain/ba
  */
 export function writeEncryptedFileToCache(fileContents: string): string {
   decodeEncryptedEnvelope(fileContents);
-  const file = new File(
-    Paths.cache,
-    'vardiyum-encrypted-' + new Date().toISOString().slice(0, 10) + '.vdb',
-  );
-  file.create({ overwrite: true });
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const fileName = `vardiyum-encrypted-${stamp}-${randomUUID()}.vdb`;
+  const file = new File(Paths.cache, fileName);
+  file.create({ overwrite: false });
   file.write(fileContents);
   return file.uri;
 }
+
+/** Read ciphertext back from cache for a same-key self-check before sharing. */
+export async function readEncryptedBackupFromCache(uri: string): Promise<string> {
+  const text = await new File(uri).text();
+  decodeEncryptedEnvelope(text);
+  return text;
+}
+
 export async function shareEncryptedFile(uri: string): Promise<void> {
   if (!(await Sharing.isAvailableAsync())) throw new Error('BACKUP_SHARE_NOT_AVAILABLE');
   await Sharing.shareAsync(uri, {
