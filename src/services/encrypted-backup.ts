@@ -72,3 +72,59 @@ export async function verifyEncryptedBackup(
   return (await openEncryptedBackup(ciphertextFileContents, recoveryKeyInput, expectedColumns))
     .preview;
 }
+
+/**
+ * QA diagnostics only for a newly generated ciphertext and its matching key.
+ * Never reveal recovery keys, ciphertext, plaintext or native exception text.
+ * User-selected file verification retains its generic error behavior.
+ */
+export async function checkFreshEncryptedBackup(
+  contents: string,
+  recoveryKeyInput: string,
+  expectedColumns: ExpectedColumns,
+): Promise<void> {
+  let combined: string;
+  try {
+    combined = decodeEncryptedEnvelope(contents);
+  } catch {
+    throw new Error('BACKUP_EXPORT_CHECK_ENVELOPE_FAILED');
+  }
+  let keyHex: string;
+  try {
+    keyHex = normalizeRecoveryKey(recoveryKeyInput);
+  } catch {
+    throw new Error('BACKUP_EXPORT_CHECK_KEY_FORMAT_FAILED');
+  }
+  let key: Awaited<ReturnType<typeof AESEncryptionKey.import>>;
+  try {
+    key = await AESEncryptionKey.import(keyHex, 'hex');
+  } catch {
+    throw new Error('BACKUP_EXPORT_CHECK_KEY_IMPORT_FAILED');
+  }
+  let sealed: ReturnType<typeof AESSealedData.fromCombined>;
+  try {
+    sealed = AESSealedData.fromCombined(combined);
+  } catch {
+    throw new Error('BACKUP_EXPORT_CHECK_COMBINED_FAILED');
+  }
+  let bytes: string | Uint8Array;
+  try {
+    bytes = await aesDecryptAsync(sealed, key, { output: 'bytes', additionalData: AAD });
+  } catch {
+    throw new Error('BACKUP_EXPORT_CHECK_AES_DECRYPT_FAILED');
+  }
+  if (!(bytes instanceof Uint8Array)) {
+    throw new Error('BACKUP_EXPORT_CHECK_BYTES_FAILED');
+  }
+  let plaintext: string;
+  try {
+    plaintext = utf8String(bytes);
+  } catch {
+    throw new Error('BACKUP_EXPORT_CHECK_UTF8_FAILED');
+  }
+  try {
+    await readAuthenticatedPayload(plaintext, expectedColumns, sha256);
+  } catch {
+    throw new Error('BACKUP_EXPORT_CHECK_PAYLOAD_FAILED');
+  }
+}
