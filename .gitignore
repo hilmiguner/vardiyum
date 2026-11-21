@@ -12,3 +12,5 @@ coverage/
 *.p12
 *.mobileprovision
 expo-env.d.ts
+/android/
+/ios/
