@@ -1,5 +1,7 @@
 # Vardiyum — Gerçek Cihaz Kabul Listesi
 
+> **2026-11-21 / E06-A PIXEL 7 EMÜLATÖR PASS:** Kullanıcı Pixel 7 / Android 16 emülatöründe kayıtlı program saat dilimini `Europe/Istanbul` seçip kaydetti; uygulamayı tamamen kapatıp yeniden açtıktan sonra seçim **korundu**, Bugün ekranı **hatasız açıldı**. **E06-A PASS**, E06-B (odaktayken yerel 00:00 geçişi) ve E06-C (arka plandan 00:00 sonrası dönüş) **PENDING**. Geçmiş UTC çalışma kayıtlarının byte-identical korunduğu bu gözlemde ayrıca doğrulanmadı. Windows yerel son kod testi 355/355 PASS; GitHub CI yok, PR #46 OPEN.
+
 > **2026-11-21 / YENİ YEREL KALİTE KANITI (PR #46 `b586e6d`):** Kullanıcının `C:\vardiyum-native-qa` klonunda `git pull --ff-only` FAST-FORWARD PASS; `npm run check` **355/355 Node PASS**, Prettier PASS, TypeScript PASS, ESLint **0 error / 29 warning**. İstanbul gün değişimiyle ilgili 2 yeni test de PASS. Bu **Windows local quality** sonucudur; GitHub Actions ve `Europe/Istanbul` emülatör gece yarısı / `AppState` görsel kabulü değildir. `package.json` ve `expo-env.d.ts` mevcut kullanıcı değişiklikleri korunmuştur. PR #46 OPEN, otomatik CI 1 Aralık'a kadar duraklatılmış; merge yok.
 
 > **EN SON KABUL 2026-11-21:** Pixel 7 Android 16 emülatör 5/5 MVP arayüz/kalıcılık kısa kontrolü PASS; custom 64dp navbar ikon/etiket hizalama kullanıcının ekran görüntüsünde düzgün, görsel hata çözüldü. Yerel kalite 353/353 test PASS, ESLint 0 error/29 warning. Görselde schedule zone GMT olduğundan Istanbul midnight/resume kapsamı henüz ayrıca test edilmedi. PR #46 açık, CI otomatik duraklatıldı (2026-12-01'e kadar), main merge yok. Kurumsal A23 test için kullanılmıyor.
@@ -262,3 +264,8 @@
 
 - PR #46 kaynak `b586e6d`, kullanıcı Windows `npm run check`: **355/355 PASS** (İstanbul midnight yenileme + kayıtlı IANA zone testi dahil), Prettier/TS PASS; ESLint 0 error/29 warning. Bu yalnız saf/yerel testtir; E06-A/B/C **PENDING** ve gerçek Android/iOS kabulü henüz tam değildir.
 - Sonraki doğrudan adım: Pixel 7 API36 emülatörde Ayarlar'da mevcut GMT'den `Europe/Istanbul` program bölgesine açık onayla geç, uygulamayı tamamen kapatıp yeniden açarak korunmasını doğrula. Önceki UTC gerçek çalışma kayıtları sessizce değişmemelidir. `E06-A` için gözlemi PASS/FAIL/BLOCKED olarak bildir; daha sonra gece yarısı E06-B ve foreground E06-C yapılacaktır.
+
+## 2026-11-21 — E06-A Android emülatör kabulü
+
+- **E06-A PASS / kullanıcı doğrudan test gözlemi:** Pixel 7 Android16 x86_64 emülatöründe Ayarlar'da program `Europe/Istanbul` kaydedildi. Uygulama tamamen kapatılıp yeniden açıldığında seçim korundu; Bugün ekranı hatasız açıldı. Eski UTC gerçek çalışma kayıtlarının birebir bütünlük kontrolü test edilmedi.
+- **E06-B/E06-C PENDING:** Sanal cihazın zone'u İstanbul değilse sanal ekranda 23:59 = İstanbul 23:59 demek değildir. İstanbul UTC+03, GMT cihazda 20:59→21:00 GMT geçişi İstanbul takviminde 23:59→00:00'a eşittir. Mümkünse sanal Android cihaz bölgesini `Europe/Istanbul` yap, yalnız emülatör saatini değiştir. Uygulama odaktayken geçişi (B) ve Home ile arka plandan dönüşü (C) ayrı gözle; her iki senaryodan sonra otomatik tarih/saat ayarını geri aç. Windows bilgisayar saatini değiştirme. Ekran ve gözlemler sunulmadan E06-B/C PASS sayılmaz.

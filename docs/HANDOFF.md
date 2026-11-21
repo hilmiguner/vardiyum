@@ -1,5 +1,7 @@
 # Vardiyum — Yeni Sohbette Devam Notu
 
+> **2026-11-21 / E06-A PIXEL 7 EMÜLATÖR PASS:** Kullanıcı Pixel 7 / Android 16 emülatöründe kayıtlı program saat dilimini `Europe/Istanbul` seçip kaydetti; uygulamayı tamamen kapatıp yeniden açtıktan sonra seçim **korundu**, Bugün ekranı **hatasız açıldı**. **E06-A PASS**, E06-B (odaktayken yerel 00:00 geçişi) ve E06-C (arka plandan 00:00 sonrası dönüş) **PENDING**. Geçmiş UTC çalışma kayıtlarının byte-identical korunduğu bu gözlemde ayrıca doğrulanmadı. Windows yerel son kod testi 355/355 PASS; GitHub CI yok, PR #46 OPEN.
+
 > **2026-11-21 / YENİ YEREL KALİTE KANITI (PR #46 `b586e6d`):** Kullanıcının `C:\vardiyum-native-qa` klonunda `git pull --ff-only` FAST-FORWARD PASS; `npm run check` **355/355 Node PASS**, Prettier PASS, TypeScript PASS, ESLint **0 error / 29 warning**. İstanbul gün değişimiyle ilgili 2 yeni test de PASS. Bu **Windows local quality** sonucudur; GitHub Actions ve `Europe/Istanbul` emülatör gece yarısı / `AppState` görsel kabulü değildir. `package.json` ve `expo-env.d.ts` mevcut kullanıcı değişiklikleri korunmuştur. PR #46 OPEN, otomatik CI 1 Aralık'a kadar duraklatılmış; merge yok.
 
 > **2026-11-21 / GÜNCEL DEVİR:** `main=c5402ae25a2baf256c714d9acb345e3f0a552092`; [PR #46](https://github.com/hilmiguner/vardiyum/pull/46) **OPEN, merge yok**. Pixel 7 API36 emülatör alt bar/kalıcılık kısa kabulü **5/5 PASS**, önceki Windows yerel `npm run check` **353/353 PASS** (bu yeni commitin tam kontrolü henüz çalıştırılmadı). A02s ARM32 SQLite startup/persistence ve A23 eski veriyi koruma/silinebilir şablonlar geçmiş cihaz kanıtlarıdır; iOS ve tam D02–D10 açık. Sonraki iş: `Europe/Istanbul` midnight+background/foreground native QA; ardından D05 bildirimleri, güvenli sentetik D08 yedek/restore. Yalnız kişisel Android emülatörünü kullan, **kurumsal A23'te ADB/geliştirici modu kullanma**. PR dalında GitHub otomatik CI 1 Aralık'a kadar kapalıdır; **Actions başlatma veya merge yapma**. [DEVICE-SMOKE.md](DEVICE-SMOKE.md) oturum protokolü.
@@ -594,3 +596,8 @@ Yeni sohbet:
 
 - Kullanıcı, PR #46 commit `b586e6d` üzerinde Windows `npm run check` **355/355 PASS** (yeni İstanbul midnight/zone testleri dahil), Prettier + TypeScript PASS, ESLint 0 error / 29 warning bildirdi. GitHub CI değildir. `package.json` ve `expo-env.d.ts` yerel değişiklikleri korunuyor. 1 Aralık'a kadar Actions yok, PR OPEN ve merge yok.
 - Bir sonraki adım: `docs/DEVICE-SMOKE.md` bölümündeki E06-A kayıtlı `Europe/Istanbul` ayarı ve restart kalıcılığı; sonra E06-B/C emülatörde gece yarısı/foreground. Önceki GMT emülatör 5/5 kısa testi bu senaryoyu karşılamaz. Şirket telefonu A23'ü debug için kullanma.
+
+## 2026-11-21 — E06-A emulator PASS / sonraki zorunlu native doğrulama
+
+- Pixel 7 Android16 emülatör: program saat dilimi `Europe/Istanbul` kayıt/yeniden başlatma sonrası kalıcılığı **PASS**, Bugün ekranı açılışı **PASS** (kullanıcı). Bu, geçmiş gerçek UTC satırlarının ayrı bütünlük incelemesi veya gece yarısı yenileme PASS değildir.
+- Sırada E06-B: emülatör **cihaz** zone `Europe/Istanbul` olursa 23:59→00:00, cihaz GMT kalırsa 20:59→21:00 GMT (İstanbul 23:59→00:00) odakta Bugün tarih yenilemesini gözle. Sonra E06-C aynı sınırı Home→foreground ile test et. Windows ana saatini değiştirme, cihazda otomatik tarih/saat ve zone'u bitince geri aç. E06-B/C halen PENDING. `DEVICE-SMOKE.md` takip.
