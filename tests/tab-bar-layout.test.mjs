@@ -2,10 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
 
-const source = readFileSync(
-  new URL('../src/app/(tabs)/_layout.tsx', import.meta.url),
-  'utf8',
-);
+const source = readFileSync(new URL('../src/app/(tabs)/_layout.tsx', import.meta.url), 'utf8');
 
 test('bottom tabs retain centered geometry, safe area and navigation semantics', () => {
   const expected = [
