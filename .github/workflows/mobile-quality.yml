@@ -1,9 +1,11 @@
 name: Mobile quality
 
+# Temporarily paused on the MVP QA branch until 2026-12-01.
+# Keep every quality job available for local parity and December reactivation.
+# On December 1 restore the original pull_request + main-push triggers
+# in ONE commit, run PR CI once, verify result, then merge with approval.
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   quality:
