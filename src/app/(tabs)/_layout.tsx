@@ -59,7 +59,9 @@ export default function TabLayout() {
                   accessibilityLabel={options.tabBarAccessibilityLabel ?? label}
                   testID={options.tabBarButtonTestID ?? `tab-${route.name}`}
                   onPress={onPress}
-                  onLongPress={() => navigation.emit({ type: 'tabLongPress', target: route.key })}
+                  onLongPress={() => {
+                    navigation.emit({ type: 'tabLongPress', target: route.key });
+                  }}
                   style={{
                     flex: 1,
                     minWidth: 0,
