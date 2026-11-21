@@ -13,6 +13,7 @@ import { commitCleanInstallRestore } from '../data/backup-restore-repository';
 import { useAppState } from '../state/app-state';
 import {
   pickEncryptedFile,
+  readEncryptedBackupFromCache,
   shareEncryptedFile,
   writeEncryptedFileToCache,
 } from '../services/encrypted-backup-files';
@@ -44,9 +45,20 @@ export function EncryptedBackupPanel() {
     setFileUri(null);
     setKeySaved(false);
     try {
-      const { snapshot } = await createBackupSnapshot();
+      const { snapshot, expectedColumns } = await createBackupSnapshot();
       const encrypted = await createEncryptedBackup(snapshot);
       const uri = writeEncryptedFileToCache(encrypted.ciphertextFileContents);
+      // Do not offer a recovery key / Share until ciphertext is read back from
+      // cache and successfully authenticated with the newly generated key.
+      // This is an export preflight, never a SQLite restore or mutation.
+      try {
+        const stored = await readEncryptedBackupFromCache(uri);
+        if (stored !== encrypted.ciphertextFileContents) throw new Error('CACHE_MISMATCH');
+        await openEncryptedBackup(stored, encrypted.recoveryKey, expectedColumns);
+      } catch {
+        // Do not expose secrets, payloads or native crypto error details.
+        throw new Error('BACKUP_EXPORT_SELF_CHECK_FAILED');
+      }
       setFileUri(uri);
       setRecoveryKey(encrypted.recoveryKey);
     } catch (reason) {
