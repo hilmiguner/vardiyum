@@ -15,7 +15,7 @@ test('backup cache names include time and random UUID; never overwrite prior exp
   assert.match(files, /new Date\(\)\.toISOString\(\)\.replace\(/);
   assert.match(files, /randomUUID\(\)/);
   assert.match(files, /file\.create\(\{ overwrite: false \}\)/);
-  assert.ok(!files.includes("toISOString().slice(0, 10)"));
+  assert.ok(!files.includes('toISOString().slice(0, 10)'));
 });
 
 test('backup generation self-verifies cached ciphertext before sharing key', () => {
