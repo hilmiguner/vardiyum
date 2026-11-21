@@ -7,7 +7,7 @@ const panel = readFileSync(
   'utf8',
 );
 
-test('notification denial uses a short localized alert title and the full denial explanation as its message', () => {
+test('denial alert keeps full explanation in message, not title', () => {
   assert.ok(
     panel.includes("Alert.alert(t('reminderGlobalTitle'), t('reminderPermissionDenied'))"),
     'Denied permission must not place the long explanation into the Android alert title',
@@ -15,7 +15,7 @@ test('notification denial uses a short localized alert title and the full denial
   assert.ok(!panel.includes("Alert.alert(t('reminderPermissionDenied'))"));
 });
 
-test('notification permission remains user-initiated and denied permission stays opted out', () => {
+test('permission request stays user-initiated and denial does not opt in', () => {
   assert.ok(panel.includes('const permission = await requestNotificationPermission();'));
   assert.ok(panel.includes('await setReminderOptIn(permission);'));
   assert.ok(panel.includes('setOptedIn(permission);'));
