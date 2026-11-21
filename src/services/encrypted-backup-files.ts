@@ -11,10 +11,9 @@ import { BACKUP_MAX_ENVELOPE_CHARS, decodeEncryptedEnvelope } from '../domain/ba
  */
 export function writeEncryptedFileToCache(fileContents: string): string {
   decodeEncryptedEnvelope(fileContents);
-  const file = new File(
-    Paths.cache,
-    'vardiyum-encrypted-' + new Date().toISOString().replace(/[:.]/g, '-') + '-' + randomUUID() + '.vdb',
-  );
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const fileName = `vardiyum-encrypted-${stamp}-${randomUUID()}.vdb`;
+  const file = new File(Paths.cache, fileName);
   file.create({ overwrite: false });
   file.write(fileContents);
   return file.uri;

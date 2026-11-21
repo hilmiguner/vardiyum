@@ -18,11 +18,13 @@ test('backup cache names include time and random UUID; never overwrite prior exp
   assert.ok(!files.includes("toISOString().slice(0, 10)"));
 });
 
-test('backup generation must read persisted ciphertext and self-verify before sharing key', () => {
+test('backup generation self-verifies cached ciphertext before sharing key', () => {
   assert.match(panel, /readEncryptedBackupFromCache\(uri\)/);
   assert.match(panel, /stored !== encrypted\.ciphertextFileContents/);
   assert.match(panel, /openEncryptedBackup\(stored, encrypted\.recoveryKey, expectedColumns\)/);
-  assert.ok(panel.indexOf('await openEncryptedBackup(stored') < panel.indexOf('setFileUri(uri)'));
+  const selfCheck = panel.indexOf('await openEncryptedBackup(stored');
+  const shareReady = panel.indexOf('setFileUri(uri)');
+  assert.ok(selfCheck >= 0 && selfCheck < shareReady);
   assert.match(panel, /BACKUP_EXPORT_SELF_CHECK_FAILED/);
   assert.match(panel, /setRecoveryKey\(encrypted\.recoveryKey\)/);
 });
