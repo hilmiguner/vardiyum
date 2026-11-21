@@ -4,6 +4,22 @@
 
 > **EN GÜNCEL 2026-11-21 / A23 GERÇEK CİHAZ:** Galaxy A02s Android12 ARM32 SQLite ilk açılış/kalıcılık PASS. Galaxy A23 Android14'te yeni APK ile eski veriler KORUNDU, varsayılan Sabah/Akşam/Gece/İzin silme seçenekleri VAR, kullanılmayan şablon silme + Kaydet + yeniden açma PASS; alt sekmelere dokunuluyor ve OS navigasyonuyla önceki çakışma görünmüyor. **Kalan:** Bugün sekmesindeki geniş gri aktif arka plan/ikon hizası; 00:23 ekranında Bugün 2026-11-20 görünmesi (yerel IANA tarih yenileme olası kusuru). PR #46 dalında bu iki sorun için **YENİ KOD DÜZELTMELERİ VAR AMA YENİ APK/PHYSICAL RETEST YOK**. Bu bildirimde EAS build ID/SHA verilmedi. PR #46 OPEN/merge onayı yok; final CI doğrulanmalı. Android D01 PARTIAL, diğer Android D02-D10 ve tüm iOS QA AÇIK, beta/store yok.
 
+## 2026-11-21 — Sonraki Pixel 7 Android emülatör oturumu (PENDING)
+
+**Bu bölüm önceki 5/5 kısa görsel kabulden ayrı bir testtir.** Yalnız `Pixel_7_API_36` kişisel emülatörde, test verileriyle yürüt. Kurumsal Samsung A23'te ADB/developer mode kullanma. Yerel `package.json` veya `expo-env.d.ts` dosyalarını reset/clean ile silme. GitHub Actions otomatik/manual çalıştırma; PR #46 merge etme.
+
+| Kimlik | İşlem | Beklenen | Mevcut kanıt |
+| --- | --- | --- | --- |
+| E06-A | Ayarlar → kayıtlı program saat dilimini **Europe/Istanbul** seç, açık onayla Kaydet; tekrar açıp seçimin korunduğunu kontrol et | Program bölgesi `Europe/Istanbul`, kayıtlı eski UTC gerçek çalışma sessizce değişmez | **PENDING** (önceki 5/5 ekranında GMT idi) |
+| E06-B | Yalnız sentetik verili emülatörde Android sistem otomatik saatini geçici kapat, tarihi 23:59'a getir; Bugün sekmesini **açık tut**, 00:00 sonrası en çok 15 sn + kısa UI toleransı gözle | `Bugün` tarih + vardiya aynı kayıtlı zone'un yeni sivil gününe döner; yarın alanı yeni ertesi gün olur | **PENDING** |
+| E06-C | Aynı kurulumda gece yarısından önce Bugün açıkken uygulamayı arka plana al; gece yarısından sonra yeniden ön plana getir | `AppState=active` / ekran odağında yeni tarih görünür, yanlış eski gün kalmaz | **PENDING** |
+| E05-A | Sentetik rutinle ilk kez yerel hatırlatma izin ekranını gözle; uygulamanın açık onay butonuna basmadan OS istemi açılmamalı, ret akışı ayrıca denenmeli | İzin sadece kullanıcı isteğiyle, reddedilince sessiz otomatik etkinleştirme yok | **PENDING** |
+| E08-A | AES yedek/yanlış anahtar ve **yalnız temiz ayrı emülatör/hedef DB** üzerinde geri yükleme | Yanlış anahtar hiçbir DB değişimi yaratmaz; gerçek kişisel veri/anahtar paylaşılmaz; dolu hedefe restore yok | **PENDING** |
+
+**Saat değişikliği emülatöre özgü geçici test ayarıdır.** Sonunda Android otomatik tarih/saatini geri aç; kullanıcının Windows saatini değiştirme. Saat değiştirme mümkün değilse E06-B/C `BLOCKED` olarak işaretlenir, PASS sayılmaz. Emülatör Metro'ya bağlı geliştirme build'i olduğundan ağsız native standalone sonucu çıkarılamaz. Bildirim teslimi E05-A'dan ayrıdır ve ayrıca fiziksel cihazda kanıtlanmalıdır. Geri yükleme için güvenli temiz hedef sağlanamıyorsa E08-A'yı ÇALIŞTIRMA.
+
+**Kayda geçir:** PR source SHA, `Pixel_7_API_36`, kayıtlı program timezone, test edilen gerçek sanal saat, uygulamanın foreground/background konumu, gözlenen tarih, PASS/FAIL/BLOCKED, kişisel veri içermeyen ekran görüntüsü. Android ARM32/One UI ve iOS gerçek cihaz açık kalır.
+
 ## 2026-11-16 — GÜNCEL MVP 2. aşama / tek gerçek cihaz kabul oturumu (Issue #38, #2, #20)
 
 **Önkoşul:** PR #41 kullanıcı onayıyla merge ve main CI başarılı olduktan sonra aşağıdaki testleri **Android ve iOS gerçek native derlemelerde ayrı ayrı** kaydet. JS export/Expo Go/Mac simülatör yalnız sınırlı kanıttır; native standalone/offline, OS bildirimleri ve AES dosya yaşam döngüsü gerçek OS üzerinde doğrulanmalıdır. Tüm kutular **henüz test edilmedi**. Aşağıdaki sonuçları kişisel finans, recovery key veya hassas vardiya notlarını paylaşmadan kaydet.

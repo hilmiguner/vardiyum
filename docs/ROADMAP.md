@@ -1,5 +1,7 @@
 # Vardiyum — Yol Haritası
 
+> **2026-11-21 DURUMU:** Stage 1 kaynak kabulü tamam. Stage 2'de Android A02s ARM32 SQLite başlangıç/kalıcılık ve A23 veri koruma önceki native kanıtlarla doğrulandı; Pixel 7 Android 16 **emülatör** kısa kontrolü 5/5 PASS. `Europe/Istanbul` midnight/foreground ve D02–D10 testleri ile gerçek iOS QA **AÇIK**. [PR #46](https://github.com/hilmiguner/vardiyum/pull/46) açık, `main` SHA `c5402ae25a2baf256c714d9acb345e3f0a552092`, merge yok. GitHub Actions Free kotası nedeniyle PR dalında otomatik CI 1 Aralık'a kadar duraklatıldı; yerel QA + tek Aralık CI/onaylı merge planı sürüyor. Aşağıdaki 16 Kasım özetleri tarihsel kayıttır. [Güncel test protokolü](DEVICE-SMOKE.md).
+
 > **2026-11-16 EN GÜNCEL:** [PR #42](https://github.com/hilmiguner/vardiyum/pull/42) **MERGED** `main=c3b737fd54e15266c8831ee8fff4f7470b1857e1`; [main CI #43880960771](https://github.com/hilmiguner/vardiyum/actions/runs/43880960771) **SUCCESS 342/342 Node + Android/iOS JavaScript (native değil)**. MVP Stage 1 kaynak-kod denetimi kapalı, Stage 2 gerçek cihaz kabulü **AKTİF/20 NOT_TESTED**. **İlk engel Expo/EAS login + `eas init` projectId, ardından gerçek Android APK bulut build**; Expo hesabı/Apple credentials uydurma. [NATIVE-PREVIEW.md](NATIVE-PREVIEW.md), [DEVICE-SMOKE.md](DEVICE-SMOKE.md), [Issue #38](https://github.com/hilmiguner/vardiyum/issues/38). Pay engine/FX/OT P1 devam ETME.
 
 

@@ -10,6 +10,7 @@ import { TodayEarningsPanel } from '../../components/today-earnings-panel';
 import {
   addCalendarDays,
   calendarDateInZone,
+  refreshCalendarClockInstant,
   resolveShift,
   type ResolvedShift,
 } from '../../domain/shift-engine';
@@ -33,12 +34,9 @@ export default function TodayScreen() {
   useFocusEffect(
     useCallback(() => {
       const refreshDate = () => {
-        setClockInstant((previous) => {
-          const now = Date.now();
-          const previousDay = calendarDateInZone(schedule.timeZone, new Date(previous));
-          const currentDay = calendarDateInZone(schedule.timeZone, new Date(now));
-          return previousDay === currentDay ? previous : now;
-        });
+        setClockInstant((previous) =>
+          refreshCalendarClockInstant(previous, Date.now(), schedule.timeZone),
+        );
       };
       refreshDate();
       const interval = setInterval(refreshDate, 15_000);

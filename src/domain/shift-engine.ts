@@ -256,3 +256,14 @@ export function calendarDateInZone(timeZone: string, instant: Date = new Date())
   calendarOrdinal(date);
   return date;
 }
+
+/** Keep the render clock stable until the saved schedule zone changes civil day. */
+export function refreshCalendarClockInstant(
+  previousInstant: number,
+  currentInstant: number,
+  timeZone: string,
+): number {
+  const previousDay = calendarDateInZone(timeZone, new Date(previousInstant));
+  const currentDay = calendarDateInZone(timeZone, new Date(currentInstant));
+  return previousDay === currentDay ? previousInstant : currentInstant;
+}
