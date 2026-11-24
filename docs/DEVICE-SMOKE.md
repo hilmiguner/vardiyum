@@ -1,5 +1,7 @@
 # Vardiyum — Gerçek Cihaz Kabul Listesi
 
+> **2026-11-24 — E07-E2 component evidence PASS / combined parity pending:** Pixel_7 screenshots confirm saved full fixed base 30,000 TRY (statement revision 1, pay profile revision 3), custom period 15 Nov–14 Dec, and fixed-base plus recorded overtime estimate 30,225 TRY (27,000 net sec, 21,600 regular sec, 5,400 overtime sec, 225 TRY OT). Next: reopen Earnings combined estimate and Today for the same period; both must show 30,225 TRY. No repeated saves. Full E07-E2 and E07-F pending; PR #46 open, CI paused, no merge.
+
 > **2026-11-24 — E07-E2 IN PROGRESS:** User screenshots confirm custom period 15 Nov–14 Dec and fail-closed total with `CUSTOM_COMBINED_FIXED_BASE_NOT_ESTIMATED:requires_choice`. Base-choice save is not evidenced; inspect fixed-base panel, save full fixed base if not already saved, then approve recorded overtime. E07-E2 total and parity remain pending.
 
 > **2026-11-24 — E07-E1 PASS / next E07-E2:** Android `Pixel_7` screenshots confirm the custom 26 Oct–25 Nov period refuses to estimate when the opening pay profile is missing. Today shows no amount; Earnings shows the expected opening-profile blocks. Next: supported custom period 15 Nov–14 Dec (start day 15), explicit full fixed base and overtime decisions; expected combined 30,225 TRY. E07-E remains in progress. PR #46 open; Actions paused; no merge.
@@ -603,3 +605,8 @@
 ### 2026-11-24 — E07-E2 intermediate gate (not PASS)
 
 Two user screenshots show Today custom period 2026-11-15–2026-12-14, no amount, and Earnings combined estimate blocked with `CUSTOM_COMBINED_FIXED_BASE_NOT_ESTIMATED:requires_choice`. This confirms the period and fail-closed state but does not establish whether the base save was attempted or succeeded. Next inspect `Custom pay period: fixed salary base only`; choose Full fixed base and save reason `QA E07-E2 full base` if not already saved. Verify saved base 30,000 TRY and statement revision before selecting Include recorded overtime with reason `QA E07-E2 overtime`. If save was already attempted, capture the base panel and alert before repeating. Expected combined 30,225 TRY; no code change, CI, or merge. E07-E2 remains pending.
+
+### 2026-11-24 — E07-E2 saved fixed base and overtime component PASS
+
+- User screenshots on Pixel_7: fixed salary base-only panel shows period 2026-11-15–2026-12-14, profile revision 3, full base 30,000 TRY, saved statement revision 1. Fixed overtime panel shows source profile revision 3 and base statement 1, selected threshold 360 net min per custom period, 100 TRY hourly OT × 3/2, net work 27,000 sec, regular 21,600 sec, OT 5,400 sec, additional OT 225 TRY, total 30,225 TRY. Correct component calculation and saved base evidenced; overtime component estimate available. Prior requires_choice gate resolved at component level.
+- Remaining evidence: latest `Custom pay period: combined earnings estimate` and Today card for same 15 Nov–14 Dec period both showing 30,225 TRY. Do not resave base or OT decision, change profiles or sessions. Navigate between tabs to refresh; if combined still blocked capture exact reason. E07-E2 not fully PASS until both cards verified. E07-F broader consistency and physical device acceptance remain open. No code change, CI, merge. Last local quality 363/363 PASS.
