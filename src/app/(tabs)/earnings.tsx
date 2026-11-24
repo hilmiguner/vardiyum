@@ -176,7 +176,11 @@ function ProfileEditor({
         });
       }
       await onSaved();
-      Alert.alert(t(initial ? 'earnRevisionSaved' : 'earnProfileSaved'));
+      if (initial) {
+        Alert.alert(t('earnProfileSaved'), t('earnRevisionSaved'));
+      } else {
+        Alert.alert(t('earnProfileSaved'));
+      }
     } catch (error) {
       Alert.alert(t('earnProfileError'), error instanceof Error ? error.message : '');
     } finally {
