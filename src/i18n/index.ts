@@ -101,6 +101,9 @@ const resources = {
         'Dönem: {{from}} – {{to}}\nTahmini toplam: {{total}}\nÇalışma kalemi: {{work}} · ek kalem: {{adjustments}}\nDosya tüm kaynak kimlikleri, saatleri, ücretleri ve notları içerir. Seçtiğin uygulama bunları görebilir. Takvim ayı raporuyla toplama. Bu resmî bordro değildir. Onaydan sonra kaynaklar yeniden okunur; değişmişse paylaşım iptal edilir.',
       earnCustomExportConfirm: 'Dosyayı paylaş',
       earnCustomExportFailed: 'Özel dönem raporu paylaşılamadı',
+      earnCustomExportCleanupTitle: 'Geçici dosya temizlenemedi',
+      earnCustomExportCleanupFailed:
+        'Önceki rapor dosyası temizlenemedi. Uygulamayı yeniden açıp tekrar dene. Temizlik başarılı olana kadar yeni rapor paylaşılmaz.',
       earnCombinedTitle: 'Özel maaş dönemi: birleşik kazanç tahmini',
       earnCombinedExplanation:
         'Yalnız doğrulanmış gerçek saatlik çalışma YA DA kullanıcı tarafından seçilmiş sabit ücret ile ayrı onaylı fazla mesai ve açıkça döneme atanmış prim/kesinti/düzeltme birleştirilir. Belirsiz kaynak, farklı para birimi veya geçersiz revizyon varsa toplam gösterilmez.',
@@ -809,6 +812,9 @@ const resources = {
         'Period: {{from}} – {{to}}\nEstimated total: {{total}}\nWork lines: {{work}} · adjustment lines: {{adjustments}}\nThis file includes source IDs, UTC times, salary amounts and notes. The receiving app may access them. Do not add calendar-month totals. This is not an official payslip. Sources are re-read after confirmation; changed sources cancel sharing.',
       earnCustomExportConfirm: 'Share this file',
       earnCustomExportFailed: 'Unable to share custom period report',
+      earnCustomExportCleanupTitle: 'Temporary file cleanup failed',
+      earnCustomExportCleanupFailed:
+        'A previous report file could not be removed. Restart the app and try again. New reports cannot be shared until cleanup succeeds.',
       earnCombinedTitle: 'Custom pay period: combined earnings estimate',
       earnCombinedExplanation:
         'Only verified logged hourly work OR an explicitly chosen fixed base plus separately approved overtime is combined with bonuses, deductions and corrections expressly assigned to this pay period. Missing provenance, currency mismatch or stale revisions block the total.',
