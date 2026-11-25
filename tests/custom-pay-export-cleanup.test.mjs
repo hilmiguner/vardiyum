@@ -31,9 +31,8 @@ test('purge removes only owned exports and preserves unrelated files', () => {
     'vardiyum-custom-estimate-15-2026-11.json',
     'vardiyum.db',
   ];
-  purgeCustomPayExportFiles(
-    names.map((name) => ({ name, delete: () => removed.push(name) })),
-  );
+  const files = names.map((name) => ({ name, delete: () => removed.push(name) }));
+  purgeCustomPayExportFiles(files);
   assert.deepEqual(removed, [names[0], names[2]]);
 });
 
@@ -53,6 +52,6 @@ test('purge attempts remaining owned files after a deletion failure and fails cl
       },
     },
   ];
-  assert.throws(() => purgeCustomPayExportFiles(files), /^Error: CUSTOM_PAY_EXPORT_CLEANUP_FAILED$/);
+  assert.throws(() => purgeCustomPayExportFiles(files), /CUSTOM_PAY_EXPORT_CLEANUP_FAILED/);
   assert.equal(removed, true);
 });

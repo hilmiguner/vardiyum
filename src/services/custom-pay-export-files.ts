@@ -48,10 +48,12 @@ export async function shareCustomPayExportFile(file: {
     try {
       fileOnDisk.create({ overwrite: false });
       fileOnDisk.write(file.content);
+      const uti =
+        file.mimeType === 'text/csv' ? 'public.comma-separated-values-text' : 'public.json';
       await Sharing.shareAsync(fileOnDisk.uri, {
         mimeType: file.mimeType,
         dialogTitle: 'Vardiyum - custom pay estimate (personal data)',
-        UTI: file.mimeType === 'text/csv' ? 'public.comma-separated-values-text' : 'public.json',
+        UTI: uti,
       });
     } finally {
       if (fileOnDisk.exists) fileOnDisk.delete();
