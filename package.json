@@ -30,7 +30,7 @@
     "expo-sharing": "~57.0.27",
     "expo-sqlite": "~57.0.7",
     "expo-status-bar": "~57.0.1",
-    "i18next": "^25.0.0",
+    "i18next": "26.3.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-i18next": "^16.0.0",
@@ -46,9 +46,9 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
-    "typescript": "~6.0.3",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.1",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "typescript": "~6.0.3"
   }
 }
