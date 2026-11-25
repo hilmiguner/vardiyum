@@ -121,6 +121,9 @@ const resources = {
       earnCombinedAdjustment: 'Döneme açıkça atanmış ek kalemler (işaretli): {{amount}}',
       earnCombinedTrace:
         'Sabit ücret beyanı {{baseRev}} · mesai onayı {{otRev}} ({{otPolicy}}) · doğrulanmış net süre {{netSeconds}} sn · fazla mesai {{overtimeSeconds}} sn',
+      earnCombinedOvertime_not_applicable: 'Uygulanmaz',
+      earnCombinedOvertime_include_logged_overtime: 'Kayıtlı mesai dahil',
+      earnCombinedOvertime_exclude_logged_overtime: 'Kayıtlı mesai hariç',
       earnCombinedProfileSources: 'Ücret profili kaynakları',
       earnCombinedProfile: 'Profil {{id}} · değişmez kaynak sürümü {{revision}}',
       earnCombinedWorkSources: 'Gerçek çalışma kaynakları',
@@ -832,6 +835,9 @@ const resources = {
       earnCombinedAdjustment: 'Explicitly allocated signed adjustments: {{amount}}',
       earnCombinedTrace:
         'Fixed base statement {{baseRev}} · overtime consent {{otRev}} ({{otPolicy}}) · verified net {{netSeconds}} sec · overtime {{overtimeSeconds}} sec',
+      earnCombinedOvertime_not_applicable: 'Not applicable',
+      earnCombinedOvertime_include_logged_overtime: 'Recorded overtime included',
+      earnCombinedOvertime_exclude_logged_overtime: 'Recorded overtime excluded',
       earnCombinedProfileSources: 'Pay profile sources',
       earnCombinedProfile: 'Profile {{id}} · immutable source revision {{revision}}',
       earnCombinedWorkSources: 'Actual-work source lines',
