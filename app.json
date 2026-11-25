@@ -16,9 +16,17 @@
     },
     "plugins": [
       "expo-router",
-      ["expo-sqlite", { "android": { "enableFTS": true } }],
+      [
+        "expo-sqlite",
+        {
+          "android": {
+            "enableFTS": true
+          }
+        }
+      ],
       "expo-localization",
-      "expo-notifications"
+      "expo-notifications",
+      "expo-sharing"
     ],
     "experiments": {
       "typedRoutes": true
