@@ -39,3 +39,17 @@ test('bottom tabs retain centered geometry, safe area and navigation semantics',
   assert.ok(!source.includes('tabBarItemStyle'));
   assert.ok(!source.includes('tabBarStyle:'));
 });
+
+test('compact tab labels fit without scaling decorative glyphs or losing spoken labels', () => {
+  for (const fragment of [
+    'allowFontScaling={false}',
+    'maxFontSizeMultiplier={1.4}',
+    'adjustsFontSizeToFit',
+    'minimumFontScale={0.85}',
+    'paddingHorizontal: 3',
+    "width: '100%'",
+    'accessibilityLabel={options.tabBarAccessibilityLabel ?? label}',
+  ]) {
+    assert.ok(source.includes(fragment), fragment);
+  }
+});

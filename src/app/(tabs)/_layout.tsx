@@ -65,6 +65,7 @@ export default function TabLayout() {
                   style={{
                     flex: 1,
                     minWidth: 0,
+                    paddingHorizontal: 3,
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
@@ -78,6 +79,7 @@ export default function TabLayout() {
                     }}
                   >
                     <Text
+                      allowFontScaling={false}
                       style={{
                         color,
                         fontSize: 20,
@@ -94,7 +96,11 @@ export default function TabLayout() {
                   </View>
                   <Text
                     numberOfLines={1}
+                    maxFontSizeMultiplier={1.4}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.85}
                     style={{
+                      width: '100%',
                       color,
                       fontSize: 12,
                       lineHeight: 16,

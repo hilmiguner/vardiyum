@@ -120,7 +120,13 @@ export default function CalendarScreen() {
                   key={index}
                   style={{ width: '14.2857%', alignItems: 'center', paddingVertical: 6 }}
                 >
-                  <Text style={{ color: c.muted, fontSize: 11 }}>{day}</Text>
+                  <Text
+                    numberOfLines={1}
+                    maxFontSizeMultiplier={1.4}
+                    style={{ color: c.muted, fontSize: 11 }}
+                  >
+                    {day}
+                  </Text>
                 </View>
               ))}
               {cells.map((date, index) => {
@@ -135,13 +141,15 @@ export default function CalendarScreen() {
                       <Pressable
                         accessibilityRole="button"
                         accessibilityLabel={`${date} ${shift?.template.name ?? ''}`}
+                        accessibilityState={{ selected: active }}
                         onPress={() => {
                           setSelectedDate(date);
                           setNoteDraft(null);
                         }}
                         style={{
                           minHeight: 57,
-                          padding: 5,
+                          paddingVertical: 5,
+                          paddingHorizontal: 1,
                           borderRadius: 10,
                           borderWidth: active ? 2 : 1,
                           borderColor: active ? c.accent : c.border,
@@ -151,7 +159,19 @@ export default function CalendarScreen() {
                           gap: 3,
                         }}
                       >
-                        <Text style={{ color: c.text, fontWeight: active ? '800' : '500' }}>
+                        <Text
+                          numberOfLines={1}
+                          maxFontSizeMultiplier={1.4}
+                          adjustsFontSizeToFit
+                          minimumFontScale={0.85}
+                          style={{
+                            color: c.text,
+                            fontSize: 14,
+                            fontWeight: active ? '800' : '500',
+                            width: '100%',
+                            textAlign: 'center',
+                          }}
+                        >
                           {Number(date.slice(8))}
                         </Text>
                         <View
