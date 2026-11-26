@@ -172,7 +172,7 @@ export function CustomPayCombinedPanel({
             {t('earnCombinedTrace', {
               baseRev: report.baseRevision ?? '-',
               otRev: report.overtimeConsentRevision ?? '-',
-              otPolicy: report.overtimeDecision,
+              otPolicy: t('earnCombinedOvertime_' + report.overtimeDecision),
               netSeconds: report.loggedSeconds,
               overtimeSeconds: report.overtimeSeconds,
             })}

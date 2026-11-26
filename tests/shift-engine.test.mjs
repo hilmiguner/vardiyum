@@ -3,6 +3,8 @@ import test from 'node:test';
 import {
   addCalendarDays,
   calendarOrdinal,
+  calendarDateInZone,
+  refreshCalendarClockInstant,
   cycleIndex,
   scheduledShift,
   validatePattern,
@@ -42,5 +44,34 @@ test('invalid values are rejected', () => {
   assert.throws(
     () => scheduledShift('2026-11-15', { anchorDate: '2026-11-15', days: [] }),
     /EMPTY_PATTERN/,
+  );
+});
+
+test('saved Istanbul time zone switches calendar date at local midnight', () => {
+  const zone = 'Europe/Istanbul';
+  assert.equal(calendarDateInZone(zone, new Date('2026-11-20T20:59:59Z')), '2026-11-20');
+  assert.equal(calendarDateInZone(zone, new Date('2026-11-20T21:00:00Z')), '2026-11-21');
+});
+
+test('today screen refresh clock advances at saved Istanbul midnight and after resume', () => {
+  const zone = 'Europe/Istanbul';
+  const before = Date.parse('2026-11-20T20:59:59.000Z');
+  const sameDay = Date.parse('2026-11-20T20:59:59.500Z');
+  const midnight = Date.parse('2026-11-20T21:00:00.000Z');
+  const later = Date.parse('2026-11-21T20:59:59.000Z');
+
+  assert.equal(refreshCalendarClockInstant(before, sameDay, zone), before);
+  assert.equal(refreshCalendarClockInstant(before, midnight, zone), midnight);
+  assert.equal(refreshCalendarClockInstant(before, later, zone), later);
+  assert.equal(refreshCalendarClockInstant(midnight, later, zone), midnight);
+});
+
+test('today screen refresh clock is anchored to selected zone, not device timezone', () => {
+  const before = Date.parse('2026-11-20T20:59:59.000Z');
+  const midnightIstanbul = Date.parse('2026-11-20T21:00:00.000Z');
+  assert.equal(refreshCalendarClockInstant(before, midnightIstanbul, 'UTC'), before);
+  assert.equal(
+    refreshCalendarClockInstant(before, midnightIstanbul, 'Europe/Istanbul'),
+    midnightIstanbul,
   );
 });

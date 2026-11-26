@@ -56,7 +56,7 @@ export function ReminderConsentPanel() {
         await setReminderOptIn(permission);
         setOptedIn(permission);
         refreshReminders();
-        if (!permission) Alert.alert(t('reminderPermissionDenied'));
+        if (!permission) Alert.alert(t('reminderGlobalTitle'), t('reminderPermissionDenied'));
       }
       setError(null);
     } catch (reason) {

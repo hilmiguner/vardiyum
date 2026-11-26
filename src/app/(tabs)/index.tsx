@@ -1,5 +1,6 @@
-import { useRouter } from 'expo-router';
-import { Text, View } from 'react-native';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { AppState, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Action, Heading, Muted, Page, Panel } from '../../components/ui';
@@ -9,6 +10,7 @@ import { TodayEarningsPanel } from '../../components/today-earnings-panel';
 import {
   addCalendarDays,
   calendarDateInZone,
+  refreshCalendarClockInstant,
   resolveShift,
   type ResolvedShift,
 } from '../../domain/shift-engine';
@@ -26,7 +28,28 @@ export default function TodayScreen() {
   const router = useRouter();
   const c = usePalette();
   const { schedule, loading, error, reload } = useAppState();
-  const today = calendarDateInZone(schedule.timeZone);
+  const [clockInstant, setClockInstant] = useState(() => Date.now());
+  // Tabs can stay mounted across midnight. Update the saved IANA-zone day
+  // while focused and immediately when Android returns from the background.
+  useFocusEffect(
+    useCallback(() => {
+      const refreshDate = () => {
+        setClockInstant((previous) =>
+          refreshCalendarClockInstant(previous, Date.now(), schedule.timeZone),
+        );
+      };
+      refreshDate();
+      const interval = setInterval(refreshDate, 15_000);
+      const subscription = AppState.addEventListener('change', (state) => {
+        if (state === 'active') refreshDate();
+      });
+      return () => {
+        clearInterval(interval);
+        subscription.remove();
+      };
+    }, [schedule.timeZone]),
+  );
+  const today = calendarDateInZone(schedule.timeZone, new Date(clockInstant));
   const current = resolveShift(today, schedule);
   const nextDate = addCalendarDays(today, 1);
   const next = resolveShift(nextDate, schedule);

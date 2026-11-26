@@ -215,6 +215,39 @@ export function encodeEncryptedEnvelope(ciphertextBase64: string): string {
     throw new Error('BACKUP_INVALID_CIPHERTEXT');
   return JSON.stringify({ format: BACKUP_FORMAT, ciphertextBase64 });
 }
+
+const BASE64_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+/** Strict canonical Base64 to Uint8Array, matching Android native ByteArray input. */
+export function decodeBase64Bytes(value: string): Uint8Array {
+  if (
+    value.length < 4 ||
+    value.length > BACKUP_MAX_ENVELOPE_CHARS - 128 ||
+    !BASE64.test(value)
+  ) {
+    throw new Error('BACKUP_INVALID_CIPHERTEXT');
+  }
+  const pad = value.endsWith('==') ? 2 : value.endsWith('=') ? 1 : 0;
+  if (pad === 2 && (BASE64_ALPHABET.indexOf(value[value.length - 3]) & 15) !== 0) {
+    throw new Error('BACKUP_INVALID_CIPHERTEXT');
+  }
+  if (pad === 1 && (BASE64_ALPHABET.indexOf(value[value.length - 2]) & 3) !== 0) {
+    throw new Error('BACKUP_INVALID_CIPHERTEXT');
+  }
+  const bytes = new Uint8Array((value.length / 4) * 3 - pad);
+  let output = 0;
+  for (let index = 0; index < value.length; index += 4) {
+    const a = BASE64_ALPHABET.indexOf(value[index]);
+    const b = BASE64_ALPHABET.indexOf(value[index + 1]);
+    const c = value[index + 2] === '=' ? 0 : BASE64_ALPHABET.indexOf(value[index + 2]);
+    const d = value[index + 3] === '=' ? 0 : BASE64_ALPHABET.indexOf(value[index + 3]);
+    bytes[output++] = (a << 2) | (b >>> 4);
+    if (value[index + 2] !== '=') bytes[output++] = ((b & 15) << 4) | (c >>> 2);
+    if (value[index + 3] !== '=') bytes[output++] = ((c & 3) << 6) | d;
+  }
+  return bytes;
+}
+
 export function decodeEncryptedEnvelope(text: string): string {
   if (text.length > BACKUP_MAX_ENVELOPE_CHARS) throw new Error('BACKUP_TOO_LARGE');
   let parsed: unknown;

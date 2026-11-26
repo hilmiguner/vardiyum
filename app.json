@@ -14,9 +14,27 @@
     "android": {
       "package": "com.hilmiguner.vardiyum"
     },
-    "plugins": ["expo-router", "expo-sqlite", "expo-localization", "expo-notifications"],
+    "plugins": [
+      "expo-router",
+      [
+        "expo-sqlite",
+        {
+          "android": {
+            "enableFTS": true
+          }
+        }
+      ],
+      "expo-localization",
+      "expo-notifications",
+      "expo-sharing"
+    ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0ec5a8c3-f277-43d0-82c7-8b822835a4c2"
+      }
     }
   }
 }

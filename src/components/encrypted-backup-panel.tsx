@@ -8,11 +8,16 @@ import {
   createBackupSnapshot,
   getCurrentSchemaForReadOnlyPreview,
 } from '../data/backup-repository';
-import { createEncryptedBackup, openEncryptedBackup } from '../services/encrypted-backup';
+import {
+  checkFreshEncryptedBackup,
+  createEncryptedBackup,
+  openEncryptedBackup,
+} from '../services/encrypted-backup';
 import { commitCleanInstallRestore } from '../data/backup-restore-repository';
 import { useAppState } from '../state/app-state';
 import {
   pickEncryptedFile,
+  readEncryptedBackupFromCache,
   shareEncryptedFile,
   writeEncryptedFileToCache,
 } from '../services/encrypted-backup-files';
@@ -44,9 +49,23 @@ export function EncryptedBackupPanel() {
     setFileUri(null);
     setKeySaved(false);
     try {
-      const { snapshot } = await createBackupSnapshot();
+      const { snapshot, expectedColumns } = await createBackupSnapshot();
       const encrypted = await createEncryptedBackup(snapshot);
       const uri = writeEncryptedFileToCache(encrypted.ciphertextFileContents);
+      // Do not offer a recovery key / Share until ciphertext is read back from
+      // cache and successfully authenticated with the newly generated key.
+      // This is an export preflight, never a SQLite restore or mutation.
+      let stored: string;
+      try {
+        stored = await readEncryptedBackupFromCache(uri);
+      } catch {
+        throw new Error('BACKUP_EXPORT_CHECK_CACHE_READ_FAILED');
+      }
+      if (stored !== encrypted.ciphertextFileContents) {
+        throw new Error('BACKUP_EXPORT_CHECK_CACHE_MISMATCH');
+      }
+      // Stage diagnostics apply only to this freshly generated ciphertext/key.
+      await checkFreshEncryptedBackup(stored, encrypted.recoveryKey, expectedColumns);
       setFileUri(uri);
       setRecoveryKey(encrypted.recoveryKey);
     } catch (reason) {

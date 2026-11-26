@@ -101,6 +101,9 @@ const resources = {
         'Dönem: {{from}} – {{to}}\nTahmini toplam: {{total}}\nÇalışma kalemi: {{work}} · ek kalem: {{adjustments}}\nDosya tüm kaynak kimlikleri, saatleri, ücretleri ve notları içerir. Seçtiğin uygulama bunları görebilir. Takvim ayı raporuyla toplama. Bu resmî bordro değildir. Onaydan sonra kaynaklar yeniden okunur; değişmişse paylaşım iptal edilir.',
       earnCustomExportConfirm: 'Dosyayı paylaş',
       earnCustomExportFailed: 'Özel dönem raporu paylaşılamadı',
+      earnCustomExportCleanupTitle: 'Geçici dosya temizlenemedi',
+      earnCustomExportCleanupFailed:
+        'Önceki rapor dosyası temizlenemedi. Uygulamayı yeniden açıp tekrar dene. Temizlik başarılı olana kadar yeni rapor paylaşılmaz.',
       earnCombinedTitle: 'Özel maaş dönemi: birleşik kazanç tahmini',
       earnCombinedExplanation:
         'Yalnız doğrulanmış gerçek saatlik çalışma YA DA kullanıcı tarafından seçilmiş sabit ücret ile ayrı onaylı fazla mesai ve açıkça döneme atanmış prim/kesinti/düzeltme birleştirilir. Belirsiz kaynak, farklı para birimi veya geçersiz revizyon varsa toplam gösterilmez.',
@@ -118,6 +121,9 @@ const resources = {
       earnCombinedAdjustment: 'Döneme açıkça atanmış ek kalemler (işaretli): {{amount}}',
       earnCombinedTrace:
         'Sabit ücret beyanı {{baseRev}} · mesai onayı {{otRev}} ({{otPolicy}}) · doğrulanmış net süre {{netSeconds}} sn · fazla mesai {{overtimeSeconds}} sn',
+      earnCombinedOvertime_not_applicable: 'Uygulanmaz',
+      earnCombinedOvertime_include_logged_overtime: 'Kayıtlı mesai dahil',
+      earnCombinedOvertime_exclude_logged_overtime: 'Kayıtlı mesai hariç',
       earnCombinedProfileSources: 'Ücret profili kaynakları',
       earnCombinedProfile: 'Profil {{id}} · değişmez kaynak sürümü {{revision}}',
       earnCombinedWorkSources: 'Gerçek çalışma kaynakları',
@@ -536,13 +542,15 @@ const resources = {
       earnCurrency: 'Para birimi (iki ondalıklı)',
       earnHourlyRate: 'Bir saatlik ücret',
       earnMonthlyBase: 'Tam ay için sabit tutar',
-      earnThresholdMinutes: 'Dönem içi fazla mesai eşiği (dakika, isteğe bağlı)',
+      earnThresholdMinutes: 'Fazla mesai hangi süreden sonra başlasın? (dakika)',
       earnThresholdPlaceholder: 'Boşsa fazla mesai katsayısı uygulanmaz',
       earnThresholdWarning:
-        'Bu eşik ve çarpan tamamen senin seçimin. Herhangi bir mevzuat katsayısı otomatik uygulanmaz.',
+        'Örnek: 180 saat = 10.800 dakika. Yalnız kaydedilmiş gerçek çalışmanın bu sınırı aşan kısmı mesai sayılır; yasal sınır otomatik belirlenmez.',
       earnOvertimeHourlyRate: 'Aylık modele ek mesai saatlik ücreti',
-      earnMultiplierNumerator: 'Çarpan payı',
-      earnMultiplierDenominator: 'Çarpan paydası',
+      earnMultiplierNumerator: 'Katsayının üst sayısı',
+      earnMultiplierDenominator: 'Katsayının alt sayısı',
+      earnMultiplierHelp:
+        'Katsayı = üst sayı ÷ alt sayı. 3 ÷ 2 = 1,5 kat; 2 ÷ 1 = 2 kat. Şimdilik aynı dönemde tek katsayı vardır; normal ve bayram mesaileri ayrı sınıflandırılmaz.',
       earnSaveProfile: 'Ücret profilini kaydet',
       earnProfileSaved: 'Ücret profili kaydedildi.',
       earnProfileError: 'Ücret profili kaydedilemedi',
@@ -592,7 +600,7 @@ const resources = {
       scheduleZone: 'Takvim saat dilimi: {{zone}}',
       shiftTypes: 'Vardiya türleri ve saatleri',
       shiftTypesHint:
-        'İsimleri, saatleri ve molaları düzenle; döngü günlerine dokunarak türleri değiştir.',
+        'İsimleri, saatleri ve molaları düzenle. Döngü gününe dokunup vardiya türünü değiştir; kullanılmayan türleri silebilirsin.',
       shiftName: 'Vardiya adı',
       startTime: 'Başlangıç',
       endTime: 'Bitiş',
@@ -600,6 +608,14 @@ const resources = {
       restDay: 'Çalışılmayan gün',
       addShift: 'Vardiya ekle',
       addRest: 'İzin ekle',
+      deleteShiftType: 'Bu türü sil',
+      deleteShiftTypeTitle: 'Vardiya türünü sil',
+      deleteShiftTypeConfirm: '{{name}} silinsin mi? Bu işlem Kaydet ile uygulanır.',
+      deleteShiftTypeInUse:
+        'Önce bu türü kullanan döngü günlerini başka bir vardiya/izin türüyle değiştir; tek günlük değişiklik varsa onu da kaldır. Sonra tekrar silmeyi dene.',
+      deleteShiftTypeReferenced:
+        'Bu vardiya türüne bağlı kayıtlı rutinler veya özel günler var. Önce bağlantıları kaldır.',
+      deleteShiftTypeFailed: 'Vardiya türü silinemedi. Kayıtları kontrol et.',
       overnightHint:
         'Bitiş saati başlangıçtan önce veya aynıysa vardiya ertesi gün biter; aynı saat 24 saatlik vardiyadır.',
       customName: 'Yeni vardiya',
@@ -651,6 +667,10 @@ const resources = {
       scheduleTimeZoneTitle: 'Programın saat dilimi',
       currentTimeZone: 'Kayıtlı saat dilimi: {{zone}}',
       timeZoneIdentifier: 'IANA saat dilimi',
+      chooseTimeZone: 'Şehir veya saat dilimi seç',
+      timeZoneSearch: 'Şehir / bölge ara',
+      noTimeZones: 'Eşleşen şehir bulunamadı.',
+      deviceTimeZone: 'Telefonun saat dilimi',
       zoneChangeWarning:
         'Saat dilimini değiştirmek planlanan saatlerin UTC karşılığını değiştirir. Gerçek mesai kayıtları değişmez.',
       changeTimeZone: 'Saat dilimini değiştir',
@@ -795,6 +815,9 @@ const resources = {
         'Period: {{from}} – {{to}}\nEstimated total: {{total}}\nWork lines: {{work}} · adjustment lines: {{adjustments}}\nThis file includes source IDs, UTC times, salary amounts and notes. The receiving app may access them. Do not add calendar-month totals. This is not an official payslip. Sources are re-read after confirmation; changed sources cancel sharing.',
       earnCustomExportConfirm: 'Share this file',
       earnCustomExportFailed: 'Unable to share custom period report',
+      earnCustomExportCleanupTitle: 'Temporary file cleanup failed',
+      earnCustomExportCleanupFailed:
+        'A previous report file could not be removed. Restart the app and try again. New reports cannot be shared until cleanup succeeds.',
       earnCombinedTitle: 'Custom pay period: combined earnings estimate',
       earnCombinedExplanation:
         'Only verified logged hourly work OR an explicitly chosen fixed base plus separately approved overtime is combined with bonuses, deductions and corrections expressly assigned to this pay period. Missing provenance, currency mismatch or stale revisions block the total.',
@@ -812,6 +835,9 @@ const resources = {
       earnCombinedAdjustment: 'Explicitly allocated signed adjustments: {{amount}}',
       earnCombinedTrace:
         'Fixed base statement {{baseRev}} · overtime consent {{otRev}} ({{otPolicy}}) · verified net {{netSeconds}} sec · overtime {{overtimeSeconds}} sec',
+      earnCombinedOvertime_not_applicable: 'Not applicable',
+      earnCombinedOvertime_include_logged_overtime: 'Recorded overtime included',
+      earnCombinedOvertime_exclude_logged_overtime: 'Recorded overtime excluded',
       earnCombinedProfileSources: 'Pay profile sources',
       earnCombinedProfile: 'Profile {{id}} · immutable source revision {{revision}}',
       earnCombinedWorkSources: 'Actual-work source lines',
@@ -1234,13 +1260,15 @@ const resources = {
       earnCurrency: 'Currency (two decimal places)',
       earnHourlyRate: 'Pay per hour',
       earnMonthlyBase: 'Fixed full-month amount',
-      earnThresholdMinutes: 'Overtime threshold per period (minutes, optional)',
+      earnThresholdMinutes: 'Start overtime after how many minutes in this period?',
       earnThresholdPlaceholder: 'Blank means no overtime multiplier',
       earnThresholdWarning:
-        'You set the threshold and multiplier; no legal rate is automatically assumed.',
+        'Example: 180 hours = 10,800 minutes. Only logged actual work above this threshold is treated as overtime; no legal threshold is assumed.',
       earnOvertimeHourlyRate: 'Additional overtime hourly rate for fixed monthly model',
-      earnMultiplierNumerator: 'Multiplier numerator',
-      earnMultiplierDenominator: 'Multiplier denominator',
+      earnMultiplierNumerator: 'Multiplier top number',
+      earnMultiplierDenominator: 'Multiplier bottom number',
+      earnMultiplierHelp:
+        'Multiplier = top ÷ bottom: 3 ÷ 2 = 1.5x, 2 ÷ 1 = 2x. Only one rate applies to a period for now; regular versus holiday overtime is not yet classified.',
       earnSaveProfile: 'Save pay profile',
       earnProfileSaved: 'Pay profile saved.',
       earnProfileError: 'Could not save pay profile',
@@ -1289,7 +1317,8 @@ const resources = {
       setupSubtitle: 'Tap a cycle day to change its shift.',
       scheduleZone: 'Schedule time zone: {{zone}}',
       shiftTypes: 'Shift types and hours',
-      shiftTypesHint: 'Edit names, hours and breaks. Tap a cycle day to change its shift type.',
+      shiftTypesHint:
+        'Edit names, hours and breaks. Tap a cycle day to change its shift type; unused types can be deleted.',
       shiftName: 'Shift name',
       startTime: 'Start',
       endTime: 'End',
@@ -1297,6 +1326,14 @@ const resources = {
       restDay: 'Non-working day',
       addShift: 'Add shift',
       addRest: 'Add day off',
+      deleteShiftType: 'Delete this type',
+      deleteShiftTypeTitle: 'Remove shift type',
+      deleteShiftTypeConfirm: 'Remove {{name}}? This is applied when you tap Save.',
+      deleteShiftTypeInUse:
+        'First replace cycle days that use this type with another shift or day off and clear any date overrides, then delete it.',
+      deleteShiftTypeReferenced:
+        'Saved routines or date overrides still reference this type. Remove those links first.',
+      deleteShiftTypeFailed: 'Shift type could not be removed. Check its references.',
       overnightHint:
         'If the end time is at or before the start, the shift ends next day; equal hours mean a 24-hour shift.',
       customName: 'New shift',
@@ -1349,6 +1386,10 @@ const resources = {
       scheduleTimeZoneTitle: 'Schedule time zone',
       currentTimeZone: 'Stored schedule zone: {{zone}}',
       timeZoneIdentifier: 'IANA time zone',
+      chooseTimeZone: 'Choose city or time zone',
+      timeZoneSearch: 'Search city or region',
+      noTimeZones: 'No matching cities found.',
+      deviceTimeZone: 'Device time zone',
       zoneChangeWarning:
         'Changing the schedule zone changes planned UTC times. Past actual work records are unchanged.',
       changeTimeZone: 'Change schedule time zone',
